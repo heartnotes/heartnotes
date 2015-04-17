@@ -1,10 +1,13 @@
 gulp = require('gulp')
 gutil = require('gulp-util')
+merge = require('ordered-merge-stream')
+path = require('path')
 
 jade = require('gulp-jade')
 concat = require('gulp-concat')
 uglify = require('gulp-uglify')
 stylus = require('gulp-stylus')
+minifyCss = require('gulp-minify-css')
 nib = require('nib')
 rupture = require('rupture')
 
@@ -13,6 +16,7 @@ server = require('gulp-server-livereload')
 
 
 paths = 
+  bower: './bower_components'
   src:
     jade: './src/jade/*.jade'
     js: './src/js/*.js'
@@ -27,6 +31,21 @@ paths =
     css: './'
 
 
+# PureCSS sources
+baseCssSrc = [
+  path.join paths.bower, 'normalize-css', 'normalize.css'
+  path.join paths.bower, 'purecss', 'src', 'base', 'css', "base.css"
+  path.join paths.bower, 'purecss', 'src', 'buttons', 'css', "buttons-core.css"
+  path.join paths.bower, 'purecss', 'src', 'buttons', 'css', "buttons.css"
+  path.join paths.bower, 'purecss', 'src', 'forms', 'css', "form-nr.css"
+  path.join paths.bower, 'purecss', 'src', 'forms', 'css', "form-r.css"
+  path.join paths.bower, 'purecss', 'src', 'grids', 'css', "grids-core.css"
+  path.join paths.bower, 'purecss', 'src', 'grids', 'css', "grids-units.css"
+]
+
+
+
+
 gulp.task 'jade', ->
   gulp.src paths.src.jade
     .pipe jade()
@@ -34,18 +53,31 @@ gulp.task 'jade', ->
     .pipe gulp.dest(paths.build.html)
 
 
-gulp.task 'stylus', ->
-  gulp.src paths.src.stylus
+gulp.task 'stylus', ->  
+  baseCss = gulp.src baseCssSrc
+    .pipe concat('base.css')
+
+  appCss = gulp.src paths.src.stylus
     .pipe stylus({
       use: [ nib(), rupture() ]
-      compress: true
+      compress: false
     })
+    .on 'error', gutil.log
+    .pipe concat('app.css')
+
+  merge([baseCss, appCss])
+    .pipe concat('style.css')
+    .pipe minifyCss()
     .on 'error', gutil.log
     .pipe gulp.dest(paths.build.css)
 
 
+
 gulp.task 'js', ->
-  gulp.src paths.src.js
+  gulp.src [
+    path.join(paths.bower, 'zepto', 'zepto.js')
+    paths.src.js
+  ]
     .pipe uglify()
     .pipe concat('app.js')
     .pipe gulp.dest(paths.build.js)

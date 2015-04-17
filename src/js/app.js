@@ -1,7 +1,6 @@
-"use strict";
-
 $(function() {
-
+  "use strict";
+  
   // ensure map fills window
   var mapElem = $('#map'),
     $window = $(window);
