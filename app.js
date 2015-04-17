@@ -1,0 +1,1 @@
+"use strict";$(function(){var e=$("#map"),t=$(window),a=function(){e.height(t.height()-$("nav.topbar").height())};a(),t.resize(a);{var n={center:{lat:39.5,lng:-108.35},zoom:4};new google.maps.Map($("#map").get(0),n)}});

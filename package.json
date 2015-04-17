@@ -1,0 +1,32 @@
+{
+  "name": "osi-incidents-map",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Map of officer shooting incidents in the USA, based on data from https://github.com/danhammer/ois-incidents",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hiddentao/osi-incidents-map.git"
+  },
+  "author": "Ramesh Nair <ram@hiddentao.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hiddentao/osi-incidents-map/issues"
+  },
+  "homepage": "https://github.com/hiddentao/osi-incidents-map",
+  "devDependencies": {
+    "coffee-script": "^1.9.2",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-jade": "^1.0.0",
+    "gulp-server-livereload": "^1.2.4",
+    "gulp-stylus": "^2.0.1",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.4",
+    "nib": "^1.1.0",
+    "rupture": "^0.6.1"
+  }
+}
