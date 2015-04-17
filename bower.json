@@ -1,0 +1,26 @@
+{
+  "name": "ois-incidents-map",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hiddentao/ois-incidents-map",
+  "authors": [
+    "Ramesh Nair <ram@hiddentao.com>"
+  ],
+  "description": "Map of officer-involved shooting incidents in the USA, based on data from https://github.com/danhammer/ois-incidents",
+  "license": "GPL3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "zepto": "~1.1.6",
+    "superagent": "~1.2.0",
+    "purecss": "~0.6.0"
+  },
+  "devDependencies": {
+    "normalize-css": "~3.0.3"
+  }
+}
