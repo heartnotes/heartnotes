@@ -20,6 +20,8 @@
     "superagent": "~1.2.0",
     "backbone": "~1.1.2",
     "normalize-css": "~3.0.3",
-    "backbone-elements": "~1.0.2"
+    "backbone-elements": "~1.0.2",
+    "D.js": "~0.7.2",
+    "js-marker-clusterer": "googlemaps/js-marker-clusterer#89b08d0db5553f16a67653b049b3aebce9a7406a"
   }
 }

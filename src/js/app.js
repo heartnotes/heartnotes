@@ -1,11 +1,18 @@
 "use strict";
 
 
+
 var App = function() {};
 _.extend(App.prototype, Backbone.Events);
 
 App.prototype.start = function() {
   this.model = new (require('./model'));
+
+  this.nav = new (require('./navBar'))({
+    el: $('nav.topbar').get(0),
+    model: this.model,
+    app: this
+  });
 
   this.map = new (require('./map'))({
     el: $('#map').get(0),

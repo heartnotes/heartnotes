@@ -1,12 +1,14 @@
 module.exports = Backbone.View.extend({
   initialize: function(attrs) {
-    Backbone.View.prototype.initialize.call(this);
+    var self = this;
 
     this.app = attrs.app;
-    this.listenTo(this.model, "change", this.render);
+    this.listenTo(this.model, "change:data", function(model, data) {
+      self.render((data && data.items) || []);
+    });
   },
 
-  render: function() {
+  render: function(items) {
     var self = this;
 
     if (!self.map) {
@@ -21,12 +23,29 @@ module.exports = Backbone.View.extend({
       // if window size changes resize the map
       self.$window.resize(_resizeMap);
 
-      self.mapOptions = {
-        center: { lat: 39.5, lng: -108.35 },
+      self.map = new google.maps.Map(self.$el.get(0), {
+        center: new google.maps.LatLng( 39.5, -108.35 ),
         zoom: 4
-      };
+      });
+    }
 
-      self.map = new google.maps.Map(self.$el.get(0), self.mapOptions);
+ 
+    if (items) {
+      if (self.mapMarkers) {
+        self.mapMarkers.clearMarkers();
+      }
+
+      var markers = items.map(function(v) {
+        return new google.maps.Marker({
+          position: new google.maps.LatLng(v.latlng.lat, v.latlng.lng),
+          map: self.map,
+        });
+      });
+
+      // self.mapMarkers = new MarkerClusterer(map, markers, {
+      //   gridSize: 50, 
+      //   maxZoom: 15
+      // });
     }
   }
 

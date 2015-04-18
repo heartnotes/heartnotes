@@ -33,6 +33,9 @@ nav.topbar {
 nav.topbar .brand {
   font-size: 130%;
 }
+nav.topbar .loading {
+  display: none;
+}
 aside.tools {
   position: fixed;
   top: 60px;

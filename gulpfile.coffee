@@ -92,7 +92,8 @@ gulp.task 'js-app', ->
     path.join(paths.bower, 'zepto', 'zepto.js')
     path.join(paths.bower, 'underscore', 'underscore.js')
     path.join(paths.bower, 'backbone', 'backbone.js')
-    path.join(paths.bower, 'backbone', 'backbone-elements.js')
+    path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
+    path.join(paths.bower, 'js-marker-clusterer', 'src', 'markerclusterer.js')
   ]
     .pipe concat('libs.js')
 
