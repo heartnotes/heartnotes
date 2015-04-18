@@ -42,7 +42,9 @@ paths =
 
 
 # extra CSS
-baseCssSrc = []
+baseCssSrc = [
+  path.join paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.min.css'
+]
 
 
 
@@ -94,6 +96,7 @@ gulp.task 'js-app', ->
     path.join(paths.bower, 'backbone', 'backbone.js')
     path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
     path.join(paths.bower, 'js-marker-clusterer', 'src', 'markerclusterer.js')
+    path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
   ]
     .pipe concat('libs.js')
 
@@ -102,6 +105,7 @@ gulp.task 'js-app', ->
     debug: true
   )
     .bundle()
+    .on('error', gutil.log)
     .pipe source('app.js')
 
   merge([libJs, appJs])

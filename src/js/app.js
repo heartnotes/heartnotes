@@ -26,6 +26,7 @@ App.prototype.start = function() {
     app: this
   });
 
+  this.nav.render();
   this.map.render();
   this.controls.render();
 

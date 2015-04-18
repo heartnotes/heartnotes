@@ -4,7 +4,7 @@ module.exports = Backbone.View.extend({
 
     this.app = attrs.app;
     this.listenTo(this.model, "change:data", function(model, data) {
-      self.render((data && data.items) || []);
+      self.render(data);
     });
   },
 
@@ -32,10 +32,12 @@ module.exports = Backbone.View.extend({
  
     if (items) {
       if (self.mapMarkers) {
-        self.mapMarkers.clearMarkers();
+        self.mapMarkers.forEach(function(m) {
+          m.setMap(null);
+        });
       }
 
-      var markers = items.map(function(v) {
+      self.mapMarkers = items.map(function(v) {
         return new google.maps.Marker({
           position: new google.maps.LatLng(v.latlng.lat, v.latlng.lng),
           map: self.map,

@@ -6,13 +6,14 @@ module.exports = Backbone.Model.extend({
     this.worker.addEventListener('message', _.bind(this.onWorkerResponse, this));
   },
 
-  fetch: function(options) {
+  fetch: function(params) {
     var self = this;
 
     clearTimeout(self._fetchTimeout);
 
     // guard how soon we fetch after the previous fetch
     self._fetchTimeout = setTimeout(function() {
+      // notify of state change
       self.set({
         state: 'fetching'
       });
@@ -23,12 +24,14 @@ module.exports = Backbone.Model.extend({
 
       self.worker.postMessage({
         id: self.currentRequestId,
-        params: options,
+        params: params,
       });
     }, 200);
   },
 
   onWorkerResponse: function(e) {
+    var self = this;
+
     var response = e.data;
 
     if (response.id != this.currentRequestId) {
@@ -37,9 +40,23 @@ module.exports = Backbone.Model.extend({
       return;
     }
 
+    // clear current request id 
+    delete this.currentRequestId;
+
+    // notify observers
     this.set({
-      fetching: false,
       data: response.results
     });
+
+    // state change
+    setTimeout(function() {
+      // if new request hasn't been initiated
+      if (!self.currentRequestId) {
+        // clear state
+        self.set({
+          state: 'ready'
+        });
+      }
+    }, 200);
   }
 });

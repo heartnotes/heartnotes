@@ -14,22 +14,41 @@ html
     nav.topbar
       .brand Officer-involved shootings (USA)
       .loading Loading...
+      .count
+        span.number ... 
+        span  incidents
 
     aside.tools
       form.pure-form.pure-form-stacked
         legend Victim
 
         .control-group
-          .pure-u-1-4
-            label(for="filter-victim-age") Age:
-          .pure-u-3-4
-            div.slider(id="filter-victim-age")
-          .pure-u-6-24
-            input.pure-input-1(id="filter-victim-age-lower", type="number", value="1")
-          .pure-u-4-24.between-text
-            span to
-          .pure-u-6-24
-            input.pure-input-1(id="filter-victim-age-upper", type="number", value="100")
+          .pure-g
+            .pure-u-6-24
+              label(for="filter-victim-age") Age:
+            .pure-u-16-24
+              div.slider(id="filter-victim-age")
+          .pure-g
+            .pure-u-6-24 &nbsp;
+            .pure-u-6-24
+              input.pure-input-1(id="filter-victim-age-lower", type="number", value="1")
+            .pure-u-4-24.between-text
+              span to
+            .pure-u-6-24
+              input.pure-input-1(id="filter-victim-age-upper", type="number", value="100")
+
+        .control-group
+          .pure-g
+            .pure-u-6-24
+              label(for="filter-victim-armed") Armed:
+            .pure-u-6-24
+              label.pure-checkbox(for="filter-victim-armed-yes")
+                input(id="filter-victim-armed-yes", type="checkbox", value="armed") 
+                span  Yes
+            .pure-u-6-24
+              label.pure-checkbox(for="filter-victim-armed-no")
+                input(id="filter-victim-armed-no", type="checkbox", value="unarmed") 
+                span  No
 
     main.content
       #map(style="width:100%;height:500px")

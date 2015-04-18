@@ -1,6 +1,8 @@
 module.exports = Backbone.View.extend({
   elements: {
-    '.loader': 'loader',
+    '.count': 'count',
+    '.count span.number': 'countNumber',
+    '.loading': 'loader',
   },
 
   initialize: function(attrs) {
@@ -15,9 +17,28 @@ module.exports = Backbone.View.extend({
         progress: (val === 'fetching')
       })
     });
+
+    this.listenTo(this.model, "change:data", function(model, data) {
+      self.render({
+        count: data.length
+      });
+    });
   },
 
-  render: function(options) {
-    this.$loader.show(!!options.progress);
+  render: function(values) {
+    values = values || {};
+
+    if (values.progress) {
+      this.$loader.show();
+      this.$count.hide();
+    } else {
+      this.$loader.hide();      
+      this.$count.show();
+    }
+
+    if (undefined !== values.count) {
+      this.$countNumber.text(values.count);
+    }
+
   }
 });
