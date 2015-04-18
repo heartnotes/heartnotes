@@ -1,7 +1,12 @@
 gulp = require('gulp')
 gutil = require('gulp-util')
+gulpIf = require('gulp-if')
 merge = require('ordered-merge-stream')
 path = require('path')
+argv = require('yargs').argv
+
+browserify = require('browserify')
+source = require('vinyl-source-stream2')
 
 jade = require('gulp-jade')
 concat = require('gulp-concat')
@@ -14,12 +19,17 @@ rupture = require('rupture')
 server = require('gulp-server-livereload')
 
 
+minify = (!argv.debug)
+
+
 
 paths = 
   bower: './bower_components'
   src:
     jade: './src/jade/*.jade'
-    js: './src/js/*.js'
+    js: 
+      app: './src/js/app.js'
+      worker: './src/js/worker.js'
     stylus: './src/stylus/style.styl'
   watch:
     jade: './src/jade/**/*.jade'
@@ -31,18 +41,8 @@ paths =
     css: './'
 
 
-# PureCSS sources
-baseCssSrc = [
-  path.join paths.bower, 'normalize-css', 'normalize.css'
-  path.join paths.bower, 'purecss', 'src', 'base', 'css', "base.css"
-  path.join paths.bower, 'purecss', 'src', 'buttons', 'css', "buttons-core.css"
-  path.join paths.bower, 'purecss', 'src', 'buttons', 'css', "buttons.css"
-  path.join paths.bower, 'purecss', 'src', 'forms', 'css', "form-nr.css"
-  path.join paths.bower, 'purecss', 'src', 'forms', 'css', "form-r.css"
-  path.join paths.bower, 'purecss', 'src', 'grids', 'css', "grids-core.css"
-  path.join paths.bower, 'purecss', 'src', 'grids', 'css', "grids-units.css"
-]
-
+# extra CSS
+baseCssSrc = []
 
 
 
@@ -67,20 +67,51 @@ gulp.task 'stylus', ->
 
   merge([baseCss, appCss])
     .pipe concat('style.css')
-    .pipe minifyCss()
+    .pipe gulpIf(minify, minifyCss())
     .on 'error', gutil.log
     .pipe gulp.dest(paths.build.css)
 
 
 
-gulp.task 'js', ->
-  gulp.src [
-    path.join(paths.bower, 'zepto', 'zepto.js')
-    paths.src.js
-  ]
-    .pipe uglify()
-    .pipe concat('app.js')
+gulp.task 'js-worker', ->
+  workerJs = browserify(
+    entries: paths.src.js.worker
+    debug: true
+  )
+    .bundle()
+    .pipe source('worker.js')
+    .pipe gulpIf(minify, uglify())
+    .on('error', gutil.log)
     .pipe gulp.dest(paths.build.js)
+
+
+
+
+gulp.task 'js-app', ->
+  libJs = gulp.src [
+    path.join(paths.bower, 'zepto', 'zepto.js')
+    path.join(paths.bower, 'underscore', 'underscore.js')
+    path.join(paths.bower, 'backbone', 'backbone.js')
+    path.join(paths.bower, 'backbone', 'backbone-elements.js')
+  ]
+    .pipe concat('libs.js')
+
+  appJs = browserify(
+    entries: paths.src.js.app
+    debug: true
+  )
+    .bundle()
+    .pipe source('app.js')
+
+  merge([libJs, appJs])
+    .pipe concat('app.js')
+    .pipe gulpIf(minify, uglify())
+    .on('error', gutil.log)
+    .pipe gulp.dest(paths.build.js)
+
+
+
+gulp.task('js', ['js-app', 'js-worker'])
 
 
 gulp.task 'build', ['jade', 'stylus', 'js']

@@ -1,22 +1,37 @@
+"use strict";
+
+
+var App = function() {};
+_.extend(App.prototype, Backbone.Events);
+
+App.prototype.start = function() {
+  this.model = new (require('./model'));
+
+  this.map = new (require('./map'))({
+    el: $('#map').get(0),
+    model: this.model,
+    app: this
+  });
+
+  this.controls = new (require('./controls'))({
+    el: $('aside.tools').get(0),
+    model: this.model,
+    app: this
+  });
+
+  this.map.render();
+  this.controls.render();
+
+  // kick-off!
+  this.model.fetch();
+};
+
+
+
 $(function() {
-  "use strict";
-  
-  // ensure map fills window
-  var mapElem = $('#map'),
-    $window = $(window);
+  console.log('Starting app...');
 
-  var _resizeMap = function() {
-    mapElem.height($window.height() - $('nav.topbar').height());    
-  };
-  _resizeMap();
-
-  // if window size changes resize the map
-  $window.resize(_resizeMap);
-
-  var mapOptions = {
-    center: { lat: 39.5, lng: -108.35 },
-    zoom: 4
-  };
-
-  var map = new google.maps.Map($('#map').get(0), mapOptions);
+  (window.app = new App()).start();
 });
+
+

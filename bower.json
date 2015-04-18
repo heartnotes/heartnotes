@@ -18,9 +18,8 @@
   "dependencies": {
     "zepto": "~1.1.6",
     "superagent": "~1.2.0",
-    "purecss": "~0.6.0"
-  },
-  "devDependencies": {
-    "normalize-css": "~3.0.3"
+    "backbone": "~1.1.2",
+    "normalize-css": "~3.0.3",
+    "backbone-elements": "~1.0.2"
   }
 }
