@@ -36,6 +36,7 @@
     "yargs": "^3.7.2"
   },
   "browser": {
+    "underscore": "./bower_components/underscore/underscore.js",
     "D": "./bower_components/D.js/lib/D.js"
   }
 }

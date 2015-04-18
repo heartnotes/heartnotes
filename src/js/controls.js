@@ -3,6 +3,9 @@ module.exports = Backbone.View.extend({
     '#filter-victim-age': 'victimAgeSlider',
     '#filter-victim-age-lower': 'victimAgeLower',
     '#filter-victim-age-upper': 'victimAgeUpper',
+    'input[name=filter-victim-gender]': 'victimGender',
+    'input[name=filter-victim-armed]': 'victimArmed',
+    'input[name=filter-victim-outcome]': 'victimOutcome',
   },
 
   initialize: function(attrs) {
@@ -10,6 +13,8 @@ module.exports = Backbone.View.extend({
     
     this.refreshElements();
     this.app = attrs.app;
+
+    self.refetchData = _.bind(self.refetchData, self);
   },
 
 
@@ -39,6 +44,13 @@ module.exports = Backbone.View.extend({
   },
 
 
+  _getMultiCheckboxValue: function($checkBox) {
+    return $checkBox.filter(':checked').map(function(cb) {
+      return $(this).val();
+    });
+  },
+
+
   refetchData: function() {
     var self = this;
 
@@ -47,7 +59,10 @@ module.exports = Backbone.View.extend({
         age: {
           lower: parseInt(self.$victimAgeLower.val()),
           upper: parseInt(self.$victimAgeUpper.val()),
-        }
+        },
+        gender: self._getMultiCheckboxValue(self.$victimGender),
+        armed: self._getMultiCheckboxValue(self.$victimArmed),
+        outcome: self._getMultiCheckboxValue(self.$victimOutcome),
       }
     };
 
@@ -63,6 +78,7 @@ module.exports = Backbone.View.extend({
     if (!self.controlsSetup) {
       self.controlsSetup = true;
 
+      // victim age
       self.$victimAgeSlider.noUiSlider({
         start: [1, 100],
         step: 1,
@@ -72,8 +88,12 @@ module.exports = Backbone.View.extend({
           'max': 100
         },
       });
-      
       self._linkDualSliderToInputs(self.$victimAgeSlider, self.$victimAgeLower, self.$victimAgeUpper);
+
+      // victim gender and armed
+      self.$victimGender.on('change', self.refetchData);
+      self.$victimArmed.on('change', self.refetchData);
+      self.$victimOutcome.on('change', self.refetchData);
     }
 
   }

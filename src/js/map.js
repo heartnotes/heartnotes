@@ -43,11 +43,6 @@ module.exports = Backbone.View.extend({
           map: self.map,
         });
       });
-
-      // self.mapMarkers = new MarkerClusterer(map, markers, {
-      //   gridSize: 50, 
-      //   maxZoom: 15
-      // });
     }
   }
 

@@ -16,6 +16,10 @@ form legend {
 form .control-group {
   margin: 1em 0 0;
 }
+form .control-group label.main {
+  font-style: italic;
+  margin: 0.5em 0;
+}
 form .between-text {
   text-align: center;
   padding-top: 0.8rem;

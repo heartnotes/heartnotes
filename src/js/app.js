@@ -1,5 +1,6 @@
 "use strict";
 
+_.mixin(require('./underscore_mixins'));
 
 
 var App = function() {};
@@ -31,7 +32,7 @@ App.prototype.start = function() {
   this.controls.render();
 
   // kick-off!
-  this.model.fetch();
+  this.controls.refetchData();
 };
 
 

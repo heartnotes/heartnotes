@@ -24,12 +24,12 @@ html
 
         .control-group
           .pure-g
-            .pure-u-6-24
-              label(for="filter-victim-age") Age:
-            .pure-u-16-24
+            .pure-u-7-24
+              label.main(for="filter-victim-age") Age:
+            .pure-u-15-24
               div.slider(id="filter-victim-age")
           .pure-g
-            .pure-u-6-24 &nbsp;
+            .pure-u-7-24 &nbsp;
             .pure-u-6-24
               input.pure-input-1(id="filter-victim-age-lower", type="number", value="1")
             .pure-u-4-24.between-text
@@ -39,16 +39,50 @@ html
 
         .control-group
           .pure-g
+            .pure-u-7-24
+              label.main(for="filter-victim-gender") Gender:
             .pure-u-6-24
-              label(for="filter-victim-armed") Armed:
+              label.pure-checkbox(for="filter-victim-gender-male")
+                input(id="filter-victim-gender-male", type="checkbox", name="filter-victim-gender" value="male", checked) 
+                span  Male
+            .pure-u-8-24
+              label.pure-checkbox(for="filter-victim-gender-female")
+                input(id="filter-victim-gender-female", type="checkbox", name="filter-victim-gender" value="female", checked) 
+                span  Female
+
+        .control-group
+          .pure-g
+            .pure-u-7-24
+              label.main(for="filter-victim-armed") Armed:
             .pure-u-6-24
               label.pure-checkbox(for="filter-victim-armed-yes")
-                input(id="filter-victim-armed-yes", type="checkbox", value="armed") 
+                input(id="filter-victim-armed-yes", type="checkbox", name="filter-victim-armed" value="armed", checked) 
                 span  Yes
-            .pure-u-6-24
+            .pure-u-5-24
               label.pure-checkbox(for="filter-victim-armed-no")
-                input(id="filter-victim-armed-no", type="checkbox", value="unarmed") 
+                input(id="filter-victim-armed-no", type="checkbox", name="filter-victim-armed" value="unarmed", checked) 
                 span  No
+            .pure-u-5-24
+              label.pure-checkbox(for="filter-victim-armed-unknown")
+                input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-armed" value="unknown", checked) 
+                span  ?
+
+        .control-group
+          .pure-g
+            .pure-u-7-24
+              label.main(for="filter-victim-outcome") Was:
+            .pure-u-7-24
+              label.pure-checkbox(for="filter-victim-outcome-killed")
+                input(id="filter-victim-armed-killed", type="checkbox", name="filter-victim-outcome" value="killed", checked) 
+                span  Killed
+            .pure-u-5-24
+              label.pure-checkbox(for="filter-victim-outcome-hit")
+                input(id="filter-victim-armed-hit", type="checkbox", name="filter-victim-outcome" value="hit", checked) 
+                span  Hit
+            .pure-u-5-24
+              label.pure-checkbox(for="filter-victim-outcome-unknown")
+                input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-outcome" value="unknown", checked) 
+                span  ?
 
     main.content
       #map(style="width:100%;height:500px")
