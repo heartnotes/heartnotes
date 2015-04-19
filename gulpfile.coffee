@@ -96,6 +96,7 @@ gulp.task 'js-app', ->
     path.join(paths.bower, 'backbone', 'backbone.js')
     path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
     path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
+    path.join(paths.bower, 'js-marker-clusterer', 'src', 'markerclusterer.js')
   ]
     .pipe concat('libs.js')
 

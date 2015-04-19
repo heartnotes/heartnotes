@@ -6,6 +6,27 @@ module.exports = Backbone.View.extend({
     this.listenTo(this.model, "change:data", function(model, data) {
       self.render(data);
     });
+
+    this.markerClustererStyles = [
+      {
+        textColor: 'white',
+        url: 'img/crosshair_red.png',
+        height: 50,
+        width: 50
+      },
+     {
+        textColor: 'white',
+        url: 'img/crosshair_red.png',
+        height: 50,
+        width: 50
+      },
+     {
+        textColor: 'white',
+        url: 'img/crosshair_red.png',
+        height: 50,
+        width: 50
+      }
+    ];
   },
 
   render: function(items) {
@@ -24,25 +45,41 @@ module.exports = Backbone.View.extend({
       self.$window.resize(_resizeMap);
 
       self.map = new google.maps.Map(self.$el.get(0), {
-        center: new google.maps.LatLng( 39.5, -108.35 ),
-        zoom: 4
+        center: new google.maps.LatLng( 39.5, -118.35 ),
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
     }
 
  
     if (items) {
-      if (self.mapMarkers) {
-        self.mapMarkers.forEach(function(m) {
-          m.setMap(null);
-        });
+      if (self.mapClusterer) {
+        self.mapClusterer.clearMarkers();
       }
 
-      self.mapMarkers = items.map(function(v) {
-        return new google.maps.Marker({
-          position: new google.maps.LatLng(v.latlng.lat, v.latlng.lng),
-          map: self.map,
-        });
+      self.mapMarkers = [];
+      var unableToMap = [];
+
+      items.forEach(function(v) {
+        if (!v.latlng) {
+          return unableToMap.push(v);
+        }
+
+        self.mapMarkers.push(
+          new google.maps.Marker({
+            position: new google.maps.LatLng(v.latlng.lat, v.latlng.lng),
+            icon: 'img/crosshair_red.png'
+          })
+        );
       });
+
+      self.mapClusterer = new MarkerClusterer(self.map, self.mapMarkers, {
+        styles: this.markerClustererStyles,
+      });
+
+      if (unableToMap.length) {
+        console.log('Unable to map ' + unableToMap.length + ' items');
+      }
     }
   }
 

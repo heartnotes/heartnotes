@@ -34,6 +34,12 @@ module.exports = Backbone.Model.extend({
 
     var response = e.data;
 
+    if (response.error) {
+      return self.set({
+        error: response.error
+      });
+    }
+
     if (response.id != this.currentRequestId) {
       console.debug('Ignoring old reponse');
 
