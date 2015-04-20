@@ -36,8 +36,9 @@ var usaLatLngData = require('us_latlng_json');
   self.search = function(filterParams) {
     return self.data.filter(function(item) {
       // victim age
-      if (item.victim_age < _.deepGet(filterParams, 'victim.age.lower', 0)  || 
-          item.victim_age > _.deepGet(filterParams, 'victim.age.upper', 100) 
+      if ('unknown' !== item.victim_age && 
+            (item.victim_age < _.deepGet(filterParams, 'victim.age.lower', 0)  || 
+            item.victim_age > _.deepGet(filterParams, 'victim.age.upper', 100)) 
           ) {
         return false;
       }
@@ -66,7 +67,6 @@ var usaLatLngData = require('us_latlng_json');
 
 
   var requiredProps = [
-    'victim_age',
     'victim_gender',
     'state',
     'outcome',
@@ -81,20 +81,29 @@ var usaLatLngData = require('us_latlng_json');
 
       var deferred = D();
 
-      _.Ajax.get('data.js', function(data) {
+      _.Ajax.get('http://localhost:8080/content?limit=30000', function(data) {
         deferred.resolve(data);
       })
 
       return deferred.promise
         .then(function(data) {
-          var results = JSON.parse(data).results;
+          var results = data.results;
+
+          var notEnoughInfoCount = 0;
 
           results.forEach(function(item) {
             // need required props
             for (var i=0; i<requiredProps.length; ++i) {
               if (!item[requiredProps[i]]) {
+                notEnoughInfoCount++;
+
                 return;
               }
+            }
+
+            // age
+            if (!item.victim_age) {
+              item.victim_age = 'unknown';
             }
 
             // get state
@@ -105,6 +114,8 @@ var usaLatLngData = require('us_latlng_json');
               county = item.county;
             // atleast one needed
             if (!city && !county) {
+              notEnoughInfoCount++;
+
               return;
             }
             city = (city || '').toLowerCase();
@@ -124,6 +135,8 @@ var usaLatLngData = require('us_latlng_json');
               else {
                 // if no source URL then skip this item
                 if (!item.source_url) {
+                  notEnoughInfoCount++;
+
                   return;
                 }
               }
@@ -153,6 +166,8 @@ var usaLatLngData = require('us_latlng_json');
 
             self.data.push(item);
           });
+
+          console.log('Not enough info for: ' + notEnoughInfoCount + ' items');
         });
     } else {
       return D.resolved();      

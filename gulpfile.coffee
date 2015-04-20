@@ -39,6 +39,7 @@ paths =
     html: './'
     js: './'
     css: './'
+    fonts: './fonts'
 
 
 # extra CSS
@@ -119,13 +120,22 @@ gulp.task 'js-app', ->
 gulp.task('js', ['js-app', 'js-worker'])
 
 
-gulp.task 'build', ['jade', 'stylus', 'js']
+gulp.task 'fonts', ->
+  gulp.src [
+    path.join(paths.bower, 'font-awesome-stylus', 'fonts', '*.*')
+  ]
+    .pipe gulp.dest(paths.build.fonts)
+
+
+
+gulp.task 'build', ['jade', 'stylus', 'js', 'fonts']
 
 
 gulp.task 'server', ->
   gulp.src './'
     .pipe server({
       host: 'local.hiddentao.github.io'
+      port: 3000,
       livereload:
         enable: true
         filter: (filePath, cb) ->
