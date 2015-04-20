@@ -76,6 +76,12 @@ var usaLatLngData = require('us_latlng_json');
         return false;
       }
 
+      // victim race
+      var race = _.deepGet(filterParams, 'victim.race', []);
+      if (race.length && !_.contains(race, item.victim_race)) {
+        return false;
+      }
+      
       return true;
     });
   };

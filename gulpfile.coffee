@@ -45,6 +45,7 @@ paths =
 # extra CSS
 baseCssSrc = [
   path.join paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.min.css'
+  path.join paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.min.css'
 ]
 
 
@@ -97,6 +98,7 @@ gulp.task 'js-app', ->
     path.join(paths.bower, 'backbone', 'backbone.js')
     path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
     path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
+    path.join(paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.js')
     path.join(paths.bower, 'js-marker-clusterer', 'src', 'markerclusterer.js')
   ]
     .pipe concat('libs.js')

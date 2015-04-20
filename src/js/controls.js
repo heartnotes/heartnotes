@@ -7,6 +7,7 @@ module.exports = Backbone.View.extend({
     'input[name=filter-victim-gender]': 'victimGender',
     'input[name=filter-victim-armed]': 'victimArmed',
     'input[name=filter-victim-outcome]': 'victimOutcome',
+    '#filter-victim-race': 'victimRace',
   },
 
   initialize: function(attrs) {
@@ -62,6 +63,7 @@ module.exports = Backbone.View.extend({
           upper: parseInt(self.$victimAgeUpper.val()),
           includeUnknown: !!self.$victimAgeUnknown.is(':checked')
         },
+        race: (self.$victimRace.initialized ? self.$victimRace.selectivity('value') : []),
         gender: self._getMultiCheckboxValue(self.$victimGender),
         armed: self._getMultiCheckboxValue(self.$victimArmed),
         outcome: self._getMultiCheckboxValue(self.$victimOutcome),
@@ -110,13 +112,16 @@ module.exports = Backbone.View.extend({
       self.$victimGender.on('change', self.refetchData);
       self.$victimArmed.on('change', self.refetchData);
       self.$victimOutcome.on('change', self.refetchData);
-
-      // victim race
-      
     }
 
     if (self.fieldInfo) {
-      console.log(self.fieldInfo);
+      self.$victimRace.selectivity({
+        items: _.keys(self.fieldInfo.race),
+        multiple: true,
+        placeholder: '(All races)'
+      });
+      self.$victimRace.on('change', self.refetchData);
+      self.$victimRace.initialized = true;
     }
   }
 
