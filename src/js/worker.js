@@ -138,7 +138,7 @@ var usaLatLngData = require('us_latlng_json');
 
     var deferred = D();
 
-    _.Ajax.get('http://localhost:8080/content?limit=30000', function(data) {
+    _.Ajax.get('https://ois-incidents.appspot.com/content?limit=30000', function(data) {
       deferred.resolve(data);
     });
 
