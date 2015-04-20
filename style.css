@@ -1875,6 +1875,9 @@ form .between-text {
   text-align: center;
   padding-top: 0.8rem;
 }
+form .smaller {
+  font-size: 80%;
+}
 nav.topbar {
   position: fixed;
   top: 0px;

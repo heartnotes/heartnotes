@@ -1,6 +1,7 @@
 module.exports = Backbone.View.extend({
   elements: {
     '#filter-victim-age': 'victimAgeSlider',
+    '#filter-victim-age-unknown': 'victimAgeUnknown',
     '#filter-victim-age-lower': 'victimAgeLower',
     '#filter-victim-age-upper': 'victimAgeUpper',
     'input[name=filter-victim-gender]': 'victimGender',
@@ -59,6 +60,7 @@ module.exports = Backbone.View.extend({
         age: {
           lower: parseInt(self.$victimAgeLower.val()),
           upper: parseInt(self.$victimAgeUpper.val()),
+          includeUnknown: !!self.$victimAgeUnknown.is(':checked')
         },
         gender: self._getMultiCheckboxValue(self.$victimGender),
         armed: self._getMultiCheckboxValue(self.$victimArmed),
@@ -89,6 +91,9 @@ module.exports = Backbone.View.extend({
         },
       });
       self._linkDualSliderToInputs(self.$victimAgeSlider, self.$victimAgeLower, self.$victimAgeUpper);
+
+      // age unknown
+      self.$victimAgeUnknown.on('change', self.refetchData);
 
       // victim gender and armed
       self.$victimGender.on('change', self.refetchData);

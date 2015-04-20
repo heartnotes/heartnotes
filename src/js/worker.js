@@ -35,10 +35,15 @@ var usaLatLngData = require('us_latlng_json');
 
   self.search = function(filterParams) {
     return self.data.filter(function(item) {
-      // victim age
-      if ('unknown' !== item.victim_age && 
-            (item.victim_age < _.deepGet(filterParams, 'victim.age.lower', 0)  || 
-            item.victim_age > _.deepGet(filterParams, 'victim.age.upper', 100)) 
+      // victim age unknown
+      if ('unknown' === item.victim_age) {
+        if (!_.deepGet(filterParams, 'victim.age.includeUnknown')) {
+          return false;
+        }
+      }
+      // victim age known
+      else if (item.victim_age < _.deepGet(filterParams, 'victim.age.lower', 0)  || 
+            item.victim_age > _.deepGet(filterParams, 'victim.age.upper', 100)
           ) {
         return false;
       }
