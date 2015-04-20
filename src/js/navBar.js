@@ -12,9 +12,9 @@ module.exports = Backbone.View.extend({
 
     this.app = attrs.app;
 
-    this.listenTo(this.model, "change:state", function(model, val) {
+    this.listenTo(this.model, "change:fetching-search", function(model, val) {
       self.render({
-        progress: (val === 'fetching')
+        progress: (val === true)
       })
     });
 

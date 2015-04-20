@@ -69,6 +69,17 @@ module.exports = Backbone.View.extend({
     };
 
     self.model.fetch(params);
+
+    // get field info 
+    if (!self.fieldInfo) {
+      self.model.on('change:fieldInfo', function(model, info) {
+        self.fieldInfo = info;
+
+        self.render();
+      });
+
+      self.model.fetchFieldInfo();      
+    }
   },
 
 
@@ -99,8 +110,14 @@ module.exports = Backbone.View.extend({
       self.$victimGender.on('change', self.refetchData);
       self.$victimArmed.on('change', self.refetchData);
       self.$victimOutcome.on('change', self.refetchData);
+
+      // victim race
+      
     }
 
+    if (self.fieldInfo) {
+      console.log(self.fieldInfo);
+    }
   }
 
 });

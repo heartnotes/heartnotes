@@ -23,7 +23,7 @@
     "D.js": "~0.7.2",
     "nouislider": "~7.0.10",
     "js-marker-clusterer": "googlemaps/js-marker-clusterer#89b08d0db5553f16a67653b049b3aebce9a7406a",
-    "us_latlng_json": "~1.0.0",
+    "us_latlng_json": "~1.1.0",
     "font-awesome-stylus": "~4.3.0"
   }
 }

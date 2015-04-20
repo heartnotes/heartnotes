@@ -38,6 +38,6 @@
   "browser": {
     "underscore": "./bower_components/underscore/underscore.js",
     "D": "./bower_components/D.js/lib/D.js",
-    "us_latlng_json": "./bower_components/us_latlng_json/us_state_cities.json"
+    "us_latlng_json": "./bower_components/us_latlng_json/us_latlng.json"
   }
 }

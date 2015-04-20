@@ -4,30 +4,47 @@ module.exports = Backbone.Model.extend({
 
     this.worker = new Worker("worker.js");
     this.worker.addEventListener('message', _.bind(this.onWorkerResponse, this));
+
+    // used to track request progress
+    this._fetchMeta = {};
   },
 
   fetch: function(params) {
+    this._fetch('search', params);
+  },
+
+
+  fetchFieldInfo: function() {
+    this._fetch('fieldInfo');
+  },
+
+
+  _fetch: function(type, params) {
     var self = this;
 
-    clearTimeout(self._fetchTimeout);
+    self._fetchMeta[type] = self._fetchMeta[type] || {};
+
+    clearTimeout(self._fetchMeta[type].timeout);
 
     // guard how soon we fetch after the previous fetch
-    self._fetchTimeout = setTimeout(function() {
+    self._fetchMeta[type].timeout = setTimeout(function() {
       // notify of state change
-      self.set({
-        state: 'fetching'
-      });
+      var setData = {};
+      setData['fetching-' + type] = true;
+      self.set(setData);
 
       // if multiple fetches are made in succession we need to know to know which 
       // result from the worker is for the latest fetch
-      self.currentRequestId = '' + Math.random() * 10000000;
+      self._fetchMeta[type].id = '' + Math.random() * 10000000;
 
       self.worker.postMessage({
-        id: self.currentRequestId,
+        type: type,
+        id: self._fetchMeta[type].id,
         params: params,
       });
     }, 200);
   },
+
 
   onWorkerResponse: function(e) {
     var self = this;
@@ -40,28 +57,40 @@ module.exports = Backbone.Model.extend({
       });
     }
 
-    if (response.id != this.currentRequestId) {
+    var type = response.type;
+
+    if (response.id != this._fetchMeta[type].id) {
       console.debug('Ignoring old reponse');
 
       return;
     }
 
     // clear current request id 
-    delete this.currentRequestId;
+    delete this._fetchMeta[type].id;
 
-    // notify observers
-    this.set({
-      data: response.results
-    });
+    switch (type) {
+      case 'fieldInfo':
+        this.set({
+          fieldInfo: response.results
+        });
+        break;
+      case 'search':
+        // notify observers
+        this.set({
+          data: response.results
+        });
+        break;
+
+    }
 
     // state change
     setTimeout(function() {
       // if new request hasn't been initiated
-      if (!self.currentRequestId) {
+      if (!self._fetchMeta[type].id) {        
         // clear state
-        self.set({
-          state: 'ready'
-        });
+        var setData = {};
+        setData['fetching-' + type] = false;
+        self.set(setData);
       }
     }, 200);
   }
