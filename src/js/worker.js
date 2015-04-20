@@ -22,9 +22,7 @@ var usaLatLngData = require('us_latlng_json');
 
         switch (type) {
           case 'fieldInfo':
-            result = {
-              races: self.fieldInfo.races
-            };
+            result = self.fieldInfo;
             break;
           case 'search':
             result = self.search(params);
@@ -86,13 +84,6 @@ var usaLatLngData = require('us_latlng_json');
   // INITIALISATION
 
 
-  var requiredProps = [
-    'victim_gender',
-    'state',
-    'outcome',
-  ];
-
-
 
 
   self._loadLatLngData = function() {
@@ -124,19 +115,32 @@ var usaLatLngData = require('us_latlng_json');
   };
 
 
+
   self.initialized = (function() {
     self._loadLatLngData();
 
+    var requiredProps = [
+      'victim_gender',
+      'state',
+      'outcome',
+      'searched_date',
+    ];
+
     self.data = [];
+
     self.fieldInfo = {
-      races: {}
+      race: {},
+      searched_date: {
+        lower: Date.now(),
+        uper: Date.now(),
+      },
     };
 
     var deferred = D();
 
     _.Ajax.get('http://localhost:8080/content?limit=30000', function(data) {
       deferred.resolve(data);
-    })
+    });
 
     return deferred.promise
       .then(function(data) {
@@ -189,10 +193,29 @@ var usaLatLngData = require('us_latlng_json');
             return;
           }
 
-          // normalize fields
+          // gender
           item.victim_gender = item.victim_gender.trim().toLowerCase();
+
+          // race
           item.victim_race = (item.victim_race || 'unknown').trim().toLowerCase().replace(' or ', '/');
-          self.fieldInfo.races[item.victim_race] = item.victim_race;
+          self.fieldInfo.race[item.victim_race] = item.victim_race;
+
+          // search date
+          if (item.searched_date) {
+            var tokens = item.searched_date.split('-').map(function(v) { 
+              return parseInt(v); 
+            })
+
+            item.searched_date = new Date(tokens[0], tokens[1]-1, tokens[2]).getTime();
+
+            if (self.fieldInfo.searched_date.lower > item.searched_date) {
+              self.fieldInfo.searched_date.lower = item.searched_date;
+            }
+
+            if (self.fieldInfo.searched_date.upper < item.searched_date) {
+              self.fieldInfo.searched_date.upper = item.searched_date;
+            }
+          }
 
           item.victim_armed = (item.victim_armed || '').trim().toLowerCase();
           switch (item.victim_armed) {
@@ -216,9 +239,6 @@ var usaLatLngData = require('us_latlng_json');
         });
 
         console.log('Not enough info for: ' + notEnoughInfoCount + ' items');
-      })
-      .then(function() {
-        self.initialized = true;
       });
   })();
 
