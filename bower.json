@@ -26,6 +26,7 @@
     "font-awesome-stylus": "~4.3.0",
     "Selectivity.js": "arendjr/selectivity#12809a542ec0deaf65a7b09546d33ddfd698c310",
     "pickadate": "~3.5.6",
-    "jquery": "~2.1.3"
+    "jquery": "~2.1.3",
+    "xdate": "~0.8.1"
   }
 }

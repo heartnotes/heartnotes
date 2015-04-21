@@ -2,6 +2,7 @@ var _ = require('underscore');
 _.mixin(require('./underscore_mixins'));
 
 var D = require('D');
+var XDate = require('xdate');
 var usaLatLngData = require('us_latlng_json');
 
 
@@ -82,6 +83,16 @@ var usaLatLngData = require('us_latlng_json');
         return false;
       }
       
+      // searched date (lower)
+      if (item.searched_date < _.deepGet(filterParams, 'searched_date.lower', 0)) {
+        return false;
+      }
+
+      // searched date (upper)
+      if (item.searched_date > _.deepGet(filterParams, 'searched_date.upper', Date.now())) {
+        return false;
+      }
+
       return true;
     });
   };
@@ -138,7 +149,7 @@ var usaLatLngData = require('us_latlng_json');
       race: {},
       searched_date: {
         lower: Date.now(),
-        uper: Date.now(),
+        upper: Date.now(),
       },
     };
 
@@ -208,11 +219,8 @@ var usaLatLngData = require('us_latlng_json');
 
           // search date
           if (item.searched_date) {
-            var tokens = item.searched_date.split('-').map(function(v) { 
-              return parseInt(v); 
-            })
-
-            item.searched_date = new Date(tokens[0], tokens[1]-1, tokens[2]).getTime();
+            // date expected to be in ISO8601 format
+            item.searched_date = XDate.parse(item.searched_date).valueOf();
 
             if (self.fieldInfo.searched_date.lower > item.searched_date) {
               self.fieldInfo.searched_date.lower = item.searched_date;
@@ -223,6 +231,7 @@ var usaLatLngData = require('us_latlng_json');
             }
           }
 
+          // victim armed
           item.victim_armed = (item.victim_armed || '').trim().toLowerCase();
           switch (item.victim_armed) {
             case 'armed':
@@ -232,6 +241,7 @@ var usaLatLngData = require('us_latlng_json');
               item.outcome = 'unknown';
           }
 
+          // outcome
           item.outcome = (item.outcome || '').trim().toLowerCase();
           switch (item.outcome) {
             case 'hit':

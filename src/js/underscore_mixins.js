@@ -19,7 +19,6 @@ exports.deepGet = function(obj, path, fallbackValue) {
 
 
 
-
 // Based on https://github.com/neilco/twix/blob/master/twix.js
 var Ajax = exports.Ajax = function() {};
 

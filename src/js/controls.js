@@ -65,12 +65,20 @@ module.exports = Backbone.View.extend({
           upper: parseInt(self.$victimAgeUpper.val()),
           includeUnknown: !!self.$victimAgeUnknown.is(':checked')
         },
-        race: (self.$victimRace.initialized ? self.$victimRace.selectivity('value') : []),
         gender: self._getMultiCheckboxValue(self.$victimGender),
         armed: self._getMultiCheckboxValue(self.$victimArmed),
         outcome: self._getMultiCheckboxValue(self.$victimOutcome),
-      }
+      },
     };
+
+    if (self.controlsSetup) {
+      params.victim.race = self.$victimRace.selectivity('value');
+
+      params.searched_date = {
+        lower: XDate.parse(self.$searchedDateLower.pickadate('picker').get()).valueOf(),
+        upper: XDate.parse(self.$searchedDateUpper.pickadate('picker').get()).valueOf(),
+      };
+    }
 
     self.model.fetch(params);
 
@@ -93,8 +101,6 @@ module.exports = Backbone.View.extend({
     var self = this;
 
     if (self.fieldInfo && !self.controlsSetup) {
-      self.controlsSetup = true;
-
       // victim age
       self.$victimAgeSlider.noUiSlider({
         start: [1, 100],
@@ -122,7 +128,6 @@ module.exports = Backbone.View.extend({
         placeholder: '(All races)'
       });
       self.$victimRace.on('change', self.refetchData);
-      self.$victimRace.initialized = true;
 
       // searched dates
       var minDate = new Date(self.fieldInfo.searched_date.lower);
@@ -130,16 +135,22 @@ module.exports = Backbone.View.extend({
       var pickadateOptions = {
         min: minDate,
         max: maxDate,
-        format: 'yyyy-mmm-dd',
-        formatSubmit: 'yyyy-mmm-dd',
+        format: 'yyyy-mm-dd',
+        formatSubmit: 'yyyy-mm-dd',
         selectYears: true,
         selectMonths: true,
         firstDay: 1,        
+        onSet: self.refetchData,
       };
-      self.$searchedDateLower.pickadate(pickadateOptions);
-      self.$searchedDateLower.onSet(self.refetchData);
-      self.$searchedDateUpper.pickadate(pickadateOptions);
-      self.$searchedDateUpper.onSet(self.refetchData);
+      self.$searchedDateLower
+        .val(new XDate(minDate).toString('yyyy-MM-dd'))
+        .pickadate(pickadateOptions);
+      self.$searchedDateUpper
+        .val(new XDate(maxDate).toString('yyyy-MM-dd'))
+        .pickadate(pickadateOptions);
+
+      // all controls setup
+      self.controlsSetup = true;
     }
   }
 

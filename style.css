@@ -2398,9 +2398,13 @@ nav.topbar .brand {
 nav.topbar .loading,
 nav.topbar .count {
   display: inline-block;
-  margin-left: 1em;
+  margin-left: 1.5em;
   color: #000;
   font-weight: 700;
+  font-size: 150%;
+}
+nav.topbar .count .sub {
+  font-size: 50%;
 }
 aside.tools {
   position: fixed;

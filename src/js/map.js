@@ -58,11 +58,10 @@ module.exports = Backbone.View.extend({
       }
 
       self.mapMarkers = [];
-      var unableToMap = [];
 
       items.forEach(function(v) {
         if (!v.latlng) {
-          return unableToMap.push(v);
+          return;
         }
 
         self.mapMarkers.push(
@@ -76,10 +75,6 @@ module.exports = Backbone.View.extend({
       self.mapClusterer = new MarkerClusterer(self.map, self.mapMarkers, {
         styles: this.markerClustererStyles,
       });
-
-      if (unableToMap.length) {
-        console.log('Unable to map ' + unableToMap.length + ' items');
-      }
     }
   }
 

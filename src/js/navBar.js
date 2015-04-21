@@ -1,7 +1,9 @@
 module.exports = Backbone.View.extend({
   elements: {
     '.count': 'count',
-    '.count span.number': 'countNumber',
+    '.count .number': 'countNumber',
+    '.count .sub': 'countSub',
+    '.count .mappable': 'countSubMappable',
     '.loading': 'loader',
   },
 
@@ -18,9 +20,14 @@ module.exports = Backbone.View.extend({
       })
     });
 
-    this.listenTo(this.model, "change:data", function(model, data) {
+    this.listenTo(this.model, "change:data", function(model, items) {
+      var mappable = items.reduce(function(memo, v) {
+        return memo + (v.latlng ? 1 : 0);
+      }, 0);
+
       self.render({
-        count: data.length
+        total: items.length,
+        mappable: mappable,
       });
     });
   },
@@ -36,8 +43,15 @@ module.exports = Backbone.View.extend({
       this.$count.show();
     }
 
-    if (undefined !== values.count) {
-      this.$countNumber.text(values.count);
+    if (undefined !== values.total) {
+      this.$countNumber.text(values.total);
+
+      if (values.mappable < values.total) {
+        this.$countSub.show();
+        this.$countSubMappable.text(values.mappable);
+      } else {
+        this.$countSub.hide();        
+      }
     }
 
   }

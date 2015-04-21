@@ -95,6 +95,7 @@ gulp.task 'js-worker', ->
 
 gulp.task 'js-app', ->
   libJs = gulp.src [
+    path.join(paths.bower, 'xdate', 'src', 'xdate.js')
     path.join(paths.bower, 'jquery', 'dist', 'jquery.js')
     path.join(paths.bower, 'underscore', 'underscore.js')
     path.join(paths.bower, 'backbone', 'backbone.js')

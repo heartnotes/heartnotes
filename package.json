@@ -36,6 +36,7 @@
     "yargs": "^3.7.2"
   },
   "browser": {
+    "xdate": "./bower_components/xdate/src/xdate.js",
     "underscore": "./bower_components/underscore/underscore.js",
     "D": "./bower_components/D.js/lib/D.js",
     "us_latlng_json": "./bower_components/us_latlng_json/us_latlng.json"
