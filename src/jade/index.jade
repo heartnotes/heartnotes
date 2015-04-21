@@ -64,7 +64,7 @@ html
             .pure-u-17-24
               div#filter-victim-race
                 span.loading
-                          
+
         .control-group
           .pure-g
             .pure-u-7-24
@@ -98,6 +98,18 @@ html
               label.pure-checkbox(for="filter-victim-outcome-unknown")
                 input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-outcome" value="unknown", checked) 
                 span  ?
+
+        legend Searched date
+        
+        .control-group
+          .pure-g
+            .pure-u-11-24
+              input.pure-input-1(id="filter-searched-date-lower", type="text", value="")
+            .pure-u-2-24.between-text
+              span -
+            .pure-u-11-24
+              input.pure-input-1(id="filter-searched-date-upper", type="text", value="")
+
 
 
     main.content

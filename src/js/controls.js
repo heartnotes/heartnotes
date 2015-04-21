@@ -8,6 +8,8 @@ module.exports = Backbone.View.extend({
     'input[name=filter-victim-armed]': 'victimArmed',
     'input[name=filter-victim-outcome]': 'victimOutcome',
     '#filter-victim-race': 'victimRace',
+    '#filter-searched-date-lower': 'searchedDateLower',
+    '#filter-searched-date-upper': 'searchedDateUpper',
   },
 
   initialize: function(attrs) {
@@ -47,8 +49,8 @@ module.exports = Backbone.View.extend({
 
 
   _getMultiCheckboxValue: function($checkBox) {
-    return $checkBox.filter(':checked').map(function(cb) {
-      return $(this).val();
+    return $checkBox.filter(':checked').toArray().map(function(cb) {
+      return $(cb).val();
     });
   },
 
@@ -90,7 +92,7 @@ module.exports = Backbone.View.extend({
 
     var self = this;
 
-    if (!self.controlsSetup) {
+    if (self.fieldInfo && !self.controlsSetup) {
       self.controlsSetup = true;
 
       // victim age
@@ -112,9 +114,8 @@ module.exports = Backbone.View.extend({
       self.$victimGender.on('change', self.refetchData);
       self.$victimArmed.on('change', self.refetchData);
       self.$victimOutcome.on('change', self.refetchData);
-    }
 
-    if (self.fieldInfo) {
+      // victim race
       self.$victimRace.selectivity({
         items: _.keys(self.fieldInfo.race),
         multiple: true,
@@ -122,6 +123,23 @@ module.exports = Backbone.View.extend({
       });
       self.$victimRace.on('change', self.refetchData);
       self.$victimRace.initialized = true;
+
+      // searched dates
+      var minDate = new Date(self.fieldInfo.searched_date.lower);
+      var maxDate = new Date(self.fieldInfo.searched_date.upper);
+      var pickadateOptions = {
+        min: minDate,
+        max: maxDate,
+        format: 'yyyy-mmm-dd',
+        formatSubmit: 'yyyy-mmm-dd',
+        selectYears: true,
+        selectMonths: true,
+        firstDay: 1,        
+      };
+      self.$searchedDateLower.pickadate(pickadateOptions);
+      self.$searchedDateLower.onSet(self.refetchData);
+      self.$searchedDateUpper.pickadate(pickadateOptions);
+      self.$searchedDateUpper.onSet(self.refetchData);
     }
   }
 

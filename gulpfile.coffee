@@ -46,6 +46,8 @@ paths =
 baseCssSrc = [
   path.join paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.min.css'
   path.join paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.min.css'
+  path.join paths.bower, 'pickadate', 'lib', 'themes', 'default.css'
+  path.join paths.bower, 'pickadate', 'lib', 'themes', 'default.date.css'
 ]
 
 
@@ -93,12 +95,14 @@ gulp.task 'js-worker', ->
 
 gulp.task 'js-app', ->
   libJs = gulp.src [
-    path.join(paths.bower, 'zepto', 'zepto.js')
+    path.join(paths.bower, 'jquery', 'dist', 'jquery.js')
     path.join(paths.bower, 'underscore', 'underscore.js')
     path.join(paths.bower, 'backbone', 'backbone.js')
     path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
     path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
     path.join(paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.js')
+    path.join(paths.bower, 'pickadate', 'lib', 'picker.js')
+    path.join(paths.bower, 'pickadate', 'lib', 'picker.date.js')
     path.join(paths.bower, 'js-marker-clusterer', 'src', 'markerclusterer.js')
   ]
     .pipe concat('libs.js')

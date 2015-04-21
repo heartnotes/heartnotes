@@ -16,7 +16,6 @@
     "tests"
   ],
   "dependencies": {
-    "zepto": "~1.1.6",
     "backbone": "~1.1.2",
     "normalize-css": "~3.0.3",
     "backbone-elements": "~1.0.2",
@@ -25,6 +24,8 @@
     "js-marker-clusterer": "googlemaps/js-marker-clusterer#89b08d0db5553f16a67653b049b3aebce9a7406a",
     "us_latlng_json": "~1.1.0",
     "font-awesome-stylus": "~4.3.0",
-    "Selectivity.js": "arendjr/selectivity#12809a542ec0deaf65a7b09546d33ddfd698c310"
+    "Selectivity.js": "arendjr/selectivity#12809a542ec0deaf65a7b09546d33ddfd698c310",
+    "pickadate": "~3.5.6",
+    "jquery": "~2.1.3"
   }
 }
