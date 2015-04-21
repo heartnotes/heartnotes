@@ -45,7 +45,7 @@ module.exports = Backbone.View.extend({
       self.$window.resize(_resizeMap);
 
       self.map = new google.maps.Map(self.$el.get(0), {
-        center: new google.maps.LatLng( 39.5, -118.35 ),
+        center: new google.maps.LatLng( 41.5, -126.35 ),
         zoom: 3,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
@@ -74,6 +74,7 @@ module.exports = Backbone.View.extend({
 
       self.mapClusterer = new MarkerClusterer(self.map, self.mapMarkers, {
         styles: this.markerClustererStyles,
+        gridSize: 45,
       });
     }
   }
