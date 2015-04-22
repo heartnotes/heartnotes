@@ -15,7 +15,7 @@ module.exports = Backbone.View.extend({
     this.$aboutButton.on('click', function(e) {
       e.preventDefault();
 
-      self.$aboutSection.toggle(500);
+      self.$aboutSection.toggle(400);
     });
 
     this.listenTo(this.model, "change:fetching-search", function(model, val) {
