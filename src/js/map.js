@@ -19,7 +19,7 @@ module.exports = Backbone.View.extend({
 
 
 
-  render: function(options) {
+  render: function() {
     var self = this;
     
     if (!self.map) {
@@ -36,26 +36,26 @@ module.exports = Backbone.View.extend({
 
       // create map
       self.map = L.map(self.$el.attr('id'), {
-        zoom: 1,
+        zoom: 3,
         zoomControl: false,
         center: [41.5, -130.35],
       });
 
-      // add an OpenStreetMap tile layer
-      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      // tile layer
+      L.tileLayer(
+        'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
           reuseTiles: true,
-      }).addTo(self.map);      
-
-      // on zoom update markers
-      self.map.on('zoomend', self.renderMarkers);
+          maxZoom: 11,
+        }
+      ).addTo(self.map);
     }
 
-    self.renderMarkers(options);
+    self.renderMarkers();
   },
 
 
-  renderMarkers: function(options) {
+  renderMarkers: function() {
     var self = this;
 
     // map marker group

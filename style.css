@@ -474,6 +474,13 @@
    $DEFAULT-DATE-PICKER
    ========================================================================== */
 
+.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+	-webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
+	-moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
+	-o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
+	transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+	}
+
 .marker-cluster-small {
 	background-color: rgba(181, 226, 140, 0.6);
 	}
@@ -534,13 +541,6 @@
 .marker-cluster span {
 	line-height: 30px;
 	}
-.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
-	-webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
-	-moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
-	-o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
-	transition: transform 0.3s ease-out, opacity 0.3s ease-in;
-	}
-
 /*
  *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
