@@ -15,8 +15,6 @@ module.exports = Backbone.View.extend({
     '#filter-searched-date-upper': 'searchedDateUpper',
     '.count': 'count',
     '.count .number': 'countNumber',
-    '.count .sub': 'countSub',
-    '.count .mappable': 'countSubMappable',
   },
 
   initialize: function(attrs) {
@@ -179,14 +177,7 @@ module.exports = Backbone.View.extend({
     }
 
     if (undefined !== values.total) {
-      this.$countNumber.text(values.total);
-
-      if (values.mappable < values.total) {
-        this.$countSub.show();
-        this.$countSubMappable.text(values.mappable);
-      } else {
-        this.$countSub.hide();        
-      }
+      this.$countNumber.text(values.mappable);
     }
   }
 
