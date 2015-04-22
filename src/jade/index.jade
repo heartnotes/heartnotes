@@ -18,18 +18,17 @@ html
         :markdown
           # About this project
 
-          Police offers in the USA discharge their firearms every 
-          day - yet there is no official database keeping tracking of 
+          Police officers in the USA discharge their firearms every 
+          day - yet there is no official website keeping tracking of 
           how many shots are fired or how many people are injured or killed as a 
-          result. This map is one small step towards rectifying this lack 
-          of data.
+          result. 
+
+          This map is just a small step in the right direction.
 
           The dataset is fetched from [Dan Hammer's API](https://github.com/danhammer/ois-incidents), 
           with most of the data coming from the crowd-sourced set by the 
           [Deadspin project](http://regressing.deadspin.com/were-compiling-every-police-involved-shooting-in-americ-1624180387). 
-
-          The dataset lacks exact co-ordinates for each incident so 
-          we have approximated the locations based on city, county and state.
+          Since we lack co-ordinates for each incident we have approximated locations based on city, county and state data.
 
           Any improvements and bugfixes are more than welcome! Source is on [Github](https://github.com/hiddentao/ois-incidents-map).
 
@@ -46,99 +45,106 @@ html
           i.fa.fa-question
 
     aside.tools
-      form.pure-form.pure-form-stacked
-        legend Victim
+      a.expander-button.toolbox-toggle-button.toolbox-toggle-view.in-view(href='#')
+        i.fa.fa-angle-double-right
 
-        .control-group
-          .pure-g
-            .pure-u-7-24
-              label.main(for="filter-victim-age") Age:
-            .pure-u-15-24
-              div.slider(id="filter-victim-age")
-          .pure-g
-            .pure-u-7-24 &nbsp;
-            .pure-u-6-24
-              input.pure-input-1(id="filter-victim-age-lower", type="number", value="1")
-            .pure-u-4-24.between-text
-              span to
-            .pure-u-6-24
-              input.pure-input-1(id="filter-victim-age-upper", type="number", value="100")
-          .pure-g
-            .pure-u-7-24 &nbsp;
-            .pure-u-17-24.smaller
-              label.pure-checkbox(for="filter-victim-age-unknown")
-                input(id="filter-victim-age-unknown", type="checkbox", name="filter-victim-age-unknown" value="yes", checked) 
-                span  Include age unknown
+      .toolbox.toolbox-toggle-view
+        a.collapser-button.toolbox-toggle-button(href='#')
+          i.fa.fa-angle-double-left
+            
+        form.pure-form.pure-form-stacked
+          legend Victim
 
-        .control-group
-          .pure-g
-            .pure-u-7-24
-              label.main(for="filter-victim-gender") Gender:
-            .pure-u-6-24
-              label.pure-checkbox(for="filter-victim-gender-male")
-                input(id="filter-victim-gender-male", type="checkbox", name="filter-victim-gender" value="male", checked) 
-                span  Male
-            .pure-u-8-24
-              label.pure-checkbox(for="filter-victim-gender-female")
-                input(id="filter-victim-gender-female", type="checkbox", name="filter-victim-gender" value="female", checked) 
-                span  Female
+          .control-group
+            .pure-g
+              .pure-u-7-24
+                label.main(for="filter-victim-age") Age:
+              .pure-u-15-24
+                div.slider(id="filter-victim-age")
+            .pure-g
+              .pure-u-7-24 &nbsp;
+              .pure-u-6-24
+                input.pure-input-1(id="filter-victim-age-lower", type="number", value="1")
+              .pure-u-4-24.between-text
+                span to
+              .pure-u-6-24
+                input.pure-input-1(id="filter-victim-age-upper", type="number", value="100")
+            .pure-g
+              .pure-u-7-24 &nbsp;
+              .pure-u-17-24.smaller
+                label.pure-checkbox(for="filter-victim-age-unknown")
+                  input(id="filter-victim-age-unknown", type="checkbox", name="filter-victim-age-unknown" value="yes", checked) 
+                  span  Include age unknown
 
-
-        .control-group
-          .pure-g
-            .pure-u-7-24
-              label.main(for="filter-victim-race") Race:
-            .pure-u-17-24
-              div#filter-victim-race
-                span.loading
-
-        .control-group
-          .pure-g
-            .pure-u-7-24
-              label.main(for="filter-victim-armed") Armed:
-            .pure-u-6-24
-              label.pure-checkbox(for="filter-victim-armed-yes")
-                input(id="filter-victim-armed-yes", type="checkbox", name="filter-victim-armed" value="armed", checked) 
-                span  Yes
-            .pure-u-5-24
-              label.pure-checkbox(for="filter-victim-armed-no")
-                input(id="filter-victim-armed-no", type="checkbox", name="filter-victim-armed" value="unarmed", checked) 
-                span  No
-            .pure-u-5-24
-              label.pure-checkbox(for="filter-victim-armed-unknown")
-                input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-armed" value="unknown", checked) 
-                span  ?
-
-        .control-group
-          .pure-g
-            .pure-u-7-24
-              label.main(for="filter-victim-outcome") Was:
-            .pure-u-7-24
-              label.pure-checkbox(for="filter-victim-outcome-killed")
-                input(id="filter-victim-armed-killed", type="checkbox", name="filter-victim-outcome" value="killed", checked) 
-                span  Killed
-            .pure-u-5-24
-              label.pure-checkbox(for="filter-victim-outcome-hit")
-                input(id="filter-victim-armed-hit", type="checkbox", name="filter-victim-outcome" value="hit", checked) 
-                span  Hit
-            .pure-u-5-24
-              label.pure-checkbox(for="filter-victim-outcome-unknown")
-                input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-outcome" value="unknown", checked) 
-                span  ?
-
-        legend Searched date
-        
-        .control-group
-          .pure-g
-            .pure-u-11-24
-              input.pure-input-1(id="filter-searched-date-lower", type="text", value="")
-            .pure-u-2-24.between-text
-              span -
-            .pure-u-11-24
-              input.pure-input-1(id="filter-searched-date-upper", type="text", value="")
+          .control-group
+            .pure-g
+              .pure-u-7-24
+                label.main(for="filter-victim-gender") Gender:
+              .pure-u-6-24
+                label.pure-checkbox(for="filter-victim-gender-male")
+                  input(id="filter-victim-gender-male", type="checkbox", name="filter-victim-gender" value="male", checked) 
+                  span  Male
+              .pure-u-8-24
+                label.pure-checkbox(for="filter-victim-gender-female")
+                  input(id="filter-victim-gender-female", type="checkbox", name="filter-victim-gender" value="female", checked) 
+                  span  Female
 
 
-        .count <span class='number'>0</span> incidents <span class='sub'>(<span class='mappable'>0</span> shown)</span>
+          .control-group
+            .pure-g
+              .pure-u-7-24
+                label.main(for="filter-victim-race") Race:
+              .pure-u-17-24
+                div#filter-victim-race
+                  span.loading
+
+          .control-group
+            .pure-g
+              .pure-u-7-24
+                label.main(for="filter-victim-armed") Armed:
+              .pure-u-6-24
+                label.pure-checkbox(for="filter-victim-armed-yes")
+                  input(id="filter-victim-armed-yes", type="checkbox", name="filter-victim-armed" value="armed", checked) 
+                  span  Yes
+              .pure-u-5-24
+                label.pure-checkbox(for="filter-victim-armed-no")
+                  input(id="filter-victim-armed-no", type="checkbox", name="filter-victim-armed" value="unarmed", checked) 
+                  span  No
+              .pure-u-5-24
+                label.pure-checkbox(for="filter-victim-armed-unknown")
+                  input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-armed" value="unknown", checked) 
+                  span  ?
+
+          .control-group
+            .pure-g
+              .pure-u-7-24
+                label.main(for="filter-victim-outcome") Was:
+              .pure-u-7-24
+                label.pure-checkbox(for="filter-victim-outcome-killed")
+                  input(id="filter-victim-armed-killed", type="checkbox", name="filter-victim-outcome" value="killed", checked) 
+                  span  Killed
+              .pure-u-5-24
+                label.pure-checkbox(for="filter-victim-outcome-hit")
+                  input(id="filter-victim-armed-hit", type="checkbox", name="filter-victim-outcome" value="hit", checked) 
+                  span  Hit
+              .pure-u-5-24
+                label.pure-checkbox(for="filter-victim-outcome-unknown")
+                  input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-outcome" value="unknown", checked) 
+                  span  ?
+
+          legend Searched date
+          
+          .control-group
+            .pure-g
+              .pure-u-11-24
+                input.pure-input-1(id="filter-searched-date-lower", type="text", value="")
+              .pure-u-2-24.between-text
+                span -
+              .pure-u-11-24
+                input.pure-input-1(id="filter-searched-date-upper", type="text", value="")
+
+
+          .count <span class='number'>0</span> incidents <span class='sub'>(<span class='mappable'>0</span> shown)</span>
 
 
 

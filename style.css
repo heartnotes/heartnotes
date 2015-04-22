@@ -2566,28 +2566,73 @@ nav.topbar a.icon-button:hover {
 aside.tools {
   position: fixed;
   top: 60px;
-  left: 10px;
-  width: 100%;
+  left: 0px;
+  z-index: 1;
+}
+aside.tools .toolbox,
+aside.tools .expander-button {
+  position: relative;
   background-color: #fff;
-  -webkit-border-radius: 8px;
-  border-radius: 8px;
+  -webkit-border-radius: 0 8px 8px 0;
+  border-radius: 0 8px 8px 0;
   padding: 1em;
-  font-weight: 100;
   -webkit-box-shadow: -1px 0px 7px 3px #999;
   box-shadow: -1px 0px 7px 3px #999;
+  background-color: #fff;
+}
+aside.tools .toolbox.in-view,
+aside.tools .expander-button.in-view {
+  left: 0px;
+}
+aside.tools .expander-button {
+  top: 10px;
+  left: -100px;
+  color: #666;
+  font-size: 140%;
+  padding: 0.5em;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  transition: all 0.2s;
+}
+aside.tools .expander-button:hover {
+  padding-left: 0.8em;
+}
+aside.tools .toolbox {
+  font-weight: 100;
   min-height: 500px;
   width: 250px;
   color: #333;
-  z-index: 1;
+  top: 0px;
+  left: -500px;
+  -webkit-transition: left 0.3s;
+  -moz-transition: left 0.3s;
+  -o-transition: left 0.3s;
+  -ms-transition: left 0.3s;
+  transition: left 0.3s;
 }
-aside.tools .count {
+aside.tools .toolbox .collapser-button {
+  color: #666;
+  position: absolute;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  right: 0;
+  top: -1.5em;
+  padding: 0.4em 1em;
+  background-color: #fff;
+  -webkit-border-radius: 10px 10px 0 0;
+  border-radius: 10px 10px 0 0;
+}
+aside.tools .toolbox .count {
   margin-top: 1.5em;
   font-weight: bold;
   color: #666;
   text-align: center;
   font-size: 140%;
 }
-aside.tools .count .sub {
+aside.tools .toolbox .count .sub {
   font-size: 50%;
 }
 main.content {

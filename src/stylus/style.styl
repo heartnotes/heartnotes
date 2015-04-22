@@ -127,26 +127,56 @@ nav.topbar
 aside.tools
   position fixed
   top $navbar-height + 10px
-  left 10px
-  width 100%
-  background-color #fff
-  border-radius 8px
-  padding 1em
-  font-weight 100
-  box-shadow -1px 0px 7px 3px #999
-  min-height 500px
-  width 250px
-  color #333
+  left 0px
   z-index 1
   
-  .count
-    margin-top 1.5em
-    font-weight bold
+  .toolbox, .expander-button
+    position relative
+    background-color #fff
+    border-radius 0 8px 8px 0
+    padding 1em
+    box-shadow -1px 0px 7px 3px #999
+    background-color #fff
+    &.in-view
+      left 0px
+  
+  .expander-button
+    top 10px
+    left -100px
     color #666
-    text-align center
-    font-size: 140%
-    .sub
-      font-size 50%
+    font-size 140%
+    padding 0.5em
+    transition all 0.2s
+    &:hover
+      padding-left 0.8em
+  
+  .toolbox
+    font-weight 100
+    min-height 500px
+    width 250px
+    color #333
+    top 0px
+    left -500px
+    transition left 0.3s
+    
+    .collapser-button
+      color #666
+      position absolute
+      box-sizing border-box
+      right 0
+      top -1.5em
+      padding 0.4em 1em
+      background-color #fff
+      border-radius 10px 10px 0 0
+    
+    .count
+      margin-top 1.5em
+      font-weight bold
+      color #666
+      text-align center
+      font-size: 140%
+      .sub
+        font-size 50%
 
   
 

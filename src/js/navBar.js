@@ -33,5 +33,6 @@ module.exports = Backbone.View.extend({
     } else {
       this.$loader.hide();      
     }
-  }
+  },
+
 });

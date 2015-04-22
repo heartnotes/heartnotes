@@ -1,5 +1,8 @@
 module.exports = Backbone.View.extend({
   elements: {
+    '.toolbox-toggle-button': 'toolboxToggleButton',
+    '.toolbox-toggle-view': 'toolboxToggleViews',
+    '.toolbox': 'toolbox',
     '#filter-victim-age': 'victimAgeSlider',
     '#filter-victim-age-unknown': 'victimAgeUnknown',
     '#filter-victim-age-lower': 'victimAgeLower',
@@ -20,6 +23,7 @@ module.exports = Backbone.View.extend({
     var self = this;
     
     this.refreshElements();
+    
     this.app = attrs.app;
 
     self.refetchData = _.bind(self.refetchData, self);
@@ -33,6 +37,12 @@ module.exports = Backbone.View.extend({
         total: items.length,
         mappable: mappable,
       });
+    });
+
+    self.$toolboxToggleButton.on('click', function(e) {
+      e.preventDefault();
+
+      self.$toolboxToggleViews.toggleClass('in-view');
     });
   },
 
