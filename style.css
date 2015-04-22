@@ -2499,6 +2499,9 @@ nav.topbar .count {
   font-weight: 700;
   font-size: 150%;
 }
+nav.topbar .count {
+  display: none;
+}
 nav.topbar .count .sub {
   font-size: 50%;
 }
@@ -2523,4 +2526,73 @@ main.content {
   position: relative;
   top: 50px;
   width: 100%;
+}
+.view-template {
+  display: none;
+}
+#map .leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
+#map .leaflet-div-icon .map-cluster-marker {
+  display: block;
+  background: transparent url("img/crosshair.svg") -50% -50% no-repeat;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  background-size: 100% 100%;
+  text-align: center;
+}
+#map .leaflet-div-icon .map-cluster-marker span {
+  font-weight: bold;
+  font-size: 120%;
+}
+#map .leaflet-div-icon .map-cluster-marker.small {
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  margin-top: -20px;
+}
+#map .leaflet-div-icon .map-cluster-marker.small span {
+  line-height: 40px;
+  width: 40px;
+}
+#map .leaflet-div-icon .map-cluster-marker.medium {
+  width: 50px;
+  height: 50px;
+  margin-left: -25px;
+  margin-top: -25px;
+}
+#map .leaflet-div-icon .map-cluster-marker.medium span {
+  line-height: 50px;
+  width: 50px;
+}
+#map .leaflet-div-icon .map-cluster-marker.large {
+  width: 65px;
+  height: 55px;
+  margin-left: -32.5px;
+  margin-top: -27.5px;
+}
+#map .leaflet-div-icon .map-cluster-marker.large span {
+  line-height: 55px;
+  width: 65px;
+}
+#map .leaflet-div-icon .map-cluster-marker.x-large {
+  width: 65px;
+  height: 65px;
+  margin-left: -32.5px;
+  margin-top: -32.5px;
+}
+#map .leaflet-div-icon .map-cluster-marker.x-large span {
+  line-height: 65px;
+  width: 65px;
+}
+#map .leaflet-div-icon .map-cluster-marker.xx-large {
+  width: 70px;
+  height: 70px;
+  margin-left: -35px;
+  margin-top: -35px;
+}
+#map .leaflet-div-icon .map-cluster-marker.xx-large span {
+  line-height: 70px;
+  width: 70px;
 }

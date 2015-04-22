@@ -1,6 +1,7 @@
 @import "nib"
 @import "rupture"
 @import "_variables"
+@import "_mixins"
 @import "../../bower_components/font-awesome-stylus/stylus/font-awesome.styl"
 @import "_widgets"
 
@@ -67,6 +68,7 @@ nav.topbar
     font-size 150%
     
   .count
+    display none
     .sub
       font-size 50%
   
@@ -94,4 +96,32 @@ main.content
   top $navbar-height
   width 100%
 
+
+.view-template
+  display none
+
+
+
+
+#map
+  .leaflet-div-icon
+    background transparent
+    border none    
+    .map-cluster-marker
+      display block
+      background transparent url("img/crosshair.svg") -50% -50% no-repeat
+      background-size 100% 100%
+      text-align center
+      span
+        font-weight bold
+        font-size 120%
+      
+      marker-cluster-cat 'small', 40px, 40px
+      marker-cluster-cat 'medium', 50px, 50px
+      marker-cluster-cat 'large', 65px, 55px
+      marker-cluster-cat 'x-large', 65px, 65px
+      marker-cluster-cat 'xx-large', 70px, 70px
+        
+          
+    
     

@@ -48,53 +48,57 @@ var usaLatLngData = require('us_latlng_json');
 
 
   self.search = function(filterParams) {
-    return self.data.filter(function(item) {
+    var results = [];
+
+    self.data.forEach(function(item) {
       // victim age unknown
       if ('unknown' === item.victim_age) {
         if (!_.deepGet(filterParams, 'victim.age.includeUnknown')) {
-          return false;
+          return;
         }
       }
       // victim age known
       else if (item.victim_age < _.deepGet(filterParams, 'victim.age.lower', 0)  || 
             item.victim_age > _.deepGet(filterParams, 'victim.age.upper', 100)
           ) {
-        return false;
+        return;
       }
 
       // victim gender
       if (!_.contains(_.deepGet(filterParams, 'victim.gender', []), item.victim_gender)) {
-        return false;
+        return;
       }
 
       // victim armed
       if (!_.contains(_.deepGet(filterParams, 'victim.armed', []), item.victim_armed)) {
-        return false;
+        return;
       }
 
       // victim outcome
       if (!_.contains(_.deepGet(filterParams, 'victim.outcome', []), item.outcome)) {
-        return false;
+        return;
       }
 
       // victim race
       var race = _.deepGet(filterParams, 'victim.race', []);
       if (race.length && !_.contains(race, item.victim_race)) {
-        return false;
+        return;
       }
       
       // searched date (lower)
       if (item.searched_date < _.deepGet(filterParams, 'searched_date.lower', 0)) {
-        return false;
+        return;
       }
 
       // searched date (upper)
       if (item.searched_date > _.deepGet(filterParams, 'searched_date.upper', Date.now())) {
-        return false;
+        return;
       }
 
-      return true;
+      results.push(item.summary);
     });
+
+    return results;
   };
 
 
@@ -184,11 +188,8 @@ var usaLatLngData = require('us_latlng_json');
           var state = item.state = item.state.toUpperCase();
 
           // get city, county
-          var city = item.city,
-            county = item.county;
-
-          city = item.city = (city || '').toLowerCase();
-          county = item.county = (county || '').toLowerCase();
+          var city = (item.city || '').toLowerCase();
+          var county = (item.county || '').toLowerCase();
 
           // if state valid
           if (self.latLngData[state]) {
@@ -217,7 +218,7 @@ var usaLatLngData = require('us_latlng_json');
           item.victim_race = (item.victim_race || 'unknown').trim().toLowerCase().replace(' or ', '/');
           self.fieldInfo.race[item.victim_race] = item.victim_race;
 
-          // search date
+          // searched date
           if (item.searched_date) {
             // date expected to be in ISO8601 format
             item.searched_date = XDate.parse(item.searched_date).valueOf();
@@ -251,11 +252,55 @@ var usaLatLngData = require('us_latlng_json');
               item.outcome = 'unknown';
           }
 
+          // build summary
+          item.summary = self.getSummary(item);
+          item.summary.latlng = item.latlng;
+
           self.data.push(item);
         });
 
         console.log('Not enough info for: ' + notEnoughInfoCount + ' items');
       });
   })();
+
+
+  // get summary of incident as JSON
+  self.getSummary = function(item) {
+    var summary = {};
+
+    // location
+    var state = item.state;
+    var county = (item.county && item.county.length) ? item.county : '';
+    var city = (item.city && item.city.length) ? item.city : '';
+
+    summary.location = _.compactJoin([city, county, state]);
+
+    // victim
+    var name = item.victim_name || 'Name unknown';
+    var gender = item.victim_gender || '';
+    var age = item.victim_age ? item.victim_age + ' years old' : '';
+    var race = item.victim_race ? item.victim_race : '';
+    var armed = item.victim_armed ? 'armed' : 'unarmed';
+    if (item.victim_armed && item.weapon) {
+      armed += ' with ' + item.weapon;
+    }
+
+    summary.victim = _.compactJoin([name, gender, age, race, armed]);
+
+    // shots
+    var fired = (item.shots_fired ? item.shots_fired + ' shots' : 'Shots') + ' fired by ';
+    var officers = item.officer_names || 'officers';
+    var agency = item.agency ? (' from ' + item.agency) : '';
+     
+    summary.shots = fired + officers + agency;
+
+    // final description
+    summary.notes = item.summary || '';
+
+    // url
+    summary.url = item.source_url;
+
+    return summary;
+  };
 
 })(self);

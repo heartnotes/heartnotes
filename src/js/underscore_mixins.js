@@ -19,6 +19,18 @@ exports.deepGet = function(obj, path, fallbackValue) {
 
 
 
+exports.compactJoin = function(arr) {
+  return arr.reduce(function(m, v) {
+    if (v && v.length) {
+      return m + (m.length ? ', ' : '') + v;
+    } else {
+      return m;
+    }
+  }, '');
+};
+
+
+
 // Based on https://github.com/neilco/twix/blob/master/twix.js
 var Ajax = exports.Ajax = function() {};
 

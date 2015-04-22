@@ -15,6 +15,10 @@ module.exports = Backbone.View.extend({
     });
 
     self.renderMarkers = _.bind(self.renderMarkers, self);
+
+    self.mapPopupTemplate = _.template($('#mapPopup').html(), {
+      interpolate: /\{\{(.+?)\}\}/g,
+    });
   },
 
 
@@ -60,7 +64,14 @@ module.exports = Backbone.View.extend({
 
     // map marker group
     if (!self.mapMarkers) {
-      self.mapMarkers = new L.MarkerClusterGroup();
+      self.mapMarkers = new L.MarkerClusterGroup({
+        iconCreateFunction: self.markerClusterIconCreateFunction,
+        maxClusterRadius: 90,
+        spiderfyDistanceMultiplier: 1.2,
+        polygonOptions: {
+          color: '#ff6f00'
+        }
+      });
       self.map.addLayer(self.mapMarkers);
     }
 
@@ -72,10 +83,50 @@ module.exports = Backbone.View.extend({
         return;
       }
 
-      self.mapMarkers.addLayer(
-        L.circleMarker([ item.latlng.lat, item.latlng.lng ])
-      );
+      if (!self.markerIcon) {
+        self.markerIcon = L.icon({
+            iconUrl: 'img/crosshair.svg',
+            iconRetinaUrl: 'img/crosshair.svg',
+            iconSize: [30, 30],
+            popupAnchor: [0, -3],
+        });
+      }
+
+      var marker = L.marker([ item.latlng.lat, item.latlng.lng ], {
+        icon: self.markerIcon
+      });
+
+      marker.bindPopup(self.mapPopupTemplate(item));
+
+      marker.on('click', function() {
+        console.log(item);
+      });
+
+      self.mapMarkers.addLayer(marker);
     });
-  }
+  },
+
+
+  markerClusterIconCreateFunction: function(cluster) {
+    var sizeCssClass = 'normal',
+      clusterSize = cluster.getChildCount();
+
+    if (10 > clusterSize) {
+      sizeCssClass = 'small';
+    } else if (50 > clusterSize) {
+      sizeCssClass = 'medium';
+    } else if (100 > clusterSize) {
+      sizeCssClass = 'large'
+    } else if (200 > clusterSize) {
+      sizeCssClass = 'x-large'
+    } else {
+      sizeCssClass = 'xx-large'
+    }
+
+    return new L.DivIcon({ html: '<div class="map-cluster-marker ' + sizeCssClass + '"><span>' + cluster.getChildCount() + '</span></div>' });
+  },
+
+
+
 
 });
