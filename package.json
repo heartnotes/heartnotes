@@ -5,7 +5,8 @@
   "description": "Map of officer-involved shooting incidents in the USA, based on data from https://github.com/danhammer/ois-incidents",
   "main": "index.js",
   "scripts": {
-    "postinstall": "bower install"
+    "postinstall": "bower install",
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",

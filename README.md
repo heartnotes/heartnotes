@@ -64,7 +64,7 @@ $ gulp --debug
 To build for production release (i.e. prior to committing your changes):
 
 ```bash
-$ gulp build
+$ npm run build
 ```
 
 ## Contributing
