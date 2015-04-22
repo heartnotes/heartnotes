@@ -100,6 +100,7 @@ gulp.task 'js-app', ->
     path.join(paths.bower, 'underscore', 'underscore.js')
     path.join(paths.bower, 'backbone', 'backbone.js')
     path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
+    path.join(paths.bower, 'bootstra-stylus', 'js', 'modal.js')
     path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
     path.join(paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.js')
     path.join(paths.bower, 'pickadate', 'lib', 'picker.js')
