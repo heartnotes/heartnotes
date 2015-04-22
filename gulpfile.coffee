@@ -144,9 +144,10 @@ gulp.task 'server', ->
   gulp.src './'
     .pipe server({
       host: 'local.hiddentao.github.io'
-      port: 3000,
+      port: 3000
       livereload:
         enable: true
+        port: 55456
         filter: (filePath, cb) ->
           cb( !(/src/).test(filePath) )
       directoryListing: false

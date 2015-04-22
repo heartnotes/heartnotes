@@ -2393,7 +2393,7 @@
   content: "\f23a";
 }
 .noUi-connect {
-  background: #04756f;
+  background: #7ea9ff;
 }
 .selectivity-multiple-input-container {
   border: none;
@@ -2410,6 +2410,16 @@ input[type='text'].selectivity-multiple-input {
 }
 .selectivity-multiple-selected-item {
   white-space: normal;
+  background-color: #7ea9ff;
+}
+.selectivity-load-more.highlight,
+.selectivity-result-item.highlight {
+  background-color: #adc8ff;
+  color: #666;
+}
+.picker__header select {
+  display: inline-block;
+  margin-right: 0.5em;
 }
 html {
   font-family: 'Lato', Arial, Verdana, sans-serif;
