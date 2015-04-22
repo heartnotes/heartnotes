@@ -154,7 +154,10 @@ html
 
     #mapPopup.view-template
       .map-popup-details
-        p(class="outcome {{ outcome }}") {{ outcome }}
+        p(class="outcome {{ outcome }}") Outcome: <span>{{ outcome }}</span>
+        p
+          strong Added: 
+          span {{ searched_date }}
         p
           strong Location: 
           span {{ location }}

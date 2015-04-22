@@ -128,11 +128,13 @@ nav.topbar
 aside.tools
   position fixed
   top $navbar-height + 10px
-  left 0px
   z-index 1
+  pointer-events none
   
   .toolbox, .expander-button
     position relative
+    pointer-events auto
+    top 10px
     background-color #fff
     border-radius 0 8px 8px 0
     padding 1em
@@ -142,7 +144,6 @@ aside.tools
       left 0px
   
   .expander-button
-    top 10px
     left -100px
     color #666
     font-size 140%
@@ -219,11 +220,14 @@ main.content
     font-weight bold
     text-transform uppercase
     &.unknown
-      color #666666
+      span
+        color #666666
     &.wounded
-      color $color4
+      span
+        color $color4
     &.killed
-      color red
+      span
+        color red
 
         
           

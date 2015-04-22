@@ -2567,12 +2567,14 @@ nav.topbar a.icon-button:hover {
 aside.tools {
   position: fixed;
   top: 60px;
-  left: 0px;
   z-index: 1;
+  pointer-events: none;
 }
 aside.tools .toolbox,
 aside.tools .expander-button {
   position: relative;
+  pointer-events: auto;
+  top: 10px;
   background-color: #fff;
   -webkit-border-radius: 0 8px 8px 0;
   border-radius: 0 8px 8px 0;
@@ -2586,7 +2588,6 @@ aside.tools .expander-button.in-view {
   left: 0px;
 }
 aside.tools .expander-button {
-  top: 10px;
   left: -100px;
   color: #666;
   font-size: 140%;
@@ -2715,12 +2716,12 @@ main.content {
   font-weight: bold;
   text-transform: uppercase;
 }
-.map-popup-details p.outcome.unknown {
+.map-popup-details p.outcome.unknown span {
   color: #666;
 }
-.map-popup-details p.outcome.wounded {
+.map-popup-details p.outcome.wounded span {
   color: #ffd100;
 }
-.map-popup-details p.outcome.killed {
+.map-popup-details p.outcome.killed span {
   color: #f00;
 }

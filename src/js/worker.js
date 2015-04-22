@@ -275,7 +275,7 @@ var usaLatLngData = require('us_latlng_json');
     summary.outcome = item.outcome;
 
     // when searched
-    summary.searched_date = item.searched_date;
+    summary.searched_date = new XDate(item.searched_date).toString('MMM dS, yyyy');
 
     // location
     var state = item.state;
