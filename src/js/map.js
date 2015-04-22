@@ -96,10 +96,11 @@ module.exports = Backbone.View.extend({
         icon: self.markerIcon
       });
 
-      marker.bindPopup(self.mapPopupTemplate(item));
-
       marker.on('click', function() {
-        console.log(item);
+        var popup = L.popup()
+          .setLatLng([item.latlng.lat, item.latlng.lng])
+          .setContent(self.mapPopupTemplate(item))
+          .openOn(self.map);
       });
 
       self.mapMarkers.addLayer(marker);
