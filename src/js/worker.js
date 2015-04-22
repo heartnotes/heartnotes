@@ -224,7 +224,7 @@ var usaLatLngData = require('us_latlng_json');
           self.fieldInfo.race[item.victim_race] = item.victim_race;
 
           // searched_date expected to be in ISO8601 format
-          item.searched_date = XDate.parse(item.searched_date).valueOf();
+          item.searched_date = XDate.parse(item.searched_date);
 
           if (self.fieldInfo.searched_date.lower > item.searched_date) {
             self.fieldInfo.searched_date.lower = item.searched_date;

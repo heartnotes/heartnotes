@@ -132,7 +132,7 @@ html
                   input(id="filter-victim-armed-unknown", type="checkbox", name="filter-victim-outcome" value="unknown", checked) 
                   span  ?
 
-          legend Searched date
+          legend Date
           
           .control-group
             .pure-g
@@ -147,8 +147,6 @@ html
           .count <span class='number'>0</span> incidents <span class='sub'>(<span class='mappable'>0</span> shown)</span>
 
 
-
-
     main.content
       #map(style="width:100%;height:500px")
 
@@ -156,7 +154,7 @@ html
       .map-popup-details
         p(class="outcome {{ outcome }}") Outcome: <span>{{ outcome }}</span>
         p
-          strong Added: 
+          strong When: 
           span {{ searched_date }}
         p
           strong Location: 

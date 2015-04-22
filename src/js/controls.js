@@ -100,8 +100,8 @@ module.exports = Backbone.View.extend({
       params.victim.race = self.$victimRace.selectivity('value');
 
       params.searched_date = {
-        lower: XDate.parse(self.$searchedDateLower.pickadate('picker').get()).valueOf(),
-        upper: XDate.parse(self.$searchedDateUpper.pickadate('picker').get()).valueOf(),
+        lower: XDate.parse(self.$searchedDateLower.pickadate('picker').get()),
+        upper: XDate.parse(self.$searchedDateUpper.pickadate('picker').get()),
       };
     }
 
