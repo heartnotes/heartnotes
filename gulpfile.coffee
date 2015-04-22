@@ -143,7 +143,6 @@ gulp.task 'build', ['jade', 'stylus', 'js', 'fonts']
 gulp.task 'server', ->
   gulp.src './'
     .pipe server({
-      host: 'local.hiddentao.github.io'
       port: 3000
       livereload:
         enable: true
