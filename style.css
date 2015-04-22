@@ -2494,7 +2494,7 @@ nav.topbar {
   box-shadow: 0px 0px 5px 3px #999;
   color: #fff;
   background-color: #333;
-  z-index: 2;
+  z-index: 99999;
 }
 nav.topbar section.about {
   display: none;
@@ -2510,6 +2510,7 @@ nav.topbar section.about {
 @media only screen and (max-width: 35.5em) {
   nav.topbar section.about {
     width: 90%;
+    font-size: 100%;
     padding: 0;
     border: none;
   }
@@ -2524,7 +2525,7 @@ nav.topbar section.about:after {
 nav.topbar .nav-left {
   float: left;
   margin-top: 0.2em;
-  margin-left: 0.2em;
+  margin-left: 0.7em;
 }
 nav.topbar .nav-right {
   float: right;
