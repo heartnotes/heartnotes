@@ -1,37 +1,27 @@
+var usaLatLngData = require('us_latlng_json');
+
 module.exports = Backbone.View.extend({
   initialize: function(attrs) {
     var self = this;
 
-    this.app = attrs.app;
+    self.app = attrs.app;
+
+    self.items = [];
+
     this.listenTo(this.model, "change:data", function(model, data) {
-      self.render(data);
+      self.items = data;
+
+      self.render();
     });
 
-    this.markerClustererStyles = [
-      {
-        textColor: 'white',
-        url: 'img/crosshair_red.png',
-        height: 50,
-        width: 50
-      },
-     {
-        textColor: 'white',
-        url: 'img/crosshair_red.png',
-        height: 50,
-        width: 50
-      },
-     {
-        textColor: 'white',
-        url: 'img/crosshair_red.png',
-        height: 50,
-        width: 50
-      }
-    ];
+    self.renderMarkers = _.bind(self.renderMarkers, self);
   },
 
-  render: function(items) {
-    var self = this;
 
+
+  render: function(options) {
+    var self = this;
+    
     if (!self.map) {
       self.$window = $(window);
 
@@ -44,39 +34,48 @@ module.exports = Backbone.View.extend({
       // if window size changes resize the map
       self.$window.resize(_resizeMap);
 
-      self.map = new google.maps.Map(self.$el.get(0), {
-        center: new google.maps.LatLng( 41.5, -126.35 ),
-        zoom: 3,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      // create map
+      self.map = L.map(self.$el.attr('id'), {
+        zoom: 1,
+        zoomControl: false,
+        center: [41.5, -130.35],
       });
+
+      // add an OpenStreetMap tile layer
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          reuseTiles: true,
+      }).addTo(self.map);      
+
+      // on zoom update markers
+      self.map.on('zoomend', self.renderMarkers);
     }
 
- 
-    if (items) {
-      if (self.mapClusterer) {
-        self.mapClusterer.clearMarkers();
+    self.renderMarkers(options);
+  },
+
+
+  renderMarkers: function(options) {
+    var self = this;
+
+    // map marker group
+    if (!self.mapMarkers) {
+      self.mapMarkers = new L.MarkerClusterGroup();
+      self.map.addLayer(self.mapMarkers);
+    }
+
+    // remove previous markers
+    self.mapMarkers.clearLayers();
+
+    self.items.forEach(function(item) {
+      if (!item.latlng) {
+        return;
       }
 
-      self.mapMarkers = [];
-
-      items.forEach(function(v) {
-        if (!v.latlng) {
-          return;
-        }
-
-        self.mapMarkers.push(
-          new google.maps.Marker({
-            position: new google.maps.LatLng(v.latlng.lat, v.latlng.lng),
-            icon: 'img/crosshair_red.png'
-          })
-        );
-      });
-
-      self.mapClusterer = new MarkerClusterer(self.map, self.mapMarkers, {
-        styles: this.markerClustererStyles,
-        gridSize: 45,
-      });
-    }
+      self.mapMarkers.addLayer(
+        L.circleMarker([ item.latlng.lat, item.latlng.lng ])
+      );
+    });
   }
 
 });

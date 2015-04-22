@@ -48,6 +48,8 @@ baseCssSrc = [
   path.join paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.min.css'
   path.join paths.bower, 'pickadate', 'lib', 'themes', 'default.css'
   path.join paths.bower, 'pickadate', 'lib', 'themes', 'default.date.css'
+  path.join paths.bower, 'leaflet.markercluster', 'dist', 'MarkerCluster.css'
+  path.join paths.bower, 'leaflet.markercluster', 'dist', 'MarkerCluster.Default.css'
 ]
 
 
@@ -100,12 +102,11 @@ gulp.task 'js-app', ->
     path.join(paths.bower, 'underscore', 'underscore.js')
     path.join(paths.bower, 'backbone', 'backbone.js')
     path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
-    path.join(paths.bower, 'bootstra-stylus', 'js', 'modal.js')
     path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
     path.join(paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.js')
     path.join(paths.bower, 'pickadate', 'lib', 'picker.js')
     path.join(paths.bower, 'pickadate', 'lib', 'picker.date.js')
-    path.join(paths.bower, 'js-marker-clusterer', 'src', 'markerclusterer.js')
+    path.join(paths.bower, 'leaflet.markercluster', 'dist', 'leaflet.markercluster-src.js')
   ]
     .pipe concat('libs.js')
 

@@ -181,14 +181,14 @@ var usaLatLngData = require('us_latlng_json');
           }
 
           // get state
-          var state = item.state.toUpperCase();
+          var state = item.state = item.state.toUpperCase();
 
           // get city, county
           var city = item.city,
             county = item.county;
 
-          city = (city || '').toLowerCase();
-          county = (county || '').toLowerCase();
+          city = item.city = (city || '').toLowerCase();
+          county = item.county = (county || '').toLowerCase();
 
           // if state valid
           if (self.latLngData[state]) {
