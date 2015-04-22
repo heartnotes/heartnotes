@@ -2601,6 +2601,9 @@ main.content {
   font-weight: bold;
   text-transform: uppercase;
 }
+.map-popup-details p.outcome.unknown {
+  color: #666;
+}
 .map-popup-details p.outcome.wounded {
   color: #ffd100;
 }

@@ -246,6 +246,8 @@ var usaLatLngData = require('us_latlng_json');
           item.outcome = (item.outcome || '').trim().toLowerCase();
           switch (item.outcome) {
             case 'hit':
+              item.outcome = 'wounded';
+              break;
             case 'killed':
               break;
             default:
@@ -268,7 +270,7 @@ var usaLatLngData = require('us_latlng_json');
     var summary = {};
 
     // outcome
-    summary.outcome = ('killed' === item.outcome) ? 'killed' : 'wounded';
+    summary.outcome = item.outcome;
 
     // location
     var state = item.state;

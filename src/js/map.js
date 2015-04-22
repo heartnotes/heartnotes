@@ -85,9 +85,9 @@ module.exports = Backbone.View.extend({
 
       if (!self.markerIcon) {
         self.markerIcon = {};
-        ['killed', 'wounded'].forEach(function(outcome) {
+        ['killed', 'wounded', 'unknown'].forEach(function(outcome) {
           self.markerIcon[outcome] = L.icon({
-            iconUrl: 'img/crosshair_' + outcome + '.svg',
+            iconUrl: 'img/outcome_' + outcome + '.svg',
             iconSize: [30, 30],
             popupAnchor: [0, -3],
           });
