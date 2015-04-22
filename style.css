@@ -2429,6 +2429,16 @@ html {
   background-color: #fff;
   color: #000;
 }
+@media only screen and (max-width: 35.5em) {
+  .hidden-xs {
+    display: none;
+  }
+}
+@media only screen and (min-width: 35.5em) {
+  .visible-xs {
+    display: none;
+  }
+}
 form legend {
   font-weight: 700;
   margin-top: 1.5em;
@@ -2477,33 +2487,58 @@ nav.topbar {
   position: fixed;
   top: 0px;
   left: 0px;
-  width: 100%;
+  width: 100vw;
   height: 50px;
   line-height: 50px;
   padding: 0 1rem;
   font-weight: 100;
   -webkit-box-shadow: 0px 0px 5px 3px #999;
   box-shadow: 0px 0px 5px 3px #999;
-  color: #333;
+  color: #fff;
+  background-color: #333;
   z-index: 2;
+}
+nav.topbar .nav-left {
+  float: left;
+}
+nav.topbar .nav-right {
+  float: right;
+  margin-right: 2em;
 }
 nav.topbar .brand {
   font-size: 130%;
   display: inline-block;
 }
-nav.topbar .loading,
-nav.topbar .count {
+nav.topbar .loading {
   display: inline-block;
   margin-left: 1.5em;
-  color: #000;
+  color: #fff;
   font-weight: 700;
   font-size: 150%;
 }
-nav.topbar .count {
-  display: none;
+@media only screen and (max-width: 35.5em) {
+  nav.topbar .loading .text {
+    display: none !important;
+  }
 }
-nav.topbar .count .sub {
-  font-size: 50%;
+nav.topbar .icon-button {
+  height: 40px;
+  line-height: 40px;
+  padding: 0.5em 0.5em;
+  border: 1px solid #fff;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #fff;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  transition: all 0.5s;
+}
+nav.topbar .icon-button:hover {
+  background-color: #fff;
+  color: #333;
 }
 aside.tools {
   position: fixed;
@@ -2521,6 +2556,16 @@ aside.tools {
   width: 250px;
   color: #333;
   z-index: 2;
+}
+aside.tools .count {
+  margin-top: 1.5em;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+  font-size: 140%;
+}
+aside.tools .count .sub {
+  font-size: 50%;
 }
 main.content {
   position: relative;

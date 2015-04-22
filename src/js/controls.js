@@ -10,6 +10,10 @@ module.exports = Backbone.View.extend({
     '#filter-victim-race': 'victimRace',
     '#filter-searched-date-lower': 'searchedDateLower',
     '#filter-searched-date-upper': 'searchedDateUpper',
+    '.count': 'count',
+    '.count .number': 'countNumber',
+    '.count .sub': 'countSub',
+    '.count .mappable': 'countSubMappable',
   },
 
   initialize: function(attrs) {
@@ -19,6 +23,17 @@ module.exports = Backbone.View.extend({
     this.app = attrs.app;
 
     self.refetchData = _.bind(self.refetchData, self);
+
+    self.listenTo(this.model, "change:data", function(model, items) {
+      var mappable = items.reduce(function(memo, v) {
+        return memo + (v.latlng ? 1 : 0);
+      }, 0);
+
+      self.render({
+        total: items.length,
+        mappable: mappable,
+      });
+    });
   },
 
 
@@ -151,6 +166,17 @@ module.exports = Backbone.View.extend({
 
       // all controls setup
       self.controlsSetup = true;
+    }
+
+    if (undefined !== values.total) {
+      this.$countNumber.text(values.total);
+
+      if (values.mappable < values.total) {
+        this.$countSub.show();
+        this.$countSubMappable.text(values.mappable);
+      } else {
+        this.$countSub.hide();        
+      }
     }
   }
 

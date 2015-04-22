@@ -13,9 +13,15 @@ html
     
   body
     nav.topbar
-      .brand Officer-involved shootings (USA)
-      .loading Loading...
-      .count <span class='number'>0</span> incidents <span class='sub'>(<span class='mappable'>0</span> shown)</span>
+      .nav-left
+        .brand
+          span.text.hidden-xs Officer-involved shootings (USA)
+          span.text.visible-xs OiS
+        .loading
+          span.text Loading...
+      .nav-right
+        a.about.icon-button(href="#")
+          i.fa.fa-question
 
     aside.tools
       form.pure-form.pure-form-stacked
@@ -108,6 +114,10 @@ html
               span -
             .pure-u-11-24
               input.pure-input-1(id="filter-searched-date-upper", type="text", value="")
+
+
+        .count <span class='number'>0</span> incidents <span class='sub'>(<span class='mappable'>0</span> shown)</span>
+
 
 
 
