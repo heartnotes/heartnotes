@@ -1,7 +1,8 @@
 module.exports = Backbone.View.extend({
   elements: {
     '.loading': 'loader',
-    'a.about': 'aboutButton'
+    'a.about': 'aboutButton',
+    'section.about': 'aboutSection',
   },
 
   initialize: function(attrs) {
@@ -10,8 +11,11 @@ module.exports = Backbone.View.extend({
     this.app = attrs.app;
 
     this.refreshElements();
-    this.$aboutButton.on('click', function() {
 
+    this.$aboutButton.on('click', function(e) {
+      e.preventDefault();
+
+      self.$aboutSection.toggle(500);
     });
 
     this.listenTo(this.model, "change:fetching-search", function(model, val) {
