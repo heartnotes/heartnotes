@@ -2596,3 +2596,14 @@ main.content {
   line-height: 70px;
   width: 70px;
 }
+.map-popup-details p.outcome {
+  font-size: 120%;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.map-popup-details p.outcome.wounded {
+  color: #ffd100;
+}
+.map-popup-details p.outcome.killed {
+  color: #f00;
+}

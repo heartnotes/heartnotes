@@ -84,16 +84,18 @@ module.exports = Backbone.View.extend({
       }
 
       if (!self.markerIcon) {
-        self.markerIcon = L.icon({
-            iconUrl: 'img/crosshair.svg',
-            iconRetinaUrl: 'img/crosshair.svg',
+        self.markerIcon = {};
+        ['killed', 'wounded'].forEach(function(outcome) {
+          self.markerIcon[outcome] = L.icon({
+            iconUrl: 'img/crosshair_' + outcome + '.svg',
             iconSize: [30, 30],
             popupAnchor: [0, -3],
+          });
         });
       }
 
       var marker = L.marker([ item.latlng.lat, item.latlng.lng ], {
-        icon: self.markerIcon
+        icon: self.markerIcon[item.outcome]
       });
 
       marker.on('click', function() {

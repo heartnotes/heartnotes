@@ -95,7 +95,7 @@ var usaLatLngData = require('us_latlng_json');
         return;
       }
 
-      results.push(item.summary);
+      results.push(item.display);
     });
 
     return results;
@@ -253,8 +253,7 @@ var usaLatLngData = require('us_latlng_json');
           }
 
           // build summary
-          item.summary = self.getSummary(item);
-          item.summary.latlng = item.latlng;
+          item.display = self.buildDisplayData(item);
 
           self.data.push(item);
         });
@@ -264,9 +263,12 @@ var usaLatLngData = require('us_latlng_json');
   })();
 
 
-  // get summary of incident as JSON
-  self.getSummary = function(item) {
+  // build display data for incident as JSON
+  self.buildDisplayData = function(item) {
     var summary = {};
+
+    // outcome
+    summary.outcome = ('killed' === item.outcome) ? 'killed' : 'wounded';
 
     // location
     var state = item.state;
@@ -274,25 +276,27 @@ var usaLatLngData = require('us_latlng_json');
     var city = (item.city && item.city.length) ? item.city : '';
 
     summary.location = _.compactJoin([city, county, state]);
+    summary.latlng = item.latlng;
 
     // victim
     var name = item.victim_name || 'Name unknown';
     var gender = item.victim_gender || '';
-    var age = item.victim_age ? item.victim_age + ' years old' : '';
-    var race = item.victim_race ? item.victim_race : '';
-    var armed = item.victim_armed ? 'armed' : 'unarmed';
-    if (item.victim_armed && item.weapon) {
+    var age = ('unknown' !== item.victim_age) ? item.victim_age + ' years old' : '';
+    var race = ('unknown' !== item.victim_race) ? item.victim_race : '';
+
+    var armed = ('unknown' !== item.victim_armed) ? item.victim_armed : 'may have been armed';
+    if ('armed' === item.victim_armed && item.weapon) {
       armed += ' with ' + item.weapon;
     }
 
-    summary.victim = _.compactJoin([name, gender, age, race, armed]);
+    summary.victim = _.compactJoin([name, gender, age, race, armed]) + '.';
 
     // shots
     var fired = (item.shots_fired ? item.shots_fired + ' shots' : 'Shots') + ' fired by ';
     var officers = item.officer_names || 'officers';
     var agency = item.agency ? (' from ' + item.agency) : '';
      
-    summary.shots = fired + officers + agency;
+    summary.shots = fired + officers + agency + '.';
 
     // final description
     summary.notes = item.summary || '';
