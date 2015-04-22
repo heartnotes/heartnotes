@@ -32,7 +32,7 @@ App.prototype.start = function() {
   this.controls.render();
 
   // kick-off!
-  // this.controls.refetchData();
+  this.controls.refetchData();
 };
 
 
