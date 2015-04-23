@@ -31,7 +31,7 @@ module.exports = Backbone.View.extend({
 
       var _resizeMap = function() {
         // ensure map fills window
-        self.$el.height(self.$window.height() - $('nav.topbar').height());    
+        self.$el.height(self.$window.height() - $('nav.topbar').height() - 10);    
       };
       _resizeMap();
 
@@ -44,6 +44,11 @@ module.exports = Backbone.View.extend({
         zoomControl: false,
         center: [41.5, -130.35],
       });
+
+      // zoom control in top-right
+      L.control.zoom({
+        position: 'bottomright'
+      }).addTo(self.map);
 
       // tile layer
       L.tileLayer(
