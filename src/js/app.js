@@ -33,6 +33,8 @@ App.prototype.start = function() {
 
   // kick-off!
   this.controls.refetchData();
+
+  mixpanel.track("started");
 };
 
 

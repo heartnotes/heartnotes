@@ -107,6 +107,8 @@ module.exports = Backbone.View.extend({
 
       self.mapMarkers.addLayer(marker);
     });
+
+    mixpanel.track("data rendered");
   },
 
 

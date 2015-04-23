@@ -174,6 +174,8 @@ module.exports = Backbone.View.extend({
 
       // all controls setup
       self.controlsSetup = true;
+
+      mixpanel.track("controls setup");
     }
 
     if (undefined !== values.total) {
