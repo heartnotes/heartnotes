@@ -42,7 +42,7 @@ module.exports = Backbone.View.extend({
       self.map = L.map(self.$el.attr('id'), {
         zoom: 3,
         zoomControl: false,
-        center: [41.5, -130.35],
+        center: [41.5, -110.35],
       });
 
       // zoom control in top-right
