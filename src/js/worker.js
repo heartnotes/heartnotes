@@ -163,6 +163,8 @@ var usaLatLngData = require('us_latlng_json');
       deferred.resolve(data);
     });
 
+    var source_urls = {};
+
     return deferred.promise
       .then(function(data) {
         var results = data.results;
@@ -170,6 +172,15 @@ var usaLatLngData = require('us_latlng_json');
         var notEnoughInfoCount = 0;
 
         results.forEach(function(item) {
+          // skip if this is a duplciate
+          if (item.source_url) {
+            if (source_urls[item.source_url]) {
+              return;
+            } else {
+              source_urls[item.source_url] = true;
+            }
+          }
+
           // need required props
           for (var i=0; i<requiredProps.length; ++i) {
             if (!item[requiredProps[i]]) {
