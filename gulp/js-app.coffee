@@ -14,10 +14,10 @@ gulpIf = require 'gulp-if'
 module.exports = (paths, options = {}) ->
   _process = (b) ->
     b.bundle()
-      .pipe source('app.js')
-      .pipe gulpIf(!options.debugBuild, uglify())
       .on 'error', (err) ->
         gutil.log(err.stack)
+      .pipe source('app.js')
+      .pipe gulpIf(!options.debugBuild, uglify())
       .pipe gulp.dest(paths.build.js)
 
   return -> 

@@ -1,4 +1,5 @@
 gulp = require 'gulp'
+gutil = require 'gulp-util'
 gulpIf = require 'gulp-if'
 path = require 'path'
 prefix = require('gulp-autoprefixer')
@@ -11,10 +12,15 @@ rupture = require('rupture')
 
 module.exports = (paths, options = {}) ->
   return ->
+    stylusCompiler = stylus({
+      use: [ nib(), rupture() ]
+    })
+
     gulp.src paths.files.stylus
-      .pipe stylus({
-        use: [ nib(), rupture() ]
-      })
+      .pipe stylusCompiler
+      .on 'error', (err) ->
+        gutil.log err.stack
+        stylusCompiler.end()
       .pipe prefix()
       .pipe concat('app.css')
       .pipe gulpIf(!options.debugBuild, minifyCss())
