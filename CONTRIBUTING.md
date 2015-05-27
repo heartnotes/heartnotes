@@ -1,10 +1,10 @@
-# Contribute to ois-incidents-map
+# Contribute to heartnote
 
 This guide guidelines for those wishing to contribute.
 
 ## Contributor license agreement
 
-By submitting code as an individual or as an entity you agree that your code is licensed the same as the project (MIT).
+By submitting code as an individual or as an entity you agree that your code is licensed the same as the project (GPL3).
 
 ## Issues and pull requests
 

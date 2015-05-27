@@ -1,165 +1,82 @@
-gulp = require('gulp')
-gutil = require('gulp-util')
-gulpIf = require('gulp-if')
-merge = require('ordered-merge-stream')
 path = require('path')
-argv = require('yargs').argv
 
-browserify = require('browserify')
-source = require('vinyl-source-stream2')
-
-jade = require('gulp-jade')
-concat = require('gulp-concat')
-uglify = require('gulp-uglify')
-stylus = require('gulp-stylus')
-minifyCss = require('gulp-minify-css')
-nib = require('nib')
-rupture = require('rupture')
-
-server = require('gulp-server-livereload')
+fs = require 'fs'
+gulp = require('gulp')
+gutil = require 'gulp-util'
+args = require('yargs').argv
 
 
-minify = (!argv.debug)
+options = 
+  debugBuild: if args.debug then true else false
+  dontExitOnError: false
 
 
+if options.debugBuild
+  console.log 'DEBUG mode'
+ 
 
-paths = 
-  bower: './bower_components'
+# paths
+
+paths =
+  npm: path.join(__dirname, 'node_modules')
   src:
-    jade: './src/jade/*.jade'
-    js: 
-      app: './src/js/app.js'
-      worker: './src/js/worker.js'
-    stylus: './src/stylus/style.styl'
-  watch:
-    jade: './src/jade/**/*.jade'
-    js: './src/js/**/*.js'
-    stylus: './src/stylus/**/*.styl'
-  build:
-    html: './'
-    js: './'
-    css: './'
-    fonts: './fonts'
+    stylus: path.join(__dirname, 'src', 'stylus')
+    js: path.join(__dirname, 'src', 'js')
+    img: path.join(__dirname, 'src', 'img')
+    jade: path.join(__dirname, 'src', 'jade')
+  build: 
+    html: path.join(__dirname, 'build') 
+    css: path.join(__dirname, 'build', 'css') 
+    img: path.join(__dirname, 'build', 'img') 
+    js: path.join(__dirname, 'build', 'js') 
+    fonts: path.join(__dirname, 'build', 'fonts') 
+  files: {}
+  watch: {}
 
 
-# extra CSS
-baseCssSrc = [
-  path.join paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.min.css'
-  path.join paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.min.css'
-  path.join paths.bower, 'pickadate', 'lib', 'themes', 'default.css'
-  path.join paths.bower, 'pickadate', 'lib', 'themes', 'default.date.css'
-  path.join paths.bower, 'leaflet.markercluster', 'dist', 'MarkerCluster.css'
-  path.join paths.bower, 'leaflet.markercluster', 'dist', 'MarkerCluster.Default.css'
-]
+# Stylus
+paths.files.stylus = path.join(paths.src.stylus, 'app.styl')
+paths.watch.stylus = path.join(paths.src.stylus, '**', '**', '*.styl')
 
+# Img 
+paths.files.img = path.join(paths.src.img, '**', '*.*')
+paths.watch.img = paths.files.img
 
+# Js
+paths.files.js = path.join(paths.src.js, 'app.js')
+paths.watch.js = path.join(paths.src.js, '**', '**', '*.js')
 
-gulp.task 'jade', ->
-  gulp.src paths.src.jade
-    .pipe jade()
-    .on 'error', gutil.log
-    .pipe gulp.dest(paths.build.html)
-
-
-gulp.task 'stylus', ->  
-  baseCss = gulp.src baseCssSrc
-    .pipe concat('base.css')
-
-  appCss = gulp.src paths.src.stylus
-    .pipe stylus({
-      use: [ nib(), rupture() ]
-      compress: false
-    })
-    .on 'error', gutil.log
-    .pipe concat('app.css')
-
-  merge([baseCss, appCss])
-    .pipe concat('style.css')
-    .pipe gulpIf(minify, minifyCss())
-    .on 'error', gutil.log
-    .pipe gulp.dest(paths.build.css)
+# Jade
+paths.files.jade = path.join(paths.src.jade, 'index.jade')
+paths.watch.jade = path.join(paths.src.jade, '**', '**', '*.jade')
 
 
 
-gulp.task 'js-worker', ->
-  workerJs = browserify(
-    entries: paths.src.js.worker
-    debug: true
-  )
-    .bundle()
-    .pipe source('worker.js')
-    .pipe gulpIf(minify, uglify())
-    .on('error', gutil.log)
-    .pipe gulp.dest(paths.build.js)
+# initialisation
+# 
+
+# load all gulp tasks
+tasksFolder = path.join(__dirname, 'gulp')
+taskFiles = fs.readdirSync tasksFolder
+
+for tf in taskFiles
+  if '.coffee' isnt path.extname(tf)
+    continue
+
+  fn = require(path.join(tasksFolder, tf))
+  taskInfo = fn(paths, options)
+
+  handler = undefined
+  deps = []
+
+  if taskInfo.deps
+    deps = taskInfo.deps
+    handler = taskInfo.task
+  else
+    handler = taskInfo
+
+  gulp.task path.basename(tf, '.coffee'), deps, handler
 
 
-
-
-gulp.task 'js-app', ->
-  libJs = gulp.src [
-    path.join(paths.bower, 'xdate', 'src', 'xdate.js')
-    path.join(paths.bower, 'jquery', 'dist', 'jquery.js')
-    path.join(paths.bower, 'underscore', 'underscore.js')
-    path.join(paths.bower, 'backbone', 'backbone.js')
-    path.join(paths.bower, 'backbone-elements', 'backbone-elements.js')
-    path.join(paths.bower, 'nouislider', 'distribute', 'jquery.nouislider.js')
-    path.join(paths.bower, 'Selectivity.js', 'dist', 'selectivity-full.js')
-    path.join(paths.bower, 'pickadate', 'lib', 'picker.js')
-    path.join(paths.bower, 'pickadate', 'lib', 'picker.date.js')
-    path.join(paths.bower, 'leaflet.markercluster', 'dist', 'leaflet.markercluster-src.js')
-  ]
-    .pipe concat('libs.js')
-
-  appJs = browserify(
-    entries: paths.src.js.app
-    debug: true
-  )
-    .bundle()
-    .on('error', gutil.log)
-    .pipe source('app.js')
-
-  merge([libJs, appJs])
-    .pipe concat('app.js')
-    .pipe gulpIf(minify, uglify())
-    .on('error', gutil.log)
-    .pipe gulp.dest(paths.build.js)
-
-
-
-gulp.task('js', ['js-app', 'js-worker'])
-
-
-gulp.task 'fonts', ->
-  gulp.src [
-    path.join(paths.bower, 'font-awesome-stylus', 'fonts', '*.*')
-  ]
-    .pipe gulp.dest(paths.build.fonts)
-
-
-
-gulp.task 'build', ['jade', 'stylus', 'js', 'fonts']
-
-
-gulp.task 'server', ->
-  gulp.src './'
-    .pipe server({
-      port: 3000
-      livereload:
-        enable: true
-        port: 55456
-        filter: (filePath, cb) ->
-          cb( !(/src/).test(filePath) )
-      directoryListing: false
-      open: false
-    })
-
-
-gulp.task 'dev', ['build', 'server'], ->
-  gulp.watch paths.watch.jade, ['jade']
-  gulp.watch paths.watch.stylus, ['stylus']
-  gulp.watch paths.watch.js, ['js']
-
-
-
+# default task
 gulp.task 'default', ['dev']
-
