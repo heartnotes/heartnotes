@@ -10,6 +10,7 @@ module.exports = (paths, options = {}) ->
         port: 3000
         livereload:
           enable: true
+          host: '0.0.0.0'
           port: 55456
         directoryListing: false
         open: false

@@ -1,0 +1,23 @@
+@import "libs/pen"
+
+.btn, button 
+  border 1px solid $gray-darker
+  background-color transparent
+  color $gray-darker
+  cursor pointer
+  border-radius 10px
+  
+  display flex
+  flex-direction column
+  justify-content center
+  align-items center
+  
+  text-decoration none
+  
+  &.active, &:hover
+    border-color $white
+    color $white
+  
+  
+.editor
+  padding 1rem 2rem

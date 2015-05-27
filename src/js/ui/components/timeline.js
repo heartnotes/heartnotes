@@ -1,5 +1,7 @@
 var React = require('react');
 
+var EntryList = require('./entryList');
+
 
 module.exports = React.createClass({
   propTypes: {
@@ -13,18 +15,10 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var entries = this.props.entries.map(function(entry) {
-      return (
-        <li>
-          {entry.ts} - {entry.body}
-        </li>
-      );
-    });
-
     return (
-      <ul className="entryList">
-        {entries}
-      </ul>
+      <div className="timeline">
+        <EntryList entries={this.props.entries} />
+      </div>
     );
   },
 

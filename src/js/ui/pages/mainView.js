@@ -4,7 +4,7 @@ var Router = require('react-router'),
   Link = Router.Link;
 
 var entries = require('../../data/entries'),
-  EntryList = require('../components/entryList'),
+  Timeline = require('../components/timeline'),
   Editor = require('../components/editor');
 
 
@@ -20,8 +20,8 @@ module.exports = React.createClass({
 
   render: function() { 
     return (
-      <div className="timeline">
-        <EntryList entries={this.state.entries} />
+      <div className="mainView">
+        <Timeline entries={this.state.entries} />
         <Editor />
       </div>
     );

@@ -4,12 +4,16 @@ var DefaultRoute = Router.DefaultRoute;
 var RouteHandler = Router.RouteHandler;
 var Route = Router.Route;
 
-var Timeline = require('./ui/pages/timeline');
+var Layout = require('./ui/layout');
+var MainView = require('./ui/pages/mainView');
+var NewEntry = require('./ui/pages/newEntry');
 
 var App = React.createClass({
   render: function() {
     return (
-      <RouteHandler {...this.props}/>
+      <Layout {...this.props}>
+        <RouteHandler {...this.props}/>
+      </Layout>
     );
   }
 });
@@ -17,7 +21,11 @@ var App = React.createClass({
 
 var routes = (
   <Route handler={App}>
-    <DefaultRoute name="timeline" handler={Timeline} />
+    <DefaultRoute name="mainView" handler={MainView} />
+    <Route name="newEntry" handler={NewEntry} />
+    <Route name="timeline" handler={MainView} />
+    <Route name="calendar" handler={MainView} />
+    <Route name="settings" handler={MainView} />
   </Route>
 );
 

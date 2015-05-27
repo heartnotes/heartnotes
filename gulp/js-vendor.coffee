@@ -9,8 +9,6 @@ module.exports = (paths, options = {}) ->
   return ->
     v1 = gulp.src [
       "#{paths.npm}/jquery/dist/jquery.js"
-      "#{paths.npm}/pickadate/lib/picker.js"
-      "#{paths.npm}/pickadate/lib/picker.date.js"
     ]
       .pipe concat('vendor.js')
       .pipe gulpIf(!options.debugBuild, uglify())
