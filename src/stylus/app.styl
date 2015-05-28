@@ -30,7 +30,7 @@ html
   top 0
   left 0
   width 8%
-  height 100vh
+  height 100%
 
   display flex
   flex-direction column
@@ -45,7 +45,7 @@ html
     justify-content space-around
     align-items center
     
-    height 22rem
+    height 18rem
 
     .btn
       width 100%
@@ -53,6 +53,12 @@ html
       width 3rem
       height 3rem
       font-size 1.5rem
+      border-radius 10px
+      
+      &.active, &:hover
+        border-color $white
+        color $white
+
 
 
   
@@ -68,8 +74,10 @@ html
 // lower-level
 
 @import '_widgets'
-@import '_timeline'
+@import '_mainView'
 @import '_newEntry'
+
+
 
 
 

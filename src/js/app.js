@@ -23,7 +23,6 @@ var routes = (
   <Route handler={App}>
     <DefaultRoute name="mainView" handler={MainView} />
     <Route name="newEntry" handler={NewEntry} />
-    <Route name="calendar" handler={NewEntry} />
     <Route name="settings" handler={NewEntry} />
   </Route>
 );

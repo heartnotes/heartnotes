@@ -1,0 +1,40 @@
+.mainView
+  position relative
+  
+  .timeline
+    position absolute
+    top 0
+    left 0
+    border-right 1px solid $gray
+    width 30%
+    
+  .toggle-timeline
+    position absolute
+    left 30%
+    top 0
+    border none
+    background-color $gray
+    color $gray-light
+
+    span
+      font-family 'FontAwesome'    
+      font-style normal
+      font-weight normal
+      line-height 1
+      -webkit-font-smoothing antialiased
+      transform translate(0,0)
+      transition all 0.5s
+      
+      &:before
+        content $fa-var-chevron-left
+        
+    &.closed
+      span
+        transform rotate(180deg)
+
+
+  .entryEditor
+    position absolute
+    top 0
+    left 30%
+    width 70%

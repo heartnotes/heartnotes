@@ -5,7 +5,9 @@ var Router = require('react-router'),
 
 var Entries = require('../../data/entries'),
   Timeline = require('../components/timeline'),
-  Editor = require('../components/editor');
+  Icon = require('../components/icon'),
+  ToggleButton = require('../components/toggleButton'),
+  EntryEditor = require('../components/entryEditor');
 
 
 module.exports = React.createClass({
@@ -22,8 +24,18 @@ module.exports = React.createClass({
     return (
       <div className="mainView">
         <Timeline entries={this.state.entries} />
-        <Editor />
+        <ToggleButton 
+          openClass="toggle-timeline open"
+          closeClass="toggle-timeline closed"
+          initiallyOpen={true}
+          onChange={this._onToggleTimeline} />
+        <EntryEditor />
       </div>
     );
   },
+
+
+  _onToggleTimeline: function(isOpen) {
+  },
+
 });

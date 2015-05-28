@@ -5,7 +5,6 @@
   background-color transparent
   color $gray-darker
   cursor pointer
-  border-radius 10px
   
   display flex
   flex-direction column
@@ -13,11 +12,66 @@
   align-items center
   
   text-decoration none
+    
   
-  &.active, &:hover
-    border-color $white
-    color $white
+.entryEditor
+  .meta
+    display block
+    font-size 2em
+    font-weight 100
+    text-transform uppercase
+    color $gray
+    text-align center
+    padding 0.3rem 0 0
+    
+  .editor
+    padding 1rem 2rem
+
+
+.entryList
+  display block
+  margin 0
+  padding 0
   
-  
-.editor
-  padding 1rem 2rem
+  & > div
+    display block
+    margin 0
+    border-collapse collapse
+    border-top 1px $gray-light
+    border-bottom 1px solid $gray-light
+    
+    &.month
+      text-align center
+      text-transform uppercase
+      color $gray
+      background-color $gray-light
+      font-size 80%
+      padding 0.2em 0
+      
+    &.entry
+      padding 0.5em
+      display flex
+      flex-direction row
+      justify-content space-around
+      align-items stretch
+      flex-wrap nowrap
+      transition background-color 0.5s
+      
+      &:hover
+        cursor pointer
+        background-color lighten($theme1_col5, 80%)
+      
+      .text
+        overflow hidden
+        max-height 3em
+
+      .date
+        font-size 1.4rem  
+        padding 0 0.7em 0 0.4em
+        color $gray
+      
+        display flex
+        flex-direction column
+        justify-content center
+        align-items center
+        

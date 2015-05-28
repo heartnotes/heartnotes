@@ -4,6 +4,9 @@ var Router = require('react-router'),
   Link = Router.Link;
 
 
+var Icon = require('./components/icon');
+
+
 module.exports = React.createClass({
   mixins: [ Router.State ],
 
@@ -12,19 +15,15 @@ module.exports = React.createClass({
 
     var items = [
       {
-        icon: 'fa-plus',
+        icon: 'plus',
         route: 'newEntry',
       },
       {
-        icon: 'fa-bars',
+        icon: 'bars',
         route: 'mainView',
       },
       {
-        icon: 'fa-calendar',
-        route: 'calendar',
-      },
-      {
-        icon: 'fa-wrench',
+        icon: 'wrench',
         route: 'settings'
       }
     ];
@@ -34,7 +33,7 @@ module.exports = React.createClass({
 
       return (
         <Link className={"btn " + activeClass} to={item.route}>
-          <i className={"fa " + item.icon} />
+          <Icon name={item.icon} />
         </Link>
       );
     });

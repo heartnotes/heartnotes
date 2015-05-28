@@ -3,23 +3,38 @@ var React = require('react');
 var Pen = require('pen');
 
 
+var DateString = require('./date');
+
+
 module.exports = React.createClass({
   propTypes: {
     debug: React.PropTypes.boolean,
-    body: React.PropTypes.string,
+    entry: React.PropTypes.object,
   },
 
   getDefaultProps: function() {
     return {
       debug: false,
-      body: '',
+      entry: null,
     };
   },
 
   render: function() {
+    var date = undefined, body = '';
+
+    if (this.props.entry) {
+      date = this.props.entry.ts;
+      body = this.props.entry.body;
+    }
+
     return (
-      <div className="editor">
-        <div className="pen" ref="pen" data-placeholder="Start typing here...">{this.props.body}</div>
+      <div className="entryEditor">
+        <div className="meta">
+          <DateString format="MMMM Mo" date={date} />
+        </div>
+        <div className="editor">
+          <div className="pen" ref="pen" data-placeholder="Start typing here...">{body}</div>
+        </div>
       </div>
     );
   },
@@ -44,12 +59,6 @@ module.exports = React.createClass({
         'createlink',
       ],
     });
-
-
-  },
-
-  shouldComponentUpdate: function() {
-    return false;
   },
 
 });

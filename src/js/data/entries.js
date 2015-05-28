@@ -1,11 +1,21 @@
 var faker = require('faker'),
   moment = require('moment');
 
-var data = [1,2,3,4].map(function(monthIndex) {
-  return {
-    ts: moment('2015-0' + monthIndex + '-25').startOf('day').unix(),
-    body: faker.lorem.paragraphs(5),
-  };
+var data = [];
+
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].forEach(function(monthIndex) {
+
+  var numEntriesToBuild = faker.random.number({
+    min: 1,
+    max: 28,
+  });
+
+  for (var i=0; i<numEntriesToBuild; ++i) {
+    data.push({
+      ts: moment([2014, monthIndex-1, i]).startOf('day').unix(),
+      body: faker.lorem.paragraphs(5),
+    });    
+  }
 });
 
 
@@ -31,4 +41,6 @@ exports.getToday = function() {
     return (today === entry.ts);
   })[0];
 };
+
+
 
