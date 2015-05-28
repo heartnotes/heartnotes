@@ -3,7 +3,7 @@ var React = require('react');
 var Router = require('react-router'),
   Link = Router.Link;
 
-var entries = require('../../data/entries'),
+var Entries = require('../../data/entries'),
   Timeline = require('../components/timeline'),
   Editor = require('../components/editor');
 
@@ -11,7 +11,7 @@ var entries = require('../../data/entries'),
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      entries: entries.get({
+      entries: Entries.get({
         order_by: 'date',
         order_desc: 'desc',
       })

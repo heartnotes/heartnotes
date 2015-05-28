@@ -5,19 +5,21 @@ var Pen = require('pen');
 
 module.exports = React.createClass({
   propTypes: {
-    debug: React.PropTypes.boolean
+    debug: React.PropTypes.boolean,
+    body: React.PropTypes.string,
   },
 
   getDefaultProps: function() {
     return {
       debug: false,
+      body: '',
     };
   },
 
   render: function() {
     return (
       <div className="editor">
-        <div className="pen" ref="pen">Start typing...</div>
+        <div className="pen" ref="pen" data-placeholder="Start typing here...">{this.props.body}</div>
       </div>
     );
   },

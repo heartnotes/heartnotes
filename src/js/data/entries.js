@@ -1,24 +1,13 @@
 var faker = require('faker'),
   moment = require('moment');
 
-var data = [
-  {
-    ts: moment('2015-01-25').toDate(),
+var data = [1,2,3,4].map(function(monthIndex) {
+  return {
+    ts: moment('2015-0' + monthIndex + '-25').startOf('day').unix(),
     body: faker.lorem.paragraphs(5),
-  },
-  {
-    ts: moment('2015-02-25').toDate(),
-    body: faker.lorem.paragraphs(5),
-  },
-  {
-    ts: moment('2015-03-25').toDate(),
-    body: faker.lorem.paragraphs(5),
-  },
-  {
-    ts: moment('2015-04-25').toDate(),
-    body: faker.lorem.paragraphs(5),
-  },
-]
+  };
+});
+
 
 
 /**
@@ -30,3 +19,16 @@ var data = [
 exports.get = function(options) {
   return data;
 };
+
+
+/**
+ * Get today's entry.
+ */
+exports.getToday = function() {
+  var today = moment().startOf('day').unix();
+
+  return data.filter(function(entry) {
+    return (today === entry.ts);
+  })[0];
+};
+

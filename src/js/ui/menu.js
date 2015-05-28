@@ -17,7 +17,7 @@ module.exports = React.createClass({
       },
       {
         icon: 'fa-bars',
-        route: 'timeline',
+        route: 'mainView',
       },
       {
         icon: 'fa-calendar',
