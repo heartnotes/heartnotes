@@ -1,3 +1,5 @@
+$mainViewTransitionTime = 0.5s
+
 .mainView
   position relative
   width 100%
@@ -13,14 +15,15 @@
     height auto
     overflow auto
     border-right 1px solid $gray
+    transition width $mainViewTransitionTime
     
   .toggle-timeline
     position absolute
-    left 30%
-    top 0
+    top 1em
     border none
-    background-color $gray
-    color $gray-light
+    background-color $white
+    color $gray
+    transition left $mainViewTransitionTime
 
     span
       font-family 'FontAwesome'    
@@ -28,17 +31,34 @@
       font-weight normal
       line-height 1
       -webkit-font-smoothing antialiased
-      transform translate(0,0)
-      transition all 0.5s
       
       &:before
         content $fa-var-chevron-left
         
     &.closed
-      span
-        transform rotate(180deg)
+      span:before
+        content $fa-var-chevron-right
+
 
   .entryEditor
-    width 70%
     height auto
     overflow auto
+    transition width $mainViewTransitionTime
+    
+
+  &.split
+    .timeline
+      width 30%
+    .entryEditor
+      width 70%
+    .toggle-timeline
+      left 32%
+
+  &.noTimeline
+    .timeline
+      width 0
+    .entryEditor
+      width 100%
+    .toggle-timeline
+      left 2%
+

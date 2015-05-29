@@ -16,13 +16,14 @@ module.exports = React.createClass({
       entries: Entries.get({
         order_by: 'date',
         order_desc: 'desc',
-      })
+      }),
+      layout: 'split'
     };
   },
 
   render: function() { 
     return (
-      <div className="mainView">
+      <div className={"mainView " + this.state.layout}>
         <Timeline entries={this.state.entries} />
         <ToggleButton 
           openClass="toggle-timeline open"
@@ -36,6 +37,9 @@ module.exports = React.createClass({
 
 
   _onToggleTimeline: function(isOpen) {
+    this.setState({
+      layout: (isOpen ? 'split' : 'noTimeline')
+    });
   },
 
 });
