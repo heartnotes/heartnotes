@@ -7,12 +7,16 @@ var EntryList = require('./entryList'),
 module.exports = React.createClass({
   propTypes: {
     entries : React.PropTypes.array,
+    selected : React.PropTypes.string,
     updateFilter: React.PropTypes.func,
+    onSelect: React.PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
       entries : [],
+      selected: null,
+      onSelect: null,
       updateFilter: null,
     };
   },
@@ -21,7 +25,10 @@ module.exports = React.createClass({
     return (
       <div className="timeline">
         <EntryListFilter onUpdate={this.props.updateFilter} />
-        <EntryList entries={this.props.entries} />
+        <EntryList 
+          entries={this.props.entries} 
+          selected={this.props.selected}
+          onSelect={this.props.onSelect} />
       </div>
     );
   },

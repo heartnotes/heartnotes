@@ -1,4 +1,5 @@
-var React = require('react');
+var _ = require('lodash'),
+  React = require('react');
 
 var Router = require('react-router'),
   Link = Router.Link;
@@ -13,26 +14,47 @@ var Entries = require('../../data/entries'),
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      entries: Entries.get({
+      entries: Entries.search({
         order_by: 'date',
         order_desc: 'desc',
       }),
+      selected: null,
       layout: 'split'
     };
   },
 
   render: function() { 
+    var self = this;
+
+    var editingEntry = null;
+
+    if (self.state.selected) {
+      var editingEntry = _.find(this.state.entries, function(entry) {
+        return entry.id === self.state.selected;
+      });
+    }
+
     return (
       <div className={"mainView " + this.state.layout}>
-        <Timeline entries={this.state.entries} />
+        <Timeline 
+          entries={this.state.entries} 
+          selected={this.state.selected}
+          onSelect={this._onSelect} />
         <ToggleButton 
           openClass="toggle-timeline open"
           closeClass="toggle-timeline closed"
           initiallyOpen={true}
           onChange={this._onToggleTimeline} />
-        <EntryEditor />
+        <EntryEditor entry={editingEntry} />
       </div>
     );
+  },
+
+
+  _onSelect: function(entryId) {
+    this.setState({
+      selected: entryId
+    });
   },
 
 

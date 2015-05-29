@@ -5,7 +5,7 @@ module.exports = React.createClass({
   propTypes: {
     openClass : React.PropTypes.string,
     closeClass : React.PropTypes.string,
-    initiallyOpen: React.PropTypes.boolean,
+    initiallyOpen: React.PropTypes.bool,
     onChange: React.PropTypes.func,
   },
 

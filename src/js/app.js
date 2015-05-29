@@ -1,22 +1,29 @@
 var React = require('react');
 var Router = require('react-router');
-var DefaultRoute = Router.DefaultRoute;
-var RouteHandler = Router.RouteHandler;
-var Route = Router.Route;
 
-var Layout = require('./ui/layout');
-var MainView = require('./ui/pages/mainView');
-var NewEntry = require('./ui/pages/newEntry');
+var { Route, DefaultRoute, RouteHandler } = Router;
 
-var App = React.createClass({
-  render: function() {
+
+ 
+
+
+
+class App extends React.Component {
+  render() {
     return (
       <Layout {...this.props}>
         <RouteHandler {...this.props}/>
       </Layout>
     );
   }
-});
+}
+
+
+
+
+var Layout = require('./ui/layout');
+var MainView = require('./ui/pages/mainView');
+var NewEntry = require('./ui/pages/newEntry');
 
 
 var routes = (

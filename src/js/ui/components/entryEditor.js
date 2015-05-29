@@ -3,12 +3,13 @@ var React = require('react');
 var Pen = require('pen');
 
 
-var DateString = require('./date');
+var Entries = require('../../data/entries'),
+  DateString = require('./date');
 
 
 module.exports = React.createClass({
   propTypes: {
-    debug: React.PropTypes.boolean,
+    debug: React.PropTypes.bool,
     entry: React.PropTypes.object,
   },
 
@@ -39,6 +40,12 @@ module.exports = React.createClass({
     );
   },
 
+  componentWillUnmount: function() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
+  },
+
   componentDidMount: function() {
     var domNode = React.findDOMNode(this.refs.pen);
 
@@ -59,6 +66,10 @@ module.exports = React.createClass({
         'createlink',
       ],
     });
+
+    this.editor.on('change', _.bind(function(newContent) {
+      Entries.update(this.entry ? this.entry.id : null, newContent);
+    }, this));
   },
 
 });

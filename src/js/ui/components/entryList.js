@@ -11,12 +11,14 @@ var DateString = require('./date');
 module.exports = React.createClass({
   propTypes: {
     entries : React.PropTypes.array,
+    selected: React.PropTypes.string,
     truncLength: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
       entries : [],
+      selected: null,
       truncLength: 300,
     };
   },
@@ -27,7 +29,7 @@ module.exports = React.createClass({
     var listItems = [],
       lastMonthYear = moment(0);
 
-    this.props.entries.forEach(function(entry) {
+    self.props.entries.forEach(function(entry) {
       var date = moment.unix(entry.ts);
 
       // if month different to current month then set as current month and display it
@@ -40,30 +42,42 @@ module.exports = React.createClass({
         }
 
         listItems.push(
-          <div className="month">
+          <li className="month" key={date.valueOf()}>
             <DateString format={monthFormat} date={date} /> 
-          </div>
+          </li>
         );
 
         lastMonthYear = date;
       }
 
-      var pruned = _.trunc(entry.body, self.props.truncLength);
+      var pruned = _.trunc(entry.body, self.props.truncLength),
+        selectedClass = (self.props.selected === entry.id ? 'selected': '');
 
       listItems.push(
-        <div className="entry">
-          <DateString format="D" date={date} /> 
-          <span className="text">{pruned}</span>
-        </div>
+        <li key={entry.id} 
+          data-id={entry.id} 
+          className={"entry " + selectedClass}
+          onClick={self._onSelect}>
+            <DateString format="D" date={date} /> 
+            <span className="text">{pruned}</span>
+        </li>
       )
     });
 
     return (
-      <div className="entryList">
+      <ul className="entryList">
         {listItems}
-      </div>
+      </ul>
     );
   },
+
+
+  _onSelect: function(e) {
+    if (this.props.onSelect) {
+      this.props.onSelect(e.currentTarget.dataset.id);
+    }
+  },
+
 
 });
 

@@ -28,12 +28,13 @@
     padding 1rem 2rem
 
 
-.entryList
+ul.entryList
   display block
+  list-style none
   margin 0
   padding 0
   
-  & > div
+  li
     display block
     margin 0
     border-collapse collapse
@@ -57,7 +58,7 @@
       flex-wrap nowrap
       transition background-color 0.5s
       
-      &:hover
+      &:hover, &.selected
         cursor pointer
         background-color lighten($theme1_col5, 80%)
       

@@ -12,6 +12,7 @@ var data = [];
 
   for (var i=0; i<numEntriesToBuild; ++i) {
     data.push({
+      id: faker.random.uuid(),
       ts: moment([2014, monthIndex-1, i]).startOf('day').unix(),
       body: faker.lorem.paragraphs(5),
     });    
@@ -26,15 +27,50 @@ var data = [];
  * @return {Date} options.start start date of date range.
  * @return {Date} options.end end date of date range.
  */
-exports.get = function(options) {
+exports.search = function(options) {
   return data;
 };
+
+
+
+/** 
+ * Get entry with given id.
+ * @param  {String} id
+ */
+exports.get = function(id) {
+  return data.filter(function(entry) {
+    return (id === entry.id);
+  })[0];
+};
+
 
 
 /**
  * Get today's entry.
  */
 exports.getToday = function() {
+  var today = moment().startOf('day').unix();
+
+  return data.filter(function(entry) {
+    return (today === entry.ts);
+  })[0];
+};
+
+
+
+/**
+ * Update an entry.
+ *
+ * @param {String} id Entry id. If null then assumed to be today's.
+ * @param {String} newContentText.
+ */
+exports.update = function(id, newContentText) {
+  var entry;
+
+  if (!id) {
+    // entry = this.
+  }
+
   var today = moment().startOf('day').unix();
 
   return data.filter(function(entry) {
