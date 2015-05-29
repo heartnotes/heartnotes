@@ -3,8 +3,7 @@ var React = require('react');
 var Pen = require('pen');
 
 
-var Entries = require('../../data/entries'),
-  DateString = require('./date');
+var DateString = require('./date');
 
 
 module.exports = React.createClass({
@@ -68,7 +67,7 @@ module.exports = React.createClass({
     });
 
     this.editor.on('change', _.bind(function(newContent) {
-      Entries.update(this.entry ? this.entry.id : null, newContent);
+      console.log(newContent);
     }, this));
   },
 

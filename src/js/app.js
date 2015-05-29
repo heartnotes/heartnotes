@@ -4,20 +4,28 @@ var Router = require('react-router');
 var { Route, DefaultRoute, RouteHandler } = Router;
 
 
- 
-
+// Flux
+import { FluxComponent } from 'flummox';
+import { FluxManager } from './store/manager';
 
 
 class App extends React.Component {
+  constructor() {
+    super()
+
+    this.flux = new FluxManager();
+  }
+
   render() {
     return (
-      <Layout {...this.props}>
-        <RouteHandler {...this.props}/>
-      </Layout>
+      <FluxComponent flux={this.flux}>
+        <Layout {...this.props}>
+          <RouteHandler {...this.props}/>
+        </Layout>
+      </FluxComponent>
     );
   }
 }
-
 
 
 
@@ -41,5 +49,5 @@ Router.run(routes, Router.HashLocation, function(Handler, state) {
     $('main').get(0)
   );
 });
-
+ 
 

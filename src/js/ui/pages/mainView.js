@@ -4,8 +4,7 @@ var _ = require('lodash'),
 var Router = require('react-router'),
   Link = Router.Link;
 
-var Entries = require('../../data/entries'),
-  Timeline = require('../components/timeline'),
+var Timeline = require('../components/timeline'),
   Icon = require('../components/icon'),
   ToggleButton = require('../components/toggleButton'),
   EntryEditor = require('../components/entryEditor');
@@ -14,10 +13,7 @@ var Entries = require('../../data/entries'),
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      entries: Entries.search({
-        order_by: 'date',
-        order_desc: 'desc',
-      }),
+      entries: [],
       selected: null,
       layout: 'split'
     };
