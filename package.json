@@ -28,10 +28,9 @@
     "marked": "^0.3.3",
     "moment": "~2.10.3",
     "nib": "~1.1.0",
-    "pen": "git://github.com/sofish/pen.git#80c1a8cfe1c72bb57a4216ee57913585151b5431",
     "pickadate": "~3.5.6",
     "react": "~0.13.3",
-    "react-router": "~0.13.3",
+    "react-router": "git://github.com/rackt/react-router.git#0abb852520ea26b6a57198d8e7c4fbdf3baa7a90",
     "reactify": "~1.1.1",
     "rupture": "~0.6.1",
     "vinyl-source-stream2": "~0.1.1",
@@ -46,9 +45,7 @@
     ]
   },
   "browser": {
-    "pen": "./node_modules/pen/src/pen.js"
+    "react-router": "./node_modules/react-router/lib/umd/ReactRouter.js"
   },
-  "browserify-shim": {
-    "pen": "Pen"
-  }
+  "browserify-shim": {}
 }

@@ -1,14 +1,23 @@
+var _ = require('lodash');
+
 import { Flux } from 'flummox';
 
-import { EntryActions } from './actions';
-import { EntryStore } from './entries';
+var actions = require('./actions'),
+  stores = require('./stores');
 
 
-export class FluxManager extends Flux {
+export default class FluxManager extends Flux {
   constructor() {
     super();
 
-    this.createActions('entry', EntryActions);
-    this.createStore('entries', EntryStore);
+    _.forEach(actions, function(klass, name) {
+      this.createActions(name, klass);
+    }, this);
+
+    _.forEach(stores, function(klass, name) {
+      this.createStore(name, klass, this);
+    }, this);
   }
 }
+
+

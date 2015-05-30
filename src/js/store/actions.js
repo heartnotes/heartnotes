@@ -1,6 +1,6 @@
 import { Actions } from 'flummox';
 
-export class EntryActions extends Actions {
+class EntryActions extends Actions {
   update(entryId, content) {
     return {
       id: entryId,
@@ -8,3 +8,9 @@ export class EntryActions extends Actions {
     };
   }
 }
+
+
+
+module.exports = {
+  entry: EntryActions
+};

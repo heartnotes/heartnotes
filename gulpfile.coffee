@@ -25,11 +25,13 @@ paths =
     img: path.join(__dirname, 'src', 'img')
     jade: path.join(__dirname, 'src', 'jade')
     fonts: path.join(__dirname, 'src', 'fonts')
+    ckeditor: path.join(__dirname, 'src', 'lib', 'ckeditor')
   build: 
     html: path.join(__dirname, 'build') 
     css: path.join(__dirname, 'build', 'css') 
     img: path.join(__dirname, 'build', 'img') 
     js: path.join(__dirname, 'build', 'js') 
+    ckeditor: path.join(__dirname, 'build', 'ckeditor') 
     fonts: path.join(__dirname, 'build', 'fonts') 
   files: {}
   watch: {}

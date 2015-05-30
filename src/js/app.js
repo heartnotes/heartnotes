@@ -3,40 +3,41 @@ var Router = require('react-router');
 
 var { Route, DefaultRoute, RouteHandler } = Router;
 
-
 // Flux
-import { FluxComponent } from 'flummox';
-import { FluxManager } from './store/manager';
+import FluxComponent from 'flummox/component';
+import FluxManager from './store/manager';
 
 
-class App extends React.Component {
-  constructor() {
-    super()
+var Layout = require('./ui/layout');
+// var MainView = require('./ui/pages/mainView');
+var NewEntry = require('./ui/pages/newEntry');
 
-    this.flux = new FluxManager();
-  }
 
-  render() {
+
+
+var App = React.createClass({
+  getInitialState: function() {
+    return {
+      flux: new FluxManager()
+    };
+  },
+
+  render: function() {
     return (
-      <FluxComponent flux={this.flux}>
+      <FluxComponent flux={this.state.flux}>
         <Layout {...this.props}>
           <RouteHandler {...this.props}/>
         </Layout>
       </FluxComponent>
     );
   }
-}
+});
 
 
-
-var Layout = require('./ui/layout');
-var MainView = require('./ui/pages/mainView');
-var NewEntry = require('./ui/pages/newEntry');
-
+    // <DefaultRoute name="mainView" handler={MainView} />
 
 var routes = (
   <Route handler={App}>
-    <DefaultRoute name="mainView" handler={MainView} />
     <Route name="newEntry" handler={NewEntry} />
     <Route name="settings" handler={NewEntry} />
   </Route>

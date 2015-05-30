@@ -3,7 +3,7 @@ gulp = require 'gulp'
 
 module.exports = (paths, options = {}) ->
   return {
-    deps: ['fonts', 'jade', 'css', 'img', 'js-vendor']
+    deps: ['ckeditor', 'fonts', 'jade', 'css', 'img', 'js-vendor']
     task: ->
       options.dontExitOnError = true
       gulp.watch paths.watch.img, ['img']

@@ -1,6 +1,5 @@
-var React = require('react');
-
-var Pen = require('pen');
+var _ = require('lodash'),
+  React = require('react');
 
 
 var DateString = require('./date');
@@ -33,7 +32,7 @@ module.exports = React.createClass({
           <DateString format="MMMM Mo" date={date} />
         </div>
         <div className="editor">
-          <div className="pen" ref="pen" data-placeholder="Start typing here...">{body}</div>
+          <div ref="editorText"></div>
         </div>
       </div>
     );
@@ -46,29 +45,9 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    var domNode = React.findDOMNode(this.refs.pen);
+    var textNode = React.findDOMNode(this.refs.editorText);
 
-    this.editor = new Pen({
-      editor: domNode,
-      class: 'pen',
-      debug: this.props.debug,
-      textarea: '<textarea name="pen"></textarea>',
-      list: [
-        'blockquote', 
-        'h2', 
-        'h3', 
-        'insertorderedlist', 
-        'insertunorderedlist',
-        'bold', 
-        'italic', 
-        'underline',
-        'createlink',
-      ],
-    });
-
-    this.editor.on('change', _.bind(function(newContent) {
-      console.log(newContent);
-    }, this));
+    this.editor = CKEDITOR.replace(textNode);
   },
 
 });
