@@ -16,12 +16,12 @@ module.exports = (paths, options = {}) ->
       use: [ nib(), rupture() ]
     })
 
-    gulp.src "#{paths.src.stylus}/app.styl"
+    gulp.src "#{paths.src.stylus}/ckeditor/contents.styl"
       .pipe stylusCompiler
       .on 'error', (err) ->
         gutil.log err.stack
         stylusCompiler.end()
       .pipe prefix()
-      .pipe concat('app.css')
+      .pipe concat('contents.css')
       .pipe gulpIf(!options.debugBuild, minifyCss())
-      .pipe gulp.dest(paths.build.css)
+      .pipe gulp.dest(paths.build.ckeditor)

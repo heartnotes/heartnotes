@@ -1,3 +1,4 @@
+
 .btn, button 
   border 1px solid $gray-darker
   background-color transparent
@@ -24,6 +25,17 @@
     
   .editor
     padding 1rem 2rem
+    
+    // ckeditor overrides
+    .cke_top[role=presentation]
+      padding 0
+    .cke_toolbox
+      display none !important
+    .cke_floatingtools
+      background-color #fff
+    .cke_chrome
+      border none !important
+
 
 
 ul.entryList

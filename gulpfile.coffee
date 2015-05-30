@@ -38,7 +38,6 @@ paths =
 
 
 # Stylus
-paths.files.stylus = path.join(paths.src.stylus, 'app.styl')
 paths.watch.stylus = path.join(paths.src.stylus, '**', '**', '*.styl')
 
 # Img 

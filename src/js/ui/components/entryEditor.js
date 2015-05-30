@@ -47,7 +47,13 @@ module.exports = React.createClass({
   componentDidMount: function() {
     var textNode = React.findDOMNode(this.refs.editorText);
 
-    this.editor = CKEDITOR.replace(textNode);
+    this.editor = CKEDITOR.replace(textNode, {
+      extraPlugins: 'floating-tools,autogrow',
+      enterMode: CKEDITOR.ENTER_BR,
+      autoGrow_onStartup: true,
+      startupFocus: true,
+      placeholder: 'Type here...',
+    });
   },
 
 });
