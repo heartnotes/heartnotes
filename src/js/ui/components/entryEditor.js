@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  moment = require('moment'),
   React = require('react');
 
 
@@ -22,7 +23,7 @@ module.exports = React.createClass({
     var date = undefined, body = '';
 
     if (this.props.entry) {
-      date = this.props.entry.ts;
+      date = moment.unix(this.props.entry.ts);
       body = this.props.entry.body;
     }
 
@@ -32,7 +33,7 @@ module.exports = React.createClass({
           <DateString format="MMMM Mo" date={date} />
         </div>
         <div className="editor">
-          <div ref="editorText"></div>
+          <div ref="editorText">{body}</div>
         </div>
       </div>
     );
@@ -54,6 +55,12 @@ module.exports = React.createClass({
       startupFocus: true,
       placeholder: 'Type here...',
     });
+
+    this.editor.on('change', _.bind(function() {
+      var entryId = this.props.entry ? this.props.entry.id : null;
+
+      this.props.flux.getActions('entry').update(entryId, this.editor.getData());
+    }, this));
   },
 
 });
