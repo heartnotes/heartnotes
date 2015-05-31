@@ -29,7 +29,7 @@ module.exports = React.createClass({
     var listItems = [],
       lastMonthYear = moment(0);
 
-    self.props.entries.forEach(function(entry) {
+    _.forEach(self.props.entries, function(entry) {
       var date = moment.unix(entry.ts);
 
       // if month different to current month then set as current month and display it

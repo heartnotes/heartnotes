@@ -16,14 +16,10 @@ module.exports = React.createClass({
         icon: 'plus',
         route: 'newEntry',
       },
-      // {
-      //   icon: 'bars',
-      //   route: 'mainView',
-      // },
       {
-        icon: 'wrench',
-        route: 'settings'
-      }
+        icon: 'bars',
+        route: 'entries',
+      },
     ];
 
     var buttons = items.map(function(item) {

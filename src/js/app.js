@@ -9,7 +9,7 @@ import FluxManager from './store/manager';
 
 
 var Layout = require('./ui/layout');
-// var MainView = require('./ui/pages/mainView');
+var EntriesView = require('./ui/pages/entries');
 var NewEntry = require('./ui/pages/newEntry');
 
 
@@ -34,12 +34,11 @@ var App = React.createClass({
 });
 
 
-    // <DefaultRoute name="mainView" handler={MainView} />
 
 var routes = (
   <Route handler={App}>
-    <Route name="newEntry" handler={NewEntry} />
-    <Route name="settings" handler={NewEntry} />
+    <DefaultRoute name="newEntry" handler={NewEntry} />
+    <Route name="entries" path="/:entryId?" handler={EntriesView} />
   </Route>
 );
 
