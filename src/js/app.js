@@ -38,7 +38,7 @@ var App = React.createClass({
 var routes = (
   <Route handler={App}>
     <DefaultRoute name="newEntry" handler={NewEntry} />
-    <Route name="entries" path="/:entryId?" handler={EntriesView} />
+    <Route name="entries" path="/entries/:entryId?" handler={EntriesView} />
   </Route>
 );
 

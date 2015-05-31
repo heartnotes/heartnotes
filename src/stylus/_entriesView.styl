@@ -3,12 +3,17 @@ $mainViewTransitionTime = 0.4s
 .entriesView
   position relative
   width 100%
-  height 100vh
-  display flex
-  flex-direction row
-  justify-content space-around
-  align-items stretch
-  overflow hidden
+  height 100%
+  
+  // span inserted by FluxComponent
+  & > span
+    display flex
+    flex-direction row
+    justify-content space-around
+    align-items stretch
+    overflow hidden
+    height 100%
+    width 100%
   
   .timeline
     width 30%
