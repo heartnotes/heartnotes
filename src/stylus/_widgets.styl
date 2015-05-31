@@ -14,27 +14,28 @@
     
   
 .entryEditor
+  height 100%
+  width 100%
+  display table
+  
   .meta
-    display block
+    display table-row
+    height 2rem
+    text-align center
     font-size 2em
     font-weight 100
     text-transform uppercase
     color $gray
-    text-align center
-    padding 0.3rem 0 0
     
   .editor
-    padding 1rem 2rem
-    
-    // ckeditor overrides
-    .cke_top[role=presentation]
-      padding 0
-    .cke_toolbox
-      display none !important
-    .cke_floatingtools
-      background-color #fff
-    .cke_chrome
-      border none !important
+    display table-row
+    .body
+      // ckeditor overrides
+      .cke_top[role=presentation]
+        height 2rem
+        padding 0.1em 0 0
+    // .cke_chrome
+      // border none !important
 
 
 

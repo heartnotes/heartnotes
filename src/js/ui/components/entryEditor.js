@@ -33,7 +33,7 @@ module.exports = React.createClass({
           <DateString format="MMMM Mo" date={date} />
         </div>
         <div className="editor">
-          <div ref="editorText">{body}</div>
+          <div ref="editorBody" className="body">{body}</div>
         </div>
       </div>
     );
@@ -46,10 +46,11 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    var textNode = React.findDOMNode(this.refs.editorText);
+    var textNode = React.findDOMNode(this.refs.editorBody);
 
     this.editor = CKEDITOR.replace(textNode, {
-      extraPlugins: 'floating-tools,autogrow',
+      extraPlugins: 'maxheight',
+      removePlugins: 'autogrow,floating-tools',
       enterMode: CKEDITOR.ENTER_BR,
       autoGrow_onStartup: true,
       startupFocus: true,
