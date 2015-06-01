@@ -2,8 +2,11 @@ var _ = require('lodash');
 
 import { Flux } from 'flummox';
 
-var actions = require('./actions'),
-  stores = require('./stores');
+var actions = require('./actions');
+
+var stores = {
+  entries: require('./entryStore')
+};
 
 
 export default class FluxManager extends Flux {

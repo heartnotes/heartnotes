@@ -5,7 +5,7 @@ var { Route, DefaultRoute, RouteHandler } = Router;
 
 // Flux
 import FluxComponent from 'flummox/component';
-import FluxManager from './store/manager';
+import FluxManager from './data/fluxManager';
 
 
 var Layout = require('./ui/layout');

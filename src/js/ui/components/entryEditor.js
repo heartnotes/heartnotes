@@ -23,7 +23,7 @@ module.exports = React.createClass({
     var date = undefined, body = '';
 
     if (this.props.entry) {
-      date = moment.unix(this.props.entry.ts);
+      date = moment(this.props.entry.ts);
       body = this.props.entry.body;
     }
 
@@ -63,8 +63,6 @@ module.exports = React.createClass({
       clearTimeout(this.editorSaveTimeout);
 
       this.editorSaveTimeout = setTimeout(_.bind(function() {
-        console.log(123);
-
         var entryId = this.props.entry ? this.props.entry.id : null;
 
         this.props.flux.getActions('entry').update(entryId, this.editor.getData());

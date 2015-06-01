@@ -31,7 +31,7 @@ module.exports = React.createClass({
       lastMonthYear = moment(0);
 
     _.forEach(self.props.entries, function(entry) {
-      var date = moment.unix(entry.ts);
+      var date = moment(entry.ts);
 
       // if month different to current month then set as current month and display it
       if (date.month() !== lastMonthYear.month() || date.year() !== lastMonthYear.year()) {

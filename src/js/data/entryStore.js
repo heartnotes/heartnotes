@@ -2,7 +2,6 @@ var _ = require('lodash'),
   faker = require('faker'),
   moment = require('moment');
 
-
 import { Store } from 'flummox';
 
 
@@ -30,7 +29,7 @@ _.forEach(range, function(months, year) {
 
       data[id] = {
         id: id,
-        ts: d.unix(),
+        ts: d.valueOf(),
         body: faker.lorem.paragraphs(5),
       };    
     }
@@ -38,8 +37,10 @@ _.forEach(range, function(months, year) {
 });
 
 
+var SearchIndex = require('./searchIndex');
 
-class EntryStore extends Store {
+
+export default class EntryStore extends Store {
 
   constructor(flux) {
     super();
@@ -50,6 +51,8 @@ class EntryStore extends Store {
 
     const entryActionIds = flux.getActionIds('entry');
     this.register(entryActionIds.update, this.updateEntry);
+
+    this.searchIndex = new SearchIndex();
   }
 
 
@@ -64,7 +67,7 @@ class EntryStore extends Store {
 
 
   getByDate (date) {
-    var ts = moment(date).startOf('day').unix();
+    var ts = moment(date).startOf('day').valueOf();
 
     return _.find(this.state.entries, function(e) {
       return e.ts === ts;
@@ -87,9 +90,11 @@ class EntryStore extends Store {
 
       var entry = {
         id: id,
-        ts: moment().startOf('day').unix(),
+        ts: moment().startOf('day').valueOf(),
         body: content
       };
+
+      this.searchIndex.add(entry);
 
       this.state.entries[id] = entry;
     } else {
@@ -99,6 +104,8 @@ class EntryStore extends Store {
 
       if (entry) {
         entry.body = content;
+
+        this.searchIndex.update(entry);
       }
     }
 
@@ -106,16 +113,5 @@ class EntryStore extends Store {
   }
 
 }
-
-
-
-
-
-module.exports = {
-  entries: EntryStore
-};
-
-
-
 
 
