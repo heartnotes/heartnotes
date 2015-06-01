@@ -4,7 +4,8 @@ var _ = require('lodash'),
   moment = require('moment');
 
 
-var DateString = require('./date');
+var FormatUtils = require('../../utils/format'),
+  DateString = require('./date');
 
 
 
@@ -50,7 +51,8 @@ module.exports = React.createClass({
         lastMonthYear = date;
       }
 
-      var pruned = _.trunc(entry.body, self.props.truncLength),
+      var entryText = FormatUtils.htmlToStr(entry.body),
+        pruned = _.trunc(entryText, self.props.truncLength),
         selectedClass = (self.props.selected === entry.id ? 'selected': '');
 
       listItems.push(

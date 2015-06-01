@@ -22,18 +22,16 @@ module.exports = React.createClass({
   },
 
   render: function() { 
-    var selected = this.props.params.entryId;
-
     return (
       <div className={"entriesView " + this.state.layout}>
         <FluxComponent connectToStores={{
           entries: store => ({
-            entry: store.get(selected),
+            entry: store.get(this.props.params.entryId),
             entries: store.search(),
           }),
         }}>
           <Timeline 
-            selected={selected}
+            selected={this.props.params.entryId}
             onSelect={this._onSelect} />
           <ToggleButton 
             openClass="toggle-timeline open"

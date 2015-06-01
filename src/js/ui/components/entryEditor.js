@@ -41,6 +41,7 @@ module.exports = React.createClass({
 
   componentWillUnmount: function() {
     if (this.editor) {
+      clearTimeout(this.editorSaveTimeout);
       this.editor.destroy();
     }
   },
@@ -57,11 +58,44 @@ module.exports = React.createClass({
       placeholder: 'Type here...',
     });
 
+    // save content every 2 seconds
     this.editor.on('change', _.bind(function() {
-      var entryId = this.props.entry ? this.props.entry.id : null;
+      clearTimeout(this.editorSaveTimeout);
 
-      this.props.flux.getActions('entry').update(entryId, this.editor.getData());
+      this.editorSaveTimeout = setTimeout(_.bind(function() {
+        console.log(123);
+
+        var entryId = this.props.entry ? this.props.entry.id : null;
+
+        this.props.flux.getActions('entry').update(entryId, this.editor.getData());
+      }, this), 2000); 
+
+
     }, this));
+
+    this._setBody();
+  },
+
+
+  shouldComponentUpdate: function(newProps, newState) {
+    var newId = newProps.entry ? newProps.entry.id : -1,
+      oldId = this.props.entry ? this.props.entry.id : -2;
+
+    return (newId !== oldId);
+  },
+
+
+  componentDidUpdate: function() {
+    this._setBody();
+  },
+
+
+  _setBody: function() {
+    if (this.props.entry) {
+      this.editor.setData(this.props.entry.body, {
+        noSnapshot: true
+      });
+    }
   },
 
 });
