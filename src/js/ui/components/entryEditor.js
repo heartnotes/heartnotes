@@ -2,6 +2,8 @@ var _ = require('lodash'),
   moment = require('moment'),
   React = require('react');
 
+import { Timer } from 'clockmaker';
+
 
 var DateString = require('./date');
 
@@ -20,17 +22,17 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var date = undefined, body = '';
+    var entryDate = undefined, body = '';
 
     if (this.props.entry) {
-      date = moment(this.props.entry.ts);
+      entryDate = moment(this.props.entry.ts);
       body = this.props.entry.body;
     }
 
     return (
       <div className="entryEditor">
         <div className="meta">
-          <DateString format="MMMM Mo" date={date} />
+          <DateString format="MMMM Do" date={entryDate} />
         </div>
         <div className="editor">
           <div ref="editorBody" className="body">{body}</div>
@@ -41,7 +43,10 @@ module.exports = React.createClass({
 
   componentWillUnmount: function() {
     if (this.editor) {
-      clearTimeout(this.editorSaveTimeout);
+      if (this.editorSaveTimeout) {
+        this.editorSaveTimeout.stop();
+      }
+
       this.editor.destroy();
     }
   },
@@ -60,14 +65,18 @@ module.exports = React.createClass({
 
     // save content every 2 seconds
     this.editor.on('change', _.bind(function() {
-      clearTimeout(this.editorSaveTimeout);
+      if (this.editorSaveTimeout) {
+        this.editorSaveTimeout.stop();
+      }
 
-      this.editorSaveTimeout = setTimeout(_.bind(function() {
+      this.editorSaveTimeout = Timer(function() {
         var entryId = this.props.entry ? this.props.entry.id : null;
 
         this.props.flux.getActions('entry').update(entryId, this.editor.getData());
-      }, this), 2000); 
-
+      }, 2000, {
+        thisObj: this
+      })
+        .start();
 
     }, this));
 

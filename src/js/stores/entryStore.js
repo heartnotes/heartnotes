@@ -42,8 +42,10 @@ var SearchIndex = require('./searchIndex');
 
 export default class EntryStore extends Store {
 
-  constructor(flux) {
+  constructor(flux, logger) {
     super();
+
+    this.logger = logger;
 
     this.state = {
       entries: data,
@@ -52,21 +54,27 @@ export default class EntryStore extends Store {
     const entryActionIds = flux.getActionIds('entry');
     this.register(entryActionIds.update, this.updateEntry);
 
-    this.searchIndex = new SearchIndex();
+    this.searchIndex = new SearchIndex(this.logger.create('index'));
   }
 
 
   search () {
+    this.logger.debug('search');
+
     return this.state.entries;
   }
 
 
   get (entryId) {
+    this.logger.debug('get', entryId);
+
     return this.state.entries[entryId];
   }
 
 
   getByDate (date) {
+    this.logger.debug('get by date', date);
+
     var ts = moment(date).startOf('day').valueOf();
 
     return _.find(this.state.entries, function(e) {
@@ -76,6 +84,8 @@ export default class EntryStore extends Store {
 
 
   getToday () {
+    this.logger.debug('get today');
+
     return this.getByDate(moment());
   }
 
@@ -83,10 +93,14 @@ export default class EntryStore extends Store {
   updateEntry(params) {
     var {id, content} = params;
 
+    this.logger.debug('update entry', id, content.length);
+
     var entry;
 
     if (!id) {
       id = faker.random.uuid();
+
+      this.logger.debug('create entry', id);
 
       var entry = {
         id: id,

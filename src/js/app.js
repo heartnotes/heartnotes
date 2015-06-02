@@ -5,9 +5,10 @@ var { Route, DefaultRoute, RouteHandler } = Router;
 
 // Flux
 import FluxComponent from 'flummox/component';
-import FluxManager from './data/fluxManager';
+import FluxManager from './stores/fluxManager';
 
 
+var Logger = require('./utils/logger');
 var Layout = require('./ui/layout');
 var EntriesView = require('./ui/pages/entries');
 var NewEntry = require('./ui/pages/newEntry');
@@ -17,8 +18,11 @@ var NewEntry = require('./ui/pages/newEntry');
 
 var App = React.createClass({
   getInitialState: function() {
+    var logger = new Logger(null, 'debug');
+
     return {
-      flux: new FluxManager()
+      logger: logger,
+      flux: new FluxManager(logger)
     };
   },
 
