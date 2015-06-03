@@ -1,9 +1,10 @@
 "use strict";
 
-var sjcl = require('sjcl');
+var sjcl = require('./sjcl');
 
 import { Timer } from 'clockmaker';
-import { Store } from 'flummox';
+var Store = require('../store');
+
 
 var randomNumGenerator = sjcl.random;
 
@@ -12,21 +13,21 @@ var randomNumGenerator = sjcl.random;
 /** 
  * Cryptographic PRNG data generator.
  */
-export default class Random extends Store {
+export default class Csrng extends Store {
   constructor (flux, logger) {
-    super();
-
-    this.logger = logger;
-
-    this.state = {
-      gotEntropy: false
-    };
+    super(flux, logger);
 
     this._initEntropyCollector();
 
-    this._pendingRequests = [];
+    this.state = {
+      needEntropy: true
+    };
   }
 
+
+  _hasEntropy () {
+    return !(randomNumGenerator.isReady() === randomNumGenerator._NOT_READY);
+  }
 
 
   _initEntropyCollector () {
@@ -38,29 +39,26 @@ export default class Random extends Store {
     // poll until we have entropy
     this._entropyCollectorTimer = Timer(function(timer) {
 
-      var needMoreEntropy = 
-        (randomNumGenerator.isReady() === randomNumGenerator._NOT_READY);
+      this.logger.debug('check entropy level');
+
+      var needEntropy = !(this._hasEntropy());
 
       // update state if necessary
-      if (needMoreEntropy) {
+      if (needEntropy) {
         this.logger.info('waiting for entropy');
 
-        if (this.state.gotEntropy) {
-          this.setState({
-            gotEntropy: false
-          });
-        }
+        this.setState({
+          needEntropy: true
+        });
       } else {
         this.logger.info('got entropy');
 
-        if (!this.state.gotEntropy) {
-          this.setState({
-            gotEntropy: true
-          });
+        this.setState({
+          needEntropy: false
+        });
 
-          // don't need to check anymore
-          timer.stop();
-        }
+        // don't need to check anymore
+        timer.stop();
       }
 
     }, 100, {
@@ -80,20 +78,20 @@ export default class Random extends Store {
    * @return {Promise} resolved with an Array of values if successful.
    */
   getRandomBytes (numBytes = 32) {
-    this.logger.debug('get random bytes', numBytes);
-
     var self = this;
+
+    self.logger.debug('get random bytes', numBytes);
 
     return new Promise(function(resolve, reject) {
       Timer(function(timer) {
-        if (self.state.gotEntropy) {
+        if (this._hasEntropy()) {
           timer.stop();
 
           resolve();
         }
-      }, 3000, {
+      }, 100, {
         repeat: true,
-        this: thisObj
+        thisObj: self
       })
         .start();
     })

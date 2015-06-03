@@ -5,7 +5,7 @@ var { Route, DefaultRoute, RouteHandler } = Router;
 
 // Flux
 import FluxComponent from 'flummox/component';
-import FluxManager from './stores/fluxManager';
+import FluxManager from './data/index';
 
 
 var Logger = require('./utils/logger');
@@ -28,7 +28,7 @@ var App = React.createClass({
 
   render: function() {
     return (
-      <FluxComponent flux={this.state.flux}>
+      <FluxComponent flux={this.state.flux} connectToStores={['user']}>
         <Layout {...this.props}>
           <RouteHandler {...this.props}/>
         </Layout>

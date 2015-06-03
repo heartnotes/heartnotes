@@ -2,7 +2,7 @@ var _ = require('lodash'),
   faker = require('faker'),
   moment = require('moment');
 
-import { Store } from 'flummox';
+var Store = require('./store');
 
 
 var data = {};
@@ -43,9 +43,7 @@ var SearchIndex = require('./searchIndex');
 export default class EntryStore extends Store {
 
   constructor(flux, logger) {
-    super();
-
-    this.logger = logger;
+    super(flux, logger);
 
     this.state = {
       entries: data,

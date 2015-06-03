@@ -25,6 +25,7 @@ paths =
     img: path.join(__dirname, 'src', 'img')
     jade: path.join(__dirname, 'src', 'jade')
     fonts: path.join(__dirname, 'src', 'fonts')
+    lib: path.join(__dirname, 'src', 'lib')
     ckeditor: path.join(__dirname, 'src', 'lib', 'ckeditor')
   build: 
     html: path.join(__dirname, 'build') 
@@ -46,7 +47,7 @@ paths.watch.img = paths.files.img
 
 # Js
 paths.files.js = path.join(paths.src.js, 'app.js')
-paths.watch.js = path.join(paths.src.js, '**', '**', '*.js')
+paths.watch.js = path.join(paths.src.js, '**', '**', '**', '*.js')
 
 # Jade
 paths.files.jade = path.join(paths.src.jade, 'index.jade')

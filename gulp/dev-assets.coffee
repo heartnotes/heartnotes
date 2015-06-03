@@ -10,7 +10,8 @@ module.exports = (paths, options = {}) ->
       gulp.watch paths.watch.stylus, ['stylus', 'ckeditor-contents-stylus']
       gulp.watch paths.watch.jade, ['jade']
 
-      options.watchify = true
+      options.watchMode = true
       gulp.start 'js-app'
+      gulp.start 'js-worker'
   }
 

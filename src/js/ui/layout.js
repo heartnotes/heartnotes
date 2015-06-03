@@ -1,13 +1,38 @@
 var React = require('react');
 import FluxComponent from 'flummox/component';
 
-var Menu = require('./menu');
+var Menu = require('./menu'),
+  WelcomeView = require('./pages/welcomeView');
 
 
 module.exports = React.createClass({
   render: function() {    
+    var content = null;
+
+    if (this.props.hasDataFile) {
+      content = this._buildDefault();
+    } else {
+      content = this._buildWelcome();
+    }
+
     return (
       <div id="layout">
+        {content}
+      </div>
+    );    
+  },
+
+  _buildWelcome: function() {
+    return (
+      <section id="welcome-content">
+        <WelcomeView {...this.props} />
+      </section>
+    );
+  },
+
+  _buildDefault: function() {
+    return (
+      <div>
         <section id="menu">
           <Menu {...this.props} />
         </section>
@@ -17,6 +42,6 @@ module.exports = React.createClass({
           </FluxComponent>
         </section>
       </div>
-    );    
+    );
   },
 });

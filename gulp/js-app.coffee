@@ -29,7 +29,7 @@ module.exports = (paths, options = {}) ->
     )
 
     # From http://christianalfoni.github.io/javascript/2014/08/15/react-js-workflow.html
-    if options.watchify
+    if options.watchMode
       b = watchify(b)
         .on 'update', ->
           gutil.log 'Rerunning browserify...'

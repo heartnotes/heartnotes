@@ -11,16 +11,20 @@ module.exports = React.createClass({
   mixins: [ Router.State ],
 
   render: function() {
-    var items = [
-      {
-        icon: 'plus',
-        route: 'newEntry',
-      },
-      {
-        icon: 'bars',
-        route: 'entries',
-      },
-    ];
+    var items = [];
+
+    if (this.props.hasDataFile) {
+      items = items.concat([
+        {
+          icon: 'plus',
+          route: 'newEntry',
+        },
+        {
+          icon: 'bars',
+          route: 'entries',
+        },
+      ]);
+    }
 
     var buttons = items.map(function(item) {
       var activeClass = this.isActive(item.route) ? 'active' : '';

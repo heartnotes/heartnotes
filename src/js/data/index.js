@@ -2,12 +2,16 @@ var _ = require('lodash');
 
 import { Flux } from 'flummox';
 
+var StorageManager = require('./storage/index');
+
 var actions = require('./actions');
 
 var stores = {
   entries: require('./entryStore'),
-  cryptoRandom: require('./crypto/random'),
+  csrng: require('./crypto/csrngStore'),
+  user: require('./userStore'),
 };
+
 
 
 export default class FluxManager extends Flux {
@@ -15,6 +19,7 @@ export default class FluxManager extends Flux {
     super();
 
     this.logger = logger;
+    this.storage = new StorageManager(this, this.logger.create('Storage'));
 
     _.forEach(actions, function(klass, name) {
       this.createActions(name, klass, this.logger.create('action:' + name));

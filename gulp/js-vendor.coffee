@@ -7,7 +7,7 @@ uglify = require 'gulp-uglify'
 
 module.exports = (paths, options = {}) ->
   return ->
-    v1 = gulp.src [
+    gulp.src [
       "#{paths.npm}/jquery/dist/jquery.js"
     ]
       .pipe concat('vendor.js')
