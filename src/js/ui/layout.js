@@ -2,7 +2,7 @@ var React = require('react');
 import FluxComponent from 'flummox/component';
 
 var Menu = require('./menu'),
-  WelcomeView = require('./pages/welcomeView');
+  WelcomeView = require('./pages/welcome/index');
 
 
 module.exports = React.createClass({

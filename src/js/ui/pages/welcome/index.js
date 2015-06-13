@@ -1,6 +1,11 @@
 var React = require('react'),
   ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
+var Steps = [
+  require('./step1'),
+  require('./step2'),
+];
+
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -23,10 +28,11 @@ module.exports = React.createClass({
 
 
   _buildCurrentStep () {
+    var Step = Steps[this.state.step - 1];
+
     return (
       <div key={"stepkey" + this.state.step}>
-        <p>{"step" + this.state.step}</p>
-        <button onClick={this._nextStep}>Next</button>
+        <Step nextStep={this._nextStep} prevStep={this._prevStep} />
       </div>
     );
   },
@@ -36,5 +42,13 @@ module.exports = React.createClass({
     this.setState({
       step: this.state.step + 1
     });
-  }
+  },
+
+
+  _prevStep: function() {
+    this.setState({
+      step: this.state.step - 1
+    });
+  },
 });
+
