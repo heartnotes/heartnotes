@@ -19,9 +19,11 @@ module.exports = React.createClass({
       <div className="welcomeView">
         <div className="logo" />
         <h1>Heartnote</h1>
-        <ReactCSSTransitionGroup transitionName="steps">
-          {this._buildCurrentStep()}
-        </ReactCSSTransitionGroup>
+        <div className="step">
+          <ReactCSSTransitionGroup transitionName="steps">
+            {this._buildCurrentStep()}
+          </ReactCSSTransitionGroup>
+        </div>
       </div>
     );
   },

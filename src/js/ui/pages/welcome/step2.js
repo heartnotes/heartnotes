@@ -16,7 +16,7 @@ module.exports = React.createClass({
 
   render: function() { 
     return (
-      <div className="step two">
+      <div className="two">
         step two
         <button onClick={this.props.nextStep}>Next</button>
       </div>
