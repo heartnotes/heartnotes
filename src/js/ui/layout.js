@@ -9,7 +9,7 @@ module.exports = React.createClass({
   render: function() {    
     var content = null;
 
-    if (this.props.hasDataFile) {
+    if (this.props.hasSavedPasswordData) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();
@@ -25,7 +25,9 @@ module.exports = React.createClass({
   _buildWelcome: function() {
     return (
       <section id="welcome-content">
-        <WelcomeView {...this.props} />
+        <FluxComponent>
+          <WelcomeView {...this.props} />
+        </FluxComponent>
       </section>
     );
   },

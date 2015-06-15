@@ -29,6 +29,30 @@ export default class Logger {
   }
 
 
+  _format (arg) {
+    var lines = '';
+
+    // Error
+    if (arg instanceof Error) {
+      lines = arg.stack.join("\n");
+    } 
+    // Array
+    else if (arg instanceof Array) {
+      lines = arg.join("\n");          
+    }
+    // Object
+    else if (arg instanceof Object) {
+      lines = JSON.stringify(arg, null, 2);
+    }
+    // everything else
+    else {
+      lines = arg + '';
+    }
+
+    return lines;
+  }
+
+
   _writeToLog (level, msg) {
     console[level].call(console, `${this.prefix}[${level.toUpperCase()}]: ${msg}`);
   }
@@ -40,7 +64,7 @@ export default class Logger {
     if (levelValues[level] >= levelValues[self.minLevel]) {
       self[level] = function() {
         _.toArray(arguments).forEach(function(arg) {
-          self._writeToLog(level, arg);
+          self._writeToLog(level, self._format(arg));
         });
       }      
     } else {

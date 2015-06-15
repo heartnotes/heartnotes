@@ -18,14 +18,12 @@ const REQUIRED_STRENGTH_MS = 1000;
 
 
 
-
 /** 
  * Cryptographic PRNG data generator.
  */
 export default class Crypto {
   constructor (flux, logger) {
-    super();
-
+    this.flux = flux;
     this.logger = logger;
     this.csrng = flux.getStore('csrng');
   }
@@ -73,9 +71,8 @@ export default class Crypto {
           salt: sjcl.codec.hex.fromBits(salt),
           requiredStrengthMs: REQUIRED_STRENGTH_MS
         });
-      })
-    ;
-  },
+      });
+  }
 
 
   /**
@@ -85,8 +82,8 @@ export default class Crypto {
    * 
    * ```js
    * { 
-   *   authKey: 256-bit auth key as a hex string, 
-   *   secureDataKey: 256-bit secure data key as hex string, 
+   *   key1: first 256-bit key as a hex string, 
+   *   key2: second 256-bit key as hex string, 
    *   iterations: no. of PBKDF2 iterations used, 
    *   salt: salt as hex string
    * }
@@ -103,7 +100,7 @@ export default class Crypto {
    * @return {Promise} 
    */
   deriveKey (password, algorithmParams) {
-    this.logger.debug('derive key from', password, algorithmParams);
+    this.logger.debug('derive key', password, algorithmParams);
 
     var worker = this._constructWorker('deriveKey', function(data, cb) {
       try {
@@ -131,8 +128,8 @@ export default class Crypto {
         } while (data.requiredStrengthMs && data.requiredStrengthMs > timeElapsedMs);
 
         cb(null, {
-          authKey: sjcl.codec.hex.fromBits(key.slice(0, key.length / 2)),
-          secureDataKey: sjcl.codec.hex.fromBits(key.slice(key.length / 2)),
+          key1: sjcl.codec.hex.fromBits(key.slice(0, key.length / 2)),
+          key2: sjcl.codec.hex.fromBits(key.slice(key.length / 2)),
           salt: data.salt,
           iterations: iterations
         });
@@ -147,7 +144,7 @@ export default class Crypto {
       iterations: algorithmParams.iterations,
       requiredStrengthMs: algorithmParams.requiredStrengthMs          
     });
-  },
+  }
 
 
   /**
@@ -191,7 +188,7 @@ export default class Crypto {
           initVector: initVector              
         });
       });
-  },
+  }
 
 
 
@@ -230,7 +227,7 @@ export default class Crypto {
       password: password,
       ciphertext: ciphertext
     });
-  },
+  }
 
 }
 

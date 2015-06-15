@@ -22,7 +22,7 @@ export default class FluxManager extends Flux {
     this.storage = new StorageManager(this, this.logger.create('Storage'));
 
     _.forEach(actions, function(klass, name) {
-      this.createActions(name, klass, this.logger.create('action:' + name));
+      this.createActions(name, klass, this, this.logger.create('action:' + name));
     }, this);
 
     _.forEach(stores, function(klass, name) {

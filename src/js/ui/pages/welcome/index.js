@@ -1,9 +1,11 @@
 var React = require('react'),
   ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-var Steps = [
-  require('./step1'),
-  require('./step2'),
+import FluxComponent from 'flummox/component';
+
+var NewUserSteps = [
+  require('./createPasswordStep'),
+  require('./createDataFile'),
 ];
 
 
@@ -19,7 +21,7 @@ module.exports = React.createClass({
       <div className="welcomeView">
         <div className="logo" />
         <h1>Heartnote</h1>
-        <div className="step">
+        <div className="step-container">
           <ReactCSSTransitionGroup transitionName="steps">
             {this._buildCurrentStep()}
           </ReactCSSTransitionGroup>
@@ -30,11 +32,13 @@ module.exports = React.createClass({
 
 
   _buildCurrentStep () {
-    var Step = Steps[this.state.step - 1];
+    var Step = NewUserSteps[this.state.step - 1];
 
     return (
       <div key={"stepkey" + this.state.step}>
-        <Step nextStep={this._nextStep} prevStep={this._prevStep} />
+        <FluxComponent connectToStores={['user']}>
+          <Step nextStep={this._nextStep} prevStep={this._prevStep} />
+        </FluxComponent>
       </div>
     );
   },

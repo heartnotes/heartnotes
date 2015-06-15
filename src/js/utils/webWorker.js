@@ -1,12 +1,13 @@
-var operative = require('operative');
+"use strict";
 
-operative.setBaseURL('/js');
+
+operative.setBaseURL(location.origin + '/js');
 
 
 export default class WebWorker {
   constructor (func, logger) {
     this.worker = operative(func, [
-      'webworker.js'
+      'worker.js'
     ]);
 
     this.logger = logger;

@@ -9,16 +9,25 @@ export default class StorageManager {
     this.logger = logger;
 
     this.local = new LocalStorage(this.logger.create('LocalStorage'));
+
+    this.keyData = null;
   }
 
 
-  /**
-   * Get whether user has previously saved data file.
-   * @return {Boolean}
-   */
-  hasDataFile() {
-    return !!this.local.get('datafile');
+  hasSavedPasswordData() {
+    return this.local.get('password');
   } 
+
+
+  setCurrentPasswordData(keyData) {
+    this.keyData = keyData;
+
+    this.local.set('password', {
+      salt: keyData.salt,
+      iterations: keyData.iterations,
+    });
+  } 
+
 
 }
 

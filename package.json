@@ -54,5 +54,6 @@
   "browser": {
     "react-router": "./node_modules/react-router/lib/umd/ReactRouter.js"
   },
-  "browserify-shim": {}
+  "browserify-shim": {
+  }
 }

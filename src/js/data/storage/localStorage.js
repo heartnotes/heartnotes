@@ -14,6 +14,11 @@ export default class LocalStorage {
   get (key) {
     return window.localStorage.getItem(PREFIX + key);
   }
+
+
+  set (key, value) {
+    return window.localStorage.setItem(PREFIX + key, value);
+  }
 }
 
 

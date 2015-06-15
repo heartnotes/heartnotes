@@ -15,11 +15,16 @@ module.exports = React.createClass({
   },
 
   render: function() { 
+    var content;
+
+    if (this.props.derivingKeys) {
+      content = <div>Deriving keys</div>
+    } else {
+      content = <div>Keys derived</div>
+    }
+
     return (
-      <div className="two">
-        step two
-        <button onClick={this.props.nextStep}>Next</button>
-      </div>
+      <div className="derive-key step">{content}</div>
     );
   },
 });

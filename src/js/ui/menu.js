@@ -13,7 +13,7 @@ module.exports = React.createClass({
   render: function() {
     var items = [];
 
-    if (this.props.hasDataFile) {
+    if (this.props.userHasDataFile) {
       items = items.concat([
         {
           icon: 'plus',

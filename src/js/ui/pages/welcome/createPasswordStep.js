@@ -16,9 +16,15 @@ module.exports = React.createClass({
     };
   },
 
+  getInitialState: function() {
+    return {
+      password: '',
+    }
+  },
+
   render: function() { 
     return (
-      <div className="one">
+      <div className="create-password step">
         <p className="info">Please enter a password to encrypt your data file 
         with. Note:</p>
         <ul>
@@ -26,15 +32,25 @@ module.exports = React.createClass({
           <li>Do not forget it! if you forget your password you will NOT be able to open your diary.</li>
         </ul>        
         <div className="fields">
-          <NewPasswordInput setPassword={this._setPassword} />
+          <NewPasswordInput setPassword={this._setPassword} requiredStrength={1} />
         </div>
-        <button onClick={this.props.nextStep}>Next</button>
+        <button 
+            onClick={this._savePassword} 
+            disabled={!this.state.password.length}>Next</button>
       </div>
     );
   },
 
   _setPassword: function(passwd) {
-    console.log(passwd);
+    this.setState({
+      password: passwd
+    });
+  },
+
+  _savePassword: function() {
+    this.props.flux.getActions('user').setNewPassword(this.state.password);
+
+    this.props.nextStep();
   }
 });
 

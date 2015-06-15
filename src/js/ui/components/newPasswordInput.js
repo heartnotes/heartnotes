@@ -5,11 +5,13 @@ var React = require('react');
 module.exports = React.createClass({
   propTypes: {
     setPassword : React.PropTypes.func,
+    requiredStrength: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
       setPassword : null,
+      requiredStrength: 2,
     };
   },
 
@@ -41,10 +43,14 @@ module.exports = React.createClass({
 
     return (
       <div className="new-password">
-        {inputElem}
-        <span className={'strength level-'+ this.state.strength} />
-        <a className="toggle" onClick={this._toggleTyping}>Show typing</a>
-        {confirmElem}
+        <div className="password field">
+          {inputElem}
+          <span className={'strength level-'+ this.state.strength} />
+          <a className="toggle" onClick={this._toggleTyping}>Show typing</a>
+        </div>
+        <div className="confirm-password field">
+          {confirmElem}
+        </div>
       </div>
     )
   },
@@ -92,7 +98,7 @@ module.exports = React.createClass({
 
 
   _notifyParent: function() {
-    if (2 > this.state.strength) {
+    if (this.props.requiredStrength > this.state.strength) {
       return;
     }
 

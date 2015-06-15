@@ -28,7 +28,12 @@ var App = React.createClass({
 
   render: function() {
     return (
-      <FluxComponent flux={this.state.flux} connectToStores={['user']}>
+      <FluxComponent flux={this.state.flux} connectToStores={{
+        user: store => ({
+          hasSavedPasswordData: store.hasSavedPasswordData(),
+          hasEnteredPassword: store.passwordEntered,
+        })
+      }}>
         <Layout {...this.props}>
           <RouteHandler {...this.props}/>
         </Layout>

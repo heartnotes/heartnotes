@@ -3,7 +3,6 @@ import { Actions } from 'flummox';
 class EntryActions extends Actions {
   constructor (flux, logger) {
     super();
-
     this.logger = logger;
   }
 
@@ -26,7 +25,17 @@ class UserActions extends Actions {
 
 
 
-  create(filePath, keys) {
+  setNewPassword(password) {
+    this.logger.debug('setNewPassword', password);
+
+    return {
+      password: password
+    };
+  }
+
+
+
+  createDataFile(filePath, keys) {
     this.logger.debug('create',filePath, keys);
 
     return {
@@ -36,7 +45,7 @@ class UserActions extends Actions {
   }
 
 
-  update(content) {
+  updateDataFile(content) {
     this.logger.debug('update', content.length);
 
     return {
