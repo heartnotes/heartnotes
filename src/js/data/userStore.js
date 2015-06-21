@@ -14,8 +14,8 @@ export default class UserStore extends Store {
     this.crypto = new Crypto(flux, logger.create('Crypto'));
 
     this.state = {
-      passwordEntered: false,
-      derivingKeys: false,
+      derivedKeys: null,
+      nowDerivingKeys: false,
     };
 
     const userActionIds = flux.getActionIds('user');
@@ -28,31 +28,37 @@ export default class UserStore extends Store {
   }
 
 
-  hasSavedPasswordData () {
-    return this.storage.hasSavedPasswordData();
+  lastDataFile () {
+    return this.storage.lastDataFile();
   }
 
 
-  setNewPassword (params) {
+  saveNewDataFile (params) {
     var self = this;
 
-    var {password} = params;
+    self._clearErrors();
 
-    self.logger.debug('set new password', password);
+    var {filePath, password} = params;
+
+    self.logger.debug('save new datafile', filePath, password);
 
     self.setState({
-      derivingKeys: true
+      nowDerivingKeys: true
     });
 
     self.crypto.deriveNewKey(password)
       .then(function(keyData) {
         self.logger.info('keys derived', keyData);
 
-        self.storage.setCurrentPasswordData(keyData);
+        var dataFile = self.storage.saveDataFile(filePath, {
+          salt: keyData.salt,
+          iterations: keyData.iterations,
+        })
 
         self.setState({
-          derivingKeys: false,
-          passwordEntered: true,
+          nowDerivingKeys: false,
+          dataFile: dataFile,
+          derivedKeys: keyData,
         });
       })
       .catch(function(err) {
@@ -62,6 +68,58 @@ export default class UserStore extends Store {
           derivingKeysError: err
         });
       });
+  }
+
+
+  openDataFile (params) {
+    var self = this;
+
+    self._clearErrors();
+
+    var {filePath, password} = params;
+
+    self.logger.debug('open datafile', filePath, password);
+
+    var datafile = self.storage.loadDataFile(filePath);
+
+    if (!datafile) {
+      return self.setState({
+        openDataFileError: new Error('Data file not found: ' + filePath)
+      });
+    }
+
+    self.setState({
+      nowDerivingKeys: true
+    });
+
+    self.crypto.deriveKey(password, {
+      salt: datafile.salt,
+      iterations: datafile.iterations,
+    })
+      .then(function(keyData) {
+        self.logger.info('keys derived', keyData);
+
+        self.setState({
+          nowDerivingKeys: false,
+          dataFile: dataFile,
+          derivedKeys: keyData,
+        });
+      })
+      .catch(function(err) {
+        self.logger.error('keys derivation error', err);
+
+        self.setState({
+          derivingKeysError: err
+        });
+      });
+  }
+
+
+  _clearErrors () {
+    this.setState({
+      derivingKeysError: null,
+      openDataFileError: null,
+    });
   }
 }
 

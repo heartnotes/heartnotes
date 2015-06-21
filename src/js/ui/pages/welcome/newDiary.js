@@ -1,18 +1,20 @@
 var React = require('react');
 
-var NewPasswordInput = require('../../components/newPasswordInput');
+var faker = require('faker')
+
+var NewPasswordInput = require('../../components/newPasswordInput'),
+  DerivationProgress = require('../../components/derivationProgress');
+
 
 
 module.exports = React.createClass({
   propTypes: {
-    nextStep: React.PropTypes.func,
-    prevStep: React.PropTypes.func,
+    showStep: React.PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
-      nextStep: null,
-      prevStep: null,
+      showStep: null,
     };
   },
 
@@ -24,8 +26,8 @@ module.exports = React.createClass({
 
   render: function() { 
     return (
-      <div className="create-password step">
-        <p className="info">Please enter a password to encrypt your data file 
+      <div className="new-diary step">
+        <p className="info">Please enter a password to encrypt your diary 
         with. Note:</p>
         <ul>
           <li>Use A to Z, numbers and symbols altogether to ensure a strong password.</li>
@@ -37,8 +39,16 @@ module.exports = React.createClass({
         <button 
             onClick={this._savePassword} 
             disabled={!this.state.password.length}>Next</button>
+        <DerivationProgress {...this.props} />
       </div>
     );
+  },
+
+
+  componentDidUpdate: function() {
+    if (this.props.derivedKeys) {
+      this.props.showStep('openDiary');
+    }
   },
 
   _setPassword: function(passwd) {
@@ -48,9 +58,10 @@ module.exports = React.createClass({
   },
 
   _savePassword: function() {
-    this.props.flux.getActions('user').setNewPassword(this.state.password);
+    this.props.flux.getActions('user')
+      .saveNewDataFile(faker.name.firstName(), this.state.password);
+  },
 
-    this.props.nextStep();
-  }
+
 });
 

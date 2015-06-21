@@ -14,19 +14,26 @@ export default class StorageManager {
   }
 
 
-  hasSavedPasswordData() {
-    return this.local.get('password');
-  } 
+
+  lastDataFile() {
+    var name = this.local.get('last datafile');
+
+    return this.loadDataFile(name);
+  }
 
 
-  setCurrentPasswordData(keyData) {
-    this.keyData = keyData;
 
-    this.local.set('password', {
-      salt: keyData.salt,
-      iterations: keyData.iterations,
-    });
-  } 
+  saveDataFile(name, data) {
+    data.filename = name;
+    this.local.set(`datafile${name}`, data);
+
+    this.local.set('last datafile', name);
+  }
+
+
+  loadDataFile(name) {
+    return this.local.get(`datafile${name}`);
+  }
 
 
 }

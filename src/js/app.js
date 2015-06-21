@@ -30,8 +30,8 @@ var App = React.createClass({
     return (
       <FluxComponent flux={this.state.flux} connectToStores={{
         user: store => ({
-          hasSavedPasswordData: store.hasSavedPasswordData(),
-          hasEnteredPassword: store.passwordEntered,
+          lastDataFile: store.lastDataFile(),
+          hasEnteredPassword: !!store.authKeys,
         })
       }}>
         <Layout {...this.props}>

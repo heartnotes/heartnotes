@@ -9,7 +9,7 @@ module.exports = React.createClass({
   render: function() {    
     var content = null;
 
-    if (this.props.hasSavedPasswordData) {
+    if (this.props.hasEnteredPassword) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();

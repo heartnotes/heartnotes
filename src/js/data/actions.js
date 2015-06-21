@@ -25,31 +25,23 @@ class UserActions extends Actions {
 
 
 
-  setNewPassword(password) {
-    this.logger.debug('setNewPassword', password);
+  saveNewDataFile(filePath, password) {
+    this.logger.debug('saveNewDataFile', filePath, password);
 
     return {
+      filePath: filePath,
       password: password
     };
   }
 
 
 
-  createDataFile(filePath, keys) {
-    this.logger.debug('create',filePath, keys);
+  openDataFile(filePath, password) {
+    this.logger.debug('openDataFile', filePath, password);
 
     return {
       filePath: filePath,
-      keys: keys,
-    };
-  }
-
-
-  updateDataFile(content) {
-    this.logger.debug('update', content.length);
-
-    return {
-      content: content
+      password: password
     };
   }
 

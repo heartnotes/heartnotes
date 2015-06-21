@@ -3,16 +3,19 @@ var React = require('react'),
 
 import FluxComponent from 'flummox/component';
 
-var NewUserSteps = [
-  require('./createPasswordStep'),
-  require('./createDataFile'),
-];
+
+var steps = {
+  start: require('./start'),
+  newDiary: require('./newDiary'),
+  existingDiary: require('./existingDiary'),
+  openDiary: require('./openDiary'),
+};
 
 
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      step: 1,
+      step: 'start',
     }
   },
 
@@ -32,28 +35,21 @@ module.exports = React.createClass({
 
 
   _buildCurrentStep () {
-    var Step = NewUserSteps[this.state.step - 1];
+    var Step = steps[this.state.step];
 
     return (
       <div key={"stepkey" + this.state.step}>
         <FluxComponent connectToStores={['user']}>
-          <Step nextStep={this._nextStep} prevStep={this._prevStep} />
+          <Step showStep={this._showStep} />
         </FluxComponent>
       </div>
     );
   },
 
 
-  _nextStep: function() {
+  _showStep: function(name) {
     this.setState({
-      step: this.state.step + 1
-    });
-  },
-
-
-  _prevStep: function() {
-    this.setState({
-      step: this.state.step - 1
+      step: name
     });
   },
 });
