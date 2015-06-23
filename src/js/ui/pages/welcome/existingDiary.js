@@ -17,20 +17,23 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      password: '',
+      password: null,
     }
   },
 
   render: function() { 
+    var buttonAttrs = {};
+    if (!this.state.password || !this.state.password.length) {
+      buttonAttrs.disabled = true;
+    }
+
     return (
       <div className="existing-diary step">
         <p className="info">Please enter your password:</p>
         <div className="fields">
           <PasswordInput setPassword={this._setPassword} />
+          <button onClick={this._checkPassword} {...buttonAttrs}>Next</button>
         </div>
-        <button 
-            onClick={this._checkPassword} 
-            disabled={!this.state.password.length}>Next</button>
         <DerivationProgress {...this.props} />
       </div>
     );
@@ -44,13 +47,13 @@ module.exports = React.createClass({
   },
 
 
-  _setPassword: function(passwd) {
+  _setPassword: function(p) {
     this.setState({
-      password: passwd
+      password: p
     });
   },
 
-  _savePassword: function() {
+  _checkPassword: function() {
     this.props.flux.getActions('user')
       .openDataFile(this.props.lastDataFile.filename, this.state.password);
   }

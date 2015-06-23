@@ -30,7 +30,6 @@ var App = React.createClass({
     return (
       <FluxComponent flux={this.state.flux} connectToStores={{
         user: store => ({
-          lastDataFile: store.lastDataFile(),
           hasEnteredPassword: !!store.authKeys,
         })
       }}>

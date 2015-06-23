@@ -13,7 +13,7 @@ module.exports = React.createClass({
   },
 
   render: function() { 
-    var content;
+    var content = null;
 
     if (this.props.lastDataFile) {
       var lastDataFile = this.props.lastDataFile;
@@ -24,11 +24,14 @@ module.exports = React.createClass({
           <button onClick={this._openExisting}>Open</button>
         </div>
       );
-    } else {
-      content = (
-        <button onClick={this._createNew}>Create new diary</button>
-      );
     }
+
+    content = (
+      <div>
+        {content}
+        <button onClick={this._createNew}>Create new diary</button>
+      </div>
+    );
 
     return (
       <div className="start step">

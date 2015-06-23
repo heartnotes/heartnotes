@@ -5,36 +5,36 @@ var _ = require('lodash'),
 var Store = require('./store');
 
 
-var data = {};
+// var data = {};
 
-var range = {
-  2014: [1,2,3,4,5,6,7,8,9,10,11,12],
-  2015: [1,2,3,4,5]
-};
+// var range = {
+//   2014: [1,2,3,4,5,6,7,8,9,10,11,12],
+//   2015: [1,2,3,4,5]
+// };
 
-_.forEach(range, function(months, year) {
-  _.forEach(months, function(monthIndex) {
-    var numEntriesToBuild = faker.random.number({
-      min: 1,
-      max: 28,
-    });
+// _.forEach(range, function(months, year) {
+//   _.forEach(months, function(monthIndex) {
+//     var numEntriesToBuild = faker.random.number({
+//       min: 1,
+//       max: 28,
+//     });
 
-    for (var i=1; i<=numEntriesToBuild; ++i) {
-      var d = moment([year, monthIndex-1, i]).startOf('day');
+//     for (var i=1; i<=numEntriesToBuild; ++i) {
+//       var d = moment([year, monthIndex-1, i]).startOf('day');
 
-      var id = d.format('YYYY-MM-DD-') + faker.random.number({
-        min: 10000,
-        max: 100000
-      });
+//       var id = d.format('YYYY-MM-DD-') + faker.random.number({
+//         min: 10000,
+//         max: 100000
+//       });
 
-      data[id] = {
-        id: id,
-        ts: d.valueOf(),
-        body: faker.lorem.paragraphs(5),
-      };    
-    }
-  });
-});
+//       data[id] = {
+//         id: id,
+//         ts: d.valueOf(),
+//         body: faker.lorem.paragraphs(5),
+//       };    
+//     }
+//   });
+// });
 
 
 var SearchIndex = require('./searchIndex');
@@ -46,13 +46,10 @@ export default class EntryStore extends Store {
     super(flux, logger);
 
     this.state = {
-      entries: data,
+      entries: [],
     };
 
-    const entryActionIds = flux.getActionIds('entry');
-    this.register(entryActionIds.update, this.updateEntry);
-
-    this.searchIndex = new SearchIndex(this.logger.create('index'));
+    this.registerActionIds('user');
   }
 
 
@@ -88,7 +85,7 @@ export default class EntryStore extends Store {
   }
 
 
-  updateEntry(params) {
+  update(params) {
     var {id, content} = params;
 
     this.logger.debug('update entry', id, content.length);

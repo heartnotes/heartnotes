@@ -45,6 +45,11 @@ class UserActions extends Actions {
     };
   }
 
+
+  reloadEntries() {
+    this.logger.debug('reloadEntries');
+  }
+
 }
 
 

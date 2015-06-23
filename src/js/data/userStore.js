@@ -6,6 +6,8 @@ var Store = require('./store'),
   Crypto = require('./crypto/index');
 
 
+
+
 export default class UserStore extends Store {
 
   constructor(flux, logger) {
@@ -18,13 +20,7 @@ export default class UserStore extends Store {
       nowDerivingKeys: false,
     };
 
-    const userActionIds = flux.getActionIds('user');
-
-    this.logger.debug('user action ids', userActionIds);
-
-    _.forEach(userActionIds, function(aid, key) {
-      this.register(aid, this[key]);
-    }, this);
+    this.registerActionIds('user');
   }
 
 
@@ -47,19 +43,24 @@ export default class UserStore extends Store {
     });
 
     self.crypto.deriveNewKey(password)
-      .then(function(keyData) {
-        self.logger.info('keys derived', keyData);
+      .then(function gotKeyData(derivedKeyData) {
+        self.logger.info('keys derived', derivedKeyData);
 
-        var dataFile = self.storage.saveDataFile(filePath, {
-          salt: keyData.salt,
-          iterations: keyData.iterations,
-        })
+        // encrypt key with itself to produce key checking value
+        return self.crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
+          .then(function gotTestData(keyTestData) {
+            var savedKeyData = self.storage.saveDataFile(filePath, {
+              salt: derivedKeyData.salt,
+              iterations: derivedKeyData.iterations,
+              keyTest: keyTestData,
+            });
 
-        self.setState({
-          nowDerivingKeys: false,
-          dataFile: dataFile,
-          derivedKeys: keyData,
-        });
+            self.setState({
+              nowDerivingKeys: false,
+              dataFile: savedKeyData,
+              derivedKeys: derivedKeyData,
+            });
+          });
       })
       .catch(function(err) {
         self.logger.error('keys derivation error', err);
@@ -80,9 +81,9 @@ export default class UserStore extends Store {
 
     self.logger.debug('open datafile', filePath, password);
 
-    var datafile = self.storage.loadDataFile(filePath);
+    var dataFile = self.storage.loadDataFile(filePath);
 
-    if (!datafile) {
+    if (!dataFile) {
       return self.setState({
         openDataFileError: new Error('Data file not found: ' + filePath)
       });
@@ -93,17 +94,28 @@ export default class UserStore extends Store {
     });
 
     self.crypto.deriveKey(password, {
-      salt: datafile.salt,
-      iterations: datafile.iterations,
+      salt: dataFile.salt,
+      iterations: dataFile.iterations,
     })
-      .then(function(keyData) {
-        self.logger.info('keys derived', keyData);
+      .then(function gotKeyData(derivedKeyData) {
+        self.logger.info('keys derived', derivedKeyData);
 
-        self.setState({
-          nowDerivingKeys: false,
-          dataFile: dataFile,
-          derivedKeys: keyData,
-        });
+        // now test that keys are correct
+        return self.crypto.decrypt(derivedKeyData.key1, dataFile.keyTest)
+          .then(function gotPlainData(plainData) {
+            if (plainData !== derivedKeyData.key1) {
+              throw new Error('Password incorrect');
+            }
+
+            self.setState({
+              nowDerivingKeys: false,
+              dataFile: dataFile,
+              derivedKeys: derivedKeyData,
+            });
+          })
+          .catch(function(err) {
+            throw new Error('Password incorrect');
+          });
       })
       .catch(function(err) {
         self.logger.error('keys derivation error', err);
@@ -112,6 +124,11 @@ export default class UserStore extends Store {
           derivingKeysError: err
         });
       });
+  }
+
+
+  reloadEntries () {
+    console.log('blah');
   }
 
 

@@ -38,9 +38,14 @@ module.exports = React.createClass({
     var Step = steps[this.state.step];
 
     return (
-      <div key={"stepkey" + this.state.step}>
-        <FluxComponent connectToStores={['user']}>
-          <Step showStep={this._showStep} />
+      <div>
+        <FluxComponent connectToStores={{
+          user: store => ({
+            lastDataFile: store.lastDataFile(),
+            derivedKeys: store.state.derivedKeys,
+          })
+        }}>
+          <Step key={"stepkey" + this.state.step} showStep={this._showStep} />
         </FluxComponent>
       </div>
     );

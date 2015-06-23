@@ -11,6 +11,7 @@ module.exports = (paths, options = {}) ->
     build = () -> 
       gulp.src [
         "#{paths.npm}/sjcl/sjcl.js"
+        "#{paths.npm}/sjcl/core/sha512.js"
         "#{paths.src.lib}/sjcl/sjcl-webworker-addons.js"
       ]
         .pipe concat('worker.js')

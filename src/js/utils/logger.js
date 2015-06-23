@@ -34,7 +34,7 @@ export default class Logger {
 
     // Error
     if (arg instanceof Error) {
-      lines = arg.stack.join("\n");
+      lines = (arg.stack instanceof Array ? arg.stack.join("\n") : arg.stack);
     } 
     // Array
     else if (arg instanceof Array) {

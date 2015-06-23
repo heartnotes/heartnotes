@@ -29,15 +29,13 @@ module.exports = React.createClass({
 
     var inputElem = (
       <input type={inputType}
-        onKeyUp={this._onChange} 
-        onChange={this._onChange} 
+        onInput={this._onChange} 
         value={this.password} />
     );
 
     var confirmElem = (
       <input type={inputType}
-        onKeyUp={this._onConfirmChange} 
-        onChange={this._onConfirmChange} 
+        onInput={this._onConfirmChange} 
         value={this.passwordConfirm} />
     );
 
@@ -46,7 +44,7 @@ module.exports = React.createClass({
         <div className="password field">
           {inputElem}
           <span className={'strength level-'+ this.state.strength} />
-          <a className="toggle" onClick={this._toggleTyping}>Show typing</a>
+          <a href="#" className="toggle" onClick={this._toggleTyping}>Show typing</a>
         </div>
         <div className="confirm-password field">
           {confirmElem}
@@ -54,6 +52,33 @@ module.exports = React.createClass({
       </div>
     )
   },
+
+
+  componentDidUpdate: function(prevProps, prevState) {
+    if (prevState.password !== this.state.password 
+        || prevState.passwordConfirm !== this.state.passwordConfirm) 
+    {
+      if (this.props.requiredStrength > this.state.strength) {
+        return;
+      }
+
+      if (this.state.password !== this.state.passwordConfirm) {
+        this.props.setPassword(null);
+      } else {
+        this.props.setPassword(this.state.password);      
+      }
+    }
+  },
+
+
+  _toggleTyping: function(e) {
+    e.preventDefault();
+
+    this.setState({
+      showTyping: !this.state.showTyping
+    });
+  },
+
 
   _onChange: function(e) {
     var password = $(e.currentTarget).val(),
@@ -63,8 +88,6 @@ module.exports = React.createClass({
       strength: strength,
       password: password,
     });
-
-    this._notifyParent();
   },  
 
 
@@ -74,8 +97,6 @@ module.exports = React.createClass({
     this.setState({
       passwordConfirm: passwordConfirm
     });
-
-    this._notifyParent();
   },  
 
 
@@ -97,19 +118,6 @@ module.exports = React.createClass({
   },
 
 
-  _notifyParent: function() {
-    if (this.props.requiredStrength > this.state.strength) {
-      return;
-    }
-
-    if (this.state.password !== this.state.passwordConfirm) {
-      return;
-    }
-
-    if (this.props.setPassword) {
-      this.props.setPassword(this.state.password);
-    }
-  }
 
 });
 

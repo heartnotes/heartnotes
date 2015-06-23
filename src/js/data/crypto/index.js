@@ -4,6 +4,7 @@ import { Timer } from 'clockmaker';
 var WebWorker= require('../../utils/webWorker');
 
 var sjcl = require('./sjcl');
+
   
 
 
@@ -134,7 +135,7 @@ export default class Crypto {
           iterations: iterations
         });
       } catch (err) {
-        cb(err);
+        cb(err.toString());
       }
     });
 
@@ -151,32 +152,36 @@ export default class Crypto {
    * Perform AES 256-bit encryption on given data.
    *
    * @param key {string} 256-bit key as hex string.
-   * @param data {*} data to encrypt - will be automatically passed through JSON.stringify().
+   * @param plaintext {*} data to encrypt - will be automatically passed through JSON.stringify().
    *
    * @return {Promise} resolves to cipherText
    */
-  encrypt (key, data) {
+  encrypt (key, plaintext) {
     var self = this;
 
-    self.logger.debug('encrypt', key, data.length);
+    plaintext = JSON.stringify(plaintext);
+
+    self.logger.debug('encrypt', key, plaintext.length);
 
     var password = sjcl.codec.hex.toBits(key);
 
     if (8 !== password.length) {
-      return Promise.reject(new Error('Encryption password must be 8 bytes'));
+      return Promise.reject(new Error(
+        `Encryption password must be 256 bits (${password.length * 8} bits found)`
+      ));
     }
 
     var worker = self._constructWorker('encrypt', function(data, cb) {
       try {
         var r = sjcl.encrypt_b64(
           data.password, 
-          JSON.stringify(data.plaintext), 
+          data.plaintext, 
           data.initVector
         );
 
         cb(null, r);
       } catch (err) {
-        cb(err);
+        cb(err.toString());
       }
     });
 
@@ -197,17 +202,21 @@ export default class Crypto {
    * Perform AES 256-bit decryption on given data.
    *
    * @param key {string} 256-bit key as hex string.
-   * @param ciphertext {*} data to decrypt.
+   * @param ciphertext {string} data to decrypt.
    *
    * @return {Promise} resolves to plaintext (after passing through `JSON.parse()`).
    */
   decrypt (key, ciphertext) {
-    this.logger.debug('decrypt', key, ciphertext.length);
+    var self = this;
+
+    self.logger.debug('decrypt', key, ciphertext.length);
 
     var password = sjcl.codec.hex.toBits(key);
 
     if (8 !== password.length) {
-      return $q.reject(new CryptoError('Decryption password must be 256 bits'));
+      return $q.reject(new CryptoError(
+        `Decryption password must be 256 bits (${password.length * 8} bits found)`
+      ));
     }
 
     var worker = self._constructWorker('decrypt', function(data, cb) {
@@ -219,7 +228,7 @@ export default class Crypto {
 
         cb(null, JSON.parse(r));
       } catch (err) {
-        cb(err);
+        cb(err.toString());
       }
     });
 

@@ -2,6 +2,8 @@
 
 var LocalStorage = require('./localStorage');
 
+const LAST_DATAFILE_KEY = 'last datafile';
+
 
 export default class StorageManager {
 
@@ -16,7 +18,9 @@ export default class StorageManager {
 
 
   lastDataFile() {
-    var name = this.local.get('last datafile');
+    this.logger.debug('check last data file');
+    
+    var name = this.local.get(LAST_DATAFILE_KEY);
 
     return this.loadDataFile(name);
   }
@@ -24,15 +28,19 @@ export default class StorageManager {
 
 
   saveDataFile(name, data) {
-    data.filename = name;
-    this.local.set(`datafile${name}`, data);
+    this.logger.debug('save data file', name);
 
-    this.local.set('last datafile', name);
+    data.filename = name;
+    this.local.set(`datafile_${name}`, data);
+
+    this.local.set(LAST_DATAFILE_KEY, name);
   }
 
 
   loadDataFile(name) {
-    return this.local.get(`datafile${name}`);
+    this.logger.debug('load data file', name);
+
+    return this.local.get(`datafile_${name}`);
   }
 
 

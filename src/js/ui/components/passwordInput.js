@@ -25,8 +25,7 @@ module.exports = React.createClass({
 
     var inputElem = (
       <input type={inputType}
-        onKeyUp={this._onChange} 
-        onChange={this._onChange} 
+        onInput={this._onChange} 
         value={this.password} />
     );
 
@@ -34,11 +33,19 @@ module.exports = React.createClass({
       <div className="existing-password">
         <div className="password field">
           {inputElem}
-          <a className="toggle" onClick={this._toggleTyping}>Show typing</a>
+          <a href="#" className="toggle" onClick={this._toggleTyping}>Show typing</a>
         </div>
       </div>
     )
   },
+
+
+  componentDidUpdate: function(prevProps, prevState) {
+    if (this.state.password !== prevState.password) {
+      this.props.setPassword(this.state.password);
+    }
+  },
+
 
   _onChange: function(e) {
     var password = $(e.currentTarget).val();
@@ -46,15 +53,15 @@ module.exports = React.createClass({
     this.setState({
       password: password,
     });
-
-    this._notifyParent();
   },  
 
 
-  _notifyParent: function() {
-    if (this.props.setPassword) {
-      this.props.setPassword(this.state.password);
-    }
+  _toggleTyping: function(e) {
+    e.preventDefault();
+
+    this.setState({
+      showTyping: !this.state.showTyping
+    });
   }
 
 });

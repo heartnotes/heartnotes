@@ -20,11 +20,16 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      password: '',
+      password: null,
     }
   },
 
   render: function() { 
+    var buttonAttrs = {};
+    if (!this.state.password || !this.state.password.length) {
+      buttonAttrs.disabled = true;
+    }
+
     return (
       <div className="new-diary step">
         <p className="info">Please enter a password to encrypt your diary 
@@ -36,9 +41,7 @@ module.exports = React.createClass({
         <div className="fields">
           <NewPasswordInput setPassword={this._setPassword} requiredStrength={1} />
         </div>
-        <button 
-            onClick={this._savePassword} 
-            disabled={!this.state.password.length}>Next</button>
+        <button onClick={this._savePassword} {...buttonAttrs}>Next</button>
         <DerivationProgress {...this.props} />
       </div>
     );

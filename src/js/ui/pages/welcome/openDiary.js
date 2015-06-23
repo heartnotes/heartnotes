@@ -19,5 +19,9 @@ module.exports = React.createClass({
       </div>
     );
   },
+
+  componentDidMount: function() {
+    this.props.flux.getActions('user').reloadEntries();
+  },
 });
 
