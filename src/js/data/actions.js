@@ -15,12 +15,6 @@ class EntryActions extends Actions {
     };
   }
 
-
-  reloadAll () {
-    this.logger.debug('reload all');
-
-    return {};
-  }
 }
 
 
@@ -50,6 +44,13 @@ class UserActions extends Actions {
       filePath: filePath,
       password: password
     };
+  }
+
+
+  loadEntries () {
+    this.logger.debug('load entries');
+
+    return {};
   }
 
 }

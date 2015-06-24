@@ -17,6 +17,7 @@ export default class UserStore extends Store {
 
     this.state = {
       derivedKeys: null,
+      entriesLoaded: false,
       nowDerivingKeys: false,
     };
 
@@ -32,7 +33,7 @@ export default class UserStore extends Store {
   saveNewDataFile (params) {
     var self = this;
 
-    self._clearErrors();
+    self._resetState();
 
     var {filePath, password} = params;
 
@@ -75,7 +76,7 @@ export default class UserStore extends Store {
   openDataFile (params) {
     var self = this;
 
-    self._clearErrors();
+    self._resetState();
 
     var {filePath, password} = params;
 
@@ -132,22 +133,75 @@ export default class UserStore extends Store {
   loadEntries () {
     var self = this;
 
+    self._resetErrorStates();
+
     var dataFile = self.state.dataFile;
 
     if (!dataFile) {
-      throw new Error('No datafile loaded');
+      return self.setStatee({
+        loadEntriesError: new Error('No datafile loaded')
+      });
     }
 
     self.logger.info('load entries', dataFile.name);
 
-    return self.storage.loadEntries(dataFile.name) || [];
+    self.setState({
+      entriesLoaded: false
+    });
+
+    var encryptedEntries = self.storage.loadEntries(dataFile.name);
+
+    new Promise(function(resolve, reject) {
+      if (!encryptedEntries) {
+        self.logger.info('no existing entries found');
+
+        resolve([]);
+      } else {
+        self.logger.info('decrypt entries', encryptedEntries.length);
+
+        return self.crypto.decrypt(self.state.derivedKeys.key1, encryptedEntries)
+          .then(function decryptedEntries(entries) {
+            self.logger.debug('decrypted entries', entries.length);
+
+            resolve(entries)
+          })
+          .catch(reject);
+      }
+    })
+      .then(function gotEntries(entries) {
+        self.setState({
+          entriesLoaded: true,
+        });
+
+        self.flux.getStore('entries').setEntries(entries);
+      })
+      .catch(function(err) {
+        self.logger.error('entry decryption error', err);
+
+        self.setState({
+          loadEntriesError: err
+        });
+      });
   }
 
 
-  _clearErrors () {
+  _resetState () {
+    this.setState({
+      derivedKeys: false,
+      dataFile: null,
+      entriesLoaded: false,
+      nowDerivingKeys: false,
+    });
+
+    this._resetErrorStates();
+  }
+
+
+  _resetErrorStates () {
     this.setState({
       derivingKeysError: null,
       openDataFileError: null,
+      loadEntriesError: null,
     });
   }
 }

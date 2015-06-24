@@ -30,11 +30,9 @@ var App = React.createClass({
     return (
       <FluxComponent flux={this.state.flux} connectToStores={{
         user: store => ({
-          hasEnteredPassword: !!store.authKeys,
+          entriesLoaded: !!store.state.entriesLoaded,
+          passwordEntered: !!store.state.derivedKeys,
         }),
-        entries: store => ({
-          entriesLoaded: store.state.entriesLoaded,
-        })
       }}>
         <Layout {...this.props}>
           <RouteHandler {...this.props}/>

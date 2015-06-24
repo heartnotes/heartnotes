@@ -25,7 +25,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    this.props.flux.getActions('entry').reloadAll();
+    this.props.flux.getActions('user').loadEntries();
   },
 
 });

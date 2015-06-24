@@ -45,10 +45,8 @@ module.exports = React.createClass({
           user: store => ({
             lastDataFile: store.lastDataFile(),
             derivedKeys: store.state.derivedKeys,
-          }),
-          entries: store => ({
             loadEntriesError: store.state.loadEntriesError,
-          })
+          }),
         }}>
           <Step key={"stepkey" + this.state.step} showStep={this._showStep} />
         </FluxComponent>

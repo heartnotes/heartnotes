@@ -4,7 +4,7 @@ var _ = require('lodash'),
 
 var Store = require('./store');
 
-var SearchIndex = require('./searchIndex');
+// var SearchIndex = require('./searchIndex');
 
 
 export default class EntryStore extends Store {
@@ -14,7 +14,6 @@ export default class EntryStore extends Store {
 
     this.state = {
       entries: [],
-      entriesLoaded: false,
     };
 
     this.registerActionIds('entry');
@@ -71,7 +70,7 @@ export default class EntryStore extends Store {
         body: content
       };
 
-      this.searchIndex.add(entry);
+      // this.searchIndex.add(entry);
 
       this.state.entries[id] = entry;
     } else {
@@ -82,7 +81,7 @@ export default class EntryStore extends Store {
       if (entry) {
         entry.body = content;
 
-        this.searchIndex.update(entry);
+        // this.searchIndex.update(entry);
       }
     }
 
@@ -90,27 +89,14 @@ export default class EntryStore extends Store {
   }
 
 
-  reloadAll () {
-    this.logger.info('reload entries');
+  setEntries (entries) {
+    var self = this;
+    
+    self.logger.info('set entries', entries.length);
 
-    this.setState({
-      loadEntriesError: null
+    self.setState({
+      entries: entries,
     });
-
-    var userStore = this.flux.getStore('user');
-
-    try {
-      this.setState({
-        entries: userStore.loadEntries(),
-        entriesLoaded: true,
-      });
-    } catch (err) {
-      this.logger.error(err);
-      
-      this.setState({
-        loadEntriesError: err
-      });
-    }
   }
 }
 
