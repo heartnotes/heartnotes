@@ -36,7 +36,7 @@ export default class UserStore extends Store {
 
     var {filePath, password} = params;
 
-    self.logger.debug('save new datafile', filePath, password);
+    self.logger.info('save new datafile', filePath, password);
 
     self.setState({
       nowDerivingKeys: true
@@ -79,7 +79,7 @@ export default class UserStore extends Store {
 
     var {filePath, password} = params;
 
-    self.logger.debug('open datafile', filePath, password);
+    self.logger.info('open datafile', filePath, password);
 
     var dataFile = self.storage.loadDataFile(filePath);
 
@@ -114,7 +114,9 @@ export default class UserStore extends Store {
             });
           })
           .catch(function(err) {
-            throw new Error('Password incorrect');
+            self.logger.error(err.stack);
+
+            throw new Error('Password incorrect: ' + err);
           });
       })
       .catch(function(err) {
@@ -127,8 +129,18 @@ export default class UserStore extends Store {
   }
 
 
-  reloadEntries () {
-    console.log('blah');
+  loadEntries () {
+    var self = this;
+
+    var dataFile = self.state.dataFile;
+
+    if (!dataFile) {
+      throw new Error('No datafile loaded');
+    }
+
+    self.logger.info('load entries', dataFile.name);
+
+    return self.storage.loadEntries(dataFile.name) || [];
   }
 
 

@@ -16,7 +16,6 @@ export default class StorageManager {
   }
 
 
-
   lastDataFile() {
     this.logger.debug('check last data file');
     
@@ -26,11 +25,10 @@ export default class StorageManager {
   }
 
 
-
   saveDataFile(name, data) {
     this.logger.debug('save data file', name);
 
-    data.filename = name;
+    data.name = name;
     this.local.set(`datafile_${name}`, data);
 
     this.local.set(LAST_DATAFILE_KEY, name);
@@ -43,6 +41,10 @@ export default class StorageManager {
     return this.local.get(`datafile_${name}`);
   }
 
+
+  loadEntries (name) {
+    return this.local.get(`entries_${name}`);
+  }
 
 }
 

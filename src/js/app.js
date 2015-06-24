@@ -18,7 +18,7 @@ var NewEntry = require('./ui/pages/newEntry');
 
 var App = React.createClass({
   getInitialState: function() {
-    var logger = new Logger(null, 'debug');
+    var logger = new Logger(null, 'info');
 
     return {
       logger: logger,
@@ -31,6 +31,9 @@ var App = React.createClass({
       <FluxComponent flux={this.state.flux} connectToStores={{
         user: store => ({
           hasEnteredPassword: !!store.authKeys,
+        }),
+        entries: store => ({
+          entriesLoaded: store.state.entriesLoaded,
         })
       }}>
         <Layout {...this.props}>

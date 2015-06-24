@@ -42,7 +42,7 @@ module.exports = React.createClass({
 
   componentDidUpdate: function() {
     if (this.props.derivedKeys) {
-      this.props.showStep('openDiary');
+      this.props.showStep('loadDiary');
     }
   },
 
@@ -55,7 +55,7 @@ module.exports = React.createClass({
 
   _checkPassword: function() {
     this.props.flux.getActions('user')
-      .openDataFile(this.props.lastDataFile.filename, this.state.password);
+      .openDataFile(this.props.lastDataFile.name, this.state.password);
   }
 });
 

@@ -9,7 +9,7 @@ module.exports = React.createClass({
   render: function() {    
     var content = null;
 
-    if (this.props.hasEnteredPassword) {
+    if (this.props.entriesLoaded) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();
@@ -39,7 +39,7 @@ module.exports = React.createClass({
           <Menu {...this.props} />
         </section>
         <section id="content">
-          <FluxComponent>
+          <FluxComponent connectToStores={['entries']}>
             {this.props.children}
           </FluxComponent>
         </section>

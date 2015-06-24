@@ -7,12 +7,19 @@ class EntryActions extends Actions {
   }
 
   update(entryId, content) {
-    this.logger.debug(entryId, content.length);
+    this.logger.debug('update', entryId, content.length);
 
     return {
       id: entryId,
       content: content,
     };
+  }
+
+
+  reloadAll () {
+    this.logger.debug('reload all');
+
+    return {};
   }
 }
 
@@ -43,11 +50,6 @@ class UserActions extends Actions {
       filePath: filePath,
       password: password
     };
-  }
-
-
-  reloadEntries() {
-    this.logger.debug('reloadEntries');
   }
 
 }

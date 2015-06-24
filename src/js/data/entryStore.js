@@ -4,39 +4,6 @@ var _ = require('lodash'),
 
 var Store = require('./store');
 
-
-// var data = {};
-
-// var range = {
-//   2014: [1,2,3,4,5,6,7,8,9,10,11,12],
-//   2015: [1,2,3,4,5]
-// };
-
-// _.forEach(range, function(months, year) {
-//   _.forEach(months, function(monthIndex) {
-//     var numEntriesToBuild = faker.random.number({
-//       min: 1,
-//       max: 28,
-//     });
-
-//     for (var i=1; i<=numEntriesToBuild; ++i) {
-//       var d = moment([year, monthIndex-1, i]).startOf('day');
-
-//       var id = d.format('YYYY-MM-DD-') + faker.random.number({
-//         min: 10000,
-//         max: 100000
-//       });
-
-//       data[id] = {
-//         id: id,
-//         ts: d.valueOf(),
-//         body: faker.lorem.paragraphs(5),
-//       };    
-//     }
-//   });
-// });
-
-
 var SearchIndex = require('./searchIndex');
 
 
@@ -47,9 +14,10 @@ export default class EntryStore extends Store {
 
     this.state = {
       entries: [],
+      entriesLoaded: false,
     };
 
-    this.registerActionIds('user');
+    this.registerActionIds('entry');
   }
 
 
@@ -88,7 +56,7 @@ export default class EntryStore extends Store {
   update(params) {
     var {id, content} = params;
 
-    this.logger.debug('update entry', id, content.length);
+    this.logger.info('update entry', id, content.length);
 
     var entry;
 
@@ -121,6 +89,29 @@ export default class EntryStore extends Store {
     this.forceUpdate();
   }
 
+
+  reloadAll () {
+    this.logger.info('reload entries');
+
+    this.setState({
+      loadEntriesError: null
+    });
+
+    var userStore = this.flux.getStore('user');
+
+    try {
+      this.setState({
+        entries: userStore.loadEntries(),
+        entriesLoaded: true,
+      });
+    } catch (err) {
+      this.logger.error(err);
+      
+      this.setState({
+        loadEntriesError: err
+      });
+    }
+  }
 }
 
 

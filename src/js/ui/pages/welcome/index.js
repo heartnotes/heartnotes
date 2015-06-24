@@ -4,11 +4,13 @@ var React = require('react'),
 import FluxComponent from 'flummox/component';
 
 
+
+
 var steps = {
   start: require('./start'),
   newDiary: require('./newDiary'),
   existingDiary: require('./existingDiary'),
-  openDiary: require('./openDiary'),
+  loadDiary: require('./loadDiary'),
 };
 
 
@@ -43,6 +45,9 @@ module.exports = React.createClass({
           user: store => ({
             lastDataFile: store.lastDataFile(),
             derivedKeys: store.state.derivedKeys,
+          }),
+          entries: store => ({
+            loadEntriesError: store.state.loadEntriesError,
           })
         }}>
           <Step key={"stepkey" + this.state.step} showStep={this._showStep} />

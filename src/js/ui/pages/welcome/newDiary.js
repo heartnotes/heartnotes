@@ -50,7 +50,7 @@ module.exports = React.createClass({
 
   componentDidUpdate: function() {
     if (this.props.derivedKeys) {
-      this.props.showStep('openDiary');
+      this.props.showStep('loadDiary');
     }
   },
 

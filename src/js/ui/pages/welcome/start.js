@@ -20,7 +20,7 @@ module.exports = React.createClass({
 
       content = (
         <div>
-          <p>Diary: {lastDataFile.filename}</p>
+          <p>Diary: {lastDataFile.name}</p>
           <button onClick={this._openExisting}>Open</button>
         </div>
       );
