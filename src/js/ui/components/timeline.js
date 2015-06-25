@@ -24,7 +24,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div className="timeline">
-        <EntryListFilter onUpdate={this.props.updateFilter} />
+        <h2>Timeline</h2>
         <EntryList 
           entries={this.props.entries} 
           selected={this.props.selected}

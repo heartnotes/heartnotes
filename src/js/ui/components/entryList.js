@@ -66,6 +66,16 @@ module.exports = React.createClass({
       )
     });
 
+    // if empty
+    if (!listItems.length) {
+      listItems.push(
+        <li key="noentry"
+          className={"entry none"}>
+            No entries yet
+        </li>
+      )
+    }
+
     return (
       <ul className="entryList">
         {listItems}
