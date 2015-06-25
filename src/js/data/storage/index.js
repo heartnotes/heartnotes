@@ -21,12 +21,12 @@ export default class StorageManager {
     
     var name = this.local.get(LAST_DATAFILE_KEY);
 
-    return this.loadDataFile(name);
+    return this.loadFileMetadata(name);
   }
 
 
-  saveDataFile(name, data) {
-    this.logger.debug('save data file', name);
+  saveFileMetadata(name, data) {
+    this.logger.debug('save file metadata', name);
 
     data.name = name;
     this.local.set(`datafile_${name}`, data);
@@ -35,15 +35,24 @@ export default class StorageManager {
   }
 
 
-  loadDataFile(name) {
-    this.logger.debug('load data file', name);
+  loadFileMetadata(name) {
+    this.logger.debug('load file metadata', name);
 
     return this.local.get(`datafile_${name}`);
   }
 
 
-  loadEntries (name) {
+  loadFileData (name) {
+    this.logger.debug('load data', name);
+
     return this.local.get(`entries_${name}`);
+  }
+
+
+  saveFileData (name, saveData) {
+    this.logger.debug('save data', name, saveData.length + ' chars');
+
+    return this.local.set(`entries_${name}`, saveData);
   }
 
 }

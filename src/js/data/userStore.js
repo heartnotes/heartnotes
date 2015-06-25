@@ -2,6 +2,8 @@
 
 var _ = require('lodash');
 
+import { Timer } from 'clockmaker';
+
 var Store = require('./store'),
   Crypto = require('./crypto/index');
 
@@ -19,6 +21,10 @@ export default class UserStore extends Store {
       derivedKeys: null,
       entriesLoaded: false,
       nowDerivingKeys: false,
+    };
+
+    this._entrySaveData = {
+      num: 0,
     };
 
     this.registerActionIds('user');
@@ -50,7 +56,7 @@ export default class UserStore extends Store {
         // encrypt key with itself to produce key checking value
         return self.crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
           .then(function gotTestData(keyTestData) {
-            var savedKeyData = self.storage.saveDataFile(filePath, {
+            var savedKeyData = self.storage.saveFileMetadata(filePath, {
               salt: derivedKeyData.salt,
               iterations: derivedKeyData.iterations,
               keyTest: keyTestData,
@@ -82,7 +88,7 @@ export default class UserStore extends Store {
 
     self.logger.info('open datafile', filePath, password);
 
-    var dataFile = self.storage.loadDataFile(filePath);
+    var dataFile = self.storage.loadFileMetadata(filePath);
 
     if (!dataFile) {
       return self.setState({
@@ -149,7 +155,7 @@ export default class UserStore extends Store {
       entriesLoaded: false
     });
 
-    var encryptedEntries = self.storage.loadEntries(dataFile.name);
+    var encryptedEntries = self.storage.loadFileData(dataFile.name);
 
     new Promise(function(resolve, reject) {
       if (!encryptedEntries) {
@@ -185,6 +191,66 @@ export default class UserStore extends Store {
   }
 
 
+
+  saveEntries (entries) {
+    this.logger.info('save entries', _.keys(entries).length);
+
+    this._entrySaveData.num += 1;
+    this._entrySaveData.entries = entries;
+
+    if (!this.state.savingEntries) {
+      this._doSaveEntries();
+    }
+  }
+
+
+
+  _doSaveEntries () {
+    var self = this;
+
+    var entrySaveData = self._entrySaveData,
+      saveNum = entrySaveData.num,
+      entries = entrySaveData.entries;
+
+    self.logger.debug('do save entries', saveNum, _.keys(entries).length);
+
+    self.setState({
+      savingEntries: true,
+      saveEntriesError: null,
+    });
+
+    var dataFile = self.state.dataFile;
+
+    if (!dataFile) {
+      return self.setStatee({
+        saveEntriesError: new Error('No datafile loaded')
+      });
+    }
+
+    self.logger.debug('encrypting entries', _.keys(entries).length);
+
+    self.crypto.encrypt(self.state.derivedKeys.key1, entries)
+      .then(function encryptedEntries(saveData) {
+        self.logger.debug('encypted entries', saveData.length + ' bytes');
+
+        self.storage.saveFileData(dataFile.name, saveData);
+
+        // restart the save?
+        if (saveNum < self._entrySaveData.num) {
+          self._doSaveEntries();
+        } else {
+          self.setState({
+            savingEntries: false,
+          });
+        }
+      })
+      .catch(function(err) {
+        self.logger.error('entry encryption error', err);
+      });
+  }
+
+
+
   _resetState () {
     this.setState({
       derivedKeys: false,
@@ -202,6 +268,7 @@ export default class UserStore extends Store {
       derivingKeysError: null,
       openDataFileError: null,
       loadEntriesError: null,
+      saveEntriesError: null,
     });
   }
 }

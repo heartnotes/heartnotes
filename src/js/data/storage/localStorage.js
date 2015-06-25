@@ -13,13 +13,13 @@ export default class LocalStorage {
 
   get (key) {
     try {
-      var val = window.localStorage.getItem(PREFIX + key);
+      var value = window.localStorage.getItem(PREFIX + key);
 
       this.logger.debug('get', key, 
-        val ? (val.length < 512 ? val : `(${value.length} bytes)`) : val
+        value ? (value.length < 512 ? value : `(${value.length} bytes)`) : value
       );
 
-      return JSON.parse(val);
+      return JSON.parse(value);
     } catch (err) {
       this.logger.error('get', key, err);      
 

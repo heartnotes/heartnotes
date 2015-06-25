@@ -28,7 +28,7 @@ export default class WebWorker {
 
           reject(new Error(err));
         } else {
-          self.logger.debug('success', data);
+          self.logger.debug('success');
 
           resolve(data);
         }

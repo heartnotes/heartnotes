@@ -114,6 +114,9 @@ export default class EntryStore extends Store {
 
         self.forceUpdate();
       })
+      .then(function saveUserData() {
+        self.flux.getStore('user').saveEntries(self.state.entries);
+      })
       .catch(function(err) {
         self.logger.error('update entry', err);
       });

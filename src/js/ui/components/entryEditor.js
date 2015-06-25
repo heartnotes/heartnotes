@@ -2,8 +2,6 @@ var _ = require('lodash'),
   moment = require('moment'),
   React = require('react');
 
-import { Timer } from 'clockmaker';
-
 
 var DateString = require('./date');
 
@@ -43,9 +41,7 @@ module.exports = React.createClass({
 
   componentWillUnmount: function() {
     if (this.editor) {
-      if (this.editorSaveTimeout) {
-        this.editorSaveTimeout.stop();
-      }
+      this._changeHandler.cancel();
 
       this.editor.destroy();
     }
@@ -64,21 +60,17 @@ module.exports = React.createClass({
     });
 
     // save content every 2 seconds
-    this.editor.on('change', _.bind(function() {
-      if (this.editorSaveTimeout) {
-        this.editorSaveTimeout.stop();
-      }
-
-      this.editorSaveTimeout = Timer(function() {
+    this._changeHandler = _.debounce(
+      _.bind(function() {
         var entryId = this.props.entry ? this.props.entry.id : null;
 
         this.props.flux.getActions('entry').update(entryId, this.editor.getData());
-      }, 2000, {
-        thisObj: this
-      })
-        .start();
+      }, this),
+      1000
+    );
 
-    }, this));
+    this.editor.on('change', this._changeHandler);
+
 
     this._setBody();
   },

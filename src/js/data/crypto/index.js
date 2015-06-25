@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 
-import { Timer } from 'clockmaker';
 var WebWorker= require('../../utils/webWorker');
 
 var sjcl = require('./sjcl');
