@@ -13,7 +13,7 @@ options =
 
 if options.debugBuild
   console.log 'DEBUG mode'
- 
+
 
 # paths
 

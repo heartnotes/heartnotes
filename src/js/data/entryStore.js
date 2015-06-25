@@ -1,8 +1,9 @@
 var _ = require('lodash'),
-  faker = require('faker'),
   moment = require('moment');
 
-var Store = require('./store');
+var Store = require('./store'),
+  Crypto = require('./crypto/index');
+
 
 // var SearchIndex = require('./searchIndex');
 
@@ -12,8 +13,10 @@ export default class EntryStore extends Store {
   constructor(flux, logger) {
     super(flux, logger);
 
+    this.crypto = new Crypto(flux, logger.create('Crypto'));
+
     this.state = {
-      entries: [],
+      entries: {},
     };
 
     this.registerActionIds('entry');
@@ -35,13 +38,17 @@ export default class EntryStore extends Store {
 
 
   getByDate (date) {
-    this.logger.debug('get by date', date);
-
     var ts = moment(date).startOf('day').valueOf();
 
-    return _.find(this.state.entries, function(e) {
+    this.logger.debug('get by date', date, ts);
+
+    var entry = _.find(this.state.entries, function(e) {
       return e.ts === ts;
     });
+
+    this.logger.debug('got by date', ts, entry ? entry.id : null);
+
+    return entry;
   }
 
 
@@ -53,40 +60,65 @@ export default class EntryStore extends Store {
 
 
   update(params) {
+    var self = this;
+
     var {id, content} = params;
 
-    this.logger.info('update entry', id, content.length);
+    self.logger.info('update entry', id, content.length);
 
-    var entry;
+    new Promise(function(resolve, reject) {
+      var entry;
 
-    if (!id) {
-      id = faker.random.uuid();
+      if (!id) {
+        resolve(self.getToday());
+      } else {
+        entry = _.find(self.state.entries, function(e) {
+          return e.id === id;
+        });
 
-      this.logger.debug('create entry', id);
+        if (!entry) {
+          reject(new Error('Entry not found: ' + id));
+        } else {
+          resolve(entry);
+        }
+      }
+    })
+      .then(function createEntryIfNeeded(entry) {
+        if (entry) {
+          return entry;
+        }
 
-      var entry = {
-        id: id,
-        ts: moment().startOf('day').valueOf(),
-        body: content
-      };
+        // else create entry for today
+        
+        var today = moment(),
+          ts = today.startOf('day').valueOf();
 
-      // this.searchIndex.add(entry);
+        self.logger.debug('create entry', today, ts);
 
-      this.state.entries[id] = entry;
-    } else {
-      var entry = _.find(this.state.entries, function(e) {
-        return e.id === id;
-      });
-
-      if (entry) {
+        return self.crypto.hash(ts, Math.random() * 100000)
+          .then(function hashedVal(hashVal) {
+            return {
+              id: hashVal,
+              ts: ts,
+            };
+          });
+      })
+      .then(function entryReady(entry) {
         entry.body = content;
 
-        // this.searchIndex.update(entry);
-      }
-    }
+        self.state.entries[entry.id] = entry;
 
-    this.forceUpdate();
+        self.setState({
+          entries: self.state.entries
+        });
+
+        self.forceUpdate();
+      })
+      .catch(function(err) {
+        self.logger.error('update entry', err);
+      });
   }
+
 
 
   setEntries (entries) {

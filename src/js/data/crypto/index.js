@@ -1,5 +1,7 @@
 "use strict";
 
+var _ = require('lodash');
+
 import { Timer } from 'clockmaker';
 var WebWorker= require('../../utils/webWorker');
 
@@ -39,6 +41,32 @@ export default class Crypto {
     var logger = this.logger.create(`worker:${name}`);
 
     return new WebWorker(func, logger);
+  }
+
+
+
+  /**
+   * Generate a unique id based on given input
+   * @return {String}
+   */
+  hash () {
+    var inputs = _.toArray(arguments).join('');
+
+    this.logger.debug('hash', inputs);
+
+    var worker = this._constructWorker('hash', function(data, cb) {
+      try {
+        cb(null, 
+          sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(data.str))
+        );
+      } catch (err) {
+        cb(err.toString());
+      }
+    });
+
+    return worker.run({
+      str: inputs,
+    });    
   }
 
 

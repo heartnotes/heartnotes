@@ -155,15 +155,15 @@ export default class UserStore extends Store {
       if (!encryptedEntries) {
         self.logger.info('no existing entries found');
 
-        resolve([]);
+        resolve({});
       } else {
         self.logger.info('decrypt entries', encryptedEntries.length);
 
         return self.crypto.decrypt(self.state.derivedKeys.key1, encryptedEntries)
           .then(function decryptedEntries(entries) {
-            self.logger.debug('decrypted entries', entries.length);
+            self.logger.debug('decrypted entries', _.keys(entries).length);
 
-            resolve(entries)
+            resolve(entries);
           })
           .catch(reject);
       }
