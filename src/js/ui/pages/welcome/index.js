@@ -4,6 +4,8 @@ var React = require('react'),
 import FluxComponent from 'flummox/component';
 
 
+var Logo = require('../../components/logo');
+
 
 
 var steps = {
@@ -24,8 +26,7 @@ module.exports = React.createClass({
   render: function() { 
     return (
       <div className="welcomeView">
-        <div className="logo" />
-        <h1>Heartnote</h1>
+        <Logo />
         <div className="step-container">
           <ReactCSSTransitionGroup transitionName="steps">
             {this._buildCurrentStep()}

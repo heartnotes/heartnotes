@@ -1,0 +1,11 @@
+font-face-register($name, $filename, $weight="normal", $style="normal")
+  @font-face
+    font-family $name
+    src url($fa-font-path + '/' + $filename + '.eot')
+    src url($fa-font-path + '/' + $filename + '.eot?#iefix') format('embedded-opentype'),
+         url($fa-font-path + '/' + $filename + '.woff') format('woff'),
+         url($fa-font-path + '/' + $filename + '.ttf') format('truetype'),
+         url($fa-font-path + '/' + $filename  + '.svg#RobotoBold') format('svg');
+    font-weight $weight
+    font-style $style
+

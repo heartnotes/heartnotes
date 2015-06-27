@@ -1,7 +1,9 @@
 @import "_variables"
+@import "_mixins"
 @import "nib"
 @import "rupture"
 @import "../../node_modules/font-awesome-stylus/stylus/font-awesome.styl"
+@import "_fonts"
 
 
 
@@ -10,11 +12,15 @@ global-reset()
 
 html
   font-family $body-font
-  font-weight 300
-  font-style normal
   font-size 16px
   background-color #fff
   color #000
+
+h1, h2, h3
+  font-weight bold
+
+img
+  border none
 
 
 // main grid
