@@ -8,6 +8,7 @@ module.exports = React.createClass({
     onClick : React.PropTypes.func,
     animActive : React.PropTypes.bool,
     animStyle: React.PropTypes.string,
+    color: React.PropTypes.string,
   },
 
   getDefaultProps: function() {
@@ -15,12 +16,16 @@ module.exports = React.createClass({
       onClick: null,
       animActive: false,
       animStyle: 'expand-right',
+      color: '',
     };
   },
 
   render: function() {
     return (
-      <LaddaButton active={this.props.animActive} style={this.props.animStyle}>
+      <LaddaButton 
+        color={this.props.color}
+        active={this.props.animActive} 
+        style={this.props.animStyle}>
         <button onClick={this.props.onClick}>{this.props.children}</button>
       </LaddaButton>
     );

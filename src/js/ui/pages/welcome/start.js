@@ -27,18 +27,21 @@ module.exports = React.createClass({
       var lastDataFile = this.props.lastDataFile;
 
       content = (
-        <div>
-          <p>Diary: {lastDataFile.name}</p>
+        <div className="open-existing">
+          <p><label>Diary:</label><span>{lastDataFile.name}</span></p>
           <Button onClick={this._openExisting}>Open</Button>
         </div>
       );
     }
 
+
     content = (
       <div>
         {content}
-        <Button animActive={this.state.createActive} 
-          onClick={this._createNew}>New diary</Button>
+        <div className="create-new">
+          <Button animActive={this.state.createActive}
+            onClick={this._createNew}>Create new diary</Button>
+        </div>
       </div>
     );
 
