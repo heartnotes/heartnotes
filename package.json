@@ -35,6 +35,7 @@
     "pickadate": "~3.5.6",
     "pouchdb": "~3.6.0",
     "react": "~0.13.3",
+    "react-ladda": "~2.0.4",
     "react-router": "git://github.com/rackt/react-router.git#0abb852520ea26b6a57198d8e7c4fbdf3baa7a90",
     "reactify": "~1.1.1",
     "run-sequence": "~1.1.0",
@@ -54,6 +55,5 @@
   "browser": {
     "react-router": "./node_modules/react-router/lib/umd/ReactRouter.js"
   },
-  "browserify-shim": {
-  }
+  "browserify-shim": {}
 }

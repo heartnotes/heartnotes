@@ -14,7 +14,7 @@ module.exports = React.createClass({
 
   render: function() {
     var str1 = 'heart',
-      str2 = 'note';
+      str2 = 'notes';
 
     if (this.props.withText) {
       return (

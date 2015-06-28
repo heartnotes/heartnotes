@@ -1,5 +1,7 @@
 var React = require('react');
 
+var Button = require('../../components/button');
+
 
 module.exports = React.createClass({
   propTypes: {
@@ -12,6 +14,12 @@ module.exports = React.createClass({
     };
   },
 
+  getInitialState: function() {
+    return {
+      createActive: false
+    };
+  },
+
   render: function() { 
     var content = null;
 
@@ -21,7 +29,7 @@ module.exports = React.createClass({
       content = (
         <div>
           <p>Diary: {lastDataFile.name}</p>
-          <button onClick={this._openExisting}>Open</button>
+          <Button onClick={this._openExisting}>Open</Button>
         </div>
       );
     }
@@ -29,7 +37,8 @@ module.exports = React.createClass({
     content = (
       <div>
         {content}
-        <button onClick={this._createNew}>Create new diary</button>
+        <Button animActive={this.state.createActive} 
+          onClick={this._createNew}>New diary</Button>
       </div>
     );
 
@@ -42,7 +51,10 @@ module.exports = React.createClass({
 
 
   _createNew: function() {
-    this.props.showStep('newDiary');
+    this.setState({
+      createActive: true
+    });
+    // this.props.showStep('newDiary');
   },
 
 
