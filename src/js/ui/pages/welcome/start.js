@@ -1,6 +1,9 @@
 var React = require('react');
 
-var Button = require('../../components/button');
+var Button = require('../../components/button'),
+  PasswordInput = require('../../components/passwordInput'),
+  DerivationProgress = require('../../components/derivationProgress');
+
 
 
 module.exports = React.createClass({
@@ -16,7 +19,7 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      createActive: false
+      password: null
     };
   },
 
@@ -26,10 +29,21 @@ module.exports = React.createClass({
     if (this.props.lastDataFile) {
       var lastDataFile = this.props.lastDataFile;
 
+      var buttonAttrs = {};
+      if (!this.state.password || !this.state.password.length) {
+        buttonAttrs.disabled = true;
+      }
+
       content = (
         <div className="open-existing">
           <p><label>Diary:</label><span>{lastDataFile.name}</span></p>
-          <Button onClick={this._openExisting}>Open</Button>
+          <form>
+            <div className="fields">
+              <PasswordInput setPassword={this._setPassword} />
+              <Button onClick={this._checkPassword} active={this.props.nowDerivingKeys}>Open</Button>
+            </div>
+            <DerivationProgress {...this.props} />
+          </form>
         </div>
       );
     }
@@ -39,8 +53,7 @@ module.exports = React.createClass({
       <div>
         {content}
         <div className="create-new">
-          <Button animActive={this.state.createActive}
-            onClick={this._createNew}>Create new diary</Button>
+          <Button onClick={this._createNew}>Create new diary</Button>
         </div>
       </div>
     );
@@ -53,17 +66,27 @@ module.exports = React.createClass({
   },
 
 
-  _createNew: function() {
-    this.setState({
-      createActive: true
-    });
-    // this.props.showStep('newDiary');
+
+  componentDidUpdate: function() {
+    var password = this.state.password;
+
+    if (password && password.length && this.props.derivedKeys) {
+      this.props.showStep('loadDiary');
+    }
   },
 
 
-  _openExisting: function() {
-    this.props.showStep('existingDiary');
-  }
+
+  _setPassword: function(p) {
+    this.setState({
+      password: p
+    });
+  },
+
+
+  _createNew: function() {
+    this.props.showStep('newDiary');
+  },
 
 });
 

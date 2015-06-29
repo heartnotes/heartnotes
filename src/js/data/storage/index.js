@@ -32,6 +32,8 @@ export default class StorageManager {
     this.local.set(`datafile_${name}`, data);
 
     this.local.set(LAST_DATAFILE_KEY, name);
+
+    return data;
   }
 
 

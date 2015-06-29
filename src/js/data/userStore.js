@@ -144,7 +144,7 @@ export default class UserStore extends Store {
     var dataFile = self.state.dataFile;
 
     if (!dataFile) {
-      return self.setStatee({
+      return self.setState({
         loadEntriesError: new Error('No datafile loaded')
       });
     }
