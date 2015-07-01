@@ -73,6 +73,7 @@ export default class UserStore extends Store {
         self.logger.error('keys derivation error', err);
 
         self.setState({
+          nowDerivingKeys: false,
           derivingKeysError: err
         });
       });
@@ -130,6 +131,7 @@ export default class UserStore extends Store {
         self.logger.error('keys derivation error', err);
 
         self.setState({
+          nowDerivingKeys: false,
           derivingKeysError: err
         });
       });

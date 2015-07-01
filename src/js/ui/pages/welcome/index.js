@@ -46,7 +46,8 @@ module.exports = React.createClass({
           user: store => ({
             lastDataFile: store.lastDataFile(),
             derivedKeys: store.state.derivedKeys,
-            nowDerivingKeys: !!store.state.nowDerivingKeys,
+            nowDerivingKeys: store.state.nowDerivingKeys,
+            derivingKeysError: store.state.derivingKeysError,
             loadEntriesError: store.state.loadEntriesError,
           }),
         }}>

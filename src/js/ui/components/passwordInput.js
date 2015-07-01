@@ -1,58 +1,73 @@
 var React = require('react');
 
 
+var IconButton = require("./iconButton");
+
+
 
 module.exports = React.createClass({
   propTypes: {
-    setPassword : React.PropTypes.func,
+    placeholder : React.PropTypes.string,
+    showToggleButton: React.PropTypes.bool,
+    password : React.PropTypes.string,
+    onChange : React.PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
-      setPassword : null,
+      placeholder: 'Enter password',
+      showToggleButton: false,
+      password: '',
+      onChange : null,
     };
   },
 
   getInitialState: function() {
     return {
-      password: null,
       showTyping: false,
     };
   },
 
   render: function() {
-    var inputType = this.state.showTyping ? 'text' : 'password';
+    var inputType = 'password',
+      toggleElem = null;
 
-    var inputElem = (
-      <input type={inputType}
-        onInput={this._onChange} 
-        value={this.password} />
-    );
+    if (this.props.showToggleButton) {
+      var toggleIcon = 'bold',
+        toggleTooltip = 'Show typing';
+
+      if (this.state.showTyping) {
+        inputType = 'text';  
+        toggleIcon = 'circle';
+        toggleTooltip = 'Hide typing';
+      }
+
+      toggleElem = (
+        <IconButton 
+          icon={toggleIcon} 
+          onClick={this._toggleTyping}
+          tooltip={toggleTooltip} />
+      );
+    }
 
     return (
-      <div className="existing-password">
-        <div className="password field">
-          {inputElem}
-          <a href="#" className="toggle" onClick={this._toggleTyping}>Show typing</a>
-        </div>
+      <div className="password-input">
+        <input type={inputType}
+          onInput={this._onChange} 
+          value={this.props.password} 
+          placeholder={this.props.placeholder}/>
+        {toggleElem}
       </div>
     )
-  },
-
-
-  componentDidUpdate: function(prevProps, prevState) {
-    if (this.state.password !== prevState.password) {
-      this.props.setPassword(this.state.password);
-    }
   },
 
 
   _onChange: function(e) {
     var password = $(e.currentTarget).val();
 
-    this.setState({
-      password: password,
-    });
+    if (this.props.onChange) {
+      this.props.onChange(password);
+    }
   },  
 
 

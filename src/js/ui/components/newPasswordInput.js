@@ -1,16 +1,18 @@
 var React = require('react');
 
 
+var PasswordInput = require('./passwordInput');
+
 
 module.exports = React.createClass({
   propTypes: {
-    setPassword : React.PropTypes.func,
+    onChange : React.PropTypes.func,
     requiredStrength: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
-      setPassword : null,
+      onChange : null,
       requiredStrength: 2,
     };
   },
@@ -20,34 +22,25 @@ module.exports = React.createClass({
       password: null,
       passwordConfirm: null,
       strength: 0,
-      showTyping: false,
     };
   },
 
   render: function() {
-    var inputType = this.state.showTyping ? 'text' : 'password';
-
-    var inputElem = (
-      <input type={inputType}
-        onInput={this._onChange} 
-        value={this.password} />
-    );
-
-    var confirmElem = (
-      <input type={inputType}
-        onInput={this._onConfirmChange} 
-        value={this.passwordConfirm} />
-    );
-
     return (
       <div className="new-password">
-        <div className="password field">
-          {inputElem}
+        <div className="password field row">
+          <PasswordInput 
+            placeholder="Enter password"
+            password={this.password} 
+            onChange={this._onChange}
+            showToggleButton={true} />
           <span className={'strength level-'+ this.state.strength} />
-          <a href="#" className="toggle" onClick={this._toggleTyping}>Show typing</a>
         </div>
-        <div className="confirm-password field">
-          {confirmElem}
+        <div className="confirm-password field row">
+          <PasswordInput 
+            placeholder="Confirm password"
+            password={this.passwordConfirm} 
+            onChange={this._onConfirmChange} />
         </div>
       </div>
     )
@@ -63,26 +56,16 @@ module.exports = React.createClass({
       }
 
       if (this.state.password !== this.state.passwordConfirm) {
-        this.props.setPassword(null);
+        this.props.onChange(null);
       } else {
-        this.props.setPassword(this.state.password);      
+        this.props.onChange(this.state.password);      
       }
     }
   },
 
 
-  _toggleTyping: function(e) {
-    e.preventDefault();
-
-    this.setState({
-      showTyping: !this.state.showTyping
-    });
-  },
-
-
-  _onChange: function(e) {
-    var password = $(e.currentTarget).val(),
-      strength = this._calcStrength(password);
+  _onChange: function(password) {
+    var strength = this._calcStrength(password);
 
     this.setState({
       strength: strength,
@@ -91,9 +74,7 @@ module.exports = React.createClass({
   },  
 
 
-  _onConfirmChange: function(e) {
-    var passwordConfirm = $(e.currentTarget).val();
-
+  _onConfirmChange: function(passwordConfirm) {
     this.setState({
       passwordConfirm: passwordConfirm
     });

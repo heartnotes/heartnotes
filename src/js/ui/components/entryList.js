@@ -83,13 +83,11 @@ module.exports = React.createClass({
     );
   },
 
-
   _onSelect: function(e) {
     if (this.props.onSelect) {
       this.props.onSelect(e.currentTarget.dataset.id);
     }
   },
-
 
 });
 

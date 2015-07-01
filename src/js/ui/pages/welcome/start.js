@@ -2,7 +2,7 @@ var React = require('react');
 
 var Button = require('../../components/button'),
   PasswordInput = require('../../components/passwordInput'),
-  DerivationProgress = require('../../components/derivationProgress');
+  PasswordCheckProgress = require('../../components/passwordCheckProgress');
 
 
 
@@ -19,7 +19,7 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      password: null
+      password: null,
     };
   },
 
@@ -29,7 +29,11 @@ module.exports = React.createClass({
     if (this.props.lastDataFile) {
       var lastDataFile = this.props.lastDataFile;
 
-      var buttonAttrs = {};
+      var buttonAttrs = {
+        onClick: this._checkPassword,
+        animActive: !!this.props.nowDerivingKeys,
+      };
+
       if (!this.state.password || !this.state.password.length) {
         buttonAttrs.disabled = true;
       }
@@ -38,11 +42,13 @@ module.exports = React.createClass({
         <div className="open-existing">
           <p><label>Diary:</label><span>{lastDataFile.name}</span></p>
           <form>
-            <div className="fields">
-              <PasswordInput setPassword={this._setPassword} />
-              <Button onClick={this._checkPassword} active={this.props.nowDerivingKeys}>Open</Button>
+            <div className="field row">
+              <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>
-            <DerivationProgress {...this.props} />
+            <div className="field row">
+              <Button {...buttonAttrs}>Open</Button>
+            </div>
+            <PasswordCheckProgress {...this.props} />
           </form>
         </div>
       );
@@ -76,10 +82,17 @@ module.exports = React.createClass({
   },
 
 
+  _checkPassword: function(e) {
+    e.preventDefault();
+
+    this.props.flux.getActions('user')
+      .openDataFile(this.props.lastDataFile.name, this.state.password);
+  },
+
 
   _setPassword: function(p) {
     this.setState({
-      password: p
+      password: p,
     });
   },
 

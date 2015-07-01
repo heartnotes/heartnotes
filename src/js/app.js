@@ -18,7 +18,7 @@ var NewEntry = require('./ui/pages/newEntry');
 
 var App = React.createClass({
   getInitialState: function() {
-    var logger = new Logger(null, 'debug');
+    var logger = new Logger(null, 'info');
 
     return {
       logger: logger,
