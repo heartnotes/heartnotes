@@ -76,6 +76,10 @@ export default class UserStore extends Store {
           nowDerivingKeys: false,
           derivingKeysError: err
         });
+
+        self.setStateAfterDelay({
+          derivingKeysError: null
+        }, 1000);
       });
   }
 
@@ -134,6 +138,10 @@ export default class UserStore extends Store {
           nowDerivingKeys: false,
           derivingKeysError: err
         });
+
+        self.setStateAfterDelay({
+          derivingKeysError: null
+        }, 1000);
       });
   }
 
@@ -189,6 +197,10 @@ export default class UserStore extends Store {
         self.setState({
           loadEntriesError: err
         });
+
+        self.setStateAfterDelay({
+          loadEntriesError: null
+        }, 1000);
       });
   }
 

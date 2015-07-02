@@ -2,8 +2,9 @@ var React = require('react');
 
 var faker = require('faker')
 
-var NewPasswordInput = require('../../components/newPasswordInput'),
-  DerivationProgress = require('../../components/derivationProgress');
+var Button = require('../../components/button'),
+  NewPasswordInput = require('../../components/newPasswordInput'),
+  PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
 
 
 
@@ -25,24 +26,32 @@ module.exports = React.createClass({
   },
 
   render: function() { 
-    var buttonAttrs = {};
+    var buttonAttrs = {
+      onClick: this._savePassword,
+      animActive: !!this.props.nowDerivingKeys,
+    };
+
     if (!this.state.password || !this.state.password.length) {
       buttonAttrs.disabled = true;
     }
 
     return (
       <div className="new-diary step">
-        <p className="info">Please enter a password to encrypt your diary 
-        with. Note:</p>
+        <p className="info">Please enter a password to encrypt your diary with.</p>
         <ul>
           <li>Use A to Z, numbers and symbols altogether to ensure a strong password.</li>
           <li>Do not forget it! if you forget your password you will NOT be able to open your diary.</li>
         </ul>        
-        <div className="fields">
-          <NewPasswordInput setPassword={this._setPassword} requiredStrength={1} />
-        </div>
-        <button onClick={this._savePassword} {...buttonAttrs}>Next</button>
-        <DerivationProgress {...this.props} />
+        <form>
+          <div className="field row">
+            <NewPasswordInput setPassword={this._setPassword} requiredStrength={1} />
+          </div>
+          <div className="field row">
+            <PasswordCheckProgressPopup {...this.props}>
+              <Button {...buttonAttrs}>Next</Button>
+            </PasswordCheckProgressPopup>
+          </div>
+        </form>
       </div>
     );
   },

@@ -11,7 +11,6 @@ var Logo = require('../../components/logo');
 var steps = {
   start: require('./start'),
   newDiary: require('./newDiary'),
-  existingDiary: require('./existingDiary'),
   loadDiary: require('./loadDiary'),
 };
 
@@ -41,7 +40,7 @@ module.exports = React.createClass({
     var Step = steps[this.state.step];
 
     return (
-      <div>
+      <div className="step-anim-holder" key={"stepkey" + this.state.step}>
         <FluxComponent connectToStores={{
           user: store => ({
             lastDataFile: store.lastDataFile(),
@@ -51,7 +50,7 @@ module.exports = React.createClass({
             loadEntriesError: store.state.loadEntriesError,
           }),
         }}>
-          <Step key={"stepkey" + this.state.step} showStep={this._showStep} />
+          <Step showStep={this._showStep} />
         </FluxComponent>
       </div>
     );

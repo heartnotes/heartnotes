@@ -1,46 +1,70 @@
 .welcomeView
+  box-sizing border-box
   width 100%
-  height 100%
+  height 100vh
+  padding-top 5rem
   background-color $black
   color $white
   
-  display flex
-  flex-direction column
-  align-items center
-  justify-content center
-
   .logo
     margin 0 auto 2rem
-
-  .steps-enter-active 
-    display block
     
-  .steps-leave-active 
-    display none    
+  .step-container
+    position relative
+
+  .step-anim-holder
+    text-align center
+    &.steps-enter
+      display none
+    &.steps-enter-active
+      display block
+    &.steps-leave
+      display block
+    &.steps-leave-active
+      display none
     
   .step
-    min-height 10rem
+    display inline-block
+    box-sizing border-box
+    padding-top 2rem
+    
+    &.start
+      font-size 1.5rem
 
-  .step.start
-    text-align center
-    
-    .open-existing
-      margin 1rem 0
-      padding 2rem 0
-      border-bottom 1px dashed $gray-darker
+      .open-existing
+        display block
+        margin 0
+        padding 0 0 2rem
+              
+        p
+          margin 0 0 2rem
+          label
+            font-style italic
+            margin-right 0.5rem
+          span
+            font-weight bold
       
-      p
-        margin 0 0 2rem
-        label
-          font-style italic
-          margin-right 0.5rem
-        span
-          font-weight bold
-    
-    .alert
-      max-width 25rem
-      margin 0 auto
+      .create-new
+        &:before
+          margin 0 0 2rem
+          display block
+          content "- - - - - - - - - - - - - - -"
+          color $gray-dark
+          border-sizing border-box
+          
+
+    &.new-diary
+      width 70%
       
-    .create-new
-      margin 2rem 0
-      
+      p, ul
+        font-size 1.5rem
+
+
+
+
+
+
+
+
+
+        

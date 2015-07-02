@@ -2,7 +2,7 @@ var React = require('react');
 
 var Button = require('../../components/button'),
   PasswordInput = require('../../components/passwordInput'),
-  PasswordCheckProgress = require('../../components/passwordCheckProgress');
+  PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
 
 
 
@@ -46,9 +46,10 @@ module.exports = React.createClass({
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>
             <div className="field row">
-              <Button {...buttonAttrs}>Open</Button>
+              <PasswordCheckProgressPopup {...this.props}>
+                <Button {...buttonAttrs}>Open</Button>
+              </PasswordCheckProgressPopup>
             </div>
-            <PasswordCheckProgress {...this.props} />
           </form>
         </div>
       );

@@ -112,16 +112,37 @@ ul.entryList
     margin-left 5px
     border-radius 0px
 
-
-.alert
+$popupBody
+  position absolute
   display block
-  border-radius 10px
-  border 1px solid $red-light
+  z-index 20
+  transition opacity 0.1s linear
   color $red-light
-  padding 1em
-  font-size 1.2rem
-  line-height 1.5em
-  
+  box-sizing border-box
+
+.popup-wrapper
+  position relative
+  box-sizing border-box
+  .popup-body
+    @extend $popupBody
+    display block
+    border-radius 10px
+    border 1px solid $red-light
+    background-color $black
+    padding 1em
+    font-size 1.2rem
+    line-height 1.5em
+    width 15rem
+    box-shadow 0px 0px 10px 1px $red-light
+  .popup-arrow
+    @extend $popupBody
+    font-size 3rem
+    line-height 1rem
+  &.hidden
+    .popup-body, .popup-arrow
+      opacity 0
+      pointer-events none
+
 
 .new-password
   .field

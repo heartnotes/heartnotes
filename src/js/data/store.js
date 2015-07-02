@@ -24,6 +24,13 @@ export default class Store extends FlummoxStore {
     }, this);
   }
 
+
+  setStateAfterDelay (attrs, delayMs) {
+    _.delay(_.bind(function() {
+      this.setState(attrs);
+    }, this), delayMs);
+  }
+
 }
 
 

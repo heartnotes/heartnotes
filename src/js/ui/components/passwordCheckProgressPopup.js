@@ -1,9 +1,10 @@
 var React = require('react');
 
-var Alert = require('./alert');
+var Popup = require('./popup');
 
 
 module.exports = React.createClass({
+
   render: function() {
     var derivingMsg = null;
 
@@ -12,23 +13,15 @@ module.exports = React.createClass({
     }
 
     if (this.props.derivingKeysError) {
-      var errorMsg = this.props.derivingKeysError.toString();
-
       derivingMsg = (
         <div className="error">Sorry, password incorrect!</div>
       );
     }
 
-    if (derivingMsg) {
-      derivingMsg = (
-        <Alert msg={derivingMsg} />
-      );
-    }
-        
     return (
-      <div className="check-password-result">
-        {derivingMsg}
-      </div>
+      <Popup msg={derivingMsg} showPopup={!!derivingMsg}>
+        {this.props.children}
+      </Popup>
     );
   },
 
