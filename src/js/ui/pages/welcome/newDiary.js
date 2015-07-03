@@ -37,14 +37,17 @@ module.exports = React.createClass({
 
     return (
       <div className="new-diary step">
-        <p className="info">Please enter a password to encrypt your diary with.</p>
+        <p className="info">Please enter a strong password for encryption.</p>
         <ul>
           <li>Use A to Z, numbers and symbols altogether to ensure a strong password.</li>
           <li>Do not forget it! if you forget your password you will NOT be able to open your diary.</li>
         </ul>        
         <form>
           <div className="field row">
-            <NewPasswordInput setPassword={this._setPassword} requiredStrength={1} />
+            <NewPasswordInput 
+              password={this.state.password} 
+              onChange={this._setPassword} 
+              requiredStrength={1} />
           </div>
           <div className="field row">
             <PasswordCheckProgressPopup {...this.props}>

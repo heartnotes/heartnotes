@@ -1,7 +1,9 @@
 var React = require('react');
 
 
-var PasswordInput = require('./passwordInput');
+var PasswordInput = require('./passwordInput'),
+  Collapsible = require('./collapsible'),
+  Progress = require('./progress');
 
 
 module.exports = React.createClass({
@@ -25,21 +27,31 @@ module.exports = React.createClass({
     };
   },
 
+
   render: function() {
+    var strengthMeterHeight = '1rem';
+    
+    if (1 > this.state.strength) {
+      console.log('hidden');
+      strengthMeterHeight = '0px';
+    }
+
     return (
-      <div className="new-password">
+      <div className="new-password-input">
         <div className="password field row">
           <PasswordInput 
             placeholder="Enter password"
-            password={this.password} 
+            password={this.state.password} 
             onChange={this._onChange}
             showToggleButton={true} />
-          <span className={'strength level-'+ this.state.strength} />
+          <Collapsible height={strengthMeterHeight}>
+            {this._buildStrengthMeter()}
+          </Collapsible>
         </div>
         <div className="confirm-password field row">
           <PasswordInput 
             placeholder="Confirm password"
-            password={this.passwordConfirm} 
+            password={this.state.passwordConfirm} 
             onChange={this._onConfirmChange} />
         </div>
       </div>
@@ -61,6 +73,31 @@ module.exports = React.createClass({
         this.props.onChange(this.state.password);      
       }
     }
+  },
+
+
+
+  _buildStrengthMeter: function() {
+    var text = 'Weak',
+      color = '#ff0',
+      val = this.state.strength;
+
+    if (4 <= val) {
+      text = 'Medium';
+      color = '#f70';
+    }
+
+    if (7 <= val) {
+      val = 7;
+      color = '#f00';
+      text = 'Strong';
+    }
+
+    return (
+      <div className="strength-meter">
+        <Progress max={7} value={val} text={text} color={color} />
+      </div>
+    );
   },
 
 

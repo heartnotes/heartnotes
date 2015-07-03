@@ -110,7 +110,7 @@ ul.entryList
   .icon-button
     padding 0.2em 0.5em
     margin-left 5px
-    border-radius 0px
+    border-radius 5px
 
 $popupBody
   position absolute
@@ -144,25 +144,33 @@ $popupBody
       pointer-events none
 
 
-.new-password
+.new-password-input
   .field
     display block
     margin 1em 0
   input
     display inline-block
-  .strength
-    &.level-1, &.level-2, &.level-3
-      &:after
-        display inline-block
-        content 'weak'
-    &.level-4, &.level-5
-      &:after
-        display inline-block
-        content 'medium'
-    &.level-6, &.level-7
-      &:after
-        display inline-block
-        content 'strong'
+  .strength-meter
+    display block
+    margin 1em 0
+    
+
+.progress
+  box-sizing border-box
+  width 100%
+  border-radius 5px
+  border 1px solid $gray-darker
+  height 1.5rem
+  text-align left
+  & > div
+    box-sizing border-box
+    display inline-block
+    height 100%
+    text-align center
+
+.collapsible
+  transitiona all 0.3s linear
+
 
 
 button

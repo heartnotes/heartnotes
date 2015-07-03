@@ -44,6 +44,7 @@ module.exports = React.createClass({
 
       toggleElem = (
         <IconButton 
+          ref="toggleButton"
           icon={toggleIcon} 
           onClick={this._toggleTyping}
           tooltip={toggleTooltip} />
@@ -53,12 +54,41 @@ module.exports = React.createClass({
     return (
       <div className="password-input">
         <input type={inputType}
+          ref="input"
           onInput={this._onChange} 
           value={this.props.password} 
           placeholder={this.props.placeholder}/>
         {toggleElem}
       </div>
     )
+  },
+
+
+  componentDidMount: function() {
+    this._updateToggleButtonPosition();
+  },
+
+
+  componentDidUpdate: function(prevProps, prevState) {
+    if (prevProps.showToggleButton !== this.props.showToggleButton) {
+      this._updateToggleButtonPosition();
+    }
+  },
+
+
+  _updateToggleButtonPosition: function() {
+    if (this.props.showToggleButton) {
+      var $input = $(React.findDOMNode(this.refs.input)),
+        $toggleButton = $(React.findDOMNode(this.refs.toggleButton));
+
+      var inputPos = $input.position();
+
+      $toggleButton.css({
+        position: 'absolute',
+        left: (inputPos.left + $input.outerWidth() + 20) + 'px',
+        top: (inputPos.top + ($input.outerHeight() - $toggleButton.outerHeight()) / 2) + 'px',
+      });
+    }
   },
 
 
@@ -77,7 +107,7 @@ module.exports = React.createClass({
     this.setState({
       showTyping: !this.state.showTyping
     });
-  }
+  },
 
 });
 

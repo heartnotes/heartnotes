@@ -21,7 +21,8 @@ module.exports = React.createClass({
 
   render: function() {
     return (
-      <button className="icon-button" onClick={this.props.onClick}>
+      <button className="icon-button" onClick={this.props.onClick}
+          title={this.props.tooltip}>
         <Icon name={this.props.icon} />
       </button>
     );
