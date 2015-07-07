@@ -4,7 +4,7 @@ var faker = require('faker')
 
 var Button = require('../../components/button'),
   NewPasswordInput = require('../../components/newPasswordInput'),
-  PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
+  PasswordCreateProgressPopup = require('../../components/passwordCreateProgressPopup');
 
 
 
@@ -46,9 +46,9 @@ module.exports = React.createClass({
               requiredStrength={1} />
           </div>
           <div className="field row">
-            <PasswordCheckProgressPopup {...this.props}>
+            <PasswordCreateProgressPopup {...this.props}>
               <Button {...buttonAttrs}>Next</Button>
-            </PasswordCheckProgressPopup>
+            </PasswordCreateProgressPopup>
           </div>
         </form>
       </div>
