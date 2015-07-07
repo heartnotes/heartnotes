@@ -123,6 +123,10 @@ $popupBody
 .popup-wrapper
   position relative
   box-sizing border-box
+  
+  .icon-widget
+    cursor pointer
+
   .popup-body
     @extend $popupBody
     display block
@@ -131,9 +135,14 @@ $popupBody
     background-color $black
     padding 1em
     font-size 1.2rem
+    font-style normal
     line-height 1.5em
-    width 15rem
+    width 20rem
     box-shadow 0px 0px 10px 1px $red-light
+    p
+      margin-bottom 1em
+    small
+      font-size 75%
   .popup-arrow
     @extend $popupBody
     font-size 3rem
@@ -151,26 +160,48 @@ $popupBody
   input
     display inline-block
   .strength-meter
-    display block
     margin 1em 0
+    display flex
+    flex-direction row
+    justify-content center
+    align-items center
+    & > label
+      margin-right 1em
+      font-style italic
+      color $gray
+      i
+        margin-left 0.3em
+    & > .progress
+      width 10rem
     
+$progressStyles
+  display inline-block
+  box-sizing border-box
+  position absolute
 
 .progress
-  box-sizing border-box
-  width 100%
+  @extend $progressStyles
+  position relative
   border-radius 5px
   border 1px solid $gray-darker
   height 1.5rem
+  font-size 0.8rem
   text-align left
   & > div
-    box-sizing border-box
-    display inline-block
+    @extend $progressStyles
     height 100%
-    text-align center
+  & > label
+    @extend $progressStyles
+    color $gray
+    right 3px
+    top 3px
+    z-index 10
 
 .collapsible
-  transitiona all 0.3s linear
-
+  transition all 0.3s linear
+  overflow visible
+  &.collapsed
+    overflow hidden
 
 
 button

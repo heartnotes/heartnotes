@@ -30,7 +30,8 @@ module.exports = React.createClass({
 
     return (
       <div className="progress">
-        <div {...attrs}>{this.props.text}</div>
+        <label>{this.props.text}</label>
+        <div {...attrs}></div>
       </div>
     );
   },

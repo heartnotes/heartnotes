@@ -1,9 +1,9 @@
 var React = require('react');
 
-
 var PasswordInput = require('./passwordInput'),
   Collapsible = require('./collapsible'),
-  Progress = require('./progress');
+  Progress = require('./progress'),
+  Icon = require('./icon');
 
 
 module.exports = React.createClass({
@@ -29,12 +29,7 @@ module.exports = React.createClass({
 
 
   render: function() {
-    var strengthMeterHeight = '1rem';
-    
-    if (1 > this.state.strength) {
-      console.log('hidden');
-      strengthMeterHeight = '0px';
-    }
+    var showStrengthMeter = (this.state.password && !!this.state.password.length);
 
     return (
       <div className="new-password-input">
@@ -44,7 +39,7 @@ module.exports = React.createClass({
             password={this.state.password} 
             onChange={this._onChange}
             showToggleButton={true} />
-          <Collapsible height={strengthMeterHeight}>
+          <Collapsible normalHeight="2rem" expand={showStrengthMeter}>
             {this._buildStrengthMeter()}
           </Collapsible>
         </div>
@@ -87,15 +82,26 @@ module.exports = React.createClass({
       color = '#f70';
     }
 
-    if (7 <= val) {
-      val = 7;
+    if (6 <= val) {
+      val = 6;
       color = '#f00';
       text = 'Strong';
     }
 
+    var strengthTooltip = (
+      <div className="password-strength-hints">
+        <p>Use uppercase and lowercase letters, numbers and symbols to ensure a strong password.</p>
+        <small>NOTE: You cannot recover your password if forgotten. Remember it!</small>
+      </div>
+    );
+
     return (
       <div className="strength-meter">
-        <Progress max={7} value={val} text={text} color={color} />
+        <label>
+          Password strength
+          <Icon name="info-circle" tooltip={strengthTooltip} />
+        </label>
+        <Progress max={6} value={val} text={text} color={color} />
       </div>
     );
   },
@@ -123,14 +129,14 @@ module.exports = React.createClass({
       return 0;
     }
 
-    var total = 1;
+    var total = 0;
 
-    total += (8 < password.length ? 1 : -1);
-    total += (16 <= password.length ? 1 : 0);
     total += (password.match(/[A-Z]/) ? 1 : 0);
     total += (password.match(/[a-z]/) ? 1 : 0);
     total += (password.match(/[0-9]/) ? 1 : 0);
     total += (password.match(/[^A-Za-z0-9]/) ? 1 : 0);
+    total += (8 < password.length ? 1 : -1);
+    total += (16 <= password.length ? 1 : 0);
 
     return total;
   },

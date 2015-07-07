@@ -5,27 +5,35 @@ var moment = require('moment');
 
 module.exports = React.createClass({
   propTypes: {
-    width : React.PropTypes.string,
-    height : React.PropTypes.string,
+    normalWidth : React.PropTypes.string,
+    normalHeight : React.PropTypes.string,
+    expand : React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
-      width: '100%',
-      height: '100%',
+      normalWidth: '100%',
+      normalHeight: '100%',
+      expand: false,
     };
   },
 
   render: function() {
     var attrs = {
+      className: 'collapsible',
       style: {
-        width: this.props.width,
-        height: this.props.height,
+        width: this.props.normalWidth,
+        height: this.props.normalHeight,
       }
     };
 
+    if (!this.props.expand) {
+      attrs.className += ' collapsed';
+      attrs.style.height = '0px';
+    }
+
     return (
-      <div className="collapsible" {...attrs}>
+      <div {...attrs}>
         {this.props.children}
       </div>
     );

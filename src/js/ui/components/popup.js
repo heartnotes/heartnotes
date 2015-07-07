@@ -26,13 +26,12 @@ module.exports = React.createClass({
     }
 
     return (
-      <div className={wrapperClass}>
-        <div className="popup-target" ref="target">{this.props.children}</div>
-        <i className="popup-arrow fa fa-caret-up" ref="arrow" />
-        <div className="popup-body" ref="body">
+      <span className={wrapperClass}>
+        <span className="popup-target" ref="target">{this.props.children}</span>
+        <span className="popup-body" ref="body">
           {this.props.msg}
-        </div>
-      </div>
+        </span>
+      </span>
     );
   },
 
@@ -44,13 +43,11 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     this.$body = $(React.findDOMNode(this.refs.body));
-    this.$arrow = $(React.findDOMNode(this.refs.arrow));
     this.$target = $(React.findDOMNode(this.refs.target));
 
     this._reposition();
 
     this.$body.on('click', _.bind(function() {
-      this.$arrow.hide();
       this.$body.hide();
     }, this));
   },
@@ -59,25 +56,18 @@ module.exports = React.createClass({
   componentDidUpdate: function(prevProps) {
     this._reposition();
 
-    this.$arrow.show();
     this.$body.show();
   },
 
 
   _reposition: function() {
     var targetPos = this.$target.position(),
-      parentOuterWidth = this.$arrow.parent().outerWidth(),
-      arrowTop = targetPos.top + this.$target.height();
-
-    // position arrow
-    this.$arrow.css({
-      top: arrowTop + 'px',
-      left: ((parentOuterWidth - this.$arrow.outerWidth()) / 2) + 'px'
-    })
+      parentOuterWidth = this.$target.parent().outerWidth(),
+      targetTop = targetPos.top;
 
     // position body
     this.$body.css({
-      top: (arrowTop + this.$arrow.height()) + 'px',
+      top: (targetTop + this.$target.height() + 2) + 'px',
       left: ((parentOuterWidth - this.$body.outerWidth()) / 2) + 'px'
     });
   },

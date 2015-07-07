@@ -38,10 +38,6 @@ module.exports = React.createClass({
     return (
       <div className="new-diary step">
         <p className="info">Please enter a strong password for encryption.</p>
-        <ul>
-          <li>Use A to Z, numbers and symbols altogether to ensure a strong password.</li>
-          <li>Do not forget it! if you forget your password you will NOT be able to open your diary.</li>
-        </ul>        
         <form>
           <div className="field row">
             <NewPasswordInput 
