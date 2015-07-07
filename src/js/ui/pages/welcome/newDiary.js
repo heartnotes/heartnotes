@@ -51,6 +51,7 @@ module.exports = React.createClass({
             </PasswordCreateProgressPopup>
           </div>
         </form>
+        <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
       </div>
     );
   },
@@ -73,6 +74,9 @@ module.exports = React.createClass({
       .saveNewDataFile(faker.name.firstName(), this.state.password);
   },
 
+  _goBack: function() {
+    this.props.showStep('start');
+  },
 
 });
 

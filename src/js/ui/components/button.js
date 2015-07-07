@@ -10,6 +10,7 @@ module.exports = React.createClass({
     animActive : React.PropTypes.bool,
     animStyle: React.PropTypes.string,
     color: React.PropTypes.string,
+    size: React.PropTypes.string,
   },
 
   getDefaultProps: function() {
@@ -19,6 +20,7 @@ module.exports = React.createClass({
       animActive: false,
       animStyle: 'expand-right',
       color: '',
+      size: 'm',
     };
   },
 
@@ -33,7 +35,8 @@ module.exports = React.createClass({
       <LaddaButton 
         color={this.props.color}
         active={this.props.animActive} 
-        style={this.props.animStyle}>
+        style={this.props.animStyle}
+        size={this.props.size}>
         <button onClick={this.props.onClick} {...buttonAttrs}>
           {this.props.children}
         </button>

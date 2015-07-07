@@ -1,5 +1,6 @@
-var React = require('react'),
-  ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+var _ = require('lodash');
+
+var React = require('react');
 
 import FluxComponent from 'flummox/component';
 
@@ -18,7 +19,7 @@ var steps = {
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      step: 'newDiary',
+      step: 'start',
     }
   },
 
@@ -27,33 +28,45 @@ module.exports = React.createClass({
       <div className="welcomeView">
         <Logo />
         <div className="step-container">
-          <ReactCSSTransitionGroup transitionName="steps">
-            {this._buildCurrentStep()}
-          </ReactCSSTransitionGroup>
+          {this._buildSteps()}
         </div>
       </div>
     );
   },
 
 
-  _buildCurrentStep () {
-    var Step = steps[this.state.step];
+  _buildSteps () {
+    var activeStepDone = false;
 
-    return (
-      <div className="step-anim-holder" key={"stepkey" + this.state.step}>
-        <FluxComponent connectToStores={{
-          user: store => ({
-            lastDataFile: store.lastDataFile(),
-            derivedKeys: store.state.derivedKeys,
-            nowDerivingKeys: store.state.nowDerivingKeys,
-            derivingKeysError: store.state.derivingKeysError,
-            loadEntriesError: store.state.loadEntriesError,
-          }),
-        }}>
-          <Step showStep={this._showStep} />
-        </FluxComponent>
-      </div>
-    );
+    return _.map(['start', 'newDiary', 'loadDiary'], function(stepId) {
+      var Step = steps[stepId];
+
+      var isActive = (this.state.step === stepId);
+      activeStepDone = activeStepDone || isActive;
+
+      var hiddenDirection = (activeStepDone ? 'right' : 'left');
+
+      var attrs = {
+        className: 'step-holder ' + (isActive ? 'active' : `hidden ${hiddenDirection}`),
+        key: `step-${stepId}`,
+      };
+
+      return (
+        <div {...attrs}>
+          <FluxComponent connectToStores={{
+            user: store => ({
+              lastDataFile: store.lastDataFile(),
+              derivedKeys: store.state.derivedKeys,
+              nowDerivingKeys: store.state.nowDerivingKeys,
+              derivingKeysError: store.state.derivingKeysError,
+              loadEntriesError: store.state.loadEntriesError,
+            })
+          }}>
+            <Step showStep={this._showStep} isActive={isActive} />
+          </FluxComponent>
+        </div>
+      );
+    }, this);
   },
 
 

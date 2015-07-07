@@ -12,19 +12,25 @@
   .step-container
     position relative
 
-  .step-anim-holder
-    text-align center
-    &.steps-enter
-      display none
-    &.steps-enter-active
-      display block
-    &.steps-leave
-      display block
-    &.steps-leave-active
-      display none
-    
+  .step-holder
+    position absolute
+    width 100%
+    transition all 0.4s ease-out
+    &.active
+      opacity 1
+      left 0px
+    &.hidden
+      opacity 0
+      pointer-events none
+      &.right
+        left 400px
+      &.left
+        left -400px
+      
   .step
-    display inline-block
+    display block
+    width 100%
+    text-align center
     box-sizing border-box
     padding-top 2rem
     
@@ -54,8 +60,6 @@
           
 
     &.new-diary
-      width 70%
-      
       p
         font-size 1.5rem
 
