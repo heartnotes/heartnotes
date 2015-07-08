@@ -41,7 +41,7 @@ module.exports = React.createClass({
       content = (
         <div className="open-existing">
           <p><label>Diary:</label><span>{lastDataFile.name}</span></p>
-          <form>
+          <form onSubmit={this._checkPassword}>
             <div className="field row">
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>

@@ -38,7 +38,8 @@ module.exports = React.createClass({
             placeholder="Enter password"
             password={this.state.password} 
             onChange={this._onChange}
-            showToggleButton={true} />
+            showToggleButton={true} 
+            tabIndex="1" />
           <Collapsible normalHeight="2rem" expand={showStrengthMeter}>
             {this._buildStrengthMeter()}
           </Collapsible>
@@ -47,7 +48,8 @@ module.exports = React.createClass({
           <PasswordInput 
             placeholder="Confirm password"
             password={this.state.passwordConfirm} 
-            onChange={this._onConfirmChange} />
+            onChange={this._onConfirmChange} 
+            tabIndex="2" />
         </div>
       </div>
     )

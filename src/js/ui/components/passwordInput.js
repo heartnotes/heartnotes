@@ -11,6 +11,7 @@ module.exports = React.createClass({
     showToggleButton: React.PropTypes.bool,
     password : React.PropTypes.string,
     onChange : React.PropTypes.func,
+    tabIndex: React.PropTypes.string,
   },
 
   getDefaultProps: function() {
@@ -19,6 +20,7 @@ module.exports = React.createClass({
       showToggleButton: false,
       password: '',
       onChange : null,
+      tabIndex: "",
     };
   },
 
@@ -57,7 +59,8 @@ module.exports = React.createClass({
           ref="input"
           onInput={this._onChange} 
           value={this.props.password} 
-          placeholder={this.props.placeholder}/>
+          placeholder={this.props.placeholder}
+          tabIndex={this.props.tabIndex} />
         {toggleElem}
       </div>
     )

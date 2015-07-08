@@ -20,7 +20,7 @@ $mainViewTransitionTime = 0.4s
     height auto
     overflow auto
     border-right 1px solid $gray
-    transition width $mainViewTransitionTime
+    transition all $mainViewTransitionTime
     
   .toggle-timeline
     position absolute
@@ -32,6 +32,10 @@ $mainViewTransitionTime = 0.4s
     padding 0
     font-size inherit
     font-family inherit
+    transition color 0.3s linear
+
+    &:hover
+      color $black
 
     span
       font-family 'FontAwesome'    
@@ -56,6 +60,7 @@ $mainViewTransitionTime = 0.4s
   &.split
     .timeline
       width 30%
+      opacity 1
     .entryEditor
       width 70%
     .toggle-timeline
@@ -64,6 +69,7 @@ $mainViewTransitionTime = 0.4s
   &.noTimeline
     .timeline
       width 0
+      opacity 0
     .entryEditor
       width 100%
     .toggle-timeline

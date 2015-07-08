@@ -38,7 +38,7 @@ module.exports = React.createClass({
     return (
       <div className="new-diary step">
         <p className="info">Please enter a strong password for encryption.</p>
-        <form>
+        <form onSubmit={this._savePassword}>
           <div className="field row">
             <NewPasswordInput 
               password={this.state.password} 

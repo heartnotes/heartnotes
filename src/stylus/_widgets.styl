@@ -44,7 +44,7 @@
       .cke_top[role=presentation]
         height 2rem
         padding 0.4em 0.4em 0
-        background-color $theme1_col3
+        background-color $gray-light
     // .cke_chrome
       // border none !important
 
@@ -66,29 +66,32 @@ ul.entryList
     &.month
       text-align center
       text-transform uppercase
-      color $gray
-      background-color $gray-light
+      color $black
+      background-color $gray-blue-light
       font-size 80%
-      padding 0.2em 0
+      padding 0.4em 0
       
     &.entry
       padding 0.5em
       display flex
       flex-direction row
-      justify-content space-around
+      justify-content flex-start
       align-items stretch
       flex-wrap nowrap
-      transition background-color 0.5s linear
+      transition background-color 0.3s linear
+      color $gray-dark
       
       &.none
         cursor default
         pointer-events none
         font-weight bold
         font-style italic
+        font-size 1.5rem
       
       &:hover, &.selected
         cursor pointer
-        background-color $red-lightest
+        background-color $gray-blue
+        color $white
       
       .text
         overflow hidden
@@ -97,7 +100,7 @@ ul.entryList
       .date
         font-size 1.4rem  
         padding 0 0.7em 0 0.4em
-        color $gray
+        font-weight bold
       
         display flex
         flex-direction column
