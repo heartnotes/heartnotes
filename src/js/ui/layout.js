@@ -2,7 +2,8 @@ var React = require('react');
 import FluxComponent from 'flummox/component';
 
 var Menu = require('./menu'),
-  WelcomeView = require('./pages/welcome/index');
+  WelcomeView = require('./pages/welcome/index'),
+  Logo = require('./components/logo');
 
 
 module.exports = React.createClass({
@@ -36,6 +37,7 @@ module.exports = React.createClass({
     return (
       <div>
         <section id="sidebar">
+          <Logo withText={false} onClick={this._closeDiary} />
           <Menu {...this.props} />
         </section>
         <section id="content">
@@ -45,5 +47,10 @@ module.exports = React.createClass({
         </section>
       </div>
     );
+  },
+
+
+  _closeDiary: function() {
+    this.props.flux.getActions('user').closeDataFile();
   },
 });

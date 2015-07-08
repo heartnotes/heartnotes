@@ -8,11 +8,13 @@ var Icon = require('../../components/icon'),
 module.exports = React.createClass({
   propTypes: {
     showStep: React.PropTypes.func,
+    isActive: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       showStep: null,
+      isActive: false,
     };
   },
 
@@ -26,8 +28,11 @@ module.exports = React.createClass({
       var msg = this.props.loadEntriesError.toString();
 
       loadingError = (
-        <div className="error">
-          <Icon name="exclamation-triangle" tooltip={msg} />
+        <div>
+          <div className="error">
+            <Icon name="exclamation-triangle" tooltip={msg} />
+          </div>
+          <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
         </div>
       );
     }
@@ -36,13 +41,15 @@ module.exports = React.createClass({
       <div className="load-diary step">
         <p>{progressMsg}</p>
         {loadingError}
-        <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
       </div>
     );
   },
 
-  componentDidMount: function() {
-    this.props.flux.getActions('user').loadEntries();
+
+  componentDidUpdate: function(oldProps) {
+    if (this.props.isActive && !oldProps.isActive) {
+      this.props.flux.getActions('user').loadEntries();
+    }
   },
 
   _goBack: function() {

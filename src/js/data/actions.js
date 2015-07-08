@@ -47,6 +47,13 @@ class UserActions extends Actions {
   }
 
 
+  closeDataFile() {
+    this.logger.debug('closeDataFile');
+
+    return {};
+  }
+
+
   loadEntries () {
     this.logger.debug('load entries');
 

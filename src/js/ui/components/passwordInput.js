@@ -58,7 +58,7 @@ module.exports = React.createClass({
         <input type={inputType}
           ref="input"
           onInput={this._onChange} 
-          value={this.props.password} 
+          defaultValue={this.props.password} 
           placeholder={this.props.placeholder}
           tabIndex={this.props.tabIndex} />
         {toggleElem}

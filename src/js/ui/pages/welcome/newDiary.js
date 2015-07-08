@@ -11,11 +11,13 @@ var Button = require('../../components/button'),
 module.exports = React.createClass({
   propTypes: {
     showStep: React.PropTypes.func,
+    isActive: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       showStep: null,
+      isActive: false,
     };
   },
 

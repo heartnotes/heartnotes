@@ -23,6 +23,9 @@ export default class UserStore extends Store {
       nowDerivingKeys: false,
     };
 
+    // use this to keep track of instances where we ask to save entries 
+    // multiple consecutive times - once one save is completed we check this 
+    // value to see if another save should immediately begin.
     this._entrySaveData = {
       num: 0,
     };
@@ -143,6 +146,15 @@ export default class UserStore extends Store {
           derivingKeysError: null
         }, 1000);
       });
+  }
+
+
+  closeDataFile () {
+    this.setState({
+      derivedKeys: null,
+      dataFile: null,
+      entriesLoaded: false,
+    });
   }
 
 

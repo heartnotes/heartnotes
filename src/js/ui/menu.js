@@ -33,7 +33,7 @@ module.exports = React.createClass({
     }, this);
 
     return (
-      <div className="buttons">{buttons}</div>
+      <div className="menu">{buttons}</div>
     );
   },
 });
