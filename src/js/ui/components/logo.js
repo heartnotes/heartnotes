@@ -25,7 +25,11 @@ module.exports = React.createClass({
         </div>
       );
     } else {
-      return logoImg;
+      return (
+        <div className="logo">
+          <span className="img" />
+        </div>
+      );
     }
   },
 

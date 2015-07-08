@@ -35,7 +35,7 @@ module.exports = React.createClass({
   _buildDefault: function() {
     return (
       <div>
-        <section id="menu">
+        <section id="sidebar">
           <Menu {...this.props} />
         </section>
         <section id="content">

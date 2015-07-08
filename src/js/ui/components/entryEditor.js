@@ -57,6 +57,14 @@ module.exports = React.createClass({
       autoGrow_onStartup: true,
       startupFocus: true,
       placeholder: 'Type here...',
+      removeButtons: 'Cut,Copy,Paste,Anchor,Subscript,Superscript',
+      toolbarGroups: [
+        { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+        { name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+        { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+        { name: 'links' },
+      ],
     });
 
     // save content every 2 seconds
