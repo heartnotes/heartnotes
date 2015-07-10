@@ -34,6 +34,8 @@ paths =
     js: path.join(__dirname, 'build', 'js') 
     ckeditor: path.join(__dirname, 'build', 'ckeditor') 
     fonts: path.join(__dirname, 'build', 'fonts') 
+  electron:
+    build: path.join(__dirname, 'build-electron')
   files: {}
   watch: {}
 
