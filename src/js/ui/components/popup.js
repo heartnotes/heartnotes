@@ -6,7 +6,7 @@ var React = require('react');
 
 module.exports = React.createClass({
   propTypes: {
-    msg : React.PropTypes.string,
+    msg : React.PropTypes.object,
     showPopup: React.PropTypes.bool,
   },
 

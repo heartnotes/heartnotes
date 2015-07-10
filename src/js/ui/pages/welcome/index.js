@@ -52,24 +52,18 @@ module.exports = React.createClass({
       };
 
       var stepElem = (
-        <Step showStep={this._showStep} isActive={isActive}/>
+        <FluxComponent connectToStores={{
+          user: store => ({
+            lastDataFile: store.lastDataFile(),
+            derivedKeys: store.state.derivedKeys,
+            nowDerivingKeys: store.state.nowDerivingKeys,
+            derivingKeysError: store.state.derivingKeysError,
+            loadEntriesError: store.state.loadEntriesError,
+          })
+        }}>
+          <Step showStep={this._showStep} isActive={isActive}/>
+        </FluxComponent>
       );
-
-      if (isActive) {
-        stepElem = (
-          <FluxComponent connectToStores={{
-            user: store => ({
-              lastDataFile: store.lastDataFile(),
-              derivedKeys: store.state.derivedKeys,
-              nowDerivingKeys: store.state.nowDerivingKeys,
-              derivingKeysError: store.state.derivingKeysError,
-              loadEntriesError: store.state.loadEntriesError,
-            })
-          }}>
-            {stepElem}
-          </FluxComponent>
-        )
-      }
 
       return (
         <div {...attrs}>{stepElem}</div>

@@ -7,15 +7,8 @@ var Icon = require('../../components/icon'),
 
 module.exports = React.createClass({
   propTypes: {
-    showStep: React.PropTypes.func,
-    isActive: React.PropTypes.bool,
-  },
-
-  getDefaultProps: function() {
-    return {
-      showStep: null,
-      isActive: false,
-    };
+    showStep: React.PropTypes.func.isRequired,
+    isActive: React.PropTypes.bool.isRequired,
   },
 
   render: function() { 
@@ -47,7 +40,12 @@ module.exports = React.createClass({
 
 
   componentDidUpdate: function(oldProps) {
-    if (this.props.isActive && !oldProps.isActive) {
+    if (!this.props.isActive) {
+      return;
+    }
+
+    // if just became active then kick-off entry loading
+    if (!oldProps.isActive) {
       this.props.flux.getActions('user').loadEntries();
     }
   },

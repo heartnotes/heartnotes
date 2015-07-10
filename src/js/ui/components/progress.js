@@ -5,7 +5,7 @@ module.exports = React.createClass({
   propTypes: {
     max : React.PropTypes.number,
     value : React.PropTypes.number,
-    text : React.PropTypes.number,
+    text : React.PropTypes.string,
     color: React.PropTypes.string,
   },
 

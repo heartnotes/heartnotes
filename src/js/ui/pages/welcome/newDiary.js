@@ -10,15 +10,8 @@ var Button = require('../../components/button'),
 
 module.exports = React.createClass({
   propTypes: {
-    showStep: React.PropTypes.func,
-    isActive: React.PropTypes.bool,
-  },
-
-  getDefaultProps: function() {
-    return {
-      showStep: null,
-      isActive: false,
-    };
+    showStep: React.PropTypes.func.isRequired,
+    isActive: React.PropTypes.bool.isRequired,
   },
 
   getInitialState: function() {
@@ -60,6 +53,10 @@ module.exports = React.createClass({
 
 
   componentDidUpdate: function() {
+    if (!this.props.isActive) {
+      return;
+    }
+    
     if (this.props.derivedKeys) {
       this.props.showStep('loadDiary');
     }

@@ -120,11 +120,9 @@ $popupBody
   z-index 20
   transition opacity 0.1s linear
   color $red-light
-  box-sizing border-box
 
 .popup-wrapper
   position relative
-  box-sizing border-box
   
   .icon-widget
     cursor pointer
@@ -178,7 +176,6 @@ $popupBody
     
 $progressStyles
   display inline-block
-  box-sizing border-box
   position absolute
 
 .progress
@@ -209,3 +206,36 @@ $progressStyles
 button
   @extend $button
       
+
+$menu
+  display flex
+  flex-direction column
+  justify-content space-around
+  align-items center
+
+  .btn, button
+    @extend $button
+    border-radius 10px
+    color $gray-dark
+    border-color $gray-darker
+    font-size 16px
+      
+    &.active, &:hover
+      border-color $white
+      background-color $black
+      color $white
+
+
+.main-menu
+  @extend $menu
+  height 200px
+      
+.sub-menu
+  @extend $menu
+  padding-bottom 10px
+  button
+    padding 6px 11px    
+        
+
+      
+

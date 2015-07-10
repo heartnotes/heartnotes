@@ -3,7 +3,7 @@ var React = require('react');
 var Router = require('react-router');
 var { Link } = Router;
 
-var Icon = require('./components/icon');
+var Icon = require('./icon');
 
 
 
@@ -22,7 +22,7 @@ module.exports = React.createClass({
       },
     ];
 
-    var buttons = items.map(function(item) {
+    var primaryLinks = items.map(function(item) {
       var activeClass = this.isActive(item.route) ? 'active' : '';
 
       return (
@@ -32,8 +32,14 @@ module.exports = React.createClass({
       );
     }, this);
 
+
+
     return (
-      <div className="menu">{buttons}</div>
+      <div className="main-menu">
+        {primaryLinks}
+      </div>
     );
   },
+
+
 });
