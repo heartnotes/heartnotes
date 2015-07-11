@@ -1,4 +1,8 @@
-module.exports = ->
-  return {
-    deps: ['ckeditor', 'jade', 'css', 'img', 'js', 'fonts']
-  }
+runSeq = require('run-sequence')
+del = require 'del'
+
+module.exports = (paths, options = {})->
+  return (cb) ->
+    del.sync [ paths.build.root ]
+
+    runSeq ['ckeditor', 'jade', 'stylus', 'img', 'js', 'fonts'], cb

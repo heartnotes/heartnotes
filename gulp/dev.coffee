@@ -1,8 +1,7 @@
-gulp = require 'gulp'
+runSeq = require('run-sequence')
 
 
 module.exports = (paths, options = {}) ->
-  return {
-    deps: ['dev-assets', 'dev-server']
-  }
+  (cb) ->
+    runSeq ['dev-assets', 'dev-server'], 'dev-electron', cb
 

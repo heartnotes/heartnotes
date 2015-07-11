@@ -241,7 +241,7 @@ export default class Crypto {
     var password = sjcl.codec.hex.toBits(key);
 
     if (8 !== password.length) {
-      return $q.reject(new CryptoError(
+      return Promise.reject(new CryptoError(
         `Decryption password must be 256 bits (${password.length * 8} bits found)`
       ));
     }

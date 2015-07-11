@@ -18,6 +18,7 @@ if options.debugBuild
 # paths
 
 paths =
+  root: __dirname
   npm: path.join(__dirname, 'node_modules')
   src:
     stylus: path.join(__dirname, 'src', 'stylus')
@@ -28,14 +29,14 @@ paths =
     lib: path.join(__dirname, 'src', 'lib')
     ckeditor: path.join(__dirname, 'src', 'lib', 'ckeditor')
   build: 
+    root: path.join(__dirname, 'build') 
     html: path.join(__dirname, 'build') 
     css: path.join(__dirname, 'build', 'css') 
     img: path.join(__dirname, 'build', 'img') 
     js: path.join(__dirname, 'build', 'js') 
     ckeditor: path.join(__dirname, 'build', 'ckeditor') 
     fonts: path.join(__dirname, 'build', 'fonts') 
-  electron:
-    build: path.join(__dirname, 'build-electron')
+    electron: path.join(__dirname, 'build-electron')
   files: {}
   watch: {}
 

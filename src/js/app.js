@@ -1,5 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
+var $ = require('jquery');
 
 var { Route, DefaultRoute, RouteHandler } = Router;
 

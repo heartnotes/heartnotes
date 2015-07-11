@@ -2,6 +2,37 @@
 
 Personal, encrypted diary.
 
+## Development
+
+**Node.js 0.12+ required.**
+
+Setup:
+
+```bash
+$ npm install
+```
+
+Run dev server (http://localhost:3000):
+
+```bash
+$ gulp
+```
+
+_NOTE: Add `--debug` command-line to prevent JS and CSS minification during build._
+
+## Production
+
+We deploy it as an Electron.js app.
+
+Setup:
+
+```js
+$ npm install -g electron-prebuilt
+```
+
+
+
+
 ## License
 
 Copyright (C) 2015  [Ramesh Nair](https://hiddentao.com)
