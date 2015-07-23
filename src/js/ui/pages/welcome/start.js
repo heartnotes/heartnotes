@@ -90,7 +90,6 @@ module.exports = React.createClass({
 
 
   _buildChooseAnotherDiaryButton: function() {
-    console.log(Detect.isElectronApp());
     if (Detect.isElectronApp()) {
       return (
         <span className="choose-diary">
@@ -128,7 +127,9 @@ module.exports = React.createClass({
 
 
   _chooseDiary: function() {
-    console.log("todo");
+    var ipc = require('ipc');
+    
+    console.log(ipc.sendSync('synchronous-message', 'chooseFile'));
   },
 
 });

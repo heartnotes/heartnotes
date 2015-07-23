@@ -1,5 +1,8 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
+var ipc = require('ipc');
+var dialog = require('dialog');
+
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -40,5 +43,25 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+});
+
+
+ipc.on('synchronous-message', function(event, arg) {
+  switch (arg) {
+    case 'chooseFile':
+      console.log('Choose file');
+
+      event.returnValue = dialog.showOpenDialog(mainWindow, { 
+        title: 'Open existing diary',
+        properties: [ 
+          'openFile', 
+        ],
+        filters: [
+          { name: 'Heartnotes diary files', extensions: ['heartnotes'] },
+        ],
+      });
+
+      break;
+  }
 });
 
