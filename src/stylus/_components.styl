@@ -109,9 +109,11 @@ ul.entryList
         
 
 .password-input
+  position relative
   .icon-button
+    position absolute
     padding 0.2em 0.5em
-    margin-left 5px
+    margin 5px 0 0 5px
     border-radius 5px
 
 $popupBody
@@ -169,10 +171,14 @@ $popupBody
       margin-right 1em
       font-style italic
       color $gray
+      font-size 1rem
       i
         margin-left 0.3em
     & > .progress
-      width 10rem
+      width 8rem
+    .password-strength-hints
+      p
+        line-height 1em
     
 $progressStyles
   display inline-block

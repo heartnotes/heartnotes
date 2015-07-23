@@ -32,15 +32,16 @@ module.exports = React.createClass({
 
     return (
       <div className="new-diary step">
-        <p className="info">Please enter a strong password for encryption.</p>
+        <p className="info1">Please remember your password.</p>
+        <p className="info2">If you forget you cannot open your diary!</p>
         <form onSubmit={this._savePassword}>
-          <div className="field row">
+          <div className="input-fields row">
             <NewPasswordInput 
               password={this.state.password} 
               onChange={this._setPassword} 
               requiredStrength={1} />
           </div>
-          <div className="field row">
+          <div className="row">
             <PasswordCreateProgressPopup {...this.props}>
               <Button {...buttonAttrs}>Next</Button>
             </PasswordCreateProgressPopup>
