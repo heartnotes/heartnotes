@@ -1,6 +1,9 @@
 var React = require('react');
 
+var Detect = require('../../../utils/detect');
+
 var Button = require('../../components/button'),
+  IconButton = require("../../components/iconButton"),
   PasswordInput = require('../../components/passwordInput'),
   PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
 
@@ -35,7 +38,11 @@ module.exports = React.createClass({
 
       content = (
         <div className="open-existing">
-          <p><label>Diary:</label><span>{lastDataFile.name}</span></p>
+          <p>
+            <label>Last opened:</label>
+            <span>{lastDataFile.name}</span>
+            {this._buildChooseAnotherDiaryButton()}
+          </p>
           <form onSubmit={this._checkPassword}>
             <div className="field row">
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
@@ -82,6 +89,24 @@ module.exports = React.createClass({
   },
 
 
+  _buildChooseAnotherDiaryButton: function() {
+    console.log(Detect.isElectronApp());
+    if (Detect.isElectronApp()) {
+      return (
+        <span className="choose-diary">
+          <IconButton 
+            ref="chooseDiaryButton"
+            icon="folder-open"
+            onClick={this._chooseDiary}
+            tooltip="Choose a different diary" />
+        </span>
+      );
+    } else {
+      return null;
+    }
+  },
+
+
   _checkPassword: function(e) {
     e.preventDefault();
 
@@ -99,6 +124,11 @@ module.exports = React.createClass({
 
   _createNew: function() {
     this.props.showStep('newDiary');
+  },
+
+
+  _chooseDiary: function() {
+    console.log("todo");
   },
 
 });

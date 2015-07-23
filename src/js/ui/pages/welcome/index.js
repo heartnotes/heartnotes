@@ -19,7 +19,7 @@ var steps = {
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      step: 'newDiary',
+      step: 'start',
     }
   },
 
