@@ -34,19 +34,19 @@ export default class UserStore extends Store {
   }
 
 
-  lastDataFile () {
-    return this.storage.lastDataFile();
+  lastDataFileName () {
+    return this.storage.getLastAccessedDataFileName();
   }
 
 
-  saveNewDataFile (params) {
+  createNewDataFile (params) {
     var self = this;
 
     self._resetState();
 
-    var {filePath, password} = params;
+    var {password} = params;
 
-    self.logger.info('save new datafile', filePath, password);
+    self.logger.info('create new datafile', password);
 
     self.setState({
       nowDerivingKeys: true
@@ -59,21 +59,38 @@ export default class UserStore extends Store {
         // encrypt key with itself to produce key checking value
         return self.crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
           .then(function gotTestData(keyTestData) {
-            var savedKeyData = self.storage.saveFileMetadata(filePath, {
+            return self.storage.createNewFile({
               salt: derivedKeyData.salt,
               iterations: derivedKeyData.iterations,
               keyTest: keyTestData,
-            });
+            })
+              .then(function newFileCreated(filePath) {
+                if (!filePath) {
+                  throw new Error('Please choose a location to save the file in');
+                }
 
-            self.setState({
-              nowDerivingKeys: false,
-              dataFile: savedKeyData,
-              derivedKeys: derivedKeyData,
-            });
+                self.setState({
+                  nowDerivingKeys: false,
+                  dataFileName: filePath,
+                  derivedKeys: derivedKeyData,
+                });
+              })
+              .catch(function storageError(err) {
+                self.logger.error('storage error', err);
+
+                self.setState({
+                  nowDerivingKeys: false,
+                  createDataFileError: err
+                });
+
+                self.setStateAfterDelay({
+                  createDataFileError: null
+                }, 1000);
+              });
           });
       })
       .catch(function(err) {
-        self.logger.error('keys derivation error', err);
+        self.logger.error('deriving new key error', err);
 
         self.setState({
           nowDerivingKeys: false,
@@ -292,6 +309,7 @@ export default class UserStore extends Store {
   _resetErrorStates () {
     this.setState({
       derivingKeysError: null,
+      createDataFileError: null,
       openDataFileError: null,
       loadEntriesError: null,
       saveEntriesError: null,

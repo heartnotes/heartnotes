@@ -26,9 +26,12 @@ img
   border none
 
 form
-  .field.row
+  .row
     display block
-    margin 0 0 1.5rem
+    &.field
+      margin 0 0 1rem
+    &.action
+      margin 1.5rem 0 0
   input
     &[type=text], &[type=password]
       font-size 1.5rem

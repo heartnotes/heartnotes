@@ -46,20 +46,45 @@ app.on('ready', function() {
 });
 
 
+var FILTERS = [
+  { name: 'Heartnotes diary files', extensions: ['heartnotes'] },
+];
+
 ipc.on('synchronous-message', function(event, arg) {
   switch (arg) {
-    case 'chooseFile':
+
+    case 'openFile':
       console.log('Choose file');
 
-      event.returnValue = dialog.showOpenDialog(mainWindow, { 
-        title: 'Open existing diary',
-        properties: [ 
-          'openFile', 
-        ],
-        filters: [
-          { name: 'Heartnotes diary files', extensions: ['heartnotes'] },
-        ],
-      });
+      try {
+        event.returnValue = dialog.showOpenDialog(mainWindow, { 
+          title: 'Open existing diary',
+          properties: [ 
+            'openFile', 
+          ],
+          filters: FILTERS,
+        });
+      } catch (err) {
+        console.error(err);
+
+        event.returnValue = null;
+      }
+
+      break;
+
+    case 'saveNewFile':
+      console.log('Choose file');
+
+      try {
+        event.returnValue = dialog.showSaveDialog(mainWindow, { 
+          title: 'Create new diary',
+          filters: FILTERS,
+        });
+      } catch (err) {
+        console.error(err);
+
+        event.returnValue = null;
+      }
 
       break;
   }

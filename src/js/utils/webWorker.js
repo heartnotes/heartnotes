@@ -22,7 +22,7 @@ export default class WebWorker {
     return new Promise(function(resolve, reject) {
       args.push(function(err, data) {
         if (err) {
-          err + '' + err;
+          err = '' + err;
 
           self.logger.error(err);
 

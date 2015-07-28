@@ -26,11 +26,10 @@ class UserActions extends Actions {
 
 
 
-  saveNewDataFile(filePath, password) {
-    this.logger.debug('saveNewDataFile', filePath, password);
+  createNewDataFile(password) {
+    this.logger.debug('saveNewDataFile', password);
 
     return {
-      filePath: filePath,
       password: password
     };
   }

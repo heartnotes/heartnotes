@@ -1,10 +1,8 @@
 var React = require('react');
 
-var faker = require('faker')
-
 var Button = require('../../components/button'),
   NewPasswordInput = require('../../components/newPasswordInput'),
-  PasswordCreateProgressPopup = require('../../components/passwordCreateProgressPopup');
+  CreateNewDiaryProgressPopup = require('../../components/createNewDiaryProgressPopup');
 
 
 
@@ -33,7 +31,7 @@ module.exports = React.createClass({
     return (
       <div className="new-diary step">
         <p className="info1">Please remember your password.</p>
-        <p className="info2">If you forget you cannot open your diary!</p>
+        <p className="info2">Or else you will not be able to open your diary!</p>
         <form onSubmit={this._savePassword}>
           <div className="input-fields row">
             <NewPasswordInput 
@@ -41,10 +39,10 @@ module.exports = React.createClass({
               onChange={this._setPassword} 
               requiredStrength={1} />
           </div>
-          <div className="row">
-            <PasswordCreateProgressPopup {...this.props}>
+          <div className="action row">
+            <CreateNewDiaryProgressPopup {...this.props}>
               <Button {...buttonAttrs}>Next</Button>
-            </PasswordCreateProgressPopup>
+            </CreateNewDiaryProgressPopup>
           </div>
         </form>
         <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
@@ -70,8 +68,7 @@ module.exports = React.createClass({
   },
 
   _savePassword: function() {
-    this.props.flux.getActions('user')
-      .saveNewDataFile(faker.name.firstName(), this.state.password);
+    this.props.flux.getActions('user').createNewDataFile(this.state.password);
   },
 
   _goBack: function() {

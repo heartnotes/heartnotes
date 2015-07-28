@@ -1,5 +1,7 @@
 "use strict";
 
+var ipc = require('ipc');
+
 var LocalStorage = require('./localStorage');
 
 const LAST_DATAFILE_KEY = 'last datafile';
@@ -16,12 +18,29 @@ export default class StorageManager {
   }
 
 
-  lastDataFile() {
-    this.logger.debug('check last data file');
-    
-    var name = this.local.get(LAST_DATAFILE_KEY);
+  getLastAccessedDataFileName() {
+    return this.local.get(LAST_DATAFILE_KEY);
+  }
 
-    return this.loadFileMetadata(name);
+
+  /**
+   * @return {Promise}
+   */
+  createNewFile(data) {
+    this.logger.debug('create new file');
+
+    var file = ipc.sendSync('synchronous-message', 'saveNewFile');
+
+    console.log(file);
+
+    return Promise.resolve(file);
+
+    // data.name = name;
+    // this.local.set(`datafile_${name}`, data);
+
+    // this.local.set(LAST_DATAFILE_KEY, name);
+
+    // return data;
   }
 
 

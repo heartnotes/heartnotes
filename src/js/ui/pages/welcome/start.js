@@ -1,12 +1,12 @@
+var ipc = require('ipc');
+
 var React = require('react');
 
-var Detect = require('../../../utils/detect');
-
-var Button = require('../../components/button'),
+var Detect = require('../../../utils/detect'),
+  Button = require('../../components/button'),
   IconButton = require("../../components/iconButton"),
   PasswordInput = require('../../components/passwordInput'),
   PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
-
 
 
 module.exports = React.createClass({
@@ -24,8 +24,8 @@ module.exports = React.createClass({
   render: function() { 
     var content = null;
 
-    if (this.props.lastDataFile) {
-      var lastDataFile = this.props.lastDataFile;
+    if (this.props.lastDataFileName) {
+      var lastDataFileName = this.props.lastDataFileName;
 
       var buttonAttrs = {
         onClick: this._checkPassword,
@@ -40,14 +40,14 @@ module.exports = React.createClass({
         <div className="open-existing">
           <p>
             <label>Last opened:</label>
-            <span>{lastDataFile.name}</span>
+            <span>{lastDataFileName}</span>
             {this._buildChooseAnotherDiaryButton()}
           </p>
           <form onSubmit={this._checkPassword}>
             <div className="field row">
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>
-            <div className="field row">
+            <div className="action row">
               <PasswordCheckProgressPopup {...this.props}>
                 <Button {...buttonAttrs}>Open</Button>
               </PasswordCheckProgressPopup>
@@ -126,9 +126,7 @@ module.exports = React.createClass({
   },
 
 
-  _chooseDiary: function() {
-    var ipc = require('ipc');
-    
+  _chooseDiary: function() {    
     console.log(ipc.sendSync('synchronous-message', 'chooseFile'));
   },
 

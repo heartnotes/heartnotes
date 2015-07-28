@@ -9,6 +9,7 @@ module.exports = (paths, options = {}) ->
   return ->
     gulp.src [
       "#{paths.npm}/operative/dist/operative.js"
+      path.join(paths.src.lib, 'electron', 'windowGlobals.js')
     ]
       .pipe concat('vendor.js')
       .pipe gulpIf(!options.debugBuild, uglify())
