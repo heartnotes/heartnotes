@@ -59,19 +59,19 @@ export default class UserStore extends Store {
         // encrypt key with itself to produce key checking value
         return self.crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
           .then(function gotTestData(keyTestData) {
-            return self.storage.createNewFile({
+            return self.storage.createNewDiary({
               salt: derivedKeyData.salt,
               iterations: derivedKeyData.iterations,
               keyTest: keyTestData,
             })
-              .then(function newFileCreated(filePath) {
-                if (!filePath) {
+              .then(function newFileCreated(fileName) {
+                if (!fileName) {
                   throw new Error('Please choose a location to save the file in');
                 }
 
                 self.setState({
                   nowDerivingKeys: false,
-                  dataFileName: filePath,
+                  dataFileName: fileName,
                   derivedKeys: derivedKeyData,
                 });
               })
@@ -180,40 +180,47 @@ export default class UserStore extends Store {
 
     self._resetErrorStates();
 
-    var dataFile = self.state.dataFile;
+    var dataFileName = self.state.dataFileName;
 
-    if (!dataFile) {
+    if (!dataFileName) {
       return self.setState({
-        loadEntriesError: new Error('No datafile loaded')
+        loadEntriesError: new Error('No diary loaded')
       });
     }
 
-    self.logger.info('load entries', dataFile.name);
+    self.logger.info('load entries', dataFileName);
 
     self.setState({
       entriesLoaded: false
     });
 
-    var encryptedEntries = self.storage.loadFileData(dataFile.name);
+    self.storage.loadEntriesFromDiary(dataFileName)
+      .catch(function(err) {
+        self.logger.error('load entries error', err);
 
-    new Promise(function(resolve, reject) {
-      if (!encryptedEntries) {
-        self.logger.info('no existing entries found');
+        throw err;
+      })
+      .then( function gotEntries(encryptedEntries) {
+        if (!encryptedEntries) {
+          self.logger.info('no existing entries found');
 
-        resolve({});
-      } else {
-        self.logger.info('decrypt entries', encryptedEntries.length);
+          return {};
+        } else {
+          self.logger.info('decrypt entries', encryptedEntries.length);
 
-        return self.crypto.decrypt(self.state.derivedKeys.key1, encryptedEntries)
-          .then(function decryptedEntries(entries) {
-            self.logger.debug('decrypted entries', _.keys(entries).length);
+          return self.crypto.decrypt(
+            self.state.derivedKeys.key1, encryptedEntries
+          )
+            .catch(function(err) {
+              self.logger.error('entry decryption error', err);
 
-            resolve(entries);
-          })
-          .catch(reject);
-      }
-    })
+              throw err;
+            });
+        }
+      })
       .then(function gotEntries(entries) {
+        self.logger.debug('decrypted entries', _.keys(entries).length);
+
         self.setState({
           entriesLoaded: true,
         });
@@ -221,10 +228,9 @@ export default class UserStore extends Store {
         self.flux.getStore('entries').setEntries(entries);
       })
       .catch(function(err) {
-        self.logger.error('entry decryption error', err);
-
         self.setState({
-          loadEntriesError: err
+          loadEntriesError: err,
+          entriesLoaded: false,
         });
 
         self.setStateAfterDelay({
@@ -251,9 +257,7 @@ export default class UserStore extends Store {
   _doSaveEntries () {
     var self = this;
 
-    var entrySaveData = self._entrySaveData,
-      saveNum = entrySaveData.num,
-      entries = entrySaveData.entries;
+    var { saveNum, entries } = self._entrySaveData;
 
     self.logger.debug('do save entries', saveNum, _.keys(entries).length);
 
@@ -262,22 +266,33 @@ export default class UserStore extends Store {
       saveEntriesError: null,
     });
 
-    var dataFile = self.state.dataFile;
+    var dataFileName = self.state.dataFileName;
 
-    if (!dataFile) {
-      return self.setStatee({
-        saveEntriesError: new Error('No datafile loaded')
+    if (!dataFileName) {
+      return self.setState({
+        saveEntriesError: new Error('No diary to save to')
       });
     }
 
     self.logger.debug('encrypting entries', _.keys(entries).length);
 
     self.crypto.encrypt(self.state.derivedKeys.key1, entries)
+      .catch(function(err) {
+        self.logger.error('entry encryption error', err);
+
+        throw err;
+      })
       .then(function encryptedEntries(saveData) {
         self.logger.debug('encypted entries', saveData.length + ' bytes');
 
-        self.storage.saveFileData(dataFile.name, saveData);
+        self.storage.saveEntriesToDiary(dataFileName, saveData)
+          .catch(function(err) {
+            self.logger.error('entry save error', err);
 
+            throw err;
+          });
+      })
+      .then(function() {
         // restart the save?
         if (saveNum < self._entrySaveData.num) {
           self._doSaveEntries();
@@ -288,7 +303,14 @@ export default class UserStore extends Store {
         }
       })
       .catch(function(err) {
-        self.logger.error('entry encryption error', err);
+        self.setState({
+          savingEntries: false,
+          saveEntriesError: err,
+        });
+
+        self.setStateAfterDelay({
+          saveEntriesError: null
+        }, 1000);
       });
   }
 

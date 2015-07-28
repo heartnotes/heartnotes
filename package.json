@@ -60,6 +60,7 @@
     "react-router": "./node_modules/react-router/lib/umd/ReactRouter.js"
   },
   "browserify-shim": {
-    "ipc": "global:ipc"
+    "ipc": "global:ipc",
+    "fs": "global:fs"
   }
 }

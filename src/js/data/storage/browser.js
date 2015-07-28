@@ -1,5 +1,7 @@
 "use strict";
 
+var StringUtils = require('../../utils/string');
+
 
 const PREFIX = 'heartnote_';
 
@@ -9,6 +11,34 @@ export default class LocalStorage {
   constructor(logger) {
     this.logger = logger;
   }
+
+
+  createNewFile (data) {
+    this.logger.debug('create new diary', data);
+
+    var name = StringUtils.rand(8);
+
+    this.set(`datafile_${name}`, data);
+
+    return Promise.resolve(name);
+  }
+
+
+  loadEntriesFromDiary (diaryName) {
+    this.logger.debug('load entries', diaryName);
+
+    return Promise.resolve(
+      this.get(`entries_${diaryName}`)
+    );
+  }
+
+
+  saveEntriesToDiary (diaryName, entryData) {
+    this.logger.debug('save entries', diaryName, entryData.length + ' chars');
+
+    return this.set(`entries_${diaryName}`, entryData);
+  }
+
 
 
   get (key) {
