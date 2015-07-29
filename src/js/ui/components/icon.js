@@ -31,7 +31,7 @@ module.exports = React.createClass({
 
     if (this.props.tooltip) {
       return (
-        <Popup msg={this.props.tooltip} showPopup={this.state.showPopup}>
+        <Popup msg={this.props.tooltip} show={this.state.showPopup}>
           {icon}
         </Popup>
       );

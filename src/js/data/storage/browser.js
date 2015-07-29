@@ -12,8 +12,12 @@ export default class LocalStorage {
     this.logger = logger;
   }
 
+  type () {
+    return 'browser';
+  }
 
-  createNewFile (data) {
+
+  createNewDiary (data) {
     this.logger.debug('create new diary', data);
 
     var name = StringUtils.rand(8);
@@ -22,6 +26,24 @@ export default class LocalStorage {
 
     return Promise.resolve(name);
   }
+
+
+
+  selectDiary() {
+    // nothing to do!!
+    // TODO: perhaps we should refactor the userStore such that it's more 
+    // intimately tied in with storage, to avoid this sort of empty function
+  }
+
+
+  loadMetaDataFromDiary (diaryName) {
+    this.logger.debug('load metadata', diaryName);
+
+    return Proimse.resolve(
+      this.get(`datafile_${diaryName}`)
+    );
+  }
+
 
 
   loadEntriesFromDiary (diaryName) {

@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 
+var ipc = require('ipc');
 
 
 
@@ -13,44 +14,70 @@ export default class ElectronAppFileStorage {
     this._cache = {};
   }
 
+  type () {
+    return 'file';
+  }
 
-  createNewFile (data) {
+  createNewDiary (data) {
     this.logger.debug('create new diary', data);
 
     return new Promise((resolve, reject) => {
-      var file;
+      var filePath;
 
       try {
-        file = ipc.sendSync('synchronous-message', 'saveNewFile');
+        filePath = ipc.sendSync('synchronous-message', 'saveNewFile');
       } catch (err) {
         this.logger.error(err);
 
         return reject('Save file dialog failed');
       }
 
-      if (!file) {
+      if (!filePath) {
         this.logger.debug('file dialog cancelled');
 
         return Promise.resolve(null);
       }
 
-      this.logger.info('file to create', file);
+      this.logger.info('file to create', filePath);
 
-      this._saveFile(diaryName, {
+      this._saveDiary(filePath, {
         meta: data
       })
         .then(function() {
-          resolve(file);
+          resolve(filePath);
         })
         .catch(reject);
     });
   }
 
 
+  selectDiary() {
+    var file = ipc.sendSync('synchronous-message', 'openFile');
+
+    if (Array.isArray(file)) {
+      file = file[0];
+    }
+
+    return Promise.resolve(file);
+  }
+
+
+
+  loadMetaDataFromDiary (diaryName) {
+    this.logger.debug('load metadata', diaryName);
+
+    return this._loadDiary(diaryName)
+      .then( (fileData) => {
+        return fileData.meta;
+      });
+  }
+
+
+
   loadEntriesFromDiary (diaryName) {
     this.logger.debug('load entries', diaryName);
 
-    return this._loadFile(diaryName)
+    return this._loadDiary(diaryName)
       .then( (fileData) => {
         return fileData.entries;
       });
@@ -61,37 +88,41 @@ export default class ElectronAppFileStorage {
   saveEntriesToDiary (diaryName, entryData) {
     this.logger.debug('save entries', diaryName, entryData.length + ' chars');
 
-    return this._loadFile(diaryName)
+    return this._loadDiary(diaryName)
       .then( (fileData) => {
         fileData.entries = entryData;
 
-        return this._saveFile(diaryName, fileData);
+        return this._saveDiary(diaryName, fileData);
       });
   }
 
 
 
-  _loadFile (diaryName) {
-    this.logger.debug('load file', diaryName);
+  _loadDiary (filePath) {
+    this.logger.debug('load file', filePath);
 
     return new Promise((resolve, reject) => {
       var str;
     
-      if (this._cache[diaryName]) {
-        return resolve(this._cache[diaryName]);
+      if (this._cache[filePath]) {
+        return resolve(this._cache[filePath]);
       }
 
       try {
-        str = fs.readFileSync(diaryName).toString('utf-8');
+        str = fs.readFileSync(filePath).toString('utf-8');
       } catch (err) {
+        this.logger.error(err);
+
         return reject('Unable to read from diary file');
       }
 
       try {
-        this._cache[diaryName] = JSON.parse(str);
+        this._cache[filePath] = JSON.parse(str);
 
-        resolve(this._cache[diaryName]);
+        resolve(this._cache[filePath]);
       } catch (err) {
+        this.logger.error(err);
+
         return reject('Diary file data may be corrupt.');
       }
     });
@@ -99,8 +130,8 @@ export default class ElectronAppFileStorage {
 
 
 
-  _saveFile (diaryName, json) {
-    this.logger.debug('save file', diaryName);
+  _saveDiary (filePath, json) {
+    this.logger.debug('save file', filePath);
 
     return new Promise((resolve, reject) => {
       var str;
@@ -113,7 +144,7 @@ export default class ElectronAppFileStorage {
       }
 
       try {
-        fs.writeFileSync(diaryName, str);
+        fs.writeFileSync(filePath, str);
       } catch (err) {
         this.logger.error(err);
 
@@ -121,7 +152,7 @@ export default class ElectronAppFileStorage {
       }
 
       // overwrite cached data
-      this._cache[diaryName] = json;
+      this._cache[filePath] = json;
 
       resolve();
     });

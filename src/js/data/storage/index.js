@@ -1,6 +1,5 @@
 "use strict";
 
-var ipc = require('ipc');
 
 var BrowserStorage = require('./browser'),
     FileStorage = require('./file');
@@ -8,7 +7,7 @@ var BrowserStorage = require('./browser'),
 var Detect = require('../../utils/detect');
 
 
-const LAST_DATAFILE_KEY = 'last datafile';
+const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 
 export default class StorageManager {
@@ -23,8 +22,8 @@ export default class StorageManager {
   }
 
 
-  getLastAccessedDataFileName() {
-    return this.browserStorage.get(LAST_DATAFILE_KEY);
+  getLastAccessedDiaryDetails() {
+    return this.browserStorage.get(LAST_ACCESSED_DIARY_KEY);
   }
 
   /**
@@ -33,11 +32,29 @@ export default class StorageManager {
   createNewDiary(data) {
     this.logger.info('create new diary');
 
-    return this.storage.createNewFile(data)
+    return this.storage.createNewDiary(data)
       .then((diaryName) => {
-        this.browserStorage.set(LAST_DATAFILE_KEY, diaryName);
+        this._setLastAccessedDiaryDetails(diaryName);
         
         return diaryName;
+      });
+  }
+
+
+  selectDiary() {
+    return this.storage.selectDiary();
+  }
+
+
+
+  loadMetaDataFromDiary(diaryName) {
+    this.logger.info('load metadata', diaryName);
+
+    return this.storage.loadMetaDataFromDiary(diaryName)
+      .then( (data) => {
+        this._setLastAccessedDiaryDetails(diaryName);
+        
+        return data;
       });
   }
 
@@ -56,17 +73,12 @@ export default class StorageManager {
   }
 
 
-
-  loadFileMetadata(name) {
-    this.logger.info('load file metadata', name);
-
-    return this.local.get(`datafile_${name}`);
+  _setLastAccessedDiaryDetails (diaryName) {
+    this.browserStorage.set(LAST_ACCESSED_DIARY_KEY, {
+      name: diaryName,
+      storage: this.storage.type(),
+    });
   }
-
-
-
-
-
 }
 
 

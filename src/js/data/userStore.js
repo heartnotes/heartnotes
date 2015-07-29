@@ -34,8 +34,8 @@ export default class UserStore extends Store {
   }
 
 
-  lastDataFileName () {
-    return this.storage.getLastAccessedDataFileName();
+  lastAccessedDiaryDetails () {
+    return this.storage.getLastAccessedDiaryDetails();
   }
 
 
@@ -78,30 +78,58 @@ export default class UserStore extends Store {
               .catch(function storageError(err) {
                 self.logger.error('storage error', err);
 
-                self.setState({
+                self.setStateAndChangeAfterDelay({
                   nowDerivingKeys: false,
                   createDataFileError: err
+                }, {
+                  createDataFileError: null
                 });
 
-                self.setStateAfterDelay({
-                  createDataFileError: null
-                }, 1000);
               });
           });
       })
       .catch(function(err) {
         self.logger.error('deriving new key error', err);
 
-        self.setState({
+        self.setStateAndChangeAfterDelay({
           nowDerivingKeys: false,
           derivingKeysError: err
-        });
-
-        self.setStateAfterDelay({
+        }, {
           derivingKeysError: null
-        }, 1000);
+        });
       });
   }
+
+
+
+  chooseDataFile () {
+    this.logger.info('choose datafile');
+
+    this._resetState();
+
+    this.storage.selectDiary()
+      .then( (diaryName) => {
+        if (!diaryName) {
+          return;
+        }
+
+        return this.storage.loadMetaDataFromDiary(diaryName);
+      })
+      .then( (data) => {
+        // all ok, let's force refresh
+        this.forceUpdate();
+      })
+      .catch( (err) => {
+        this.logger.error(err);
+
+        this.setStateAndChangeAfterDelay({
+          chooseDataFileError: err
+        }, {
+          chooseDataFileError: null
+        });
+      });
+  }
+
 
 
   openDataFile (params) {
@@ -154,14 +182,12 @@ export default class UserStore extends Store {
       .catch(function(err) {
         self.logger.error('keys derivation error', err);
 
-        self.setState({
+        self.setStateAndChangeAfterDelay({
           nowDerivingKeys: false,
           derivingKeysError: err
-        });
-
-        self.setStateAfterDelay({
+        }, {
           derivingKeysError: null
-        }, 1000);
+        });
       });
   }
 
@@ -228,14 +254,12 @@ export default class UserStore extends Store {
         self.flux.getStore('entries').setEntries(entries);
       })
       .catch(function(err) {
-        self.setState({
+        self.setStateAndChangeAfterDelay({
           loadEntriesError: err,
           entriesLoaded: false,
-        });
-
-        self.setStateAfterDelay({
+        }, {
           loadEntriesError: null
-        }, 1000);
+        });
       });
   }
 
@@ -303,14 +327,12 @@ export default class UserStore extends Store {
         }
       })
       .catch(function(err) {
-        self.setState({
+        self.setStateAndChangeAfterDelay({
           savingEntries: false,
           saveEntriesError: err,
-        });
-
-        self.setStateAfterDelay({
+        }, {
           saveEntriesError: null
-        }, 1000);
+        });
       });
   }
 
@@ -332,6 +354,7 @@ export default class UserStore extends Store {
     this.setState({
       derivingKeysError: null,
       createDataFileError: null,
+      chooseDataFileError: null,
       openDataFileError: null,
       loadEntriesError: null,
       saveEntriesError: null,

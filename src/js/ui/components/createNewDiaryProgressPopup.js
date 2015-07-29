@@ -25,7 +25,7 @@ module.exports = React.createClass({
     }
 
     return (
-      <Popup msg={derivingMsg} showPopup={!!derivingMsg}>
+      <Popup msg={derivingMsg} show={!!derivingMsg}>
         {this.props.children}
       </Popup>
     );

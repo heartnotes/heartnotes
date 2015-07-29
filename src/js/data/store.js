@@ -26,9 +26,15 @@ export default class Store extends FlummoxStore {
 
 
   setStateAfterDelay (attrs, delayMs) {
-    _.delay(_.bind(function() {
+    _.delay( () => {
       this.setState(attrs);
-    }, this), delayMs);
+    }, delayMs);
+  }
+
+  setStateAndChangeAfterDelay (state1, state2, delayMs = 1000) {
+    this.setState(state1);
+
+    this.setStateAfterDelay(state2, delayMs);
   }
 
 }

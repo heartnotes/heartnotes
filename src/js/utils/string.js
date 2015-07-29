@@ -1,3 +1,6 @@
+var _ = require('lodash');
+
+
 const POSSIBLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 exports.random = function(len) {
@@ -9,3 +12,21 @@ exports.random = function(len) {
 
   return text;
 };
+
+
+
+exports.formatDiaryDetails = function(diaryDetails) {
+  let { name, storage } = (diaryDetails || {});
+
+  name = name || '';
+
+  switch (storage) {
+    case 'file':
+      // extract filename part (slow method but works well!)
+      return name.replace(/^.*[\\\/]/, '');
+      break;
+    default:
+      return name;
+  }
+};
+

@@ -58,7 +58,7 @@ ipc.on('synchronous-message', function(event, arg) {
 
       try {
         event.returnValue = dialog.showOpenDialog(mainWindow, { 
-          title: 'Open existing diary',
+          title: 'Open diary',
           properties: [ 
             'openFile', 
           ],

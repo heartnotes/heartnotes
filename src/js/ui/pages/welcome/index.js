@@ -19,7 +19,7 @@ var steps = {
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      step: 'newDiary',
+      step: 'start',
     }
   },
 
@@ -54,11 +54,12 @@ module.exports = React.createClass({
       var stepElem = (
         <FluxComponent connectToStores={{
           user: store => ({
-            lastDataFileName: store.lastDataFileName(),
+            lastAccessedDiaryDetails: store.lastAccessedDiaryDetails(),
             derivedKeys: store.state.derivedKeys,
             nowDerivingKeys: store.state.nowDerivingKeys,
             derivingKeysError: store.state.derivingKeysError,
             createDataFileError: store.state.createDataFileError,
+            chooseDataFileError: store.state.chooseDataFileError,
             loadEntriesError: store.state.loadEntriesError,
           })
         }}>

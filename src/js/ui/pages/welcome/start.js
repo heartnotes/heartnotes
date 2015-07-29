@@ -1,10 +1,11 @@
-var ipc = require('ipc');
-
-var React = require('react');
+var _ = require('lodash'),
+  React = require('react');
 
 var Detect = require('../../../utils/detect'),
+  StringUtils = require('../../../utils/string'),
   Button = require('../../components/button'),
   IconButton = require("../../components/iconButton"),
+  Popup = require("../../components/popup"),
   PasswordInput = require('../../components/passwordInput'),
   PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
 
@@ -24,8 +25,10 @@ module.exports = React.createClass({
   render: function() { 
     var content = null;
 
-    if (this.props.lastDataFileName) {
-      var lastDataFileName = this.props.lastDataFileName;
+    if (this.props.lastAccessedDiaryDetails) {
+      var lastDiaryName = StringUtils.formatDiaryDetails(
+        this.props.lastAccessedDiaryDetails
+      );
 
       var buttonAttrs = {
         onClick: this._checkPassword,
@@ -39,8 +42,8 @@ module.exports = React.createClass({
       content = (
         <div className="open-existing">
           <p>
-            <label>Last opened:</label>
-            <span>{lastDataFileName}</span>
+            <label>Current:</label>
+            <span>{lastDiaryName}</span>
             {this._buildChooseAnotherDiaryButton()}
           </p>
           <form onSubmit={this._checkPassword}>
@@ -93,11 +96,15 @@ module.exports = React.createClass({
     if (Detect.isElectronApp()) {
       return (
         <span className="choose-diary">
-          <IconButton 
-            ref="chooseDiaryButton"
-            icon="folder-open"
-            onClick={this._chooseDiary}
-            tooltip="Choose a different diary" />
+          <Popup 
+              msg={this.props.chooseDataFileError} 
+              show={!!this.props.chooseDataFileError}>
+            <IconButton 
+              ref="chooseDiaryButton"
+              icon="folder-open"
+              onClick={this._chooseDiary}
+              tooltip="Choose a different diary" />
+          </Popup>
         </span>
       );
     } else {
@@ -110,7 +117,10 @@ module.exports = React.createClass({
     e.preventDefault();
 
     this.props.flux.getActions('user')
-      .openDataFile(this.props.lastDataFile.name, this.state.password);
+      .openDataFile(
+        _.get(this.props.lastAccessedDiaryDetails, 'name'),
+        this.state.password
+      );
   },
 
 
@@ -127,7 +137,7 @@ module.exports = React.createClass({
 
 
   _chooseDiary: function() {    
-    console.log(ipc.sendSync('synchronous-message', 'chooseFile'));
+    this.props.flux.getActions('user').chooseDataFile();
   },
 
 });

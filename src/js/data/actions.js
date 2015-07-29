@@ -36,6 +36,14 @@ class UserActions extends Actions {
 
 
 
+  chooseDataFile () {
+    this.logger.debug('chooseDataFile');
+
+    return {};
+  }
+
+
+
   openDataFile(filePath, password) {
     this.logger.debug('openDataFile', filePath, password);
 

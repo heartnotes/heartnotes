@@ -7,14 +7,14 @@ var React = require('react');
 
 module.exports = React.createClass({
   propTypes: {
-    msg : React.PropTypes.object,
-    showPopup: React.PropTypes.bool,
+    msg : React.PropTypes.any,
+    show: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       msg: null,
-      showPopup: true,
+      show: true,
     };
   },
 
@@ -22,7 +22,7 @@ module.exports = React.createClass({
   render: function() {   
     var wrapperClass = 'popup-wrapper';
 
-    if (!this.props.showPopup) {
+    if (!this.props.show) {
       wrapperClass += ' hidden';
     }
 
@@ -30,7 +30,7 @@ module.exports = React.createClass({
       <span className={wrapperClass}>
         <span className="popup-target" ref="target">{this.props.children}</span>
         <span className="popup-body" ref="body">
-          {this.props.msg}
+          {'' + this.props.msg}
         </span>
       </span>
     );
