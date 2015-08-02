@@ -141,46 +141,43 @@ export default class UserStore extends Store {
 
     self.logger.info('open datafile', filePath, password);
 
-    var dataFile = self.storage.loadFileMetadata(filePath);
 
-    if (!dataFile) {
-      return self.setState({
-        openDataFileError: new Error('Data file not found: ' + filePath)
-      });
-    }
-
-    self.setState({
-      nowDerivingKeys: true
-    });
-
-    self.crypto.deriveKey(password, {
-      salt: dataFile.salt,
-      iterations: dataFile.iterations,
-    })
-      .then(function gotKeyData(derivedKeyData) {
-        self.logger.info('keys derived', derivedKeyData);
-
-        // now test that keys are correct
-        return self.crypto.decrypt(derivedKeyData.key1, dataFile.keyTest)
-          .then(function gotPlainData(plainData) {
-            if (plainData !== derivedKeyData.key1) {
-              throw new Error('Password incorrect');
-            }
-
-            self.setState({
-              nowDerivingKeys: false,
-              dataFile: dataFile,
-              derivedKeys: derivedKeyData,
-            });
-          })
-          .catch(function(err) {
-            self.logger.error(err.stack);
-
-            throw new Error('Password incorrect: ' + err);
+    self.storage.loadMetaDataFromDiary(filePath)
+      .then(function gotMetaData(metaData) {
+        if (!metaData) {
+          return self.setState({
+            openDataFileError: new Error('Data file not found: ' + filePath)
           });
+        }
+
+        self.setState({
+          nowDerivingKeys: true
+        });
+
+        return self.crypto.deriveKey(password, {
+          salt: metaData.salt,
+          iterations: metaData.iterations,
+        })
+        .then(function gotKeyData(derivedKeyData) {
+          self.logger.info('keys derived', derivedKeyData);
+
+          // now test that keys are correct
+          return self.crypto.decrypt(derivedKeyData.key1, metaData.keyTest)
+            .then(function gotPlainData(plainData) {
+              if (plainData !== derivedKeyData.key1) {
+                throw new Error('Password incorrect');
+              }
+
+              self.setState({
+                nowDerivingKeys: false,
+                dataFileName: filePath,
+                derivedKeys: derivedKeyData,
+              });
+            });
+        });
       })
       .catch(function(err) {
-        self.logger.error('keys derivation error', err);
+        self.logger.error(err.stack);
 
         self.setStateAndChangeAfterDelay({
           nowDerivingKeys: false,

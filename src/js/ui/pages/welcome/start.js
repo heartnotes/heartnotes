@@ -94,10 +94,14 @@ module.exports = React.createClass({
 
   _buildChooseAnotherDiaryButton: function() {
     if (Detect.isElectronApp()) {
+      let popupMsg = this.props.chooseDataFileError
+        ? (<div>{'' + this.props.chooseDataFileError}</div>)
+        : null;
+
       return (
         <span className="choose-diary">
           <Popup 
-              msg={this.props.chooseDataFileError} 
+              msg={popupMsg} 
               show={!!this.props.chooseDataFileError}>
             <IconButton 
               ref="chooseDiaryButton"

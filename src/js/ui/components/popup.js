@@ -7,7 +7,7 @@ var React = require('react');
 
 module.exports = React.createClass({
   propTypes: {
-    msg : React.PropTypes.any,
+    msg : React.PropTypes.object,
     show: React.PropTypes.bool,
   },
 
@@ -30,7 +30,7 @@ module.exports = React.createClass({
       <span className={wrapperClass}>
         <span className="popup-target" ref="target">{this.props.children}</span>
         <span className="popup-body" ref="body">
-          {'' + this.props.msg}
+          {this.props.msg}
         </span>
       </span>
     );

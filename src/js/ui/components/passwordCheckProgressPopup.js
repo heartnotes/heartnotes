@@ -9,7 +9,9 @@ module.exports = React.createClass({
     var derivingMsg = null;
 
     if (this.props.nowDerivingKeys) {
-      derivingMsg = "Checking password....."
+      derivingMsg = (
+        <div>Checking password.....</div>
+      );
     }
 
     if (this.props.derivingKeysError) {

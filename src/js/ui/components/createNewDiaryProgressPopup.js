@@ -9,7 +9,9 @@ module.exports = React.createClass({
     var derivingMsg = null;
 
     if (this.props.nowDerivingKeys) {
-      derivingMsg = "Creating new diary....."
+      derivingMsg = (
+        <div>Saving new diary.....</div>
+      );
     }
 
     if (this.props.derivingKeysError) {

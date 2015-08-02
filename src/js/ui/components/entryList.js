@@ -11,7 +11,7 @@ var FormatUtils = require('../../utils/format'),
 
 module.exports = React.createClass({
   propTypes: {
-    entries : React.PropTypes.object,
+    entries : React.PropTypes.array,
     selected: React.PropTypes.string,
     truncLength: React.PropTypes.number,
   },
