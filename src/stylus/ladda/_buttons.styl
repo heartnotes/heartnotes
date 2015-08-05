@@ -47,6 +47,11 @@
 
 
 
+/*************************************
+ * EXPAND-RIGHT
+ */
+
+
 .ladda-button[data-style=expand-right] .ladda-spinner {
     right: -6px
 }
@@ -65,6 +70,48 @@
     padding-right: 40px
 }
 
+
+
+/*************************************
+ * ZOOM-IN
+ */
+
+.ladda-button[data-style=zoom-in],
+.ladda-button[data-style=zoom-in] .ladda-spinner,
+.ladda-button[data-style=zoom-in] .ladda-label {
+    transition: 0.3s ease all;
+}
+
+.ladda-button[data-style=zoom-in] {
+    overflow: hidden;
+}
+
+.ladda-button[data-style=zoom-in] .ladda-spinner {
+    left: 50%;
+    margin-left: -16px;
+    transform: scale(0.2);
+}
+
+.ladda-button[data-style=zoom-in] .ladda-label {
+    position: relative;
+    display: inline-block;
+}
+
+.ladda-button[data-style=zoom-in][data-loading] .ladda-label {
+    opacity: 0;
+    transform: scale(2.2);
+}
+
+.ladda-button[data-style=zoom-in][data-loading] .ladda-spinner {
+    opacity: 1;
+    margin-left: 0;
+    transform: none;
+}
+
+
+/*************************************
+ * Sizes
+ */
 
 .ladda-button[data-size=xs] {
     padding: 2px 8px 4px

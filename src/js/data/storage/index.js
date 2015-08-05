@@ -34,7 +34,9 @@ export default class StorageManager {
 
     return this.storage.createNewDiary(data)
       .then((diaryName) => {
-        this._setLastAccessedDiaryDetails(diaryName);
+        if (diaryName) {
+          this._setLastAccessedDiaryDetails(diaryName);
+        }
         
         return diaryName;
       });

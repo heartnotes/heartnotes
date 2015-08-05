@@ -35,7 +35,7 @@ export default class ElectronAppFileStorage {
       if (!filePath) {
         this.logger.debug('file dialog cancelled');
 
-        return Promise.resolve(null);
+        return resolve(null);
       }
 
       this.logger.info('file to create', filePath);

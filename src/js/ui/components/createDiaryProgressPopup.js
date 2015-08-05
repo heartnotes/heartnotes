@@ -8,16 +8,12 @@ module.exports = React.createClass({
   render: function() {
     var derivingMsg = null;
 
-    if (this.props.nowDerivingKeys) {
-      derivingMsg = (
-        <div>Saving new diary.....</div>
-      );
-    }
-
-    if (this.props.derivingKeysError) {
-      derivingMsg = (
-        <div className="error">Sorry, there was a problem generating encryption keys!</div>
-      );
+    if (this.props.nowCreatingDiary) {
+      if (this.props.nowDerivingKeys) {
+        derivingMsg = (
+          <div>Saving new diary.....</div>
+        );
+      }
     }
 
     if (this.props.createDataFileError) {

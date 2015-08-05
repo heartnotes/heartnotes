@@ -20,6 +20,8 @@ export default class UserStore extends Store {
     this.state = {
       derivedKeys: null,
       entriesLoaded: false,
+      nowCreatingDiary: false,
+      nowOpeningDiary: false,
       nowDerivingKeys: false,
     };
 
@@ -49,7 +51,8 @@ export default class UserStore extends Store {
     self.logger.info('create new datafile', password);
 
     self.setState({
-      nowDerivingKeys: true
+      nowDerivingKeys: true,
+      nowCreatingDiary: true,
     });
 
     self.crypto.deriveNewKey(password)
@@ -80,6 +83,7 @@ export default class UserStore extends Store {
 
                 self.setStateAndChangeAfterDelay({
                   nowDerivingKeys: false,
+                  nowCreatingDiary: false,
                   createDataFileError: err
                 }, {
                   createDataFileError: null
@@ -93,9 +97,10 @@ export default class UserStore extends Store {
 
         self.setStateAndChangeAfterDelay({
           nowDerivingKeys: false,
-          derivingKeysError: err
+          nowCreatingDiary: false,
+          createDataFileError: err
         }, {
-          derivingKeysError: null
+          createDataFileError: null
         });
       });
   }
@@ -141,6 +146,9 @@ export default class UserStore extends Store {
 
     self.logger.info('open datafile', filePath, password);
 
+    self.setState({
+      nowOpeningDiary: true,
+    });
 
     self.storage.loadMetaDataFromDiary(filePath)
       .then(function gotMetaData(metaData) {
@@ -170,6 +178,7 @@ export default class UserStore extends Store {
 
               self.setState({
                 nowDerivingKeys: false,
+                nowOpeningDiary: false,
                 dataFileName: filePath,
                 derivedKeys: derivedKeyData,
               });
@@ -181,9 +190,10 @@ export default class UserStore extends Store {
 
         self.setStateAndChangeAfterDelay({
           nowDerivingKeys: false,
-          derivingKeysError: err
+          nowOpeningDiary: false,
+          openDataFileError: err
         }, {
-          derivingKeysError: null
+          openDataFileError: null
         });
       });
   }
@@ -349,7 +359,6 @@ export default class UserStore extends Store {
 
   _resetErrorStates () {
     this.setState({
-      derivingKeysError: null,
       createDataFileError: null,
       chooseDataFileError: null,
       openDataFileError: null,

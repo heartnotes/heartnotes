@@ -57,10 +57,12 @@ module.exports = React.createClass({
             lastAccessedDiaryDetails: store.lastAccessedDiaryDetails(),
             derivedKeys: store.state.derivedKeys,
             nowDerivingKeys: store.state.nowDerivingKeys,
-            derivingKeysError: store.state.derivingKeysError,
             createDataFileError: store.state.createDataFileError,
             chooseDataFileError: store.state.chooseDataFileError,
+            openDataFileError: store.state.openDataFileError,
             loadEntriesError: store.state.loadEntriesError,
+            nowOpeningDiary: store.state.nowOpeningDiary,
+            nowCreatingDiary: store.state.nowCreatingDiary,
           })
         }}>
           <Step showStep={this._showStep} isActive={isActive}/>

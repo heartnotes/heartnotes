@@ -7,7 +7,7 @@ var Detect = require('../../../utils/detect'),
   IconButton = require("../../components/iconButton"),
   Popup = require("../../components/popup"),
   PasswordInput = require('../../components/passwordInput'),
-  PasswordCheckProgressPopup = require('../../components/passwordCheckProgressPopup');
+  OpenDiaryProgressPopup = require('../../components/openDiaryProgressPopup');
 
 
 module.exports = React.createClass({
@@ -32,7 +32,7 @@ module.exports = React.createClass({
 
       var buttonAttrs = {
         onClick: this._checkPassword,
-        animActive: !!this.props.nowDerivingKeys,
+        animActive: !!this.props.nowOpeningDiary,
       };
 
       if (!this.state.password || !this.state.password.length) {
@@ -51,9 +51,9 @@ module.exports = React.createClass({
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>
             <div className="action row">
-              <PasswordCheckProgressPopup {...this.props}>
+              <OpenDiaryProgressPopup {...this.props}>
                 <Button {...buttonAttrs}>Open</Button>
-              </PasswordCheckProgressPopup>
+              </OpenDiaryProgressPopup>
             </div>
           </form>
         </div>

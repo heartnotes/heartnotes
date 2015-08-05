@@ -2,7 +2,7 @@ var React = require('react');
 
 var Button = require('../../components/button'),
   NewPasswordInput = require('../../components/newPasswordInput'),
-  CreateNewDiaryProgressPopup = require('../../components/createNewDiaryProgressPopup');
+  CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup');
 
 
 
@@ -21,7 +21,7 @@ module.exports = React.createClass({
   render: function() { 
     var buttonAttrs = {
       onClick: this._savePassword,
-      animActive: !!this.props.nowDerivingKeys,
+      animActive: !!this.props.nowCreatingDiary,
     };
 
     if (!this.state.password || !this.state.password.length) {
@@ -40,9 +40,9 @@ module.exports = React.createClass({
               requiredStrength={1} />
           </div>
           <div className="action row">
-            <CreateNewDiaryProgressPopup {...this.props}>
+            <CreateDiaryProgressPopup {...this.props}>
               <Button {...buttonAttrs}>Next</Button>
-            </CreateNewDiaryProgressPopup>
+            </CreateDiaryProgressPopup>
           </div>
         </form>
         <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>

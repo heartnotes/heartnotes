@@ -18,7 +18,7 @@ module.exports = React.createClass({
       onClick: null,
       disabled: false,
       animActive: false,
-      animStyle: 'expand-right',
+      animStyle: 'zoom-in',
       color: '',
       size: 'm',
     };
