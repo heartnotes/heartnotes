@@ -1,17 +1,22 @@
 var React = require('react');
 
 var Router = require('react-router');
-var { Link } = Router;
+var { Link, Navigation } = Router;
 
 var IconButton = require('./iconButton');
 
 
 
 module.exports = React.createClass({
-  mixins: [ Router.State ],
+  mixins: [ Navigation ],
 
   render: function() {
     var items = [
+      {
+        icon: 'gear',
+        action: this._showSettings,
+        desc: 'Settings',
+      },
       {
         icon: 'eject',
         action: this._closeDiary,
@@ -35,5 +40,10 @@ module.exports = React.createClass({
 
   _closeDiary: function() {
     this.props.flux.getActions('user').closeDataFile();
+  },
+
+
+  _showSettings: function() {
+    this.transitionTo('settings');
   },
 });

@@ -13,6 +13,7 @@ var Logger = require('./utils/logger');
 var Layout = require('./ui/layout');
 var EntriesView = require('./ui/pages/entries');
 var NewEntry = require('./ui/pages/newEntry');
+var SettingsView = require('./ui/pages/settingsView');
 
 
 
@@ -49,6 +50,7 @@ var routes = (
   <Route handler={App}>
     <DefaultRoute name="newEntry" handler={NewEntry} />
     <Route name="entries" path="/entries/:entryId?" handler={EntriesView} />
+    <Route name="settings" path="/settings" handler={SettingsView} />
   </Route>
 );
 
