@@ -56,6 +56,16 @@ module.exports = React.createClass({
   },
 
 
+  componentDidUpdate: function(oldProps) {
+    if (oldProps.nowChangingPassword && !this.props.nowChangingPassword && !this.props.changePasswordError) {
+      this.setState({
+        newPassword: null,
+        oldPassword: null,
+      });
+    }
+  },
+
+
   _setOldPassword: function(password) {
     this.setState({
       oldPassword: password
@@ -69,7 +79,9 @@ module.exports = React.createClass({
   },
 
 
-  _saveNewPassword: function() {
+  _saveNewPassword: function(e) {
+    e.preventDefault();
+    
     this.props.flux.getActions('user').changePassword(
       this.state.oldPassword, this.state.newPassword
     );

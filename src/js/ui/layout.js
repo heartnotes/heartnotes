@@ -43,7 +43,7 @@ module.exports = React.createClass({
           <SubMenu {...this.props} />
         </section>
         <section id="content">
-          <FluxComponent connectToStores={['entries']}>
+          <FluxComponent connectToStores={['user', 'entries']}>
             {this.props.children}
           </FluxComponent>
         </section>

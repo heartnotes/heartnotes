@@ -29,9 +29,7 @@ export default class UserStore extends Store {
     // use this to keep track of instances where we ask to save entries 
     // multiple consecutive times - once one save is completed we check this 
     // value to see if another save should immediately begin.
-    this._entrySaveData = {
-      num: 0,
-    };
+    this._entrySaveCounter = 0;
 
     this.registerActionIds('user');
   }
@@ -196,7 +194,7 @@ export default class UserStore extends Store {
   changePassword (params) {
     var self = this;
 
-    self._resetState();
+    self._resetErrorStates();
 
     var { oldPassword, newPassword } = params;
 
@@ -217,10 +215,10 @@ export default class UserStore extends Store {
         return self._deriveKeyFromNewPassword(newPassword)
           .then(function derived(derivedKeyData) {
             return self.storage.saveMetaDataToDiary(
-              this.state.dataFileName, derivedKeyData.meta
+              self.state.dataFileName, derivedKeyData.meta
             )
               .then(function savedMeta() {
-                return this._doSaveEntries(derivedKeyData.key1);
+                return self._doSaveEntries(derivedKeyData.key1);
               })
               .then(function allDataUpdated() {
                 self.setState({
@@ -315,14 +313,13 @@ export default class UserStore extends Store {
 
 
 
-  saveEntries (entries) {
-    this.logger.info('save entries', _.keys(entries).length);
+  saveEntries () {
+    this.logger.info('save entries');
 
-    this._entrySaveData.num += 1;
-    this._entrySaveData.entries = entries;
+    this._entrySaveCounter += 1;
 
     if (!this.state.savingEntries) {
-      this._doSaveEntries(this.state.derivedKeys.key1);
+      this._doSaveEntries();
     }
   }
 
@@ -355,7 +352,10 @@ export default class UserStore extends Store {
   _doSaveEntries (encryptionKey) {
     var self = this;
 
-    var { saveNum, entries } = self._entrySaveData;
+    encryptionKey = encryptionKey || this.state.derivedKeys.key1;
+
+    var saveNum = this._entrySaveCounter;
+    var entries = this.flux.getStore('entries').state.entries;
 
     self.logger.debug('do save entries', saveNum, _.keys(entries).length);
 
@@ -366,19 +366,16 @@ export default class UserStore extends Store {
 
     var dataFileName = self.state.dataFileName;
 
-    if (!dataFileName) {
-      let err = new Error('No diary to save to');
-
-      self.setState({
-        saveEntriesError: err
-      });
-
-      return Promise.reject(err);
-    }
-
     self.logger.debug('encrypting entries', _.keys(entries).length);
 
-    self.crypto.encrypt(encryptionKey, entries)
+    return Promise.resolve()
+      .then(function() {
+        if (!dataFileName) {
+          throw new Error('No diary to save to');
+        }
+
+        return self.crypto.encrypt(encryptionKey, entries);
+      })
       .catch(function(err) {
         self.logger.error('entry encryption error', err);
 
@@ -394,8 +391,8 @@ export default class UserStore extends Store {
       })
       .then(function() {
         // restart the save?
-        if (saveNum < self._entrySaveData.num) {
-          self._doSaveEntries();
+        if (saveNum < self._entrySaveCounter) {
+          self._doSaveEntries(encryptionKey);
         } else {
           self.setState({
             savingEntries: false,
