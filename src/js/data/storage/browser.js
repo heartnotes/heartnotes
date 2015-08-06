@@ -3,7 +3,7 @@
 var StringUtils = require('../../utils/string');
 
 
-const PREFIX = 'heartnote_';
+const PREFIX = 'heartnotes_';
 
 
 export default class LocalStorage {
@@ -22,9 +22,10 @@ export default class LocalStorage {
 
     var name = StringUtils.rand(8);
 
-    this.set(`datafile_${name}`, data);
-
-    return Promise.resolve(name);
+    return this.saveDiary(diaryName, data)
+      .then(() => {
+        return name;
+      });
   }
 
 
@@ -36,29 +37,21 @@ export default class LocalStorage {
   }
 
 
-  loadMetaDataFromDiary (diaryName) {
-    this.logger.debug('load metadata', diaryName);
-
-    return Proimse.resolve(
-      this.get(`datafile_${diaryName}`)
-    );
-  }
-
-
-
-  loadEntriesFromDiary (diaryName) {
-    this.logger.debug('load entries', diaryName);
+  loadDiary (diaryName) {
+    this.logger.debug('load diary', diaryName);
 
     return Promise.resolve(
-      this.get(`entries_${diaryName}`)
+      this.get(`diary_${diaryName}`)
     );
   }
 
 
-  saveEntriesToDiary (diaryName, entryData) {
-    this.logger.debug('save entries', diaryName, entryData.length + ' chars');
+  saveDiary (diaryName, data) {
+    this.logger.debug('save diary', diaryName);
 
-    return this.set(`entries_${diaryName}`, entryData);
+    return Promise.resolve(
+      this.set(`diary_${diaryName}`, data)
+    );
   }
 
 

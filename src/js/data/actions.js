@@ -25,7 +25,6 @@ class UserActions extends Actions {
   }
 
 
-
   createNewDataFile(password) {
     this.logger.debug('saveNewDataFile', password);
 
@@ -33,7 +32,6 @@ class UserActions extends Actions {
       password: password
     };
   }
-
 
 
   chooseDataFile () {
@@ -66,6 +64,17 @@ class UserActions extends Actions {
 
     return {};
   }
+
+
+  changePassword(oldPassword, newPassword) {
+    this.logger.debug('changePassword', oldPassword, newPassword);
+
+    return {
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    };
+  }
+
 
 }
 

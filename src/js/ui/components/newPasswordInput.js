@@ -10,12 +10,16 @@ module.exports = React.createClass({
   propTypes: {
     onChange : React.PropTypes.func,
     requiredStrength: React.PropTypes.number,
+    passwordPlaceholder: React.PropTypes.string,
+    confirmPlaceholder: React.PropTypes.string,
   },
 
   getDefaultProps: function() {
     return {
       onChange : null,
       requiredStrength: 2,
+      passwordPlaceholder: 'Enter password',
+      confirmPlaceholder: 'Confirm password',
     };
   },
 
@@ -35,7 +39,7 @@ module.exports = React.createClass({
       <div className="new-password-input">
         <div className="password field row">
           <PasswordInput 
-            placeholder="Enter password"
+            placeholder={this.props.passwordPlaceholder}
             password={this.state.password} 
             onChange={this._onChange}
             showToggleButton={true} 
@@ -46,7 +50,7 @@ module.exports = React.createClass({
         </div>
         <div className="confirm-password field row">
           <PasswordInput 
-            placeholder="Confirm password"
+            placeholder={this.props.confirmPlaceholder}
             password={this.state.passwordConfirm} 
             onChange={this._onConfirmChange} 
             tabIndex="2" />

@@ -67,7 +67,7 @@ module.exports = React.createClass({
       ],
     });
 
-    // save content every 2 seconds
+    // save content every second
     this._changeHandler = _.debounce(
       _.bind(function() {
         var entryId = this.props.entry ? this.props.entry.id : null;

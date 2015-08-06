@@ -23,6 +23,7 @@ export default class UserStore extends Store {
       nowCreatingDiary: false,
       nowOpeningDiary: false,
       nowDerivingKeys: false,
+      nowChangingPassword: false,
     };
 
     // use this to keep track of instances where we ask to save entries 
@@ -55,45 +56,26 @@ export default class UserStore extends Store {
       nowCreatingDiary: true,
     });
 
-    self.crypto.deriveNewKey(password)
-      .then(function gotKeyData(derivedKeyData) {
-        self.logger.info('keys derived', derivedKeyData);
+    self._deriveKeyFromNewPassword(password)
+      .then(function derived(derivedKeyData) {
+        return self.storage.createNewDiary({
+          meta: derivedKeyData.meta
+        })
+          .then(function newFileCreated(fileName) {
+            if (!fileName) {
+              throw new Error('Please choose a location to save the file in');
+            }
 
-        // encrypt key with itself to produce key checking value
-        return self.crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
-          .then(function gotTestData(keyTestData) {
-            return self.storage.createNewDiary({
-              salt: derivedKeyData.salt,
-              iterations: derivedKeyData.iterations,
-              keyTest: keyTestData,
-            })
-              .then(function newFileCreated(fileName) {
-                if (!fileName) {
-                  throw new Error('Please choose a location to save the file in');
-                }
-
-                self.setState({
-                  nowDerivingKeys: false,
-                  dataFileName: fileName,
-                  derivedKeys: derivedKeyData,
-                });
-              })
-              .catch(function storageError(err) {
-                self.logger.error('storage error', err);
-
-                self.setStateAndChangeAfterDelay({
-                  nowDerivingKeys: false,
-                  nowCreatingDiary: false,
-                  createDataFileError: err
-                }, {
-                  createDataFileError: null
-                });
-
-              });
+            self.setState({
+              nowDerivingKeys: false,
+              nowCreatingDiary: false,
+              dataFileName: fileName,
+              derivedKeys: derivedKeyData,
+            });
           });
       })
       .catch(function(err) {
-        self.logger.error('deriving new key error', err);
+        self.logger.error('create new diary error', err);
 
         self.setStateAndChangeAfterDelay({
           nowDerivingKeys: false,
@@ -179,6 +161,7 @@ export default class UserStore extends Store {
               self.setState({
                 nowDerivingKeys: false,
                 nowOpeningDiary: false,
+                password: password,
                 dataFileName: filePath,
                 derivedKeys: derivedKeyData,
               });
@@ -206,6 +189,66 @@ export default class UserStore extends Store {
       entriesLoaded: false,
     });
   }
+
+
+
+
+  changePassword (params) {
+    var self = this;
+
+    self._resetState();
+
+    var { oldPassword, newPassword } = params;
+
+    self.logger.info('change password', oldPassword, newPassword);
+
+    self.setState({
+      nowDerivingKeys: true,
+      nowChangingPassword: true,
+    });
+
+    Promise.resolve()
+      .then(function checkOldPassword() {
+        if (self.state.password !== oldPassword) {
+          throw new Error('Your current password is wrong');
+        }
+      })
+      .then(function updateMetaData() {
+        return self._deriveKeyFromNewPassword(newPassword)
+          .then(function derived(derivedKeyData) {
+            return self.storage.saveMetaDataToDiary(
+              this.state.dataFileName, derivedKeyData.meta
+            )
+              .then(function savedMeta() {
+                return this._doSaveEntries(derivedKeyData.key1);
+              })
+              .then(function allDataUpdated() {
+                self.setState({
+                  password: newPassword,
+                  nowDerivingKeys: false,
+                  derivedKeys: derivedKeyData,
+                });
+              });
+          });
+      })
+      .then(function allDone() {
+        self.setState({
+          nowChangingPassword: false
+        });
+      })      
+      .catch(function(err){
+        self.logger.error(err.stack);
+
+        self.setStateAndChangeAfterDelay({
+          nowDerivingKeys: false,
+          nowChangingPassword: false,
+          changePasswordError: err
+        }, {
+          changePasswordError: null
+        });
+      });
+  }
+
 
 
   loadEntries () {
@@ -279,13 +322,37 @@ export default class UserStore extends Store {
     this._entrySaveData.entries = entries;
 
     if (!this.state.savingEntries) {
-      this._doSaveEntries();
+      this._doSaveEntries(this.state.derivedKeys.key1);
     }
   }
 
 
 
-  _doSaveEntries () {
+
+  _deriveKeyFromNewPassword (password) {
+    var self = this;
+
+    return self.crypto.deriveNewKey(password) 
+      .then(function gotKeyData(derivedKeyData) {
+        self.logger.info('keys derived', derivedKeyData);
+
+        // encrypt key with itself to produce key checking value
+        return self.crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
+          .then(function gotTestData(keyTest) {
+            return _.extend({}, derivedKeyData, {
+              meta: {
+                keyTest: keyTest,
+                salt: derivedKeyData.salt,
+                iterations: derivedKeyData.iterations,
+              }
+            });
+          });
+      });
+  }
+
+
+
+  _doSaveEntries (encryptionKey) {
     var self = this;
 
     var { saveNum, entries } = self._entrySaveData;
@@ -300,14 +367,18 @@ export default class UserStore extends Store {
     var dataFileName = self.state.dataFileName;
 
     if (!dataFileName) {
-      return self.setState({
-        saveEntriesError: new Error('No diary to save to')
+      let err = new Error('No diary to save to');
+
+      self.setState({
+        saveEntriesError: err
       });
+
+      return Promise.reject(err);
     }
 
     self.logger.debug('encrypting entries', _.keys(entries).length);
 
-    self.crypto.encrypt(self.state.derivedKeys.key1, entries)
+    self.crypto.encrypt(encryptionKey, entries)
       .catch(function(err) {
         self.logger.error('entry encryption error', err);
 
@@ -316,12 +387,10 @@ export default class UserStore extends Store {
       .then(function encryptedEntries(saveData) {
         self.logger.debug('encypted entries', saveData.length + ' bytes');
 
-        self.storage.saveEntriesToDiary(dataFileName, saveData)
-          .catch(function(err) {
-            self.logger.error('entry save error', err);
-
-            throw err;
-          });
+        return self.storage.saveEntriesToDiary(dataFileName, saveData);
+      })
+      .then(function() {
+        return self.storage.persist(self.state.dataFileName);
       })
       .then(function() {
         // restart the save?
@@ -334,6 +403,8 @@ export default class UserStore extends Store {
         }
       })
       .catch(function(err) {
+        self.logger.error('entry save error', err);
+
         self.setStateAndChangeAfterDelay({
           savingEntries: false,
           saveEntriesError: err,
@@ -351,6 +422,9 @@ export default class UserStore extends Store {
       dataFile: null,
       entriesLoaded: false,
       nowDerivingKeys: false,
+      nowOpeningDiary: false,
+      nowCreatingDiary: false,
+      nowChangingPassword: false,
     });
 
     this._resetErrorStates();
@@ -364,6 +438,7 @@ export default class UserStore extends Store {
       openDataFileError: null,
       loadEntriesError: null,
       saveEntriesError: null,
+      changePasswordError: null,
     });
   }
 }

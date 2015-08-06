@@ -10,8 +10,6 @@ export default class ElectronAppFileStorage {
 
   constructor(logger) {
     this.logger = logger;
-
-    this._cache = {};
   }
 
   type () {
@@ -40,9 +38,7 @@ export default class ElectronAppFileStorage {
 
       this.logger.info('file to create', filePath);
 
-      this._saveDiary(filePath, {
-        meta: data
-      })
+      this.saveDiary(filePath, data)
         .then(function() {
           resolve(filePath);
         })
@@ -63,51 +59,12 @@ export default class ElectronAppFileStorage {
 
 
 
-  loadMetaDataFromDiary (diaryName) {
-    this.logger.debug('load metadata', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then( (fileData) => {
-        return fileData.meta;
-      });
-  }
-
-
-
-  loadEntriesFromDiary (diaryName) {
-    this.logger.debug('load entries', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then( (fileData) => {
-        return fileData.entries;
-      });
-  }
-
-
-
-  saveEntriesToDiary (diaryName, entryData) {
-    this.logger.debug('save entries', diaryName, entryData.length + ' chars');
-
-    return this._loadDiary(diaryName)
-      .then( (fileData) => {
-        fileData.entries = entryData;
-
-        return this._saveDiary(diaryName, fileData);
-      });
-  }
-
-
-
-  _loadDiary (filePath) {
-    this.logger.debug('load file', filePath);
+  loadDiary (filePath) {
+    this.logger.debug('load diary', filePath);
 
     return new Promise((resolve, reject) => {
       var str;
     
-      if (this._cache[filePath]) {
-        return resolve(this._cache[filePath]);
-      }
-
       try {
         str = fs.readFileSync(filePath).toString('utf-8');
       } catch (err) {
@@ -117,9 +74,7 @@ export default class ElectronAppFileStorage {
       }
 
       try {
-        this._cache[filePath] = JSON.parse(str);
-
-        resolve(this._cache[filePath]);
+        resolve(JSON.parse(str));
       } catch (err) {
         this.logger.error(err);
 
@@ -130,13 +85,11 @@ export default class ElectronAppFileStorage {
 
 
 
-  _saveDiary (filePath, json) {
-    this.logger.debug('save file', filePath);
-
+  saveDiary (filePath, data) {
     return new Promise((resolve, reject) => {
       var str;
       try {
-        str = JSON.stringify(json);
+        str = JSON.stringify(data);
       } catch (err) {
         this.logger.error(err);
 
@@ -150,9 +103,6 @@ export default class ElectronAppFileStorage {
 
         return reject('Unable to write file.');
       }
-
-      // overwrite cached data
-      this._cache[filePath] = json;
 
       resolve();
     });
