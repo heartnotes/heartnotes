@@ -36,7 +36,8 @@ module.exports = React.createClass({
           <div className="input-fields row">
             <NewPasswordInput 
               onChange={this._setPassword} 
-              requiredStrength={1} />
+              requiredStrength={1}
+              tabIndex={1} />
           </div>
           <div className="action row">
             <CreateDiaryProgressPopup {...this.props}>
