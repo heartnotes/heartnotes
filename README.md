@@ -26,12 +26,6 @@ _NOTE: Remove `--debug` command-line argument to enable JS and CSS minification 
 
 ## License
 
-**Name and logo**
-
-Copyright (C) 2015 [Ramesh Nair](https://hiddentao.com). All Rights Reserved.
-
-**Code**
-
 Copyright (C) 2015 [Ramesh Nair](https://hiddentao.com)
 
 This program is free software: you can redistribute it and/or modify
