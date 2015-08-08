@@ -230,8 +230,11 @@ export default class UserStore extends Store {
           });
       })
       .then(function allDone() {
-        self.setState({
-          nowChangingPassword: false
+        self.setStateAndChangeAfterDelay({
+          nowChangingPassword: false,
+          userAlertMsg: 'Password updated!',
+        }, {
+          userAlertMsg: null,
         });
       })      
       .catch(function(err){

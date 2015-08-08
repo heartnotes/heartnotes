@@ -244,5 +244,24 @@ $menu
     padding 4px 8px    
         
 
-      
+.notification
+  position fixed
+  top 10px
+  right 10px
+  padding 10px
+  font-size 1rem
+  z-index 99999999
+  border-radius 10px
+  background-color rgb(100, 100, 100, 0.7)
+  color $white
+  transition 0.5s
+  
+  &.on
+    opacity 1
+    
+  &.off
+    opacity 0
+  
+  
+
 

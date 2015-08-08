@@ -4,6 +4,7 @@ import FluxComponent from 'flummox/component';
 var MainMenu = require('./components/mainMenu'),
   SubMenu = require('./components/subMenu'),
   WelcomeView = require('./pages/welcome/index'),
+  UserAlert = require('./components/userAlert'),
   Logo = require('./components/logo');
 
 
@@ -19,6 +20,7 @@ module.exports = React.createClass({
 
     return (
       <div id="layout">
+        <UserAlert msg={this.props.userAlertMsg} />
         {content}
       </div>
     );    

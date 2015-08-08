@@ -1,6 +1,6 @@
-# Hearnote
+# Hearnotes
 
-Personal, encrypted diary.
+Personal diary app - cross-platform, offline, encrypted.
 
 ## Development
 
@@ -15,10 +15,10 @@ $ npm install
 Run dev server (http://localhost:3000):
 
 ```bash
-$ gulp
+$ gulp --debug
 ```
 
-_NOTE: Add `--debug` command-line to prevent JS and CSS minification during build._
+_NOTE: Remove `--debug` command-line argument to enable JS and CSS minification during build._
 
 ## Production
 
@@ -29,7 +29,6 @@ Setup:
 ```js
 $ npm install -g electron-prebuilt
 ```
-
 
 
 
