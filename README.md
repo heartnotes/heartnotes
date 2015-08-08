@@ -1,4 +1,4 @@
-# Hearnotes
+# Heartnotes
 
 Personal diary app - cross-platform, offline, encrypted.
 
@@ -9,6 +9,7 @@ Personal diary app - cross-platform, offline, encrypted.
 Setup:
 
 ```bash
+$ npm install -g electron-prebuilt
 $ npm install
 ```
 
@@ -20,19 +21,16 @@ $ gulp --debug
 
 _NOTE: Remove `--debug` command-line argument to enable JS and CSS minification during build._
 
-## Production
-
-We deploy it as an Electron.js app.
-
-Setup:
-
-```js
-$ npm install -g electron-prebuilt
-```
 
 
 
 ## License
+
+**Name and logo**
+
+Copyright (C) 2015 [Ramesh Nair](https://hiddentao.com). All Rights Reserved.
+
+**Code**
 
 Copyright (C) 2015 [Ramesh Nair](https://hiddentao.com)
 
