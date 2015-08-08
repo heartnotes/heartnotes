@@ -127,6 +127,14 @@ export default class StorageManager {
   }
 
 
+
+  exportToFile (content) {
+   this.logger.info('export to file', content.length);
+
+   return this.fileStorage.exportToFile(content);
+  }
+
+
   _setLastAccessedDiaryDetails (diaryName) {
     this.browserStorage.set(LAST_ACCESSED_DIARY_KEY, {
       name: diaryName,

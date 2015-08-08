@@ -1,11 +1,15 @@
 "use strict";
 
-var _ = require('lodash');
+var _ = require('lodash'),
+  React = require('react');
 
 import { Timer } from 'clockmaker';
 
 var Store = require('./store'),
   Crypto = require('./crypto/index');
+
+
+var ExportedEntries = require('../ui/components/exportedEntries');
 
 
 
@@ -21,6 +25,7 @@ export default class UserStore extends Store {
       derivedKeys: null,
       entriesLoaded: false,
       nowCreatingDiary: false,
+      nowExportingData: false,
       nowOpeningDiary: false,
       nowDerivingKeys: false,
       nowChangingPassword: false,
@@ -64,11 +69,14 @@ export default class UserStore extends Store {
               throw new Error('Please choose a location to save the file in');
             }
 
-            self.setState({
+            self.setStateAndChangeAfterDelay({
               nowDerivingKeys: false,
               nowCreatingDiary: false,
               dataFileName: fileName,
               derivedKeys: derivedKeyData,
+              userAlertMsg: 'Diary created!',
+            }, {
+              userAlertMsg: null,
             });
           });
       })
@@ -252,6 +260,55 @@ export default class UserStore extends Store {
 
 
 
+
+  exportData (params) {
+    var self = this;
+
+    self._resetErrorStates();
+
+    self.logger.info('export data');
+
+    self.setState({
+      nowExportingData: true,
+    });
+
+    let entries = this.flux.getStore('entries').state.entries;
+
+    let content = React.renderToString(
+      <ExportedEntries entries={entries} />
+    );
+
+    self.storage.exportToFile(content)
+      .then(function exported(filePath) {
+        // user cancelled?
+        if (!filePath) {
+          return self.setState({
+            nowExportingData: false,            
+          });
+        }
+
+        self.setStateAndChangeAfterDelay({
+          nowExportingData: false,
+          userAlertMsg: 'Data exported!',
+        }, {
+          userAlertMsg: null,
+        });
+      })
+      .catch(function(err) {
+        self.logger.error(err.stack);
+
+        self.setStateAndChangeAfterDelay({
+          nowExportingData: false,
+          exportDataError: err
+        }, {
+          exportDataError: null
+        });
+      });
+  }
+
+
+
+
   loadEntries () {
     var self = this;
 
@@ -425,6 +482,7 @@ export default class UserStore extends Store {
       nowOpeningDiary: false,
       nowCreatingDiary: false,
       nowChangingPassword: false,
+      nowExportingData: false,
     });
 
     this._resetErrorStates();
@@ -439,6 +497,7 @@ export default class UserStore extends Store {
       loadEntriesError: null,
       saveEntriesError: null,
       changePasswordError: null,
+      exportDataError: null,
     });
   }
 }

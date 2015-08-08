@@ -16,6 +16,43 @@ export default class ElectronAppFileStorage {
     return 'file';
   }
 
+
+  exportToFile (content) {
+    this.logger.debug('export to file', content.length);
+
+    return new Promise((resolve, reject) => {
+      var filePath;
+
+      try {
+        filePath = ipc.sendSync('synchronous-message', 'saveNewExportFile');
+      } catch (err) {
+        this.logger.error(err);
+
+        return reject('Save file dialog failed');
+      }
+
+      if (!filePath) {
+        this.logger.debug('file dialog cancelled');
+
+        return resolve(null);
+      }
+
+      this.logger.info('file to create', filePath);
+
+      try {
+        fs.writeFileSync(filePath, content);
+
+        resolve(filePath);
+      } catch (err) {
+        this.logger.error(err);
+
+        return reject('Unable to write HTML file.');
+      }
+    });
+  }
+
+
+
   createNewDiary (data) {
     this.logger.debug('create new diary', data);
 

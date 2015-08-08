@@ -13,7 +13,7 @@ var Logger = require('./utils/logger');
 var Layout = require('./ui/layout');
 var EntriesView = require('./ui/pages/entries');
 var NewEntry = require('./ui/pages/newEntry');
-var SettingsView = require('./ui/pages/settingsView');
+var SettingsView = require('./ui/pages/settings/index');
 
 
 

@@ -87,6 +87,24 @@ ipc.on('synchronous-message', function(event, arg) {
       }
 
       break;
+
+    case 'saveNewExportFile':
+      console.log('Choose export file');
+
+      try {
+        event.returnValue = dialog.showSaveDialog(mainWindow, { 
+          title: 'Export to file',
+          filters: [
+            { name: 'HTML', extensions: ['html'] },
+          ],
+        });
+      } catch (err) {
+        console.error(err);
+
+        event.returnValue = null;
+      }
+
+      break;
   }
 });
 

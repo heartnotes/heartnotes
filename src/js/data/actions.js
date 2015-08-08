@@ -76,6 +76,11 @@ class UserActions extends Actions {
   }
 
 
+  exportData () {
+    this.logger.debug('exportData');
+
+    return {};
+  }
 }
 
 

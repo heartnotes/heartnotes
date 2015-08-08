@@ -3,10 +3,10 @@ var _ = require('lodash'),
 
 var moment = require('moment');
 
-var Button = require('../components/button'),
-  ChangePasswordProgressPopup = require('../components/changePasswordProgressPopup'),
-  PasswordInput = require('../components/passwordInput'),
-  NewPasswordInput = require('../components/newPasswordInput');
+var Button = require('../../components/button'),
+  ChangePasswordProgressPopup = require('../../components/changePasswordProgressPopup'),
+  PasswordInput = require('../../components/passwordInput'),
+  NewPasswordInput = require('../../components/newPasswordInput');
 
 
 module.exports = React.createClass({
@@ -28,8 +28,9 @@ module.exports = React.createClass({
     }
 
     return (
-      <div className="settingsView">
-        <h1>Change password</h1>
+      <div className="changePassword">
+        
+        <h2>Change password</h2>
         <form onSubmit={this._changePassword}>
           <div className="field row">
             <PasswordInput 
@@ -53,6 +54,7 @@ module.exports = React.createClass({
             </ChangePasswordProgressPopup>
           </div>
         </form>
+        
       </div>
     );
   },
@@ -64,7 +66,7 @@ module.exports = React.createClass({
         oldPassword: null,
         newPassword: null,
       });
-      
+
       this.refs.newPassword.clear();
     }
   },
