@@ -12,7 +12,7 @@ module.exports = React.createClass({
     showToggleButton: React.PropTypes.bool,
     password : React.PropTypes.string,
     onChange : React.PropTypes.func,
-    tabIndex: React.PropTypes.string,
+    tabIndex: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
@@ -21,7 +21,7 @@ module.exports = React.createClass({
       showToggleButton: false,
       password: '',
       onChange : null,
-      tabIndex: "",
+      tabIndex: 0,
     };
   },
 
@@ -59,9 +59,9 @@ module.exports = React.createClass({
         <input type={inputType}
           ref="input"
           onInput={this._onChange} 
-          defaultValue={this.props.password} 
+          value={this.props.password} 
           placeholder={this.props.placeholder}
-          tabIndex={this.props.tabIndex} />
+          tabIndex={'' + this.props.tabIndex} />
         {toggleElem}
       </div>
     )

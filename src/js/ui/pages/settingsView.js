@@ -35,15 +35,17 @@ module.exports = React.createClass({
             <PasswordInput 
               password={this.state.oldPassword} 
               placeholder="Current password"
-              onChange={this._setOldPassword} />
+              onChange={this._setOldPassword}
+              tabIndex={1} />
           </div>
           <div className="input-fields row">
             <NewPasswordInput 
-              password={this.state.newPassword} 
+              ref="newPassword"
               passwordPlaceholder="New password"
               confirmPlaceholder="Confirm new password"
               onChange={this._setNewPassword} 
-              requiredStrength={1} />
+              requiredStrength={1} 
+              tabIndex={2} />
           </div>
           <div className="action row">
             <ChangePasswordProgressPopup {...this.props}>
@@ -59,9 +61,11 @@ module.exports = React.createClass({
   componentDidUpdate: function(oldProps) {
     if (oldProps.nowChangingPassword && !this.props.nowChangingPassword && !this.props.changePasswordError) {
       this.setState({
-        newPassword: null,
         oldPassword: null,
+        newPassword: null,
       });
+      
+      this.refs.newPassword.clear();
     }
   },
 

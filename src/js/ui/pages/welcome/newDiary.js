@@ -35,7 +35,6 @@ module.exports = React.createClass({
         <form onSubmit={this._savePassword}>
           <div className="input-fields row">
             <NewPasswordInput 
-              password={this.state.password} 
               onChange={this._setPassword} 
               requiredStrength={1} />
           </div>

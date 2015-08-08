@@ -12,6 +12,7 @@ module.exports = React.createClass({
     requiredStrength: React.PropTypes.number,
     passwordPlaceholder: React.PropTypes.string,
     confirmPlaceholder: React.PropTypes.string,
+    tabIndex: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
@@ -20,6 +21,7 @@ module.exports = React.createClass({
       requiredStrength: 2,
       passwordPlaceholder: 'Enter password',
       confirmPlaceholder: 'Confirm password',
+      tabIndex: 0,
     };
   },
 
@@ -43,7 +45,7 @@ module.exports = React.createClass({
             password={this.state.password} 
             onChange={this._onChange}
             showToggleButton={true} 
-            tabIndex="1" />
+            tabIndex={this.props.tabIndex} />
           <Collapsible normalHeight="2rem" expand={showStrengthMeter}>
             {this._buildStrengthMeter()}
           </Collapsible>
@@ -53,7 +55,7 @@ module.exports = React.createClass({
             placeholder={this.props.confirmPlaceholder}
             password={this.state.passwordConfirm} 
             onChange={this._onConfirmChange} 
-            tabIndex="2" />
+            tabIndex={this.props.tabIndex + 1} />
         </div>
       </div>
     )
@@ -76,6 +78,11 @@ module.exports = React.createClass({
     }
   },
 
+
+
+  clear: function() {
+    this.setState(this.getInitialState());
+  },
 
 
   _buildStrengthMeter: function() {
