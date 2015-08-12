@@ -74,7 +74,7 @@ module.exports = React.createClass({
 
         this.props.flux.getActions('entry').update(entryId, this.editor.getData());
       }, this),
-      1000
+      500
     );
 
     this.editor.on('change', this._changeHandler);

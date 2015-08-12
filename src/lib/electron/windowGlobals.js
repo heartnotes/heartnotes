@@ -2,4 +2,5 @@
 if ('undefined' !== typeof process && 'undefined' !== typeof 'require') {
   window.ipc = require('ipc');
   window.fs = require('fs');
+  window.shell = require('shell');
 }

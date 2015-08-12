@@ -26,12 +26,18 @@ module.exports = React.createClass({
   render: function() { 
     return (
       <div className="welcomeView">
-        <Logo />
+        <Logo/>
         <div className="step-container">
           {this._buildSteps()}
         </div>
+        <footer><a href="#" onClick={this._goToHomepage}>http://heartnot.es</a></footer>
       </div>
     );
+  },
+
+
+  _goToHomepage: function() {
+    require("shell").openExternal("http://heartnot.es");
   },
 
 

@@ -20,6 +20,7 @@ if options.debugBuild
 paths =
   root: __dirname
   npm: path.join(__dirname, 'node_modules')
+  assets: path.join(__dirname, 'assets')
   src:
     stylus: path.join(__dirname, 'src', 'stylus')
     js: path.join(__dirname, 'src', 'js')

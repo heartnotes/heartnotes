@@ -2,6 +2,10 @@
 
 Personal diary app - cross-platform, offline, encrypted.
 
+Features:
+
+* 
+
 ## Development
 
 **Node.js 0.12+ required.**
@@ -21,6 +25,14 @@ $ gulp --debug
 
 _NOTE: Remove `--debug` command-line argument to enable JS and CSS minification during build._
 
+
+## Production build
+
+```bash
+$ gulp electron-build
+```
+
+You will find the `Heartnotes.app` OS X app in `build-electron/relese/...`
 
 
 

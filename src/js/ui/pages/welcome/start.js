@@ -58,6 +58,15 @@ module.exports = React.createClass({
           </form>
         </div>
       );
+    } else {
+      content = (
+        <div className="open-existing">
+          <p>
+            <label>Open existing diary</label>
+            {this._buildChooseAnotherDiaryButton()}
+          </p>
+        </div>
+      );
     }
 
 
@@ -107,7 +116,7 @@ module.exports = React.createClass({
               ref="chooseDiaryButton"
               icon="folder-open"
               onClick={this._chooseDiary}
-              tooltip="Choose a different diary" />
+              tooltip="Choose a diary" />
           </Popup>
         </span>
       );
