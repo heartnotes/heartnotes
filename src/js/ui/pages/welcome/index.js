@@ -1,5 +1,5 @@
 var _ = require('lodash');
-
+var packageJson = require('../../../../../package.json');
 var React = require('react');
 
 import FluxComponent from 'flummox/component';
@@ -30,7 +30,10 @@ module.exports = React.createClass({
         <div className="step-container">
           {this._buildSteps()}
         </div>
-        <footer><a href="#" onClick={this._goToHomepage}>About</a></footer>
+        <footer>
+          <span className="version">v{packageJson.version}</span>
+          <a href="#" onClick={this._goToHomepage}>About</a>
+        </footer>
       </div>
     );
   },

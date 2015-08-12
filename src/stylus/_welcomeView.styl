@@ -4,17 +4,26 @@
   padding-top 5rem
   background-color $black
   color $white
+  overflow-x hidden
   
   footer
     position fixed
     bottom 8px
     right 8px
-    text-transform uppercase
+    color $gray-dark
+    font-size 0.7rem
+
+    span.version
+      &:after
+        content '/'
+        color $gray-darker
+        padding 0 0.5em
+        
     a
       text-decoration none
-      border none
+      text-transform uppercase
       color $gray-dark
-      font-size 0.7rem
+      border none
   
   .logo
     margin 0 auto 2rem
