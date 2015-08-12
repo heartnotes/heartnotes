@@ -17,7 +17,10 @@ module.exports = (paths, options = {}) ->
       .on 'error', (err) ->
         gutil.log(err.stack)
       .pipe source('app.js')
-      .pipe gulpIf(!options.debugBuild, uglify())
+      .pipe gulpIf(!options.debugBuild, uglify({
+        # for now don't mangle because it screws up use of sjcl inside webworker methods
+        mangle: false
+      }))
       .pipe gulp.dest(paths.build.js)
 
   return -> 

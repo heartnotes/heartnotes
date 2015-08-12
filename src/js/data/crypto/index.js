@@ -8,8 +8,6 @@ var sjcl = require('./sjcl');
 
   
 
-
-
 /**
  * When deriving key from password keep iterating for this long to ensure a 
  * key of sufficient strength is derived.

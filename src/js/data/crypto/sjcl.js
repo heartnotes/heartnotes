@@ -1,6 +1,5 @@
 var sjcl = module.exports = require('sjcl');
 
-
 /**
  * Fix for https://github.com/bitwiseshiftleft/sjcl/issues/131
  *

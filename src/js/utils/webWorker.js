@@ -34,7 +34,13 @@ export default class WebWorker {
         }
       });
 
-      self.worker.apply(self.worker, args);
+      try {
+        self.worker.apply(self.worker, args);
+      } catch (err) {
+        self.logger.error(err);
+
+        reject(err);
+      }
     });
   }
 }

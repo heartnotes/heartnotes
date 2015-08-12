@@ -30,7 +30,7 @@ module.exports = React.createClass({
         <div className="step-container">
           {this._buildSteps()}
         </div>
-        <footer><a href="#" onClick={this._goToHomepage}>http://heartnot.es</a></footer>
+        <footer><a href="#" onClick={this._goToHomepage}>About</a></footer>
       </div>
     );
   },
