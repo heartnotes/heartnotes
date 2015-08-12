@@ -29,7 +29,7 @@ _NOTE: Remove `--debug` command-line argument to enable JS and CSS minification 
 ## Production build
 
 ```bash
-$ gulp electron-build
+$ gulp release
 ```
 
 You will find the `Heartnotes.app` OS X app in `build-electron/relese/...`

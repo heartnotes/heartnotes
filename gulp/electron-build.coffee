@@ -6,35 +6,30 @@ packageJson = require '../package.json'
 mergeStream = require 'merge-stream'
 
 module.exports = (paths, options = {}) ->
-  return {
-    deps: ['assets']
-    task: () ->
-      del.sync [ paths.build.electron ]
+  () ->
+    s2 = gulp.src [
+      path.join(paths.src.lib, 'electron', 'electronApp.js')
+      path.join(paths.root, 'package.json')
+    ]
+      .pipe gulp.dest(path.join(paths.build.html))
 
-      s2 = gulp.src [
-        path.join(paths.src.lib, 'electron', 'electronApp.js')
-        path.join(paths.root, 'package.json')
-      ]
-        .pipe gulp.dest(path.join(paths.build.html))
-
-      s2
-        .pipe electron({
-          src: paths.build.html
-          packageJson: packageJson
-          release: path.join(paths.build.electron, 'release')
-          cache: path.join(paths.build.electron, 'cache')
-          version: 'v0.30.4'
-          packaging: false
-          platforms: ['darwin-x64']
-          platformResources:
-            darwin:
-                CFBundleDisplayName: packageJson.name
-                CFBundleIdentifier: packageJson.name
-                CFBundleName: packageJson.name
-                CFBundleVersion: packageJson.version
-                icon: path.join(paths.assets, 'logo.icns')
-        })
-        .pipe gulp.dest("")
-        
-  }
+    s2
+      .pipe electron({
+        src: paths.build.html
+        packageJson: packageJson
+        release: path.join(paths.build.electron, 'release')
+        cache: path.join(paths.build.electron, 'cache')
+        version: 'v0.30.4'
+        packaging: true
+        asar: false
+        platforms: ['darwin-x64']
+        platformResources:
+          darwin:
+              CFBundleDisplayName: packageJson.name
+              CFBundleIdentifier: packageJson.name
+              CFBundleName: packageJson.name
+              CFBundleVersion: packageJson.version
+              icon: path.join(paths.assets, 'logo.icns')
+      })
+      .pipe gulp.dest("")
 

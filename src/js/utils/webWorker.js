@@ -1,7 +1,15 @@
 "use strict";
 
+var path = require('path');
 
-operative.setBaseURL(location.origin + '/js');
+let rootDomain = location.origin;
+
+if (0 === location.protocol.indexOf('file')) {
+  rootDomain += path.dirname(location.pathname);
+}
+
+operative.setBaseURL(rootDomain + '/js');
+console.log('importScripts base URL', operative.getBaseURL());
 
 
 export default class WebWorker {

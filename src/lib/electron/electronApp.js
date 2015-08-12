@@ -34,7 +34,7 @@ app.on('ready', function() {
   mainWindow.loadUrl(url);
 
   // Open the devtools.
-  // mainWindow.openDevTools();
+  mainWindow.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
@@ -47,14 +47,14 @@ app.on('ready', function() {
 
 
 var FILTERS = [
-  { name: 'Heartnotes diary files', extensions: ['heartnotes'] },
+  { name: 'Heartnotes diary files ' + __dirname, extensions: ['heartnotes'] },
 ];
 
 ipc.on('synchronous-message', function(event, arg) {
   switch (arg) {
 
     case 'openFile':
-      console.log('Choose file');
+      console.log('Open file');
 
       try {
         event.returnValue = dialog.showOpenDialog(mainWindow, { 
@@ -73,7 +73,7 @@ ipc.on('synchronous-message', function(event, arg) {
       break;
 
     case 'saveNewFile':
-      console.log('Choose file');
+      console.log('Save file');
 
       try {
         event.returnValue = dialog.showSaveDialog(mainWindow, { 
