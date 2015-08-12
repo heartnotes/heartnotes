@@ -52,7 +52,7 @@ export default class UserStore extends Store {
 
     var {password} = params;
 
-    self.logger.info('create new datafile', password);
+    self.logger.info('create new datafile');
 
     self.setState({
       nowDerivingKeys: true,
@@ -132,7 +132,7 @@ export default class UserStore extends Store {
 
     var {filePath, password} = params;
 
-    self.logger.info('open datafile', filePath, password);
+    self.logger.info('open datafile', filePath);
 
     self.setState({
       nowOpeningDiary: true,

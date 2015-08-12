@@ -73,11 +73,6 @@ ul.entryList
       
     &.entry
       padding 0.5em
-      display flex
-      flex-direction row
-      justify-content flex-start
-      align-items stretch
-      flex-wrap nowrap
       transition background-color 0.3s linear
       color $gray-dark
       
@@ -93,19 +88,20 @@ ul.entryList
         background-color $gray-blue
         color $white
       
+      .text, .date
+        display inline-block
+        height 50px
+
       .text
         overflow hidden
-        max-height 3em
+        line-height 1.2em
+        width calc(100% - 2.5rem)
 
       .date
+        vertical-align top
+        width 2.5rem
         font-size 1.4rem  
-        padding 0 0.7em 0 0.4em
         font-weight bold
-      
-        display flex
-        flex-direction column
-        justify-content center
-        align-items center
         
 
 .password-input

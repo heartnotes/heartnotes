@@ -1,4 +1,5 @@
 var React = require('react');
+var Logger = require('logarama');
 var Router = require('react-router');
 var $ = require('jquery');
 
@@ -9,7 +10,6 @@ import FluxComponent from 'flummox/component';
 import FluxManager from './data/index';
 
 
-var Logger = require('./utils/logger');
 var Layout = require('./ui/layout');
 var EntriesView = require('./ui/pages/entries');
 var NewEntry = require('./ui/pages/newEntry');
@@ -20,7 +20,9 @@ var SettingsView = require('./ui/pages/settings/index');
 
 var App = React.createClass({
   getInitialState: function() {
-    var logger = new Logger(null, 'info');
+    var logger = new Logger({
+      minLevel: 'info'
+    });
 
     return {
       logger: logger,
