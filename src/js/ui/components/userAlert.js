@@ -6,6 +6,14 @@ var React = require('react'),
 module.exports = React.createClass({
   propType: {
     msg: React.PropTypes.string,
+    type: React.PropTypes.string,
+  },
+
+  getDefaultProps: function() {
+    return {
+      msg: null,
+      type: 'info',
+    };
   },
 
   render: function() {
@@ -17,6 +25,8 @@ module.exports = React.createClass({
 
     classes.on = !!msg;
     classes.off = !classes.on;
+
+    classes[this.props.type] = true;
 
     return (
       <div className={Classnames(classes)}>{msg}</div>

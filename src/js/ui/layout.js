@@ -20,7 +20,7 @@ module.exports = React.createClass({
 
     return (
       <div id="layout">
-        <UserAlert msg={this.props.userAlertMsg} />
+        <UserAlert msg={this.props.userAlertMsg} type={this.props.userAlertType} />
         {content}
       </div>
     );    

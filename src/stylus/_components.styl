@@ -248,10 +248,16 @@ $menu
   font-size 1rem
   z-index 99999999
   border-radius 10px
-  background-color rgb(100, 100, 100, 0.7)
-  color $white
   transition 0.5s
   
+  &.info
+    background-color rgb(100, 100, 100, 0.7)
+    color $white
+  
+  &.error
+    background-color rgb(255, 0, 0, 0.7)
+    color $white
+
   &.on
     opacity 1
     

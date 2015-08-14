@@ -69,15 +69,14 @@ export default class UserStore extends Store {
               throw new Error('Please choose a location to save the file in');
             }
 
-            self.setStateAndChangeAfterDelay({
+            self.setState({
               nowDerivingKeys: false,
               nowCreatingDiary: false,
               dataFileName: fileName,
               derivedKeys: derivedKeyData,
-              userAlertMsg: 'Diary created!',
-            }, {
-              userAlertMsg: null,
             });
+
+            self._showAlert('Diary created!');
           });
       })
       .catch(function(err) {
@@ -92,6 +91,7 @@ export default class UserStore extends Store {
         });
       });
   }
+
 
 
 
@@ -238,12 +238,11 @@ export default class UserStore extends Store {
           });
       })
       .then(function allDone() {
-        self.setStateAndChangeAfterDelay({
+        self.State({
           nowChangingPassword: false,
-          userAlertMsg: 'Password updated!',
-        }, {
-          userAlertMsg: null,
         });
+
+        self._showAlert('Password updated!');
       })      
       .catch(function(err){
         self.logger.error(err.stack);
@@ -287,12 +286,11 @@ export default class UserStore extends Store {
           });
         }
 
-        self.setStateAndChangeAfterDelay({
+        self.setState({
           nowExportingData: false,
-          userAlertMsg: 'Data exported!',
-        }, {
-          userAlertMsg: null,
         });
+
+        self._showAlert('Data exported!');
       })
       .catch(function(err) {
         self.logger.error(err.stack);
@@ -468,9 +466,23 @@ export default class UserStore extends Store {
         }, {
           saveEntriesError: null
         });
+
+        self._showAlert('Error saving entries!', 'error');
       });
   }
 
+
+  _showAlert (msg, type='info') {
+    msg = '' + msg;
+
+    this.setStateAndChangeAfterDelay({
+      userAlertMsg: msg,
+      userAlertType: type,
+    }, {
+      userAlertMsg: null,
+      userAlertType: null,
+    });
+  }
 
 
   _resetState () {

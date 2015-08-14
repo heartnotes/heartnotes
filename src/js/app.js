@@ -37,6 +37,7 @@ var App = React.createClass({
           entriesLoaded: !!store.state.entriesLoaded,
           passwordEntered: !!store.state.derivedKeys,
           userAlertMsg: store.state.userAlertMsg,
+          userAlertType: store.state.userAlertType,
         }),
       }}>
         <Layout {...this.props}>
