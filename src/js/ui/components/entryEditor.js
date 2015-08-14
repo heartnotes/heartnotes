@@ -67,6 +67,13 @@ module.exports = React.createClass({
       ],
     });
 
+    // https://github.com/hiddentao/heartnotes/issues/3
+    // this.editor.on('instanceReady', () => {
+    //   console.log(this.editor.document.$.inputEncoding);
+    //   console.log(this.editor.document.$.characterSet);
+    //   console.log(this.editor.document.$.charset);
+    // });
+
     // save content every second
     this._changeHandler = _.debounce(
       _.bind(function() {
@@ -78,7 +85,6 @@ module.exports = React.createClass({
     );
 
     this.editor.on('change', this._changeHandler);
-
 
     this._setBody();
   },

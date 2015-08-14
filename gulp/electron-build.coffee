@@ -7,6 +7,8 @@ mergeStream = require 'merge-stream'
 
 module.exports = (paths, options = {}) ->
   () ->
+    del.sync [ path.join(paths.build.electron, 'release') ]
+
     s2 = gulp.src [
       path.join(paths.src.lib, 'electron', 'electronApp.js')
       path.join(paths.root, 'package.json')
