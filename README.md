@@ -4,7 +4,14 @@ Personal diary app - cross-platform, offline, encrypted.
 
 Features:
 
-* 
+* OS X desktop app
+* Completely offline, password is not stored anywhere
+* Rock-solid encryption (AES-256)
+* Timeline view for easy access to past entries
+* Export diary to unencrypted HTML file
+
+Fetch the latest release from [http://heartnot.es](http://heartnot.es).
+
 
 ## Development
 
@@ -26,13 +33,14 @@ $ gulp --debug
 _NOTE: Remove `--debug` command-line argument to enable JS and CSS minification during build._
 
 
+
 ## Production build
 
 ```bash
 $ gulp release
 ```
 
-You will find the `Heartnotes.app` OS X app in `build-electron/relese/...`
+You will find the `Heartnotes.app` OS X executable in `build-electron/relese/...`
 
 
 
