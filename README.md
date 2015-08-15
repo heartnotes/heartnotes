@@ -10,7 +10,7 @@ Features:
 * Timeline view for easy access to past entries
 * Export diary to unencrypted HTML file
 
-Fetch the latest release from [http://heartnot.es](http://heartnot.es).
+Fetch the latest release from [https://heartnot.es](https://heartnot.es).
 
 
 ## Development
