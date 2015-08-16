@@ -4,7 +4,7 @@ Personal diary app - cross-platform, offline, encrypted.
 
 Features:
 
-* OS X desktop app
+* OS X desktop app _(Windows + Linux coming soon)_
 * Completely offline, password is not stored anywhere
 * Rock-solid encryption (AES-256-CBC)
 * Timeline view for easy access to past entries
