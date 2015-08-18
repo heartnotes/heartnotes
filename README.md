@@ -7,10 +7,11 @@ Features:
 * OS X desktop app _(Windows + Linux coming soon)_
 * Completely offline, password is not stored anywhere
 * Rock-solid encryption (AES-256-CBC)
+* Auto-save diary as you type
 * Timeline view for easy access to past entries
-* Export diary to unencrypted HTML file
+* Export diary to readable HTML file at any time
 
-Fetch the latest release from [https://heartnot.es](https://heartnot.es).
+Fetch the latest release from [http://heartnot.es](http://heartnot.es).
 
 
 ## Encryption details
