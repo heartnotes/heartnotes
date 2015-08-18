@@ -238,7 +238,7 @@ export default class UserStore extends Store {
           });
       })
       .then(function allDone() {
-        self.State({
+        self.setState({
           nowChangingPassword: false,
         });
 

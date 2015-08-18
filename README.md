@@ -13,8 +13,11 @@ Features:
 
 Fetch the latest release from [http://heartnot.es](http://heartnot.es).
 
+## Technology
 
-## Encryption details
+Built using React.js + Flummox + Electron.js.
+
+### Encryption details
 
 This uses the [SJCL library](https://crypto.stanford.edu/sjcl/) for AES-256 
 encryption as well as for the PRNG algorithm to generate random seed data and 
