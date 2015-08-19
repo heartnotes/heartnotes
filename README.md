@@ -6,7 +6,7 @@ Features:
 
 * OS X desktop app _(Windows + Linux coming soon)_
 * Completely offline, password is not stored anywhere
-* Rock-solid encryption (AES-256-CBC)
+* Rock-solid encryption (AES-256-GCM)
 * Auto-save diary as you type
 * Timeline view for easy access to past entries
 * Export diary to readable HTML file at any time
@@ -27,7 +27,7 @@ A new encryption key is derived from the user's password as follows:
 
 * Use Fortuna PRNG with multiple event inputs (mouse, keyboard, accelerometer etc) to generate a salt.
 * Use salt and password as inputs to PBKDF2-SHA512 to generate a 512-bit key. _(The number of iterations of PBKDF2 is set such that generation takes 1 second on the user's machine- on a Macbook Air 2012 this easily results in >10000 iterations._
-* Use the first 256 bits of the key with AES-256-CBC + random IV to encrypt data and store it in the diary file.
+* Use the first 256 bits of the key with AES-256-GCM + random IV to encrypt data and store it in the diary file.
 * Store the input salt and PBKDF2 iteration count in the user's diary file.
 
 The next time the user enters the right password, we use the stored salt and 
