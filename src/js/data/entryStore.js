@@ -127,7 +127,7 @@ export default class EntryStore extends Store {
   setEntries (entries) {
     var self = this;
     
-    self.logger.info('set entries', entries.length);
+    self.logger.info('set entries', _.keys(entries).length);
 
     self.setState({
       entries: entries,

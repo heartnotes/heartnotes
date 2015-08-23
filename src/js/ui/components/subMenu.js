@@ -3,8 +3,7 @@ var React = require('react');
 var Router = require('react-router');
 var { Link, Navigation } = Router;
 
-var IconButton = require('./iconButton'),
-  Tooltip = require('./tooltip');
+var IconButton = require('./iconButton');
 
 
 

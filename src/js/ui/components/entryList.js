@@ -30,7 +30,9 @@ module.exports = React.createClass({
     var listItems = [],
       lastMonthYear = moment(0);
 
-    _.forEach(self.props.entries, function(entry) {
+    var entries = this._getSortedEntries();
+
+    _.forEach(entries, function(entry) {
       var date = moment(entry.ts);
 
       // if month different to current month then set as current month and display it
@@ -52,8 +54,9 @@ module.exports = React.createClass({
       }
 
       var entryText = FormatUtils.htmlToStr(entry.body),
-        pruned = _.trunc(entryText, self.props.truncLength),
-        selectedClass = (self.props.selected === entry.id ? 'selected': '');
+        pruned = _.trunc(entryText, self.props.truncLength);
+
+      var selectedClass = (self.props.selected === entry.id ? 'selected': '');
 
       listItems.push(
         <li key={entry.id} 
@@ -81,6 +84,22 @@ module.exports = React.createClass({
         {listItems}
       </ul>
     );
+  },
+
+  _getSortedEntries: function() {
+    var entries = _.values(this.props.entries || {});
+
+    entries.sort(function(a, b) {
+      if (a.ts === b.ts) {
+        return 0;
+      } else if (a.ts < b.ts) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+
+    return entries;
   },
 
   _onSelect: function(e) {

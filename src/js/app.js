@@ -52,7 +52,8 @@ var App = React.createClass({
 
 var routes = (
   <Route handler={App}>
-    <DefaultRoute name="entries" path="/entries/:entryId?" handler={EntriesView} />
+    <DefaultRoute handler={EntriesView} />
+    <Route name="entries" path="/entries/:entryId?" handler={EntriesView} />
     <Route name="newEntry" path="/newEntry" handler={NewEntry} />
     <Route name="settings" path="/settings" handler={SettingsView} />
   </Route>
