@@ -10,6 +10,9 @@ var Detect = require('../../../utils/detect'),
   OpenDiaryProgressPopup = require('../../components/openDiaryProgressPopup');
 
 
+
+
+
 module.exports = React.createClass({
   propTypes: {
     showStep: React.PropTypes.func.isRequired,

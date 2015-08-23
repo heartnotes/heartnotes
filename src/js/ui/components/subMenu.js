@@ -3,7 +3,8 @@ var React = require('react');
 var Router = require('react-router');
 var { Link, Navigation } = Router;
 
-var IconButton = require('./iconButton');
+var IconButton = require('./iconButton'),
+  Tooltip = require('./tooltip');
 
 
 
@@ -20,7 +21,7 @@ module.exports = React.createClass({
       {
         icon: 'eject',
         action: this._closeDiary,
-        desc: 'Close this diary',
+        desc: 'Close diary',
       },
     ];
 

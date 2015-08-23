@@ -1,37 +1,34 @@
 var React = require('react');
 
 var Router = require('react-router');
-var { Link } = Router;
+var { Navigation } = Router;
 
-var Icon = require('./icon');
+var IconButton = require('./iconButton');
 
 
 
 module.exports = React.createClass({
-  mixins: [ Router.State ],
+  mixins: [ Navigation ],
 
   render: function() {
     var items = [
       {
         icon: 'plus',
         route: 'newEntry',
+        desc: 'Add entry',
       },
       {
-        icon: 'bars',
+        icon: 'th-list',
         route: 'entries',
+        desc: 'View timeline',
       },
     ];
 
     var primaryLinks = items.map(function(item) {
-      var activeClass = this.isActive(item.route) ? 'active' : '';
-
       return (
-        <Link className={"btn " + activeClass} to={item.route}>
-          <Icon name={item.icon} />
-        </Link>
+        <IconButton icon={item.icon} onClick={this._goRoute(item)} tooltip={item.desc} />
       );
     }, this);
-
 
 
     return (
@@ -41,5 +38,13 @@ module.exports = React.createClass({
     );
   },
 
+
+  _goRoute: function(item) {
+    var self = this;
+
+    return function() {
+      self.transitionTo(item.route);
+    };
+  },
 
 });
