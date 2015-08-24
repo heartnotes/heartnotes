@@ -9,6 +9,6 @@ module.exports = (paths, options = {}) ->
   return -> 
     gulp.src paths.files.jade
       .pipe jade(
-        pretty: !!options.debugBuild
+        pretty: !options.minifiedBuild
       )
       .pipe gulp.dest(paths.build.html)

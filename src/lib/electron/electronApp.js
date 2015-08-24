@@ -34,9 +34,6 @@ app.on('ready', function() {
 
   mainWindow.loadUrl(url);
 
-  // Open the devtools.
-  mainWindow.openDevTools();
-
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
     // Dereference the window object, usually you would store windows
@@ -49,6 +46,8 @@ app.on('ready', function() {
       label: "Application",
       submenu: [
           { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+          { type: "separator" },
+          { label: "Dev Tools", accelerator: "Alt+Command+I", click: function() { mainWindow.openDevTools(); }},
           { type: "separator" },
           { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
       ]}, {

@@ -47,10 +47,10 @@ $ npm install
 Run dev server (http://localhost:3000):
 
 ```bash
-$ gulp --debug
+$ gulp
 ```
 
-_NOTE: Remove `--debug` command-line argument to enable JS and CSS minification during build._
+_NOTE: Add `--minified` on the command-line to enable JS and CSS minification during build._
 
 
 

@@ -23,5 +23,5 @@ module.exports = (paths, options = {}) ->
         stylusCompiler.end()
       .pipe prefix()
       .pipe concat('app.css')
-      .pipe gulpIf(!options.debugBuild, minifyCss())
+      .pipe gulpIf(options.minifiedBuild, minifyCss())
       .pipe gulp.dest(paths.build.css)

@@ -7,12 +7,14 @@ args = require('yargs').argv
 
 
 options = 
-  debugBuild: if args.debug then true else false
+  minifiedBuild: !!args.minified
   dontExitOnError: false
 
 
-if options.debugBuild
-  console.log 'DEBUG mode'
+if options.minifiedBuild
+  console.log 'MINIFIED build'
+else
+  console.log 'Non-minified build'
 
 
 # paths

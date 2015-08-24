@@ -15,7 +15,7 @@ module.exports = (paths, options = {}) ->
         "#{paths.src.lib}/sjcl/sjcl-webworker-addons.js"
       ]
         .pipe concat('worker.js')
-        .pipe gulpIf(!options.debugBuild, uglify())
+        .pipe gulpIf(options.minifiedBuild, uglify())
         .pipe gulp.dest(paths.build.js)
 
     build()
