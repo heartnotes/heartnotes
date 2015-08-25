@@ -94,7 +94,7 @@ module.exports = React.createClass({
       ],
     });
 
-    // https://github.com/hiddentao/heartnotes/issues/3
+    // https://github.com/heartnotes/heartnotes/issues/3
     // this.editor.on('instanceReady', () => {
     //   console.log(this.editor.document.$.inputEncoding);
     //   console.log(this.editor.document.$.characterSet);
