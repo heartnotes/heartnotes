@@ -1,4 +1,6 @@
 @import "./ladda/_buttons"
+@import "./pikaday/_index"
+
 
 
 
@@ -21,6 +23,35 @@
         transform rotateY(180deg) scale(1.1) 
 
 
+.date-picker
+  & > button
+    background-color $white
+    color $gray-darker
+    padding 2px 5px
+    border-radius 5px
+    &:hover
+      background-color $gray-dark
+      color $white
+
+
+.overlay
+  position fixed
+  width 100vw
+  height 100vh
+  top 0
+  left 0
+  opacity 0
+  pointer-events none
+  background-color rgba(0, 0, 0, 0.8)
+  z-index 99999999
+  transition all 0.2s linear
+  
+  &.shown
+    opacity 1
+    pointer-events auto
+    
+
+
 .entryEditor
   height 100%
   width 100%
@@ -39,6 +70,11 @@
       height 100%
       display inline-block
       padding-top 0.1em
+      
+    .date-picker
+      position: relative;
+      top: -0.15em;
+      left: 0.3em;
     
   .editor
     display table-row
@@ -208,7 +244,7 @@ $progressStyles
     overflow hidden
 
 
-button
+.btn
   @extend $button
       
 
@@ -218,8 +254,7 @@ $menu
   justify-content space-around
   align-items center
 
-  .btn, button
-    @extend $button
+  .btn
     border-radius 10px
     color $gray-dark
     border-color $gray-darker

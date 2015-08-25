@@ -1,9 +1,11 @@
 var _ = require('lodash'),
   moment = require('moment'),
   React = require('react');
+  
 
-
-var DateString = require('./date');
+var DateString = require('./date'),
+  DatePicker = require('./datePicker'),
+  IconButton = require('./iconButton');
 
 
 module.exports = React.createClass({
@@ -31,6 +33,7 @@ module.exports = React.createClass({
       <div className="entryEditor">
         <div className="meta">
           <DateString format="MMMM Do" date={entryDate} />
+          <DatePicker onSelect={this._onDateChange} date={entryDate}/>
         </div>
         <div className="editor">
           <div ref="editorBody" className="body">{body}</div>
@@ -103,6 +106,7 @@ module.exports = React.createClass({
   },
 
 
+
   _setBody: function() {
     if (this.props.entry) {
       this.editor.setData(this.props.entry.body, {
@@ -110,6 +114,12 @@ module.exports = React.createClass({
       });
     }
   },
+
+
+  _onDateChange: function() {
+    console.log(arguments);
+  },
+
 
 });
 

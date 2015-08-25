@@ -37,7 +37,7 @@ module.exports = React.createClass({
         active={this.props.animActive} 
         style={this.props.animStyle}
         size={this.props.size}>
-        <button onClick={this.props.onClick} {...buttonAttrs}>
+        <button className="btn" onClick={this.props.onClick} {...buttonAttrs}>
           {this.props.children}
         </button>
       </LaddaButton>
