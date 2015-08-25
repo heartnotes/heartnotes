@@ -11,14 +11,14 @@ var FormatUtils = require('../../utils/format'),
 
 module.exports = React.createClass({
   propTypes: {
-    entries : React.PropTypes.array,
+    entries : React.PropTypes.object,
     selected: React.PropTypes.string,
     truncLength: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
-      entries : [],
+      entries : {},
       selected: null,
       truncLength: 300,
     };

@@ -1,6 +1,10 @@
 var _ = require('lodash'),
   moment = require('moment'),
   React = require('react');
+
+var { Navigation } = require('react-router');
+
+
   
 
 var DateString = require('./date'),
@@ -9,33 +13,39 @@ var DateString = require('./date'),
 
 
 module.exports = React.createClass({
+  mixins: [Navigation],
+
   propTypes: {
-    debug: React.PropTypes.bool,
-    entry: React.PropTypes.object,
+    entryId: React.PropTypes.string,
+    entryDataReady: React.PropTypes.bool,
     canDelete: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
-      debug: false,
-      entry: null,
+      entryId: null,
+      entryDataReady: false,
       canDelete: false,
     };
   },
 
-  render: function() {
-    var entryDate = undefined, body = '';
+  getInitialState: function() {
+    return {
+      changedToDate: null,
+    };
+  },
 
-    if (this.props.entry) {
-      entryDate = moment(this.props.entry.ts);
-      body = this.props.entry.body;
-    }
+  render: function() {
+    var entry = this._getActiveEntry();
+
+    var entryDate = moment(entry.ts || Date.now()),
+      body = entry.body || '';
 
     var deleteButton = null;
     if (this.props.canDelete) {
       deleteButton = (
         <IconButton className="delete-button"
-          onClick={this._delete}
+          onClick={this._onDelete}
           icon="trash" 
           tooltip="Delete entry"/>
       );
@@ -45,7 +55,7 @@ module.exports = React.createClass({
       <div className="entryEditor">
         <div className="meta">
           <DateString format="MMMM Do" date={entryDate} />
-          <DatePicker onSelect={this._onDateChange} 
+          <DatePicker onSelect={this._onChangeDate} 
             date={entryDate} tooltip="Change date"/>
           {deleteButton}
         </div>
@@ -92,14 +102,13 @@ module.exports = React.createClass({
     // });
 
     // save content every second
-    this._changeHandler = _.debounce(
-      _.bind(function() {
-        var entryId = this.props.entry ? this.props.entry.id : null;
+    this._changeHandler = _.debounce(() => {
+      let entry = this._getActiveEntry();
 
-        this.props.flux.getActions('entry').update(entryId, this.editor.getData());
-      }, this),
-      500
-    );
+      this.props.flux.getActions('entry').update(
+        entry.id, entry.ts, this.editor.getData()
+      );
+    }, 500);
 
     this.editor.on('change', this._changeHandler);
 
@@ -108,10 +117,28 @@ module.exports = React.createClass({
 
 
   shouldComponentUpdate: function(newProps, newState) {
-    var newId = newProps.entry ? newProps.entry.id : -1,
-      oldId = this.props.entry ? this.props.entry.id : -2;
+    var newId = newProps.entryId || -1,
+      oldId = this.props.entryId || -1;
 
-    return (newId !== oldId);
+    var oldDate = moment(this.state.changedToDate || Date.now()).startOf('day').valueOf(), 
+      newDate = moment(newState.changedToDate || Date.now()).startOf('day').valueOf();
+
+    var oldIsReady = this.props.entryDataReady,
+      newIsReady = newProps.entryDataReady;
+
+    return (newId !== oldId || oldDate !== newDate || (newIsReady && !oldIsReady));
+  },
+
+
+  componentWillUpdate: function(newProps) {
+    var newId = newProps.entryId || -1,
+      oldId = this.props.entryId || -1;
+
+    if (newId !== oldId) {
+      this.setState({
+        changedToDate: null
+      });
+    }
   },
 
 
@@ -120,23 +147,49 @@ module.exports = React.createClass({
   },
 
 
+  _getActiveEntry: function() {
+    var store = this.props.flux.getStore('entries'),
+      entry = null;
+
+    if (this.state.changedToDate) {
+      entry = store.getByDate(this.state.changedToDate);
+
+      if (!entry) {
+        entry = {
+          ts: this.state.changedToDate,
+        };
+      }
+    } else {
+      entry = store.get(this.props.entryId);
+
+      if (!entry) {
+        entry = store.getToday() || {};
+      }
+    }
+
+    return entry;
+  },
+
 
   _setBody: function() {
-    if (this.props.entry) {
-      this.editor.setData(this.props.entry.body, {
-        noSnapshot: true
-      });
-    }
+    let entry = this._getActiveEntry();
+
+    this.editor.setData(entry.body || '', {
+      noSnapshot: true
+    });
   },
 
 
-  _onDateChange: function(newDate) {
-    
+  _onChangeDate: function(newDate) {
+    this.setState({
+      changedToDate: newDate,
+    });
   },
 
 
-  _delete: function() {
-    this.props.flux.getActions('entry').delete(_.get(this.props.entry, 'id'));
+  _onDelete: function() {
+    this.props.flux.getActions('entry').delete(this._getActiveEntry().id);
+    this.transitionTo('entries');
   },
 
 

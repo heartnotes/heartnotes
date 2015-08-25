@@ -1,4 +1,5 @@
-var React = require('react');
+var _ = require('lodash'),
+  React = require('react');
 
 import FluxComponent from 'flummox/component';
 
@@ -14,7 +15,8 @@ module.exports = React.createClass({
       <div className="newEntry">
         <FluxComponent connectToStores={{
           entries: store => ({
-            entry: store.getToday(),
+            entryId: _.get(store.getToday(), 'id'),
+            entryDataReady: store.state.entryDataReady,
           }),
         }}>
           <EntryEditor />

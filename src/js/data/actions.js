@@ -15,11 +15,12 @@ class EntryActions extends Actions {
     };    
   }
 
-  update(entryId, content) {
-    this.logger.debug('update', entryId, content.length);
+  update(entryId, entryTimestamp, content) {
+    this.logger.debug('update', entryId, entryTimestamp, content.length);
 
     return {
       id: entryId,
+      ts: entryTimestamp,
       content: content,
     };
   }

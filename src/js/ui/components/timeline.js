@@ -6,7 +6,7 @@ var EntryList = require('./entryList'),
 
 module.exports = React.createClass({
   propTypes: {
-    entries : React.PropTypes.array,
+    entries : React.PropTypes.object,
     selected : React.PropTypes.string,
     updateFilter: React.PropTypes.func,
     onSelect: React.PropTypes.func,
@@ -14,7 +14,7 @@ module.exports = React.createClass({
 
   getDefaultProps: function() {
     return {
-      entries : [],
+      entries : {},
       selected: null,
       onSelect: null,
       updateFilter: null,

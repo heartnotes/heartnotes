@@ -17,6 +17,7 @@ export default class EntryStore extends Store {
 
     this.state = {
       entries: {},
+      entryDataReady: false,
     };
 
     this.registerActionIds('entry');
@@ -62,47 +63,30 @@ export default class EntryStore extends Store {
   update(params) {
     var self = this;
 
-    var {id, content} = params;
+    var {id, ts, content} = params;
 
-    self.logger.info('update entry', id, content.length);
+    self.logger.info('update entry', id, ts, content.length);
 
     new Promise(function(resolve, reject) {
-      var entry;
+      var entry = self.get(id) || self.getByDate(ts);
 
-      if (!id) {
-        resolve(self.getToday());
+      if (!entry) {
+        ts = moment(ts || Date.now()).startOf('day').valueOf();
+
+        self.logger.debug('create entry', ts);
+
+        self.crypto.hash(ts, Math.random() * 100000)
+          .then(function hashedVal(newId) {
+            resolve({
+              id: newId,
+              ts: ts,
+            });
+          })
+          .catch(reject);
       } else {
-        entry = _.find(self.state.entries, function(e) {
-          return e.id === id;
-        });
-
-        if (!entry) {
-          reject(new Error('Entry not found: ' + id));
-        } else {
-          resolve(entry);
-        }
+        resolve(entry);
       }
     })
-      .then(function createEntryIfNeeded(entry) {
-        if (entry) {
-          return entry;
-        }
-
-        // else create entry for today
-        
-        var today = moment(),
-          ts = today.startOf('day').valueOf();
-
-        self.logger.debug('create entry', today, ts);
-
-        return self.crypto.hash(ts, Math.random() * 100000)
-          .then(function hashedVal(hashVal) {
-            return {
-              id: hashVal,
-              ts: ts,
-            };
-          });
-      })
       .then(function entryReady(entry) {
         entry.body = content;
 
@@ -132,20 +116,12 @@ export default class EntryStore extends Store {
     self.logger.info('delete entry', id);
 
     new Promise(function(resolve, reject) {
-      var entry;
+      var entry = self.get(id);
 
-      if (!id) {
-        return;
+      if (!entry) {
+        reject(new Error('Entry not found: ' + id));
       } else {
-        entry = _.find(self.state.entries, function(e) {
-          return e.id === id;
-        });
-
-        if (!entry) {
-          reject(new Error('Entry not found: ' + id));
-        } else {
-          resolve(entry);
-        }
+        resolve(entry);
       }
     })
       .then(function deleteEntry(entry) {
@@ -171,6 +147,7 @@ export default class EntryStore extends Store {
 
     self.setState({
       entries: entries,
+      entryDataReady: true,
     });
   }
 }

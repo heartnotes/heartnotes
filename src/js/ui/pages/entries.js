@@ -17,7 +17,7 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      layout: 'split'
+      layout: 'split',
     };
   },
 
@@ -26,8 +26,9 @@ module.exports = React.createClass({
       <div className={"entriesView " + this.state.layout}>
         <FluxComponent connectToStores={{
           entries: store => ({
-            entry: store.get(this.props.params.entryId),
+            entryId: this.props.params.entryId,
             entries: store.search(),
+            entryDataReady: store.state.entryDataReady,
           }),
         }}>
           <Timeline 
