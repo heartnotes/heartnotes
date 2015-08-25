@@ -9,7 +9,8 @@ var { Navigation } = require('react-router');
 
 var DateString = require('./date'),
   DatePicker = require('./datePicker'),
-  IconButton = require('./iconButton');
+  IconButton = require('./iconButton'),
+  AskUserDialog = require('./askUserDialog');
 
 
 module.exports = React.createClass({
@@ -44,10 +45,16 @@ module.exports = React.createClass({
     var deleteButton = null;
     if (this.props.canDelete) {
       deleteButton = (
-        <IconButton className="delete-button"
-          onClick={this._onDelete}
-          icon="trash" 
-          tooltip="Delete entry"/>
+        <span>
+          <IconButton className="delete-button"
+            onClick={this._onDelete}
+            icon="trash" 
+            tooltip="Delete entry"/>
+          <AskUserDialog 
+            ref="confirmDelete"
+            msg="Are you sure you wish to delete this entry?"
+            buttons={["Yes", "No"]} />
+        </span>
       );
     }
 
@@ -65,6 +72,7 @@ module.exports = React.createClass({
       </div>
     );
   },
+
 
   componentWillUnmount: function() {
     if (this.editor) {
@@ -188,8 +196,12 @@ module.exports = React.createClass({
 
 
   _onDelete: function() {
-    this.props.flux.getActions('entry').delete(this._getActiveEntry().id);
-    this.transitionTo('entries');
+    this.refs.confirmDelete.ask((choice) => {
+      if ('Yes' === choice) {
+        this.props.flux.getActions('entry').delete(this._getActiveEntry().id);
+        this.transitionTo('entries');
+      }
+    });
   },
 
 

@@ -37,7 +37,7 @@
   left 0
   opacity 0
   pointer-events none
-  background-color rgba(0, 0, 0, 0.8)
+  background-color rgba(0, 0, 0, 0.9)
   z-index 99999999
   transition all 0.2s linear
   
@@ -45,6 +45,18 @@
     opacity 1
     pointer-events auto
     
+
+.ask-user-dialog
+  position relative
+  top 40px
+  font-size 2.5rem
+  line-height 1.2em
+  padding 0 2em
+  color $white
+  .buttons
+    margin-top 1em
+    button
+      margin 0 1em
 
 
 .entryEditor
@@ -73,10 +85,9 @@
       
     .delete-button
       @extends $contentActionButton
-      float right
-      margin-right 5px
-      margin-top 0.25em
-
+      position relative
+      left: 1em;
+      top: -0.3em;
     
   .editor
     display table-row

@@ -6,7 +6,8 @@ var moment = require('moment');
 var Button = require('../../components/button'),
   ChangePasswordProgressPopup = require('../../components/changePasswordProgressPopup'),
   PasswordInput = require('../../components/passwordInput'),
-  NewPasswordInput = require('../../components/newPasswordInput');
+  NewPasswordInput = require('../../components/newPasswordInput'),
+  UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
 
 
 module.exports = React.createClass({
@@ -54,7 +55,7 @@ module.exports = React.createClass({
             </ChangePasswordProgressPopup>
           </div>
         </form>
-        
+        <UserShouldRememberPasswordDialog ref="rememberDialog" />
       </div>
     );
   },
@@ -87,10 +88,14 @@ module.exports = React.createClass({
 
   _saveNewPassword: function(e) {
     e.preventDefault();
-    
-    this.props.flux.getActions('user').changePassword(
-      this.state.oldPassword, this.state.newPassword
-    );
+
+    this.refs.rememberDialog.ask((shouldProceed) => {
+      if (shouldProceed) {
+        this.props.flux.getActions('user').changePassword(
+          this.state.oldPassword, this.state.newPassword
+        );
+      }
+    });
   },
 
 });

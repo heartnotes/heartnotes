@@ -2,7 +2,8 @@ var React = require('react');
 
 var Button = require('../../components/button'),
   NewPasswordInput = require('../../components/newPasswordInput'),
-  CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup');
+  CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup'),
+  UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
 
 
 
@@ -45,6 +46,7 @@ module.exports = React.createClass({
             </CreateDiaryProgressPopup>
           </div>
         </form>
+        <UserShouldRememberPasswordDialog ref="rememberDialog" />
         <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
       </div>
     );
@@ -68,7 +70,12 @@ module.exports = React.createClass({
   },
 
   _savePassword: function() {
-    this.props.flux.getActions('user').createNewDataFile(this.state.password);
+    this.refs.rememberDialog.ask((shouldProceed) => {
+      if (shouldProceed) {
+        this.props.flux.getActions('user')
+          .createNewDataFile(this.state.password);
+      }
+    });
   },
 
   _goBack: function() {
