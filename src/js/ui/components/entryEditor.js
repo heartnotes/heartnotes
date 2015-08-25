@@ -12,12 +12,14 @@ module.exports = React.createClass({
   propTypes: {
     debug: React.PropTypes.bool,
     entry: React.PropTypes.object,
+    canDelete: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       debug: false,
       entry: null,
+      canDelete: false,
     };
   },
 
@@ -29,11 +31,23 @@ module.exports = React.createClass({
       body = this.props.entry.body;
     }
 
+    var deleteButton = null;
+    if (this.props.canDelete) {
+      deleteButton = (
+        <IconButton className="delete-button"
+          onClick={this._delete}
+          icon="trash" 
+          tooltip="Delete entry"/>
+      );
+    }
+
     return (
       <div className="entryEditor">
         <div className="meta">
           <DateString format="MMMM Do" date={entryDate} />
-          <DatePicker onSelect={this._onDateChange} date={entryDate}/>
+          <DatePicker onSelect={this._onDateChange} 
+            date={entryDate} tooltip="Change date"/>
+          {deleteButton}
         </div>
         <div className="editor">
           <div ref="editorBody" className="body">{body}</div>
@@ -116,8 +130,13 @@ module.exports = React.createClass({
   },
 
 
-  _onDateChange: function() {
-    console.log(arguments);
+  _onDateChange: function(newDate) {
+    
+  },
+
+
+  _delete: function() {
+    this.props.flux.getActions('entry').delete(_.get(this.props.entry, 'id'));
   },
 
 

@@ -6,6 +6,15 @@ class EntryActions extends Actions {
     this.logger = logger;
   }
 
+
+  delete(entryId) {
+    this.logger.debug('delete', entryId);
+
+    return {
+      id: entryId,
+    };    
+  }
+
   update(entryId, content) {
     this.logger.debug('update', entryId, content.length);
 

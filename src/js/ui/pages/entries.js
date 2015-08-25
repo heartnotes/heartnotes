@@ -38,7 +38,7 @@ module.exports = React.createClass({
             closeClass="toggle-timeline closed"
             initiallyOpen={true}
             onChange={this._onToggleTimeline} />
-          <EntryEditor />
+          <EntryEditor canDelete={true} />
         </FluxComponent>
       </div>
     );

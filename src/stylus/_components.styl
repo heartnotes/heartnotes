@@ -23,15 +23,10 @@
         transform rotateY(180deg) scale(1.1) 
 
 
+
 .date-picker
   & > button
-    background-color $white
-    color $gray-darker
-    padding 2px 5px
-    border-radius 5px
-    &:hover
-      background-color $gray-dark
-      color $white
+    @extends $contentActionButton
 
 
 .overlay
@@ -75,6 +70,12 @@
       position: relative;
       top: -0.15em;
       left: 0.3em;
+      
+    .delete-button
+      @extends $contentActionButton
+      float right
+      margin-top 0.25em
+
     
   .editor
     display table-row

@@ -124,6 +124,46 @@ export default class EntryStore extends Store {
 
 
 
+  delete (params) {
+    var self = this;
+
+    var {id} = params;
+
+    self.logger.info('delete entry', id);
+
+    new Promise(function(resolve, reject) {
+      var entry;
+
+      if (!id) {
+        return;
+      } else {
+        entry = _.find(self.state.entries, function(e) {
+          return e.id === id;
+        });
+
+        if (!entry) {
+          reject(new Error('Entry not found: ' + id));
+        } else {
+          resolve(entry);
+        }
+      }
+    })
+      .then(function deleteEntry(entry) {
+        self.logger.debug('delete entry', entry.id);
+
+        delete self.state.entries[entry.id];
+
+        self.forceUpdate();
+      })
+      .then(function saveUserData() {
+        self.flux.getStore('user').saveEntries();
+      })
+      .catch(function(err) {
+        self.logger.error('delete entry', err);
+      });
+  }
+
+
   setEntries (entries) {
     var self = this;
     

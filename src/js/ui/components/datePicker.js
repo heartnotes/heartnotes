@@ -11,11 +11,13 @@ var IconButton = require('./iconButton'),
 module.exports = React.createClass({
   propTypes: {
     onSelect : React.PropTypes.func.isRequired,
+    tooltip : React.PropTypes.string,
     date : React.PropTypes.object,
   },
 
   getDefaultProps: function() {
     return {
+      tooltip: 'Pick date',
       date: null,
     };
   },
@@ -28,7 +30,7 @@ module.exports = React.createClass({
         <IconButton 
           onClick={this._togglePicker}
           icon="calendar" 
-          tooltip="Pick a date"/>
+          tooltip={this.props.tooltip}/>
         <Overlay ref="overlay" />
       </span>
     );
