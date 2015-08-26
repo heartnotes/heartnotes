@@ -6,7 +6,9 @@
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "GPL3",
   "main": "electronApp.js",
-  "scripts": {},
+  "scripts": {
+    "release": "gulp release --minified"  
+  },
   "dependencies": {
     "babelify": "~6.1.2",
     "bluebird": "~2.9.27",

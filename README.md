@@ -57,7 +57,7 @@ _NOTE: Add `--minified` on the command-line to enable JS and CSS minification du
 ## Production build
 
 ```bash
-$ gulp release
+$ npm run release
 ```
 
 You will find the `Heartnotes.app` OS X executable in `build-electron/relese/...`
