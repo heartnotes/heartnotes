@@ -5,6 +5,7 @@ var _ = require('lodash'),
 
 
 var FormatUtils = require('../../utils/format'),
+  SortingUtils = require('../../utils/sorting'),
   DateString = require('./date');
 
 
@@ -30,7 +31,7 @@ module.exports = React.createClass({
     var listItems = [],
       lastMonthYear = moment(0);
 
-    var entries = this._getSortedEntries();
+    var entries = SortingUtils.sortEntriesReverseChrono(this.props.entries);
 
     _.forEach(entries, function(entry) {
       var date = moment(entry.ts);
@@ -86,21 +87,7 @@ module.exports = React.createClass({
     );
   },
 
-  _getSortedEntries: function() {
-    var entries = _.values(this.props.entries || {});
 
-    entries.sort(function(a, b) {
-      if (a.ts === b.ts) {
-        return 0;
-      } else if (a.ts < b.ts) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
-
-    return entries;
-  },
 
   _onSelect: function(e) {
     if (this.props.onSelect) {

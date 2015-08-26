@@ -5,23 +5,26 @@ var _ = require('lodash'),
 
 
 var FormatUtils = require('../../utils/format'),
+  SortingUtils = require('../../utils/sorting'),
   DateString = require('./date');
 
 
 
 module.exports = React.createClass({
   propTypes: {
-    entries : React.PropTypes.array,
+    entries : React.PropTypes.object,
   },
 
   getDefaultProps: function() {
     return {
-      entries : [],
+      entries : {},
     };
   },
 
   render: function() {
-    let entries = _.map(this.props.entries, (entry) => {
+    var entries = SortingUtils.sortEntriesForwardChrono(this.props.entries);
+
+    entries = _.map(entries, (entry) => {
       return (
         <div>
           <h2><DateString format="MMMM Do, YYYY" date={moment(entry.ts)} /></h2>
