@@ -63,6 +63,18 @@ $ npm run release
 You will find the `Heartnotes.app` OS X executable in `build-electron/relese/...`
 
 
+## Release checklist
+
+1. Make final commits
+2. Update `version` in `package.json`
+3. Commit version update and push
+4. Tag commit as <version>
+5. Push tag
+6. Do a production build (see above)
+7. Create release entry on Github and attach built executable
+8. Announce to world!
+
+
 
 ## License
 
