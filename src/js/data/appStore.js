@@ -3,7 +3,8 @@
 var _ = require('lodash'),
   $ = require('jquery'),
   Q = require('bluebird'),
-  React = require('react');
+  React = require('react'),
+  semver = require('semver');
 
 
 var Store = require('./store');
@@ -43,7 +44,7 @@ export default class AppStore extends Store {
       url: "https://api.github.com/repos/heartnotes/heartnotes/releases/latest"
     }))
       .then((release) => {
-        if (release.tag_name !== this.state.appVersion) {
+        if (semver.gt(release.tag_name, this.state.appVersion)) {
           this.setState({
             newVersionAvailable: true,
           });
