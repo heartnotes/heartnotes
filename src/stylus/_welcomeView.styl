@@ -12,18 +12,25 @@
     right 8px
     color $gray-dark
     font-size 0.7rem
-
+    
+    span.new-version
+      margin-right 10px
+      a
+        font-size 120%
+      
     span.version
       &:after
         content '/'
         color $gray-darker
         padding 0 0.5em
         
-    a
-      text-decoration none
-      text-transform uppercase
-      color $gray-dark
-      border none
+    span.version, span.homepage-link
+      a
+        text-transform uppercase
+        color $gray-dark
+        border none
+        &:hover
+          color $white
   
   .logo
     margin 0 auto 2rem

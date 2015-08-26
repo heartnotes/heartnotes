@@ -95,8 +95,26 @@ class UserActions extends Actions {
 
 
 
+class AppActions extends Actions {
+  constructor (flux, logger) {
+    super();
+    this.logger = logger;
+  }
+
+
+  checkForUpdates() {
+    this.logger.debug('checkForUpdates');
+
+    return {};
+  }
+}
+
+
+
+
 module.exports = {
   entry: EntryActions,
   user: UserActions,
+  app: AppActions,
 };
 

@@ -3,7 +3,6 @@
 var _ = require('lodash'),
   React = require('react');
 
-import { Timer } from 'clockmaker';
 
 var Store = require('./store'),
   Crypto = require('./crypto/index');

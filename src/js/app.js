@@ -39,13 +39,22 @@ var App = React.createClass({
           userAlertMsg: store.state.userAlertMsg,
           userAlertType: store.state.userAlertType,
         }),
+        app: store => ({
+          appVersion: store.state.appVersion,
+          checkingForUpdates: !!store.state.checkingForUpdates,
+          newVersionAvailable: !!store.state.newVersionAvailable,
+        }),
       }}>
         <Layout {...this.props}>
           <RouteHandler {...this.props}/>
         </Layout>
       </FluxComponent>
     );
-  }
+  },
+
+  componentDidMount: function() {
+    this.state.flux.getActions('app').checkForUpdates();
+  },
 });
 
 

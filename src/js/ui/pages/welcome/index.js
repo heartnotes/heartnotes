@@ -1,11 +1,11 @@
 var _ = require('lodash');
-var packageJson = require('../../../../../package.json');
 var React = require('react');
 
 import FluxComponent from 'flummox/component';
 
 
-var Logo = require('../../components/logo');
+var Logo = require('../../components/logo'),
+  Loading = require('../../components/loading');
 
 
 
@@ -24,6 +24,17 @@ module.exports = React.createClass({
   },
 
   render: function() { 
+    var newVersionMsg = null;
+    if (this.props.newVersionAvailable) {
+      newVersionMsg = (
+        <a href="#" onClick={this._goToHomepage}>New version available!</a>
+      );
+    } else if (this.props.checkingForUpdates) {
+      newVersionMsg = (
+        <Loading />
+      );
+    }
+
     return (
       <div className="welcomeView">
         <Logo/>
@@ -31,8 +42,11 @@ module.exports = React.createClass({
           {this._buildSteps()}
         </div>
         <footer>
-          <span className="version">v{packageJson.version}</span>
-          <a href="#" onClick={this._goToHomepage}>About</a>
+          <span className="new-version">{newVersionMsg}</span>
+          <span className="version">v{this.props.appVersion}</span>
+          <span className="homepage-link">
+            <a href="#" onClick={this._goToHomepage}>About</a>
+          </span>
         </footer>
       </div>
     );

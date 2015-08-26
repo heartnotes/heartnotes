@@ -7,6 +7,7 @@ var StorageManager = require('./storage/index');
 var actions = require('./actions');
 
 var stores = {
+  app: require('./appStore'),
   entries: require('./entryStore'),
   csrng: require('./crypto/csrngStore'),
   user: require('./userStore'),
