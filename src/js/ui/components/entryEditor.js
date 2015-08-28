@@ -58,10 +58,14 @@ module.exports = React.createClass({
       );
     }
 
+    let dateFormat = (entryDate.year() !== moment().year()) 
+      ? 'MMMM Do, YYYY'
+      : 'MMMM do';
+
     return (
       <div className="entryEditor">
         <div className="meta">
-          <DateString format="MMMM Do" date={entryDate} />
+          <DateString format={dateFormat} date={entryDate} />
           <DatePicker onSelect={this._onChangeDate} 
             date={entryDate} tooltip="Change date"/>
           {deleteButton}
