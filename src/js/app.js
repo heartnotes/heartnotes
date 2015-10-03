@@ -11,9 +11,8 @@ var $ = require('jquery');
 
 var { Route, DefaultRoute, RouteHandler } = Router;
 
-// Flux
-import FluxComponent from 'flummox/component';
-import FluxManager from './data/index';
+import Store from './data/store';
+import { Provider } from 'react-redux';
 
 
 var Layout = require('./ui/layout');
@@ -29,34 +28,19 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       logger: rootLogger,
-      flux: new FluxManager(logger)
     };
   },
 
   render: function() {
     return (
-      <FluxComponent flux={this.state.flux} connectToStores={{
-        user: store => ({
-          entriesLoaded: !!store.state.entriesLoaded,
-          passwordEntered: !!store.state.derivedKeys,
-          userAlertMsg: store.state.userAlertMsg,
-          userAlertType: store.state.userAlertType,
-        }),
-        app: store => ({
-          appVersion: store.state.appVersion,
-          checkingForUpdates: !!store.state.checkingForUpdates,
-          newVersionAvailable: !!store.state.newVersionAvailable,
-        }),
-      }}>
-        <Layout {...this.props}>
-          <RouteHandler {...this.props}/>
-        </Layout>
-      </FluxComponent>
+      <Provider store={Store}>
+        {() => 
+          <Layout {...this.props}>
+            <RouteHandler {...this.props}/>
+          </Layout>
+        }
+      </Provider>
     );
-  },
-
-  componentDidMount: function() {
-    this.state.flux.getActions('app').checkForUpdates();
   },
 });
 

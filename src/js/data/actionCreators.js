@@ -28,13 +28,24 @@ function buildErrorAction(type, err) {
 // ------------------------------------------------------
 
 
+export function init() {
+  return function(dispatch) {
+    return Q.all([
+      dispatch(buildAction(Actions.INIT)),
+      dispatch(exports.checkForUpdates()),
+    ]);
+  };
+};
+
+
+
 export function checkForUpdates() {
   return function(dispatch) {
     dispatch(buildAction(Actions.CHECK_FOR_UPDATES_STARTED));
 
     logger.info('checking for updates');
 
-    Q.cast($.ajax({
+    return Q.cast($.ajax({
       cache: false,
       timeout: 3000,
       url: "https://api.github.com/repos/heartnotes/heartnotes/releases/latest"
@@ -47,6 +58,21 @@ export function checkForUpdates() {
       });
   };
 };
+
+
+
+export function openDiary(fileName, password) {
+
+};
+
+
+
+export function chooseDiary() {
+
+};
+
+
+
 
 
 

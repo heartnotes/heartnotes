@@ -7,7 +7,7 @@
   "license": "GPL3",
   "main": "electronApp.js",
   "scripts": {
-    "release": "gulp release --minified"  
+    "release": "gulp release --minified"
   },
   "dependencies": {
     "babelify": "~6.1.2",
@@ -46,8 +46,13 @@
     "pouchdb": "~3.6.0",
     "react": "~0.13.3",
     "react-ladda": "~2.0.4",
-    "react-router": "git://github.com/rackt/react-router.git#0abb852520ea26b6a57198d8e7c4fbdf3baa7a90",
+    "react-redux": "~3.0.1",
+    "react-router": "git://github.com/waigo/react-router.git#93fb595a2181e52f9947a8cf101ecbdd310c8978",
     "reactify": "~1.1.1",
+    "redux": "~3.0.2",
+    "redux-logger": "~2.0.1",
+    "redux-router": "~1.0.0-beta3",
+    "redux-thunk": "~1.0.0",
     "run-sequence": "~1.1.0",
     "rupture": "~0.6.1",
     "shelljs": "~0.5.1",
@@ -64,7 +69,7 @@
     ]
   },
   "browser": {
-    "react-router": "./node_modules/react-router/lib/umd/ReactRouter.js"
+    "react-router": "./node_modules/react-router/build/umd/ReactRouter.js"
   },
   "browserify-shim": {
     "ipc": "global:ipc",

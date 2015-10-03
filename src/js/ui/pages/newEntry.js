@@ -1,8 +1,6 @@
 var _ = require('lodash'),
   React = require('react');
 
-import FluxComponent from 'flummox/component';
-
 var moment = require('moment');
 
 var Timeline = require('../components/timeline'),

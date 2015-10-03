@@ -1,5 +1,6 @@
 var React = require('react');
-import FluxComponent from 'flummox/component';
+
+import { connectRedux } from './helpers/decorators';
 
 var MainMenu = require('./components/mainMenu'),
   SubMenu = require('./components/subMenu'),
@@ -8,7 +9,7 @@ var MainMenu = require('./components/mainMenu'),
   Logo = require('./components/logo');
 
 
-module.exports = React.createClass({
+module.exports = connectRedux(['init'])(React.createClass({
   render: function() {    
     var content = null;
 
@@ -26,12 +27,14 @@ module.exports = React.createClass({
     );    
   },
 
+  componentDidMount: function() {
+    this.props.actions.init();
+  },
+
   _buildWelcome: function() {
     return (
       <section id="welcome-content">
-        <FluxComponent>
-          <WelcomeView {...this.props} />
-        </FluxComponent>
+        <WelcomeView {...this.props} />
       </section>
     );
   },
@@ -45,13 +48,10 @@ module.exports = React.createClass({
           <SubMenu {...this.props} />
         </section>
         <section id="content">
-          <FluxComponent connectToStores={['user', 'entries']}>
-            {this.props.children}
-          </FluxComponent>
+          {this.props.children}
         </section>
       </div>
     );
   },
 
-
-});
+}));

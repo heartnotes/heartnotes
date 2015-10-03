@@ -3,28 +3,28 @@ import _ from 'lodash';
 
 import Actions from './actions';
 import InitialState from './initialState';
+import AsyncState from './asyncState';
+import { instance as Storage } from './storage/index';
 
 
 exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
     case Actions.CHECK_FOR_UPDATES_STARTED:
-      return Object.assign({}, state, {
-        checkingForUpdates: true,
-        checkingForUpdatesError: null,
+      return _.extend({}, state, {
+        checkingForUpdate: AsyncState.started(state.checkingForUpdate),
+        newVersionAvailable: false,
       });
 
     case Actions.CHECK_FOR_UPDATES_ERROR:
-      return Object.assign({}, state, {
-        checkingForUpdates: false,
-        checkingForUpdatesError: action.payload,
+      return _.extend({}, state, {
+        checkingForUpdate: AsyncState.failed(state.checkingForUpdate, action.payload),
       });
 
     case Actions.CHECK_FOR_UPDATES_RESULT:
       let release = action.payload;
-
-      return Object.assign({}, state, {
-        checkingForUpdates: false,
-        checkingForUpdatesError: null,
+      
+      return _.extend({}, state, {
+        checkingForUpdate: AsyncState.finished(state.checkingForUpdate, release),
         newVersionAvailable: semver.gt(release.tag_name, state.appVersion),
       });
 
@@ -33,3 +33,16 @@ exports.app = function(state = InitialState.app(), action) {
   }
 };
 
+
+
+exports.diary = function(state = InitialState.diary(), action) {
+  switch (action.type) {
+    case Actions.INIT:
+      return _.extend({}, state, {
+        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails()
+      });
+
+    default:
+      return state;
+  }
+};

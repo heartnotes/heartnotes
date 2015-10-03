@@ -1,7 +1,5 @@
 var _ = require('lodash');
 
-import { Flux } from 'flummox';
-
 var StorageManager = require('./storage/index');
 
 var actions = require('./actions');

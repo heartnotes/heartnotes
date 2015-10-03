@@ -11,10 +11,10 @@ var Detect = require('../../utils/detect');
 const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 
-export default class StorageManager {
+export class StorageManager {
 
-  constructor(flux, logger) {
-    this.logger = logger;
+  constructor() {
+    this.logger = window.rootLogger.create('storage');
 
     this.browserStorage = new BrowserStorage(this.logger.create('browser'));
     this.fileStorage = new FileStorage(this.logger.create('file'));
@@ -142,5 +142,11 @@ export default class StorageManager {
     });
   }
 }
+
+
+
+exports.instance = new StorageManager();
+
+
 
 

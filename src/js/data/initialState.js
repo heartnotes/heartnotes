@@ -1,10 +1,29 @@
-var packageJson = require('../../../package.json');
+import { version } from '../../../package.json';
+
 
 exports.app = function() {
   return {
-    appVersion: packageJson.version,
-    checkingForUpdates: false,
-    checkingForUpdatesError: null,
+    version: version,
+    checkingForUpdate: {},
     newVersionAvailable: false,
   }
 };
+
+
+exports.diary = function() {
+  return {
+    derivedKeys: null,
+    entriesLoaded: false,
+
+    creating: {},
+    opening: {},
+    choosing: {},
+    exporting: {},
+    derivingKeys: {},
+    changingPassword: {},
+    loadingEntries: {},
+    savingEntries: {},
+  };
+};
+
+

@@ -1,12 +1,10 @@
 var _ = require('lodash');
 var React = require('react');
 
-import FluxComponent from 'flummox/component';
-
-
 var Logo = require('../../components/logo'),
   Loading = require('../../components/loading');
 
+import { connectRedux } from '../../helpers/decorators';
 
 
 var steps = {
@@ -16,7 +14,7 @@ var steps = {
 };
 
 
-module.exports = React.createClass({
+module.exports = connectRedux()(React.createClass({
   getInitialState: function() {
     return {
       step: 'start',
@@ -25,11 +23,11 @@ module.exports = React.createClass({
 
   render: function() { 
     var newVersionMsg = null;
-    if (this.props.newVersionAvailable) {
+    if (this.props.data.app.newVersionAvailable) {
       newVersionMsg = (
         <a href="#" onClick={this._goToHomepage}>New version available!</a>
       );
-    } else if (this.props.checkingForUpdates) {
+    } else if (this.props.data.checkingForUpdate.inProgress) {
       newVersionMsg = (
         <Loading />
       );
@@ -43,7 +41,7 @@ module.exports = React.createClass({
         </div>
         <footer>
           <span className="new-version">{newVersionMsg}</span>
-          <span className="version">v{this.props.appVersion}</span>
+          <span className="version">v{this.props.data.app.version}</span>
           <span className="homepage-link">
             <a href="#" onClick={this._goToHomepage}>About</a>
           </span>
@@ -75,21 +73,7 @@ module.exports = React.createClass({
       };
 
       var stepElem = (
-        <FluxComponent connectToStores={{
-          user: store => ({
-            lastAccessedDiaryDetails: store.lastAccessedDiaryDetails(),
-            derivedKeys: store.state.derivedKeys,
-            nowDerivingKeys: store.state.nowDerivingKeys,
-            createDataFileError: store.state.createDataFileError,
-            chooseDataFileError: store.state.chooseDataFileError,
-            openDataFileError: store.state.openDataFileError,
-            loadEntriesError: store.state.loadEntriesError,
-            nowOpeningDiary: store.state.nowOpeningDiary,
-            nowCreatingDiary: store.state.nowCreatingDiary,
-          })
-        }}>
-          <Step showStep={this._showStep} isActive={isActive}/>
-        </FluxComponent>
+        <Step showStep={this._showStep} isActive={isActive}/>
       );
 
       return (
@@ -104,5 +88,5 @@ module.exports = React.createClass({
       step: name
     });
   },
-});
+}));
 

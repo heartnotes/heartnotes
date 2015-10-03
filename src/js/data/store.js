@@ -1,42 +1,19 @@
-"use strict";
+import { combineReducers, applyMiddleware, createStore } from 'redux';
 
-var _ = require('lodash');
-var FlummoxStore = require('flummox').Store;
+import thunkMiddleware from 'redux-thunk';
+import loggerMiddleware from 'redux-logger';
 
-export default class Store extends FlummoxStore {
-
-  constructor(flux, logger) {
-    super();
-
-    this.flux = flux;
-    this.logger = logger;
-    this.storage = flux.storage;
-  }
+import * as reducers from './reducers';
 
 
-  registerActionIds(actionName) {
-    const actionIds = this.flux.getActionIds(actionName);
-
-    this.logger.debug(`${actionName} action ids`, actionIds);
-
-    _.forEach(actionIds, function(aid, key) {
-      this.register(aid, this[key]);
-    }, this);
-  }
+const createStoreWithMiddleware = applyMiddleware(
+  thunkMiddleware,
+  loggerMiddleware
+)(createStore);
 
 
-  setStateAfterDelay (attrs, delayMs) {
-    _.delay( () => {
-      this.setState(attrs);
-    }, delayMs);
-  }
 
-  setStateAndChangeAfterDelay (state1, state2, delayMs = 1000) {
-    this.setState(state1);
-
-    this.setStateAfterDelay(state2, delayMs);
-  }
-
-}
-
+const store = module.exports = createStoreWithMiddleware(
+  combineReducers(reducers)
+);
 

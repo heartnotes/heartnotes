@@ -10,10 +10,11 @@ var Detect = require('../../../utils/detect'),
   OpenDiaryProgressPopup = require('../../components/openDiaryProgressPopup');
 
 
+import { connectRedux } from '../../helpers/decorators';
 
 
 
-module.exports = React.createClass({
+var Component = React.createClass({
   propTypes: {
     showStep: React.PropTypes.func.isRequired,
     isActive: React.PropTypes.bool.isRequired,
@@ -28,14 +29,14 @@ module.exports = React.createClass({
   render: function() { 
     var content = null;
 
-    if (this.props.lastAccessedDiaryDetails) {
+    if (this.props.data.diary.lastAccessedDiaryDetails) {
       var lastDiaryName = StringUtils.formatDiaryDetails(
-        this.props.lastAccessedDiaryDetails
+        this.props.data.diary.lastAccessedDiaryDetails
       );
 
       var buttonAttrs = {
         onClick: this._checkPassword,
-        animActive: !!this.props.nowOpeningDiary,
+        animActive: !!this.props.data.diary.opening.inProgress,
       };
 
       if (!this.state.password || !this.state.password.length) {
@@ -98,7 +99,7 @@ module.exports = React.createClass({
 
     var password = this.state.password;
 
-    if (password && password.length && this.props.derivedKeys) {
+    if (password && password.length && this.props.data.diary.derivedKeys) {
       this.props.showStep('loadDiary');
     }
   },
@@ -106,15 +107,17 @@ module.exports = React.createClass({
 
   _buildChooseAnotherDiaryButton: function() {
     if (Detect.isElectronApp()) {
-      let popupMsg = this.props.chooseDataFileError
-        ? (<div>{'' + this.props.chooseDataFileError}</div>)
+      let chooseDiaryError = this.props.data.diary.choosing.error;
+
+      let popupMsg = (!!chooseDiaryError)
+        ? (<div>{'' + chooseDiaryError}</div>)
         : null;
 
       return (
         <span className="choose-diary">
           <Popup 
               msg={popupMsg} 
-              show={!!this.props.chooseDataFileError}>
+              show={!!chooseDiaryError}>
             <IconButton 
               ref="chooseDiaryButton"
               icon="folder-open"
@@ -132,11 +135,10 @@ module.exports = React.createClass({
   _checkPassword: function(e) {
     e.preventDefault();
 
-    this.props.flux.getActions('user')
-      .openDataFile(
-        _.get(this.props.lastAccessedDiaryDetails, 'name'),
-        this.state.password
-      );
+    this.props.actions.openDiary(
+      _.get(this.props.data.diary.lastAccessedDiaryDetails, 'name'),
+      this.state.password
+    );
   },
 
 
@@ -153,8 +155,16 @@ module.exports = React.createClass({
 
 
   _chooseDiary: function() {    
-    this.props.flux.getActions('user').chooseDataFile();
+    this.props.actions.chooseDiary();
   },
 
 });
+
+
+module.exports = connectRedux([
+  'chooseDiary',
+  'openDiary'
+])(Component);
+
+
 

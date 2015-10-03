@@ -1,4 +1,10 @@
 const actionTypes = [
+  'INIT',
+
+  'CHECK_FOR_UPDATES_STARTED',
+  'CHECK_FOR_UPDATES_ERROR',
+  'CHECK_FOR_UPDATES_RESULT',
+
   'UPDATE_ENTRY',
   
   'DELETE_ENTRY',
@@ -16,10 +22,6 @@ const actionTypes = [
   'CHANGE_PASSWORD',
   
   'EXPORT_ENTRIES',
-
-  'CHECK_FOR_UPDATES_STARTED',
-  'CHECK_FOR_UPDATES_ERROR',
-  'CHECK_FOR_UPDATES_RESULT',
 ];
 
 actionTypes.forEach(function(type) {
