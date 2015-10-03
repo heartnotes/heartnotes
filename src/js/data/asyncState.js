@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export function started(obj) {
+export function start(obj) {
   return _.extend({}, obj, {
     inProgress: true,
     result: null,
@@ -8,18 +8,26 @@ export function started(obj) {
   });
 }
 
-export function finished(obj, result) {
+export function result(obj, payload) {
   return _.extend({}, obj, {
     inProgress: false,
-    result: result,
+    result: payload,
     error: null,
   });
 }
 
-export function failed(obj, err) {
+export function error(obj, payload) {
   return _.extend({}, obj, {
     inProgress: false,
     result: null,
-    error: err,
+    error: payload.error,
+  });
+}
+
+export function reset(obj) {
+  return _.extend({}, obj, {
+    inProgress: false,
+    result: null,
+    error: null,
   });
 }

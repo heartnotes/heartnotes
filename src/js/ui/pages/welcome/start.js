@@ -107,17 +107,17 @@ var Component = React.createClass({
 
   _buildChooseAnotherDiaryButton: function() {
     if (Detect.isElectronApp()) {
-      let chooseDiaryError = this.props.data.diary.choosing.error;
+      let choosingError = this.props.data.diary.choosing.error;
 
-      let popupMsg = (!!chooseDiaryError)
-        ? (<div>{'' + chooseDiaryError}</div>)
+      let popupMsg = (!!choosingError)
+        ? (<div>{'' + choosingError}</div>)
         : null;
 
       return (
         <span className="choose-diary">
           <Popup 
               msg={popupMsg} 
-              show={!!chooseDiaryError}>
+              show={!!choosingError}>
             <IconButton 
               ref="chooseDiaryButton"
               icon="folder-open"

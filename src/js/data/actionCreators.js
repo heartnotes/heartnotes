@@ -1,7 +1,10 @@
 import _ from 'lodash';
-import Actions from './actions';
+import Q from 'bluebird';
 
-var logger = window.rootLogger.create('redux');
+import Actions from './actions';
+import Storage from './storage/index';
+import Crypto from './crypto/index';
+
 
 
 // ------------------------------------------------------
@@ -9,17 +12,16 @@ var logger = window.rootLogger.create('redux');
 // ------------------------------------------------------
 
 function buildAction(type, payload = {}) {
+  if (payload && payload instanceof Error) {
+    payload = {
+      error: payload
+    };
+  }
+
   return {
     type: type,
     payload: payload,
   };
-};
-
-
-function buildErrorAction(type, err) {
-  return buildAction(type, {
-    error: err
-  });
 };
 
 
@@ -41,9 +43,7 @@ export function init() {
 
 export function checkForUpdates() {
   return function(dispatch) {
-    dispatch(buildAction(Actions.CHECK_FOR_UPDATES_STARTED));
-
-    logger.info('checking for updates');
+    dispatch(buildAction(Actions.CHECK_FOR_UPDATES_START));
 
     return Q.cast($.ajax({
       cache: false,
@@ -60,18 +60,88 @@ export function checkForUpdates() {
 };
 
 
-
-export function openDiary(fileName, password) {
-
-};
-
-
-
 export function chooseDiary() {
+  return function(dispatch) {
+    dispatch(buildAction(Actions.CHOOSE_DIARY_START));
+    
+    return Storage.selectDiary()
+      .then( (diaryName) => {
+        if (!diaryName) {
+          return;
+        }
 
+        return Storage.loadMetaDataFromDiary(diaryName);
+      })
+      .then( (data) => {
+        dispatch(buildAction(Actions.CHOOSE_DIARY_RESULT, data));
+      })
+      .catch( (err) => {
+        dispatch(buildAction(Actions.CHOOSE_DIARY_ERROR, err));
+
+        return Q.delay(2000).then(() => {
+          dispatch(buildAction(Actions.CHOOSE_DIARY_RESET));
+        })
+      });
+  }
 };
 
 
+
+
+export function openDiary(name, password) {
+  return function(dispatch) {
+    dispatch(buildAction(Actions.OPEN_DIARY_START, {
+      name: name,
+      password: password,
+    }));
+
+    return Storage.loadMetaDataFromDiary(name)
+      .then((metaData) => {
+        if (!metaData) {
+          throw new Error('Data file not found: ' + name);
+        }
+
+        dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+          metaData: metaData, 
+          password: password,
+        }));
+
+        return Crypto.deriveKey(password, {
+          salt: metaData.salt,
+          iterations: metaData.iterations,
+        })
+          .then((derivedKeyData) => {
+            // now test that keys are correct
+            return Crypto.decrypt(derivedKeyData.key1, metaData.keyTest)
+              .then((plainData) => {
+                if (plainData !== derivedKeyData.key1) {
+                  throw new Error('Password incorrect');
+                }
+
+                dispatch(buildAction(Actions.DERIVE_KEYS_RESULT, derivedKeyData));
+              })
+              .catch((err) => {
+                dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
+
+                throw err;
+              });
+          });
+      })
+      .then(() => {
+        dispatch(buildAction(Actions.OPEN_DIARY_RESULT, {
+          name: name,
+          password: password,
+        }));
+      })
+      .catch((err) => {
+        dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err));
+
+        Q.delay(2000).then(() => {
+          dispatch(buildAction(Actions.OPEN_DIARY_RESET, err));
+        });
+      })
+  }
+}
 
 
 
