@@ -1,5 +1,11 @@
-var React = require('react');
+// setup root logger first, as it's used by other modules
 var Logger = require('logarama');
+window.rootLogger = new Logger({
+  minLevel: 'info'
+});
+
+
+var React = require('react');
 var Router = require('react-router');
 var $ = require('jquery');
 
@@ -18,14 +24,11 @@ var SettingsView = require('./ui/pages/settings/index');
 
 
 
+
 var App = React.createClass({
   getInitialState: function() {
-    var logger = new Logger({
-      minLevel: 'info'
-    });
-
     return {
-      logger: logger,
+      logger: rootLogger,
       flux: new FluxManager(logger)
     };
   },
