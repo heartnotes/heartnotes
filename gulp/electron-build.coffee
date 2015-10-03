@@ -21,7 +21,7 @@ module.exports = (paths, options = {}) ->
         packageJson: packageJson
         release: path.join(paths.build.electron, 'release')
         cache: path.join(paths.build.electron, 'cache')
-        version: 'v0.30.4'
+        version: 'v0.33.4'
         packaging: true
         asar: false
         platforms: ['darwin-x64']

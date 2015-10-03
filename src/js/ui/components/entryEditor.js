@@ -60,7 +60,7 @@ module.exports = React.createClass({
 
     let dateFormat = (entryDate.year() !== moment().year()) 
       ? 'MMMM Do, YYYY'
-      : 'MMMM do';
+      : 'MMMM Do';
 
     return (
       <div className="entryEditor">

@@ -5,9 +5,6 @@ var ipc = require('ipc');
 var dialog = require('dialog');
 
 
-// Report crashes to our server.
-require('crash-reporter').start();
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
@@ -23,9 +20,27 @@ app.on('window-all-closed', function() {
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
-app.on('ready', function() {
+app.on('ready', createMainWindow);
+
+// when dock icon (OS X) gets clicked let's restore window
+app.on('activate', function() {
+  if (!mainWindow) {
+    createMainWindow();
+  }
+});
+
+
+function createMainWindow() {
+  console.log('Creating main window...');
+  
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1024, height: 768});
+  mainWindow = new BrowserWindow({
+    width: 1024, 
+    height: 768,
+    center: true,
+    resizable: true,
+    title: 'Heartnotes',
+  });
 
   // and load the index.html of the app.
   var url = process.env.DEV_MODE 
@@ -64,7 +79,10 @@ app.on('ready', function() {
   ];
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-});
+}
+
+
+// File open/save stuff
 
 
 var FILTERS = [
@@ -127,5 +145,5 @@ ipc.on('synchronous-message', function(event, arg) {
 
       break;
   }
-});
+})
 

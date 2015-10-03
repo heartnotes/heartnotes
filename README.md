@@ -40,7 +40,7 @@ iteration count to regenerate the right key for decryption.
 Setup:
 
 ```bash
-$ npm install -g electron-prebuilt
+$ npm install -g electron-prebuilt@0.33.4
 $ npm install
 ```
 
