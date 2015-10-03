@@ -9,7 +9,7 @@ const PREFIX = 'heartnotes_';
 export default class LocalStorage {
 
   constructor(logger) {
-    this.logger = logger;
+    this.logger = logger.create('browser');
   }
 
   type () {

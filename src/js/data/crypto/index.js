@@ -2,10 +2,11 @@
 
 var _ = require('lodash');
 
+import Logger from '../../utils/logger';
 var WebWorker= require('../../utils/webWorker');
 
 var sjcl = require('./sjcl');
-
+import Csrng from './csrng';
   
 
 /**
@@ -21,11 +22,10 @@ const REQUIRED_STRENGTH_MS = 1000;
 /** 
  * Cryptographic PRNG data generator.
  */
-export default class Crypto {
-  constructor (flux, logger) {
-    this.flux = flux;
-    this.logger = logger;
-    this.csrng = flux.getStore('csrng');
+export class Crypto {
+  constructor () {
+    this.logger = Logger.create('crypto');
+    this.csrng = new Csrng(this.logger);
   }
 
 
@@ -266,4 +266,6 @@ export default class Crypto {
 }
 
 
+
+exports.instance = new Crypto();
 

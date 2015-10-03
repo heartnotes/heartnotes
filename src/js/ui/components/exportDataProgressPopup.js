@@ -8,15 +8,15 @@ module.exports = React.createClass({
   render: function() {
     var derivingMsg = null;
 
-    if (this.props.nowExportingData) {
+    if (this.props.data.diary.exporting.inProgress) {
       derivingMsg = (
         <div>Exporting data.....</div>
       );
     }
 
-    if (this.props.exportDataError) {
+    if (this.props.data.diary.exporting.error) {
       derivingMsg = (
-        <div className="error">{this.props.exportDataError.toString()}</div>
+        <div className="error">{this.props.data.diary.exporting.error.toString()}</div>
       );
     }
 

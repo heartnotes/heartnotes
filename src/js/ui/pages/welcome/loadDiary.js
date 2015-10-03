@@ -4,8 +4,10 @@ var React = require('react');
 var Icon = require('../../components/icon'),
   Button = require('../../components/button');
 
+import { connectRedux } from '../../helpers/decorators';
 
-module.exports = React.createClass({
+
+var Component = React.createClass({
   propTypes: {
     showStep: React.PropTypes.func.isRequired,
     isActive: React.PropTypes.bool.isRequired,
@@ -15,10 +17,10 @@ module.exports = React.createClass({
     var progressMsg = "Loading diary...";
 
     var loadingError = null;
-    if (this.props.loadEntriesError) {
+    if (this.props.data.diary.loadingEntries.error) {
       progressMsg += 'failed!';
 
-      var msg = this.props.loadEntriesError.toString();
+      var msg = this.props.data.diary.loadingEntries.error.toString();
 
       loadingError = (
         <div>
@@ -46,7 +48,7 @@ module.exports = React.createClass({
 
     // if just became active then kick-off entry loading
     if (!oldProps.isActive) {
-      this.props.flux.getActions('user').loadEntries();
+      // this.props.actions.loadEntries();
     }
   },
 
@@ -55,4 +57,7 @@ module.exports = React.createClass({
   },
 
 });
+
+
+module.exports = connectRedux([/*'loadEntries'*/])(Component);
 

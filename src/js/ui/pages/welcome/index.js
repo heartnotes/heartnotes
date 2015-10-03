@@ -14,7 +14,7 @@ var steps = {
 };
 
 
-module.exports = connectRedux()(React.createClass({
+var Comonent = React.createClass({
   getInitialState: function() {
     return {
       step: 'start',
@@ -27,7 +27,7 @@ module.exports = connectRedux()(React.createClass({
       newVersionMsg = (
         <a href="#" onClick={this._goToHomepage}>New version available!</a>
       );
-    } else if (this.props.data.checkingForUpdate.inProgress) {
+    } else if (this.props.data.app.checkingForUpdate.inProgress) {
       newVersionMsg = (
         <Loading />
       );
@@ -88,5 +88,11 @@ module.exports = connectRedux()(React.createClass({
       step: name
     });
   },
-}));
+});
+
+
+
+module.exports = connectRedux()(Comonent);
+
+
 

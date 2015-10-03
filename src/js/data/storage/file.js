@@ -9,7 +9,7 @@ var ipc = require('ipc');
 export default class ElectronAppFileStorage {
 
   constructor(logger) {
-    this.logger = logger;
+    this.logger = logger.create('file');
   }
 
   type () {

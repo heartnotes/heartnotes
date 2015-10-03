@@ -10,10 +10,19 @@ exports.app = function() {
 };
 
 
+exports.alert = function() {
+  return {
+    msg: null,
+    type: null,
+  };
+};
+
+
 exports.diary = function() {
   return {
+    name: null,
     derivedKeys: null,
-    entriesLoaded: false,
+    entries: null,
 
     creating: {},
     opening: {},

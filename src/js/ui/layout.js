@@ -9,11 +9,12 @@ var MainMenu = require('./components/mainMenu'),
   Logo = require('./components/logo');
 
 
-module.exports = connectRedux(['init'])(React.createClass({
+var Component = React.createClass({
   render: function() {    
     var content = null;
 
-    if (this.props.passwordEntered && this.props.entriesLoaded) {
+    if (this.props.data.diary.derivedKeys 
+          && !!this.props.data.diary.entries) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();
@@ -21,7 +22,7 @@ module.exports = connectRedux(['init'])(React.createClass({
 
     return (
       <div id="layout">
-        <UserAlert msg={this.props.userAlertMsg} type={this.props.userAlertType} />
+        <UserAlert {...this.props.data.alert} />
         {content}
       </div>
     );    
@@ -54,4 +55,9 @@ module.exports = connectRedux(['init'])(React.createClass({
     );
   },
 
-}));
+});
+
+
+module.exports = connectRedux(['init'])(Component);
+
+

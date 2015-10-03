@@ -3,7 +3,6 @@
 var sjcl = require('./sjcl');
 
 import { Timer } from 'clockmaker';
-var Store = require('../store');
 
 
 var randomNumGenerator = sjcl.random;
@@ -13,9 +12,9 @@ var randomNumGenerator = sjcl.random;
 /** 
  * Cryptographic PRNG data generator.
  */
-export default class Csrng extends Store {
-  constructor (flux, logger) {
-    super(flux, logger);
+export default class Csrng {
+  constructor (logger) {
+    this.logger = logger.create('csrng');
 
     this._initEntropyCollector();
 
@@ -47,15 +46,11 @@ export default class Csrng extends Store {
       if (needEntropy) {
         this.logger.info('waiting for entropy');
 
-        this.setState({
-          needEntropy: true
-        });
+        this.state.needEntropy = true;
       } else {
         this.logger.info('got entropy');
 
-        this.setState({
-          needEntropy: false
-        });
+        this.state.needEntropy = false;
 
         // don't need to check anymore
         timer.stop();

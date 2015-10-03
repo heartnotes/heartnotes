@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import Q from 'bluebird';
+import $ from 'jquery';
 
 import Actions from './actions';
-import Storage from './storage/index';
-import Crypto from './crypto/index';
+import { instance as Storage } from './storage/index';
+import { instance as Crypto } from './crypto/index';
 
 
 
@@ -30,19 +31,11 @@ function buildAction(type, payload = {}) {
 // ------------------------------------------------------
 
 
+
 export function init() {
   return function(dispatch) {
-    return Q.all([
-      dispatch(buildAction(Actions.INIT)),
-      dispatch(exports.checkForUpdates()),
-    ]);
-  };
-};
+    dispatch(buildAction(Actions.INIT));
 
-
-
-export function checkForUpdates() {
-  return function(dispatch) {
     dispatch(buildAction(Actions.CHECK_FOR_UPDATES_START));
 
     return Q.cast($.ajax({
@@ -55,9 +48,10 @@ export function checkForUpdates() {
       })
       .catch((err) => {
         dispatch(buildAction(Actions.CHECK_FOR_UPDATES_ERROR, err));
-      });
+      });      
   };
 };
+
 
 
 export function chooseDiary() {
@@ -137,7 +131,7 @@ export function openDiary(name, password) {
         dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err));
 
         Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.OPEN_DIARY_RESET, err));
+          dispatch(buildAction(Actions.OPEN_DIARY_RESET));
         });
       })
   }
@@ -145,4 +139,82 @@ export function openDiary(name, password) {
 
 
 
+
+function _deriveKeyFromNewPassword (dispatch, password) {
+  dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+    password: password
+  }));
+
+  return Crypto.deriveNewKey(password) 
+    .then((derivedKeyData) => {
+      // encrypt key with itself to produce key checking value
+      return Crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
+        .then((keyTest) => {
+          dispatch(buildAction(Actions.DERIVE_KEYS_RESULT, derivedKeyData));
+
+          return _.extend({}, derivedKeyData, {
+            meta: {
+              keyTest: keyTest,
+              salt: derivedKeyData.salt,
+              iterations: derivedKeyData.iterations,
+            }
+          });
+        });
+    })
+    .catch((err) => {
+      dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
+
+      throw err;
+    });
+}
+
+
+
+function _showAlert(dispatch, msg, type = 'info') {
+  dispatch(buildAction(Actions.USER_ALERT, {
+    msg: msg,
+    type: type,
+  }));
+
+  return Q.delay(2000).then(() => {
+    dispatch(buildAction(Actions.USER_ALERT, {
+      msg: null,
+      type: null,
+    }));      
+  });
+}
+
+
+
+export function createDiary(password) {
+  return function(dispatch) {
+    dispatch(buildAction(Actions.CREATE_DIARY_START, {
+      password: password,
+    }));
+
+
+    return _deriveKeyFromNewPassword(dispatch, password)
+      .then((derivedKeyData) => {
+        return Storage.createNewDiary(_.pick(derivedKeyData, 'meta'))
+          .then((name) => {
+            if (!name) {
+              throw new Error('Please choose a location to save the file in');
+            }
+
+            dispatch(buildAction(Actions.CREATE_DIARY_RESULT, {
+              name: name,
+            }));
+
+            _showAlert(dispatch, 'Diary created!');
+          });
+      })
+      .catch(function(err) {
+        dispatch(buildAction(Actions.CREATE_DIARY_ERROR, err));
+
+        return Q.delay(2000).then(() => {
+          dispatch(buildAction(Actions.CREATE_DIARY_RESET));      
+        });
+      });
+  };
+}
 

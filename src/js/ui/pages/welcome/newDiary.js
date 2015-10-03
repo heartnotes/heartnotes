@@ -5,9 +5,11 @@ var Button = require('../../components/button'),
   CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup'),
   UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
 
+import { connectRedux } from '../../helpers/decorators';
 
 
-module.exports = React.createClass({
+
+var Component = React.createClass({
   propTypes: {
     showStep: React.PropTypes.func.isRequired,
     isActive: React.PropTypes.bool.isRequired,
@@ -22,7 +24,7 @@ module.exports = React.createClass({
   render: function() { 
     var buttonAttrs = {
       onClick: this._savePassword,
-      animActive: !!this.props.nowCreatingDiary,
+      animActive: !!this.props.data.diary.creating.inProgress,
     };
 
     if (!this.state.password || !this.state.password.length) {
@@ -58,7 +60,7 @@ module.exports = React.createClass({
       return;
     }
     
-    if (this.props.derivedKeys) {
+    if (this.props.data.diary.name) {
       this.props.showStep('loadDiary');
     }
   },
@@ -72,8 +74,7 @@ module.exports = React.createClass({
   _savePassword: function() {
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.flux.getActions('user')
-          .createNewDataFile(this.state.password);
+        this.props.actions.createDiary(this.state.password);
       }
     });
   },
@@ -83,4 +84,10 @@ module.exports = React.createClass({
   },
 
 });
+
+
+
+module.exports = connectRedux(['createDiary'])(Component);
+
+
 

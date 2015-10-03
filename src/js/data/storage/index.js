@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
+import Logger from '../../utils/logger';
 
 var BrowserStorage = require('./browser'),
     FileStorage = require('./file');
@@ -14,10 +15,10 @@ const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 export class StorageManager {
 
   constructor() {
-    this.logger = window.rootLogger.create('storage');
+    this.logger = Logger.create('storage');
 
-    this.browserStorage = new BrowserStorage(this.logger.create('browser'));
-    this.fileStorage = new FileStorage(this.logger.create('file'));
+    this.browserStorage = new BrowserStorage(this.logger);
+    this.fileStorage = new FileStorage(this.logger);
 
     this.storage = (Detect.isElectronApp() ? this.fileStorage : this.browserStorage);
 

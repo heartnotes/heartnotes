@@ -8,15 +8,15 @@ module.exports = React.createClass({
   render: function() {
     var derivingMsg = null;
 
-    if (this.props.nowOpeningDiary) {
-      if (this.props.nowDerivingKeys) {
+    if (this.props.data.diary.opening.inProgress) {
+      if (this.props.data.diary.derivingKeys.inProgress) {
         derivingMsg = (
           <div>Checking password.....</div>
         );
       }
     }
 
-    if (this.props.openDataFileError) {
+    if (this.props.data.diary.opening.error) {
       derivingMsg = (
         <div className="error">Sorry, password incorrect!</div>
       );

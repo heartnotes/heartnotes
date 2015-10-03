@@ -28,10 +28,11 @@ module.exports = React.createClass({
                 }
             };
 
-            return ( < div className = "progress" > < label > {
-                    this.props.text
-                } < /label>
-        <div {...attrs}></div > < /div>
+            return (
+                <div className = "progress">
+                    <label>{this.props.text}</label>
+                    <div {...attrs}></div>
+                </div>
     );
   },
 
