@@ -1,6 +1,10 @@
+import _ from 'lodash';
 import React from 'react';
+import moment form 'moment';
+
 import { connect } from 'react-redux';
 
+import Logger from '../../utils/logger';
 import * as ActionCreators from '../../data/actionCreators';
 
 
@@ -39,13 +43,26 @@ export function connectRedux(actionCreators = []) {
  * Intermediate layer between `connectRedux` and component which adds useful 
  * methods for sorting and filtering redux data.
  */
-export function withMethods() {
+export function storeMethods() {
   return function decorator(Component) {
     return React.createClass({
+      getInitialState: function() {
+        return {
+          logger: Logger.create('storeMethods');
+        }
+      },
+
       render () {
         let props = this.props;
 
-        props.getEntry = this.getEntry;
+        [
+          'getEntry',
+          'getEntryByDate',
+          'getTodayEntry',
+        ]
+          .forEach((e) => {
+            props.data[e] = this[e];
+          });
 
         return (
           <Component {...props} />
@@ -53,57 +70,33 @@ export function withMethods() {
       }
 
       getEntry (id) {
+        this.state.logger.debug('get entry by id', id);
 
+        return _.get(this.props.data, 'entries', {})[id];
       }
 
 
-      get (entryId) {
-        // this.logger.debug('get', entryId);
-        return this.state.entries[entryId];
-      }
-
-
-      getByDate (date) {
+      getEntryByDate (date) {
         var ts = moment(date).startOf('day').valueOf();
 
-        this.logger.debug('get by date', date, ts);
+        this.state.logger.debug('get entry by date', date, ts);
 
-        var entry = _.find(this.state.entries, function(e) {
+        var entry = _.find(this.props.data.entries || {}, function(e) {
           return e.ts === ts;
         });
 
-        this.logger.debug('got by date', ts, entry ? entry.id : null);
+        this.state.logger.debug('got by date', ts, entry ? entry.id : null);
 
         return entry;
       }
 
 
-      getToday () {
-        this.logger.debug('get today');
+      getTodayEntry () {
+        this.state.logger.debug('get today\'s entry');
 
-        return this.getByDate(moment());
+        return this.getEntryByDate(new Date());
       }
-    }
-    return connect(
-      function mapStateToProps(state) {
-        return {
-          data: state
-        };
-      },
-      function mapDispatchToProps(dispatch) {
-        let ret = {};
-
-        actionCreators.forEach(function(ac) {
-          ret[ac] = function() {
-            return dispatch(ActionCreators[ac].apply(null, arguments));
-          }
-        });
-
-        return {
-          actions: ret
-        };
-      }
-    )(Component);
+    });
   }
 }
 

@@ -10,7 +10,7 @@ var Timeline = require('../components/timeline'),
   EntryEditor = require('../components/entryEditor');
 
 
-module.exports = React.createClass({
+var Component = React.createClass({
   mixins: [Navigation],
 
   getInitialState: function() {
@@ -20,25 +20,24 @@ module.exports = React.createClass({
   },
 
   render: function() { 
+    let entryData = {
+      entries: this.props.data.entries,
+      entryDataReady: !!this.props.data.entries,
+      entryId: this.props.params.entryId,
+    };
+
     return (
       <div className={"entriesView " + this.state.layout}>
-        <FluxComponent connectToStores={{
-          entries: store => ({
-            entryId: this.props.params.entryId,
-            entries: store.search(),
-            entryDataReady: store.state.entryDataReady,
-          }),
-        }}>
-          <Timeline 
-            selected={this.props.params.entryId}
-            onSelect={this._onSelect} />
-          <ToggleButton 
-            openClass="toggle-timeline open"
-            closeClass="toggle-timeline closed"
-            initiallyOpen={true}
-            onChange={this._onToggleTimeline} />
-          <EntryEditor canDelete={true} />
-        </FluxComponent>
+        <Timeline 
+          {...entryData}
+          selected={this.props.params.entryId}
+          onSelect={this._onSelect} />
+        <ToggleButton 
+          openClass="toggle-timeline open"
+          closeClass="toggle-timeline closed"
+          initiallyOpen={true}
+          onChange={this._onToggleTimeline} />
+        <EntryEditor {...entryData} canDelete={true} />
       </div>
     );
   },
@@ -58,3 +57,10 @@ module.exports = React.createClass({
   },
 
 });
+
+
+
+module.exports = connectRedux()(storeMethods()(Component));
+
+
+
