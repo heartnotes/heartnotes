@@ -128,6 +128,26 @@ exports.diary = function(state = InitialState.diary(), action) {
         creating: AsyncState.reset(state.creating),
       });
 
+    case Actions.LOAD_ENTRIES_START:
+      return _.extend({}, state, {
+        loadingEntries: AsyncState.start(state.loadingEntries),
+      });
+
+    case Actions.LOAD_ENTRIES_RESULT:
+      return _.extend({}, state, {
+        loadingEntries: AsyncState.result(state.loadingEntries, action.payload),
+      });
+
+    case Actions.LOAD_ENTRIES_ERROR:
+      return _.extend({}, state, {
+        loadingEntries: AsyncState.error(state.loadingEntries, action.payload),
+      });
+
+    case Actions.LOAD_ENTRIES_RESET:
+      return _.extend({}, state, {
+        loadingEntries: AsyncState.reset(state.loadingEntries),
+      });
+
     case Actions.DERIVE_KEYS_START:
       return _.extend({}, state, {
         derivingKeys: AsyncState.start(state.derivingKeys),

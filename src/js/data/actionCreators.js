@@ -218,3 +218,53 @@ export function createDiary(password) {
   };
 }
 
+
+
+export function loadEntries() {
+  return function(dispatch, getState) {
+    let state = getState();
+
+    dispatch(buildAction(Actions.LOAD_ENTRIES_START));
+
+    return Q.try(function() {
+      if (!state.diary.name) {
+        throw new Error('No diary loaded');
+      }      
+
+      return Storage.loadEntriesFromDiary(state.diary.name);
+    })
+      .then( function gotEntries(encryptedEntries) {
+        if (!encryptedEntries) {
+          // self.logger.info('no existing entries found');
+          return {};
+        } else {
+          // self.logger.info('decrypt entries', encryptedEntries.length);
+          return self.crypto.decrypt(
+            self.state.derivedKeys.key1, encryptedEntries
+          );
+            // .catch(function(err) {
+            //   self.logger.error('entry decryption error', err);
+
+            //   throw err;
+            // });
+        }
+      })
+      .then(function gotEntries(entries) {
+        // self.logger.debug('decrypted entries', _.keys(entries).length);
+
+        dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
+          entries: entries
+        }));
+      })
+      .catch(function(err) {
+        dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
+
+        return Q.delay(2000).then(() => {
+          dispatch(buildAction(Actions.LOAD_ENTRIES_RESET));      
+        });
+      });
+  };
+}
+
+
+

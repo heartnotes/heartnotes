@@ -6,9 +6,15 @@ var moment = require('moment');
 var Timeline = require('../components/timeline'),
   EntryEditor = require('../components/entryEditor');
 
+import { connectRedux } from '../helpers/decorators';
 
-module.exports = React.createClass({
+
+
+
+var Component = React.createClass({
   render: function() { 
+    let entryId = this.props.data.diary.entries[];
+
     return (
       <div className="newEntry">
         <FluxComponent connectToStores={{
@@ -23,3 +29,9 @@ module.exports = React.createClass({
     );
   },
 });
+
+
+
+module.exports = connectRedux(
+  'getTodayEntry'
+)(Component);

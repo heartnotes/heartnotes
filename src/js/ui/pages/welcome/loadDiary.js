@@ -48,7 +48,7 @@ var Component = React.createClass({
 
     // if just became active then kick-off entry loading
     if (!oldProps.isActive) {
-      // this.props.actions.loadEntries();
+      this.props.actions.loadEntries();
     }
   },
 
@@ -59,5 +59,5 @@ var Component = React.createClass({
 });
 
 
-module.exports = connectRedux([/*'loadEntries'*/])(Component);
+module.exports = connectRedux(['loadEntries'])(Component);
 
