@@ -141,6 +141,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.LOAD_ENTRIES_ERROR:
       return _.extend({}, state, {
         loadingEntries: AsyncState.error(state.loadingEntries, action.payload),
+        entries: action.payload.entries || {},
       });
 
     case Actions.LOAD_ENTRIES_RESET:

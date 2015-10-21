@@ -6,6 +6,7 @@ import Actions from './actions';
 import { instance as Storage } from './storage/index';
 import { instance as Crypto } from './crypto/index';
 
+var Logger = require('../utils/logger').create('ac');
 
 
 // ------------------------------------------------------
@@ -235,10 +236,12 @@ export function loadEntries() {
     })
       .then( function gotEntries(encryptedEntries) {
         if (!encryptedEntries) {
-          // self.logger.info('no existing entries found');
+          Logger.info('no existing entries found');
+
           return {};
         } else {
-          // self.logger.info('decrypt entries', encryptedEntries.length);
+          Logger.info('decrypt entries', encryptedEntries.length);
+
           return self.crypto.decrypt(
             self.state.derivedKeys.key1, encryptedEntries
           );
@@ -250,7 +253,7 @@ export function loadEntries() {
         }
       })
       .then(function gotEntries(entries) {
-        // self.logger.debug('decrypted entries', _.keys(entries).length);
+        Logger.debug('decrypted entries', _.keys(entries).length);
 
         dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
           entries: entries
@@ -258,10 +261,6 @@ export function loadEntries() {
       })
       .catch(function(err) {
         dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
-
-        return Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.LOAD_ENTRIES_RESET));      
-        });
       });
   };
 }

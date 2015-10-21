@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
-import moment form 'moment';
+import moment from 'moment';
 
 import { connect } from 'react-redux';
 
+import { BaseComponent } from './components';
 import Logger from '../../utils/logger';
 import * as ActionCreators from '../../data/actionCreators';
 
@@ -45,12 +46,15 @@ export function connectRedux(actionCreators = []) {
  */
 export function storeMethods() {
   return function decorator(Component) {
-    return React.createClass({
-      getInitialState: function() {
-        return {
-          logger: Logger.create('storeMethods');
-        }
-      },
+
+    class Decorator extends BaseComponent {
+      constructor() {
+        super();
+
+        this.state = {
+          logger: Logger.create('storeMethods'),
+        };
+      }
 
       render () {
         let props = this.props;
@@ -96,7 +100,10 @@ export function storeMethods() {
 
         return this.getEntryByDate(new Date());
       }
-    });
+    }
+
+    return Decorator;
+    
   }
 }
 

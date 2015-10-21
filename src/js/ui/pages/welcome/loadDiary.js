@@ -20,7 +20,9 @@ var Component = React.createClass({
     if (this.props.data.diary.loadingEntries.error) {
       progressMsg += 'failed!';
 
-      var msg = this.props.data.diary.loadingEntries.error.toString();
+      var msg = (
+        <span>{this.props.data.diary.loadingEntries.error.toString()}</span>
+      );
 
       loadingError = (
         <div>

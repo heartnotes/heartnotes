@@ -1,13 +1,13 @@
-var _ = require('lodash'),
-  React = require('react');
+import _ from 'lodash';
+import React from 'react';
+import { Link, Navigation } 'react-router';
 
-var Router = require('react-router');
-var { Link, Navigation } = Router;
+import Timeline from '../components/timeline';
+import Icon from '../components/icon';
+import ToggleButton from '../components/toggleButton';
+import EntryEditor from '../components/entryEditor';
 
-var Timeline = require('../components/timeline'),
-  Icon = require('../components/icon'),
-  ToggleButton = require('../components/toggleButton'),
-  EntryEditor = require('../components/entryEditor');
+import { connectRedux, storeMethods } from '../helpers/decorators';
 
 
 var Component = React.createClass({
