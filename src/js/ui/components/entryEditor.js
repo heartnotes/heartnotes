@@ -5,27 +5,28 @@ var _ = require('lodash'),
 var { Navigation } = require('react-router');
 
 
-  
-
 var DateString = require('./date'),
   DatePicker = require('./datePicker'),
   IconButton = require('./iconButton'),
   AskUserDialog = require('./askUserDialog');
 
 
-module.exports = React.createClass({
+import { connectRedux, storeMethods } from '../helpers/decorators';
+
+
+
+
+var Component = React.createClass({
   mixins: [Navigation],
 
   propTypes: {
     entryId: React.PropTypes.string,
-    entryDataReady: React.PropTypes.bool,
     canDelete: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       entryId: null,
-      entryDataReady: false,
       canDelete: false,
     };
   },
@@ -117,7 +118,7 @@ module.exports = React.createClass({
     this._changeHandler = _.debounce(() => {
       let entry = this._getActiveEntry();
 
-      this.props.flux.getActions('entry').update(
+      this.props.actions.updateEntry(
         entry.id, entry.ts, this.editor.getData()
       );
     }, 500);
@@ -135,8 +136,8 @@ module.exports = React.createClass({
     var oldDate = moment(this.state.changedToDate || Date.now()).startOf('day').valueOf(), 
       newDate = moment(newState.changedToDate || Date.now()).startOf('day').valueOf();
 
-    var oldIsReady = this.props.entryDataReady,
-      newIsReady = newProps.entryDataReady;
+    var oldIsReady = !!this.props.data.entries,
+      newIsReady = !!newProps.data.entries;
 
     return (newId !== oldId || oldDate !== newDate || (newIsReady && !oldIsReady));
   },
@@ -160,11 +161,10 @@ module.exports = React.createClass({
 
 
   _getActiveEntry: function() {
-    var store = this.props.flux.getStore('entries'),
-      entry = null;
+    let entry = null;
 
     if (this.state.changedToDate) {
-      entry = store.getByDate(this.state.changedToDate);
+      entry = this.props.data.getEntryByDate(this.state.changedToDate);
 
       if (!entry) {
         entry = {
@@ -172,10 +172,10 @@ module.exports = React.createClass({
         };
       }
     } else {
-      entry = store.get(this.props.entryId);
+      entry = this.props.data.getEntry(this.props.entryId);
 
       if (!entry) {
-        entry = store.getToday() || {};
+        entry = this.props.data.getTodayEntry() || {};
       }
     }
 
@@ -202,12 +202,21 @@ module.exports = React.createClass({
   _onDelete: function() {
     this.refs.confirmDelete.ask((choice) => {
       if ('Yes' === choice) {
-        this.props.flux.getActions('entry').delete(this._getActiveEntry().id);
-        this.transitionTo('entries');
+        this.props.actions.deleteEntry(this._getActiveEntry().id)
+          .then(() => {
+            this.transitionTo('entries');
+          });
       }
     });
   },
 
 
 });
+
+
+
+module.exports = connectRedux([
+  'updateEntry',
+  'deleteEntry',
+])(storeMethods()(Component));
 

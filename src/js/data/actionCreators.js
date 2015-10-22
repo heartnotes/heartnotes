@@ -260,10 +260,21 @@ export function loadEntries() {
         }));
       })
       .catch(function(err) {
-        dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
+        console.error(err.stack);
+        // dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
       });
   };
 }
+
+
+
+
+export function updateEntry() {
+  return function(dispatch) {
+    
+  }
+}
+
 
 
 

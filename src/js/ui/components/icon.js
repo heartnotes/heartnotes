@@ -27,7 +27,9 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var icon = <i ref="icon" className={"icon-widget fa fa-" + this.props.name} />;
+    var icon = (
+      <i ref="icon" className={"icon-widget fa fa-" + this.props.name} />
+    );
 
     if (this.props.tooltip) {
       return (
@@ -42,22 +44,27 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     this.$icon = $(React.findDOMNode(this.refs.icon));
-
-    this.$icon.on('mouseover', this._showPopup);
-    this.$icon.on('mouseout', this._hidePopup);
+    
+    this.$icon.off('mouseover').on('mouseover', this._showPopup);
+    this.$icon.off('mouseout').on('mouseout', this._hidePopup);
   },
 
+
   _showPopup: function() {
-    this.setState({
-      showPopup: true
-    });
+    if (this.isMounted()) {
+      this.setState({
+        showPopup: true
+      });
+    }
   },
 
 
   _hidePopup: function() {
-    this.setState({
-      showPopup: false
-    });
+    if (this.isMounted()) {
+      this.setState({
+        showPopup: false
+      });
+    }
   },
 
 

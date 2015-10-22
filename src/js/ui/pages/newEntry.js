@@ -14,11 +14,11 @@ import { connectRedux, storeMethods } from '../helpers/decorators';
 var Component = React.createClass({
   render: function() { 
     let loaded = !!this.props.data.entries,
-      todayEntryId = this.props.data.getTodayEntry(),
+      todayEntryId = this.props.data.getTodayEntry();
 
     return (
       <div className="newEntry">
-        <EntryEditor entryId={todayEntryId} entryDataReady{loaded} />
+        <EntryEditor entryId={todayEntryId} entryDataReady={loaded} />
       </div>
     );
   },

@@ -97,9 +97,7 @@ var Component = React.createClass({
       return;
     }
 
-    var password = this.state.password;
-
-    if (password && password.length && this.props.data.diary.derivedKeys) {
+    if (this.props.data.diary.name) {
       this.props.showStep('loadDiary');
     }
   },

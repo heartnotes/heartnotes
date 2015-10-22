@@ -13,8 +13,7 @@ var Component = React.createClass({
   render: function() {    
     var content = null;
 
-    if (this.props.data.diary.derivedKeys 
-          && !!this.props.data.diary.entries) {
+    if (this.props.data.diary.name && this.props.data.diary.entries) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();

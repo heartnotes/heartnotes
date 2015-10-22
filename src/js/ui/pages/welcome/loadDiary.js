@@ -61,5 +61,6 @@ var Component = React.createClass({
 });
 
 
+
 module.exports = connectRedux(['loadEntries'])(Component);
 
