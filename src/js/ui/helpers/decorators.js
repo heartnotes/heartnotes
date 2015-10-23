@@ -58,16 +58,19 @@ export function storeMethods() {
       }
 
       render () {
-        let methods = new Methods(this.props.data);
+        let props = this.props;
+
+        let methods = new Methods(props.data);
 
         props.methods = {};
 
-        Object.keys(methods)
-          .forEach((e) => {
-            if (_.isFunction(methods[e])) {
-              props.methods[e] = methods[e];
-            }
+        Object.getOwnPropertyNames(methods.constructor.prototype)
+          .filter(m => typeof methods[m] === 'function')
+          .forEach(m => {
+            props.methods[m] = methods[m].bind(methods);
           });
+
+        console.log(props);
 
         return (
           <Component {...props} />

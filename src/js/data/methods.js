@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Logger from '../utils/logger';
 
 
@@ -7,14 +8,14 @@ export default class Methods {
     this.logger = Logger.create('methods');
   }
 
-  function getEntry (id) {
+  getEntry (id) {
     this.logger.debug('get entry by id', id);
 
     return (this.state.diary.entries || {})[id];
   }
 
 
-  function getEntryByDate (date) {
+  getEntryByDate (date) {
     var ts = moment(date).startOf('day').valueOf();
 
     this.logger.debug('get entry by date', date, ts);
