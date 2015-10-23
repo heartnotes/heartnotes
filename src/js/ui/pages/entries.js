@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Link, Navigation } from'react-router';
+import { Link, Navigation } from 'react-router';
 
 import Timeline from '../components/timeline';
 import Icon from '../components/icon';
@@ -20,21 +20,14 @@ var Component = React.createClass({
   },
 
   render: function() { 
-    let entryData = _.extend(
-      _.pick(this.props.data, 
-        'entries', 'getEntry', 'getEntryByDate', 'getTodayEntry',
-      ),
-      {
-        entryDataReady: !!this.props.data.entries,
-        entryId: this.props.params.entryId,
-      }
-    );
+    let entries = this.props.data.diary.entries;
+    let entryId = this.props.params.entryId;
 
     return (
       <div className={"entriesView " + this.state.layout}>
         <Timeline 
-          {...entryData}
-          selected={this.props.params.entryId}
+          entries={entries}
+          selected={entryId}
           onSelect={this._onSelect} />
         <ToggleButton 
           openClass="toggle-timeline open"

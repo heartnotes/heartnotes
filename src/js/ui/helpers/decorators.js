@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { BaseComponent } from './components';
 import Logger from '../../utils/logger';
 import * as ActionCreators from '../../data/actionCreators';
+import Methods from '../../data/methods';
 
 
 /**
@@ -57,48 +58,20 @@ export function storeMethods() {
       }
 
       render () {
-        let props = this.props;
+        let methods = new Methods(this.props.data);
 
-        [
-          'getEntry',
-          'getEntryByDate',
-          'getTodayEntry',
-        ]
+        props.methods = {};
+
+        Object.keys(methods)
           .forEach((e) => {
-            props.data[e] = this[e];
+            if (_.isFunction(methods[e])) {
+              props.methods[e] = methods[e];
+            }
           });
 
         return (
           <Component {...props} />
         );
-      }
-
-      getEntry (id) {
-        this.state.logger.debug('get entry by id', id);
-
-        return _.get(this.props.data, 'entries', {})[id];
-      }
-
-
-      getEntryByDate (date) {
-        var ts = moment(date).startOf('day').valueOf();
-
-        this.state.logger.debug('get entry by date', date, ts);
-
-        var entry = _.find(this.props.data.entries || {}, function(e) {
-          return e.ts === ts;
-        });
-
-        this.state.logger.debug('got by date', ts, entry ? entry.id : null);
-
-        return entry;
-      }
-
-
-      getTodayEntry () {
-        this.state.logger.debug('get today\'s entry');
-
-        return this.getEntryByDate(new Date());
       }
     }
 

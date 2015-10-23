@@ -29,6 +29,11 @@ const actionTypes = [
   'DERIVE_KEYS_START',
   'DERIVE_KEYS_RESULT',
   'DERIVE_KEYS_ERROR',
+
+  'UPDATE_ENTRY_START',
+  'UPDATE_ENTRY_RESULT',
+  'UPDATE_ENTRY_ERROR',
+  'UPDATE_ENTRY_RESET',  
 ];
 
 actionTypes.forEach(function(type) {

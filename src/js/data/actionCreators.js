@@ -3,6 +3,7 @@ import Q from 'bluebird';
 import $ from 'jquery';
 
 import Actions from './actions';
+import Methods from './methods';
 import { instance as Storage } from './storage/index';
 import { instance as Crypto } from './crypto/index';
 
@@ -25,6 +26,17 @@ function buildAction(type, payload = {}) {
     payload: payload,
   };
 };
+
+
+
+// ------------------------------------------------------
+// Re-usable methods
+// ------------------------------------------------------
+
+function saveDiary(dispatch, getState) {
+  return Q.resolve();
+}
+
 
 
 // ------------------------------------------------------
@@ -260,8 +272,11 @@ export function loadEntries() {
         }));
       })
       .catch(function(err) {
-        console.error(err.stack);
-        // dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
+        dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
+
+        return Q.delay(2000).then(() => {
+          dispatch(buildAction(Actions.LOAD_ENTRIES_RESET));      
+        });
       });
   };
 }
@@ -269,12 +284,57 @@ export function loadEntries() {
 
 
 
-export function updateEntry() {
+export function updateEntry(id, ts, content) {
+  return function(dispatch, getState) {
+    dispatch(buildAction(Actions.UPDATE_ENTRY_START));
+
+    let methods = new Methods(getState());
+
+    return new Q(function(resolve, reject) {
+      var entry = methods.getEntry(id) || methods.getEntryByDate(ts);
+
+      if (!entry) {
+        ts = moment(ts || Date.now()).startOf('day').valueOf();
+
+        Logger.debug('create entry', ts);
+
+        Crypto.hash(ts, Math.random() * 100000)
+          .then(function hashedVal(newId) {
+            resolve({
+              id: newId,
+              ts: ts,
+            });
+          })
+          .catch(reject);
+      } else {
+        resolve(entry);
+      }
+    })
+      .then(function entryReady(entry) {
+        entry.body = content;
+
+        dispatch(buildAction(Actions.UPDATE_ENTRY_RESULT, entry));
+      })
+      .catch(function(err) {
+        dispatch(buildAction(Actions.UPDATE_ENTRY_ERROR, err));
+
+        return Q.delay(2000).then(function() {
+          dispatch(buildAction(Actions.UPDATE_ENTRY_RESET));
+        });
+      })
+      .then(function saveDiary() {
+        return saveDiary(dispatch, getState);
+      });
+  }
+}
+
+
+
+export function deleteEntry() {
   return function(dispatch) {
     
   }
 }
-
 
 
 

@@ -164,7 +164,7 @@ var Component = React.createClass({
     let entry = null;
 
     if (this.state.changedToDate) {
-      entry = this.props.data.getEntryByDate(this.state.changedToDate);
+      entry = this.props.methods.getEntryByDate(this.state.changedToDate);
 
       if (!entry) {
         entry = {
@@ -172,10 +172,10 @@ var Component = React.createClass({
         };
       }
     } else {
-      entry = this.props.data.getEntry(this.props.entryId);
+      entry = this.props.methods.getEntry(this.props.entryId);
 
       if (!entry) {
-        entry = this.props.data.getTodayEntry() || {};
+        entry = this.props.methods.getTodayEntry() || {};
       }
     }
 

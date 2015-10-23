@@ -1,3 +1,4 @@
+import _ from 'lodash';
 var React = require('react');
 
 import { connectRedux } from './helpers/decorators';

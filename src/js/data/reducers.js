@@ -149,6 +149,32 @@ exports.diary = function(state = InitialState.diary(), action) {
         loadingEntries: AsyncState.reset(state.loadingEntries),
       });
 
+    case Actions.UPDATE_ENTRY_START:
+      return _.extend({}, state, {
+        updatingEntry: AsyncState.start(state.updatingEntry),
+      });
+
+    case Actions.UPDATE_ENTRY_RESULT:
+      let entries = _.extend({}, state.entries),
+        newEntry = action.payload;
+
+      entries[newEntry.id] = newEntry;
+
+      return _.extend({}, state, {
+        updatingEntry: AsyncState.result(state.updatingEntry, action.payload),
+        entries: entries,
+      });
+
+    case Actions.UPDATE_ENTRY_ERROR:
+      return _.extend({}, state, {
+        updatingEntry: AsyncState.error(state.updatingEntry, action.payload),
+      });
+
+    case Actions.UPDATE_ENTRY_RESET:
+      return _.extend({}, state, {
+        updatingEntry: AsyncState.reset(state.updatingEntry),
+      });
+
     case Actions.DERIVE_KEYS_START:
       return _.extend({}, state, {
         derivingKeys: AsyncState.start(state.derivingKeys),

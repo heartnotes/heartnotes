@@ -31,6 +31,7 @@ exports.diary = function() {
     derivingKeys: {},
     changingPassword: {},
     loadingEntries: {},
+    updatingEntry: {},
     savingEntries: {},
   };
 };
