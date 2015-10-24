@@ -7,7 +7,10 @@ var Button = require('../../components/button'),
   ExportDataProgressPopup = require('../../components/exportDataProgressPopup');
 
 
-module.exports = React.createClass({
+import { connectRedux } from '../../helpers/decorators';
+
+
+var Component = React.createClass({
   render: function() { 
     var exportDataButtonAttrs = {
       onClick: this._export,
@@ -28,7 +31,13 @@ module.exports = React.createClass({
   _export: function(e) {
     e.preventDefault();
     
-    this.props.flux.getActions('user').exportData();
+    this.props.actions.exportData();
   },
 
 });
+
+
+module.exports = connectRedux([
+  'exportData'
+])(Component);
+

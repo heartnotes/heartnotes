@@ -35,12 +35,59 @@ function buildAction(type, payload = {}) {
 // ------------------------------------------------------
 
 
-function doSaveDiary(dispatch, getState) {
+
+function deriveKeyFromNewPassword (dispatch, password) {
+  dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+    password: password
+  }));
+
+  return Crypto.deriveNewKey(password) 
+    .then((derivedKeyData) => {
+      // encrypt key with itself to produce key checking value
+      return Crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
+        .then((keyTest) => {
+          dispatch(buildAction(Actions.DERIVE_KEYS_RESULT, derivedKeyData));
+
+          return _.extend({}, derivedKeyData, {
+            meta: {
+              keyTest: keyTest,
+              salt: derivedKeyData.salt,
+              iterations: derivedKeyData.iterations,
+            }
+          });
+        });
+    })
+    .catch((err) => {
+      dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
+
+      throw err;
+    });
+}
+
+
+
+function showAlert(dispatch, msg, type = 'info') {
+  dispatch(buildAction(Actions.USER_ALERT, {
+    msg: msg,
+    type: type,
+  }));
+
+  return Q.delay(2000).then(() => {
+    dispatch(buildAction(Actions.USER_ALERT, {
+      msg: null,
+      type: null,
+    }));      
+  });
+}
+
+
+
+function doSaveDiary(dispatch, getState, encKey) {
   dispatch(buildAction(Actions.SAVE_ENTRIES_START));
 
   let diary = getState().diary;
   let { entries, name, derivedKeys } = diary;
-  let encKey = derivedKeys.key1;
+  encKey = encKey || derivedKeys.key1;
 
   return Q.resolve()
     .then(function encryptEntries() {
@@ -66,7 +113,7 @@ function doSaveDiary(dispatch, getState) {
       dispatch(buildAction(Actions.SAVE_ENTRIES_RESULT));
     })
     .then(function shouldWeResave() {
-      if (getState().diary.saveEntriesRequested) {
+      if (0 <= getState().diary.saveEntriesRequested) {
         return doSaveDiary(dispatch, getState);
       }
     })
@@ -115,6 +162,7 @@ export function init() {
         dispatch(buildAction(Actions.CHECK_FOR_UPDATES_RESULT, release));
       })
       .catch((err) => {
+        Logger.error(err);
         dispatch(buildAction(Actions.CHECK_FOR_UPDATES_ERROR, err));
       });      
   };
@@ -138,6 +186,7 @@ export function chooseDiary() {
         dispatch(buildAction(Actions.CHOOSE_DIARY_RESULT, data));
       })
       .catch( (err) => {
+        Logger.error(err);
         dispatch(buildAction(Actions.CHOOSE_DIARY_ERROR, err));
 
         return Q.delay(2000).then(() => {
@@ -196,6 +245,7 @@ export function openDiary(name, password) {
         }));
       })
       .catch((err) => {
+        Logger.error(err);
         dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err));
 
         Q.delay(2000).then(() => {
@@ -208,60 +258,16 @@ export function openDiary(name, password) {
 
 
 
-function _deriveKeyFromNewPassword (dispatch, password) {
-  dispatch(buildAction(Actions.DERIVE_KEYS_START, {
-    password: password
-  }));
 
-  return Crypto.deriveNewKey(password) 
-    .then((derivedKeyData) => {
-      // encrypt key with itself to produce key checking value
-      return Crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
-        .then((keyTest) => {
-          dispatch(buildAction(Actions.DERIVE_KEYS_RESULT, derivedKeyData));
-
-          return _.extend({}, derivedKeyData, {
-            meta: {
-              keyTest: keyTest,
-              salt: derivedKeyData.salt,
-              iterations: derivedKeyData.iterations,
-            }
-          });
-        });
-    })
-    .catch((err) => {
-      dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
-
-      throw err;
-    });
-}
-
-
-
-function _showAlert(dispatch, msg, type = 'info') {
-  dispatch(buildAction(Actions.USER_ALERT, {
-    msg: msg,
-    type: type,
-  }));
-
-  return Q.delay(2000).then(() => {
-    dispatch(buildAction(Actions.USER_ALERT, {
-      msg: null,
-      type: null,
-    }));      
-  });
-}
 
 
 
 export function createDiary(password) {
   return function(dispatch) {
-    dispatch(buildAction(Actions.CREATE_DIARY_START, {
-      password: password,
-    }));
+    dispatch(buildAction(Actions.CREATE_DIARY_START));
 
 
-    return _deriveKeyFromNewPassword(dispatch, password)
+    return deriveKeyFromNewPassword(dispatch, password)
       .then((derivedKeyData) => {
         return Storage.createNewDiary(_.pick(derivedKeyData, 'meta'))
           .then((name) => {
@@ -271,12 +277,14 @@ export function createDiary(password) {
 
             dispatch(buildAction(Actions.CREATE_DIARY_RESULT, {
               name: name,
+              password: password,
             }));
 
-            _showAlert(dispatch, 'Diary created!');
+            showAlert(dispatch, 'Diary created!');
           });
       })
       .catch(function(err) {
+        Logger.error(err);
         dispatch(buildAction(Actions.CREATE_DIARY_ERROR, err));
 
         return Q.delay(2000).then(() => {
@@ -374,6 +382,7 @@ export function updateEntry(id, ts, content) {
         return saveDiary(dispatch, getState);
       })
       .catch(function(err) {
+        Logger.error(err);
         dispatch(buildAction(Actions.UPDATE_ENTRY_ERROR, err));
 
         return Q.delay(2000).then(function() {
@@ -411,4 +420,59 @@ export function deleteEntry(id) {
       });
   }
 }
+
+
+
+
+export function changePassword (oldPassword, newPassword) {
+  return function(dispatch, getState) {
+    dispatch(buildAction(Actions.CHANGE_PASSWORD_START));
+
+    let diary = getState().diary;
+
+    return Q.resolve()
+      .then(function checkOldPassword() {
+        if (diary.password !== oldPassword) {
+          throw new Error('Your current password is wrong');
+        }
+      })
+      .then(function updateMetaData() {
+        return deriveKeyFromNewPassword(dispatch, newPassword)
+          .then(function saveMetadata(derivedKeyData) {
+            return Storage.saveMetaDataToDiary(
+              diary.name, derivedKeyData.meta
+            )
+              .then(function saveEntries() {
+                return doSaveDiary(dispatch, getState, derivedKeyData.key1);
+              })
+              .then(function allDataUpdated() {
+                dispatch(buildAction(Actions.CHANGE_PASSWORD_RESULT, {
+                  password: newPassword,
+                  derivedKeys: derivedKeyData,
+                }));
+
+                return showAlert(dispatch, 'Password updated!');
+              });
+          });
+      })      
+      .catch(function(err){
+        Logger.error(err);
+        dispatch(buildAction(Actions.CHANGE_PASSWORD_ERROR, err));
+
+        return Q.delay(2000).then(function() {
+          dispatch(buildAction(Actions.CHANGE_PASSWORD_RESET));
+        });
+      });
+  }
+}
+
+
+
+export function exportData() {
+  return function(dispatch) {
+
+  }
+}
+
+
 

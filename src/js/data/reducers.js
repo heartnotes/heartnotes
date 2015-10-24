@@ -90,6 +90,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.OPEN_DIARY_RESULT:
       return _.extend({}, state, {
         name: action.payload.name,
+        password: action.payload.password,
         opening: AsyncState.result(state.opening, action.payload),
       });
 
@@ -115,6 +116,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
         name: action.payload.name,
+        password: action.payload.password,
         creating: AsyncState.result(state.creating, action.payload),
       });
 
@@ -225,6 +227,26 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         derivingKeys: AsyncState.error(state.derivingKeys, action.payload),
       });
+
+    case Actions.CHANGE_PASSWORD_START:
+      return _.extend({}, state, {
+        changingPassword: AsyncState.start(state.changingPassword),
+      });
+    case Actions.CHANGE_PASSWORD_RESULT:
+      return _.extend({}, state, {
+        changingPassword: AsyncState.result(state.changingPassword, action.payload),
+        password: action.payload.password,
+        derivedKeys: action.payload.derivedKeys,
+      });
+    case Actions.CHANGE_PASSWORD_ERROR:
+      return _.extend({}, state, {
+        changingPassword: AsyncState.error(state.changingPassword, action.payload),
+      });
+    case Actions.CHANGE_PASSWORD_RESET:
+      return _.extend({}, state, {
+        changingPassword: AsyncState.reset(state.changingPassword),
+      });
+
 
     default:
       return state;

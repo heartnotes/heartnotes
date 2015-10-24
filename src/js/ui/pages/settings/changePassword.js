@@ -10,7 +10,11 @@ var Button = require('../../components/button'),
   UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
 
 
-module.exports = React.createClass({
+import { connectRedux } from '../../helpers/decorators';
+
+
+
+var Component = React.createClass({
   getInitialState: function() {
     return {
       oldPassword: null,
@@ -91,7 +95,7 @@ module.exports = React.createClass({
 
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.flux.getActions('user').changePassword(
+        this.props.actions.changePassword(
           this.state.oldPassword, this.state.newPassword
         );
       }
@@ -99,3 +103,10 @@ module.exports = React.createClass({
   },
 
 });
+
+
+
+module.exports = connectRedux([
+  'changePassword'
+])(Component);
+

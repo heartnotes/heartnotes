@@ -42,6 +42,11 @@ const actionTypes = [
   'UPDATE_ENTRY_RESET',  
 
   'DELETE_ENTRY',
+
+  'CHANGE_PASSWORD_START',
+  'CHANGE_PASSWORD_RESULT',
+  'CHANGE_PASSWORD_ERROR',
+  'CHANGE_PASSWORD_RESET',
 ];
 
 actionTypes.forEach(function(type) {
