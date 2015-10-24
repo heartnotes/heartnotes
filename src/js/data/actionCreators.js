@@ -2,7 +2,9 @@ import _ from 'lodash';
 import Q from 'bluebird';
 import $ from 'jquery';
 import moment from 'moment';
+import React from 'react';
 
+import ExportedEntries from '../ui/components/ExportedEntries';
 import Actions from './actions';
 import Methods from './methods';
 import { instance as Storage } from './storage/index';
@@ -196,6 +198,13 @@ export function chooseDiary() {
   }
 };
 
+
+
+export function closeDiary() {
+  return function(dispatch) {
+    dispatch(buildAction(Actions.CLOSE_DIARY));
+  }
+}
 
 
 
@@ -469,10 +478,38 @@ export function changePassword (oldPassword, newPassword) {
 
 
 export function exportData() {
-  return function(dispatch) {
+  return function(dispatch, getState) {
+    dispatch(buildAction(Actions.EXPORT_DATA_START));
+
+    let { entries } = getState().diary;
+
+    let content = React.renderToString(
+      <ExportedEntries entries={entries} />
+    );
+
+    return Storage.exportToFile(content)
+      .then(function didUserCancel(filePath) {
+        // user cancelled?
+        if (!filePath) {
+          return dispatch(buildAction(Actions.EXPORT_DATA_RESET));
+        }
+
+        dispatch(buildAction(Actions.EXPORT_DATA_RESULT, {
+          filePath: filePath,
+        }));
+
+        return showAlert(dispatch, 'Data exported!');
+      })
+      .catch(function(err) {
+        Logger.error(err);
+        dispatch(buildAction(Actions.EXPORT_DATA_ERROR, err));
+
+        return Q.delay(2000).then(function() {
+          dispatch(buildAction(Actions.EXPORT_DATA_RESET));
+        });
+      });
 
   }
 }
-
 
 

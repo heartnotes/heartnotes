@@ -6,8 +6,10 @@ var { Link, Navigation } = Router;
 var IconButton = require('./iconButton');
 
 
+import { connectRedux } from '../helpers/decorators';
 
-module.exports = React.createClass({
+
+var Component = React.createClass({
   mixins: [ Navigation ],
 
   render: function() {
@@ -39,7 +41,7 @@ module.exports = React.createClass({
 
 
   _closeDiary: function() {
-    this.props.flux.getActions('user').closeDataFile();
+    this.props.actions.closeDiary();
   },
 
 
@@ -47,3 +49,9 @@ module.exports = React.createClass({
     this.transitionTo('settings');
   },
 });
+
+
+module.exports = connectRedux([
+  'closeDiary'
+])(Component);
+

@@ -57,6 +57,15 @@ exports.diary = function(state = InitialState.diary(), action) {
         lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails()
       });
 
+    case Actions.CLOSE_DIARY:
+      return _.extend({}, state, {
+        name: null,
+        password: null,
+        derivedKeys: null,
+        entries: null,
+      });
+
+
     case Actions.CHOOSE_DIARY_START:
       return _.extend({}, state, {
         choosing: AsyncState.start(state.choosing),
@@ -83,6 +92,7 @@ exports.diary = function(state = InitialState.diary(), action) {
         opening: AsyncState.start(state.opening),
         derivingKeys: AsyncState.reset(state.derivingKeys),
         name: null,
+        password: null,
         derivedKeys: null,
         entries: null,
       });
@@ -109,6 +119,7 @@ exports.diary = function(state = InitialState.diary(), action) {
         creating: AsyncState.start(state.creating),
         derivingKeys: AsyncState.reset(state.derivingKeys),
         name: null,
+        password: null,
         derivedKeys: null,
         entries: null,
       });
@@ -245,6 +256,23 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHANGE_PASSWORD_RESET:
       return _.extend({}, state, {
         changingPassword: AsyncState.reset(state.changingPassword),
+      });
+
+    case Actions.EXPORT_DATA_START:
+      return _.extend({}, state, {
+        exporting: AsyncState.start(state.exporting),
+      });
+    case Actions.EXPORT_DATA_RESULT:
+      return _.extend({}, state, {
+        exporting: AsyncState.result(state.exporting, action.payload),
+      });
+    case Actions.EXPORT_DATA_ERROR:
+      return _.extend({}, state, {
+        exporting: AsyncState.error(state.exporting, action.payload),
+      });
+    case Actions.EXPORT_DATA_RESET:
+      return _.extend({}, state, {
+        exporting: AsyncState.reset(state.exporting),
       });
 
 
