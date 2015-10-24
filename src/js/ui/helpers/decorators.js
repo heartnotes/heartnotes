@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react';
-import moment from 'moment';
 
 import { connect } from 'react-redux';
 
@@ -49,14 +48,6 @@ export function storeMethods() {
   return function decorator(Component) {
 
     class Decorator extends BaseComponent {
-      constructor() {
-        super();
-
-        this.state = {
-          logger: Logger.create('storeMethods'),
-        };
-      }
-
       render () {
         let props = this.props;
 
@@ -65,12 +56,10 @@ export function storeMethods() {
         props.methods = {};
 
         Object.getOwnPropertyNames(methods.constructor.prototype)
-          .filter(m => typeof methods[m] === 'function')
+          .filter(m => typeof methods[m] === 'function' && 'constructor' !== m)
           .forEach(m => {
             props.methods[m] = methods[m].bind(methods);
           });
-
-        console.log(props);
 
         return (
           <Component {...props} />

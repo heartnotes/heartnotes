@@ -8,17 +8,19 @@ module.exports = React.createClass({
   render: function() {
     var derivingMsg = null;
 
-    if (this.props.data.diary.changingPassword.inProgress) {
-      if (this.props.data.diary.derivingKeys.inProgress) {
+    let { diary } = this.props.data;
+
+    if (diary.changingPassword.inProgress) {
+      if (diary.derivingKeys.inProgress) {
         derivingMsg = (
           <div>Saving new password.....</div>
         );
       }
     }
 
-    if (this.props.data.diary.changingPassword.error) {
+    if (diary.changingPassword.error) {
       derivingMsg = (
-        <div className="error">{this.props.data.diary.changingPassword.error.toString()}</div>
+        <div className="error">{diary.changingPassword.error.toString()}</div>
       );
     }
 

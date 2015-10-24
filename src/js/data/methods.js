@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import Logger from '../utils/logger';
+import moment from 'moment';
+
 
 
 export default class Methods {

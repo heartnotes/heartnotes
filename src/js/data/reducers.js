@@ -149,6 +149,32 @@ exports.diary = function(state = InitialState.diary(), action) {
         loadingEntries: AsyncState.reset(state.loadingEntries),
       });
 
+    case Actions.SAVE_ENTRIES_REQUESTED:
+      return _.extend({}, state, {
+        saveEntriesRequested: state.saveEntriesRequested + 1,
+      });
+
+    case Actions.SAVE_ENTRIES_START:
+      return _.extend({}, state, {
+        savingEntries: AsyncState.start(state.savingEntries),
+      });
+
+    case Actions.SAVE_ENTRIES_RESULT:
+      return _.extend({}, state, {
+        savingEntries: AsyncState.result(state.savingEntries),
+        saveEntriesRequested: state.saveEntriesRequested - 1,
+      });
+
+    case Actions.SAVE_ENTRIES_ERROR:
+      return _.extend({}, state, {
+        savingEntries: AsyncState.error(state.savingEntries, action.payload),
+      });
+
+    case Actions.SAVE_ENTRIES_RESET:
+      return _.extend({}, state, {
+        savingEntries: AsyncState.reset(state.savingEntries),
+      });
+
     case Actions.UPDATE_ENTRY_START:
       return _.extend({}, state, {
         updatingEntry: AsyncState.start(state.updatingEntry),
@@ -173,6 +199,14 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.UPDATE_ENTRY_RESET:
       return _.extend({}, state, {
         updatingEntry: AsyncState.reset(state.updatingEntry),
+      });
+
+    case Actions.DELETE_ENTRY:
+      let entries = _.extend({}, state.entries);
+      delete entries[action.payload.entry.id];
+
+      return _.extend({}, state, {
+        entries: entries,
       });
 
     case Actions.DERIVE_KEYS_START:

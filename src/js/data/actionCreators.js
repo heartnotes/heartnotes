@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Q from 'bluebird';
 import $ from 'jquery';
+import moment from 'moment';
 
 import Actions from './actions';
 import Methods from './methods';
@@ -33,8 +34,62 @@ function buildAction(type, payload = {}) {
 // Re-usable methods
 // ------------------------------------------------------
 
+
+function doSaveDiary(dispatch, getState) {
+  dispatch(buildAction(Actions.SAVE_ENTRIES_START));
+
+  let diary = getState().diary;
+  let { entries, name, derivedKeys } = diary;
+  let encKey = derivedKeys.key1;
+
+  return Q.resolve()
+    .then(function encryptEntries() {
+      if (!name) {
+        throw new Error('No diary to save to');
+      }
+
+      return Crypto.encrypt(encKey, entries);
+    })
+    .catch(function unableToEncrypt(err) {
+      Logger.error('entry encryption error', err);
+      throw err;
+    })
+    .then(function saveToDiary(saveData) {
+      Logger.debug('encypted entries', saveData.length + ' bytes');
+
+      return Storage.saveEntriesToDiary(name, saveData);
+    })
+    .then(function persist() {
+      return Storage.persist(name);
+    })
+    .then(function allDone() {
+      dispatch(buildAction(Actions.SAVE_ENTRIES_RESULT));
+    })
+    .then(function shouldWeResave() {
+      if (getState().diary.saveEntriesRequested) {
+        return doSaveDiary(dispatch, getState);
+      }
+    })
+    .catch(function(err) {
+      Logger.error('diary save error', err);
+
+      dispatch(buildAction(Actions.SAVE_ENTRIES_ERROR, err));
+
+      return Q.delay(2000).then(() => {
+        dispatch(buildAction(Actions.SAVE_ENTRIES_RESET));
+      });
+    });
+}
+
+
+
+
 function saveDiary(dispatch, getState) {
-  return Q.resolve();
+  dispatch(buildAction(Actions.SAVE_ENTRIES_REQUESTED));
+
+  if (!getState().diary.savingEntries.inProgress) {
+    return doSaveDiary(dispatch, getState);
+  }
 }
 
 
@@ -235,16 +290,16 @@ export function createDiary(password) {
 
 export function loadEntries() {
   return function(dispatch, getState) {
-    let state = getState();
+    let diary = getState().diary;
 
     dispatch(buildAction(Actions.LOAD_ENTRIES_START));
 
     return Q.try(function() {
-      if (!state.diary.name) {
+      if (!diary.name) {
         throw new Error('No diary loaded');
       }      
 
-      return Storage.loadEntriesFromDiary(state.diary.name);
+      return Storage.loadEntriesFromDiary(diary.name);
     })
       .then( function gotEntries(encryptedEntries) {
         if (!encryptedEntries) {
@@ -254,14 +309,14 @@ export function loadEntries() {
         } else {
           Logger.info('decrypt entries', encryptedEntries.length);
 
-          return self.crypto.decrypt(
-            self.state.derivedKeys.key1, encryptedEntries
-          );
-            // .catch(function(err) {
-            //   self.logger.error('entry decryption error', err);
+          return Crypto.decrypt(
+            diary.derivedKeys.key1, encryptedEntries
+          )
+            .catch(function(err) {
+              Logger.error('entry decryption error', err);
 
-            //   throw err;
-            // });
+              throw err;
+            });
         }
       })
       .then(function gotEntries(entries) {
@@ -272,6 +327,7 @@ export function loadEntries() {
         }));
       })
       .catch(function(err) {
+        Logger.error(err);
         dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
 
         return Q.delay(2000).then(() => {
@@ -314,6 +370,8 @@ export function updateEntry(id, ts, content) {
         entry.body = content;
 
         dispatch(buildAction(Actions.UPDATE_ENTRY_RESULT, entry));
+
+        return saveDiary(dispatch, getState);
       })
       .catch(function(err) {
         dispatch(buildAction(Actions.UPDATE_ENTRY_ERROR, err));
@@ -322,19 +380,35 @@ export function updateEntry(id, ts, content) {
           dispatch(buildAction(Actions.UPDATE_ENTRY_RESET));
         });
       })
-      .then(function saveDiary() {
+  }
+}
+
+
+
+export function deleteEntry(id) {
+  return function(dispatch, getState) {
+    let methods = new Methods(getState());
+
+    return Q.resolve()
+      .then(function getEntry() {
+        var entry = methods.getEntry(id);
+
+        if (!entry) {
+          throw new Error('Entry not found: ' + id);
+        }
+
+        return entry;
+      })
+      .then(function deleteEntry(entry) {
+        dispatch(buildAction(Actions.DELETE_ENTRY, {
+          entry: entry,
+        }));
+
         return saveDiary(dispatch, getState);
+      })
+      .catch(function(err) {
+        Logger.error(err);
       });
   }
 }
-
-
-
-export function deleteEntry() {
-  return function(dispatch) {
-    
-  }
-}
-
-
 

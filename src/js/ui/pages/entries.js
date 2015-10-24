@@ -25,18 +25,20 @@ var Component = React.createClass({
 
     return (
       <div className={"entriesView " + this.state.layout}>
-        <Timeline 
-          entries={entries}
-          selected={entryId}
-          onSelect={this._onSelect} />
-        <ToggleButton 
-          openClass="toggle-timeline open"
-          closeClass="toggle-timeline closed"
-          initiallyOpen={true}
-          onChange={this._onToggleTimeline} />
-        <EntryEditor 
-          entryId={entryId}
-          canDelete={true} />
+        <div>
+          <Timeline 
+            entries={entries}
+            selected={entryId}
+            onSelect={this._onSelect} />
+          <ToggleButton 
+            openClass="toggle-timeline open"
+            closeClass="toggle-timeline closed"
+            initiallyOpen={true}
+            onChange={this._onToggleTimeline} />
+          <EntryEditor 
+            entryId={entryId}
+            canDelete={true} />
+        </div>
       </div>
     );
   },

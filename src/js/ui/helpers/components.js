@@ -8,7 +8,7 @@ export class BaseComponent extends Component {
 
     // auto bind methods
     Object.getOwnPropertyNames(this.constructor.prototype)
-      .filter(prop => typeof this[prop] === 'function')
+      .filter(prop => typeof this[prop] === 'function' && 'constructor' !== prop)
       .forEach(method => {
         this[method] = this[method].bind(this);
       })

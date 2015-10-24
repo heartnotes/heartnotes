@@ -26,6 +26,12 @@ const actionTypes = [
   'LOAD_ENTRIES_ERROR',
   'LOAD_ENTRIES_RESET',
 
+  'SAVE_ENTRIES_REQUESTED',
+  'SAVE_ENTRIES_START',
+  'SAVE_ENTRIES_RESULT',
+  'SAVE_ENTRIES_ERROR',
+  'SAVE_ENTRIES_RESET',
+
   'DERIVE_KEYS_START',
   'DERIVE_KEYS_RESULT',
   'DERIVE_KEYS_ERROR',
@@ -34,6 +40,8 @@ const actionTypes = [
   'UPDATE_ENTRY_RESULT',
   'UPDATE_ENTRY_ERROR',
   'UPDATE_ENTRY_RESET',  
+
+  'DELETE_ENTRY',
 ];
 
 actionTypes.forEach(function(type) {

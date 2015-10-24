@@ -14,7 +14,7 @@ import { connectRedux, storeMethods } from '../helpers/decorators';
 var Component = React.createClass({
   render: function() { 
     let loaded = !!this.props.data.entries,
-      todayEntryId = this.props.data.getTodayEntry();
+      todayEntryId = this.props.methods.getTodayEntry();
 
     return (
       <div className="newEntry">
