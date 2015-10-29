@@ -257,9 +257,9 @@ export function openDiary(name, password) {
         Logger.error(err);
         dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err));
 
-        Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.OPEN_DIARY_RESET));
-        });
+        // Q.delay(2000).then(() => {
+        //   dispatch(buildAction(Actions.OPEN_DIARY_RESET));
+        // });
       })
   }
 }

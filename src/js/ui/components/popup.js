@@ -20,16 +20,15 @@ module.exports = React.createClass({
 
 
   render: function() {   
-    var wrapperClass = 'popup-wrapper';
-
-    if (!this.props.show) {
-      wrapperClass += ' hidden';
+    let bodyStyle = {
+      opacity: (this.props.show) ? 1 : 0,
+      pointerEvents: (this.props.show) ? 'auto' : 'none',
     }
 
     return (
-      <span className={wrapperClass}>
+      <span className='popup-wrapper'>
         <span className="popup-target" ref="target">{this.props.children}</span>
-        <span className="popup-body" ref="body">
+        <span className="popup-body" ref="body" style={bodyStyle}>
           {this.props.msg}
         </span>
       </span>
@@ -49,15 +48,15 @@ module.exports = React.createClass({
     this._reposition();
 
     this.$body.on('click', _.bind(function() {
-      this.$body.hide();
+      this.$body.css({
+        opacity: 0
+      });
     }, this));
   },
 
 
   componentDidUpdate: function(prevProps) {
     this._reposition();
-
-    this.$body.show();
   },
 
 
