@@ -58,6 +58,10 @@ const actionTypes = [
   'BUILD_SEARCH_INDEX_START',
   'BUILD_SEARCH_INDEX_RESULT',
   'BUILD_SEARCH_INDEX_ERROR',
+
+  'SEARCH_START',
+  'SEARCH_RESULT',
+  'SEARCH_ERROR',
 ];
 
 actionTypes.forEach(function(type) {

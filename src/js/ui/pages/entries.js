@@ -20,7 +20,7 @@ var Component = React.createClass({
   },
 
   render: function() { 
-    let entries = this.props.data.diary.entries;
+    let entries = this.props.methods.getTimelineEntries();
     let entryId = this.props.params.entryId;
 
     return (

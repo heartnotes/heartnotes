@@ -553,3 +553,39 @@ export function exportData() {
 }
 
 
+var searchTimeout = null;
+
+export function search(keyword) {
+  return function(dispatch) {
+    // use a timeout so that we wait for user to finish typing before searching
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    searchTimeout = setTimeout(function() {
+      dispatch(buildAction(Actions.SEARCH_START, {
+        keyword: keyword
+      }));
+
+      // if empty then return immediately
+      if (!_.get(keyword, 'length')) {
+        return dispatch(buildAction(Actions.SEARCH_RESULT, []));
+      }
+
+      Search.search(keyword)
+        .then(function(results) {
+          dispatch(buildAction(Actions.SEARCH_RESULT, results));
+        })
+        .catch(function(err) {
+          dispatch(buildAction(Actions.SEARCH_ERROR, err));
+        });
+    }, 250);
+  };
+}
+
+
+
+
+
+
+

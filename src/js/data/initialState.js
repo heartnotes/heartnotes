@@ -34,6 +34,7 @@ exports.diary = function() {
     updatingEntry: {},
     savingEntries: {},
     searchIndexing: {},
+    searching: {},
     saveEntriesRequested: 0,
   };
 };

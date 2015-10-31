@@ -59,6 +59,12 @@ export default class SearchWorker {
   }
 
 
+  search (keyword) {
+    this.logger.debug('search', keyword);
+
+    return Promise.resolve(this.lunr.search(keyword));
+  }
+
 }
 
 

@@ -147,9 +147,16 @@ exports.diary = function(state = InitialState.diary(), action) {
       });
 
     case Actions.LOAD_ENTRIES_RESULT:
+      let loadedEntries = action.payload.entries || {};
+
       return _.extend({}, state, {
         loadingEntries: AsyncState.result(action.payload),
-        entries: action.payload.entries || {},
+        entries: loadedEntries,
+        searching: {
+          inProgress: false,
+          keyword: null,
+          results: loadedEntries,
+        },
       });
 
     case Actions.LOAD_ENTRIES_ERROR:
@@ -289,6 +296,37 @@ exports.diary = function(state = InitialState.diary(), action) {
         searchIndexing: AsyncState.error(action.payload),
       });
 
+
+    case Actions.SEARCH_START:
+      return _.extend({}, state, {
+        searching: _.extend({}, state.searching, {
+          keyword: action.payload.keyword,
+          error: null,
+          inProgress: true,
+        }),
+      });
+    case Actions.SEARCH_RESULT:
+      let filteredEntries = state.entries;
+
+      if (_.get(state.searching.keyword, 'length')) {
+        filteredEntries = _.map(action.payload || [], (r) => {
+          return filteredEntries[r.ref];
+        });
+      }
+
+      return _.extend({}, state, {
+        searching: _.extend({}, state.searching, {
+          results: filteredEntries,
+          inProgress: false,
+        }),
+      });
+    case Actions.SEARCH_ERROR:
+      return _.extend({}, state, {
+        searching: _.extend({}, state.searching, {
+          inProgress: false,
+          error: action.payload.error,
+        }),
+      });
 
     default:
       return state;

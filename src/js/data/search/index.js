@@ -14,7 +14,10 @@ export class SearchIndex {
 
       self.searchWorker[action.method]
         .apply(self.searchWorker, action.params || [])
-        .then(function(err, result) { cb(result); }, cb);
+        .then(function(result) { 
+          cb(null, result); 
+        })
+        .catch(cb);
 
     }, this.logger.create('worker'), [
       'worker-search.js',
@@ -70,8 +73,20 @@ export class SearchIndex {
   }
 
 
+  search (keyword) {
+    this.logger.debug('search', keyword);
+
+    return this.worker.run({
+      method: 'search',
+      params: [keyword],
+    });
+  }
+
+
 
   _prepareEntry (entry) {
+    console.log(htmlToStr(entry.body));
+
     return {
       id: entry.id,
       ts: moment( entry.ts ).format('MMMM Do YYYY'),

@@ -1,10 +1,9 @@
 "use strict";
 
-var $ = require('jquery');
-
-
 exports.htmlToStr = function(html) {
-  return $(`<div>${html}</div>`).text();
+  var div = document.createElement('DIV');
+  div.innerHTML = html;
+  return div.innerText;
 };
 
 
