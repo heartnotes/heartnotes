@@ -37,7 +37,9 @@ export class Crypto {
 
     var logger = this.logger.create(`worker:${name}`);
 
-    return new WebWorker(func, logger);
+    return new WebWorker(func, logger, [
+      'worker-sjcl.js'
+    ]);
   }
 
 

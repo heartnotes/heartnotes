@@ -54,6 +54,10 @@ const actionTypes = [
   'EXPORT_DATA_RESULT',
   'EXPORT_DATA_ERROR',
   'EXPORT_DATA_RESET',
+
+  'BUILD_SEARCH_INDEX_START',
+  'BUILD_SEARCH_INDEX_RESULT',
+  'BUILD_SEARCH_INDEX_ERROR',
 ];
 
 actionTypes.forEach(function(type) {

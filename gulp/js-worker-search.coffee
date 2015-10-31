@@ -1,5 +1,6 @@
 browserify = require 'browserify'
 
+path = require 'path'
 concat = require 'gulp-concat'
 source = require 'vinyl-source-stream2'
 uglify = require 'gulp-uglify'
@@ -16,16 +17,14 @@ module.exports = (paths, options = {}) ->
     b.bundle()
       .on 'error', (err) ->
         gutil.log(err.stack)
-      .pipe source('app.js')
-      .pipe gulpIf(options.minifiedBuild, uglify({
-        # for now don't mangle because it screws up use of sjcl inside webworker methods
-        mangle: false
-      }))
+      .pipe source('search-webworker-addon.js')
+      .pipe gulpIf(options.minifiedBuild, uglify())
+      .pipe concat('worker-search.js')
       .pipe gulp.dest(paths.build.js)
 
   return -> 
     b = browserify(
-      entries: paths.files.js
+      entries: path.join(paths.src.js, 'data', 'search', 'search-webworker-addon.js')
       debug: !options.minifiedBuild
       cache: {}
       packageCache: {}
@@ -35,7 +34,7 @@ module.exports = (paths, options = {}) ->
     if options.watchMode
       b = watchify(b)
         .on 'update', ->
-          gutil.log 'Rerunning browserify (app)...'
+          gutil.log 'Rerunning browserify (worker-search)...'
           updateStart = Date.now()
           _process(b)
           gutil.log '...Done (' + (Date.now() - updateStart) + 'ms)'

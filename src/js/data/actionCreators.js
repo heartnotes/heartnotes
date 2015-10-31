@@ -8,6 +8,7 @@ import ExportedEntries from '../ui/components/ExportedEntries';
 import Actions from './actions';
 import Methods from './methods';
 import { instance as Storage } from './storage/index';
+import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
 
 var Logger = require('../utils/logger').create('ac');
@@ -139,6 +140,23 @@ function saveDiary(dispatch, getState) {
   if (!getState().diary.savingEntries.inProgress) {
     return doSaveDiary(dispatch, getState);
   }
+}
+
+
+
+function rebuildSearchIndex(dispatch, entries) {
+  dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_START));
+
+  return Search.reset()
+    .then(function() {
+      return Search.addMany(entries);
+    })
+    .then(function() {
+      dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_RESULT));
+    })
+    .catch(function(err) {
+      dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_ERROR, err));
+    });
 }
 
 
@@ -342,6 +360,13 @@ export function loadEntries() {
         dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
           entries: entries
         }));
+
+        return entries;
+      })
+      .then(function buildSearchIndex(entries) {
+        Logger.debug('rebuild search index', _.keys(entries).length);
+
+        return rebuildSearchIndex(dispatch, entries);
       })
       .catch(function(err) {
         Logger.error(err);
@@ -388,7 +413,17 @@ export function updateEntry(id, ts, content) {
 
         dispatch(buildAction(Actions.UPDATE_ENTRY_RESULT, entry));
 
-        return saveDiary(dispatch, getState);
+        return saveDiary(dispatch, getState)
+          .then(function() {
+            return entry;
+          });
+      })
+      .then(function updateSearchIndex(entry) {
+        return Search.add({
+          id: entry.id,
+          ts: entry.ts,
+          body: entry.body,
+        });
       })
       .catch(function(err) {
         Logger.error(err);
@@ -423,6 +458,11 @@ export function deleteEntry(id) {
         }));
 
         return saveDiary(dispatch, getState);
+      })
+      .then(function updateSearchIndex() {
+        return Search.remove({
+          id: id
+        });
       })
       .catch(function(err) {
         Logger.error(err);

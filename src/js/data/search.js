@@ -4,14 +4,13 @@ var _ = require('lodash'),
   moment = require('moment'),
   lunr = require('lunr');
 
+import Logger from '../utils/logger';
 import { htmlToStr } from '../utils/format';
 
 
 export default class SearchIndex {
   constructor(logger) {
-    this.logger = logger;
-
-    this.logger.info('init...');
+    this.logger = Logger.create('search-index');
 
     this.lunr = lunr(function() {
       this.field('ts', { 
@@ -49,3 +48,6 @@ export default class SearchIndex {
 }
 
 
+
+
+exports.instance = new SearchIndex();

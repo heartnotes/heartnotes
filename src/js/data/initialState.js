@@ -33,6 +33,7 @@ exports.diary = function() {
     loadingEntries: {},
     updatingEntry: {},
     savingEntries: {},
+    searchIndexing: {},
     saveEntriesRequested: 0,
   };
 };

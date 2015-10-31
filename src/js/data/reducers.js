@@ -11,20 +11,20 @@ exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
     case Actions.CHECK_FOR_UPDATES_START:
       return _.extend({}, state, {
-        checkingForUpdate: AsyncState.start(state.checkingForUpdate),
+        checkingForUpdate: AsyncState.start(),
         newVersionAvailable: false,
       });
 
     case Actions.CHECK_FOR_UPDATES_ERROR:
       return _.extend({}, state, {
-        checkingForUpdate: AsyncState.error(state.checkingForUpdate, action.payload),
+        checkingForUpdate: AsyncState.error(action.payload),
       });
 
     case Actions.CHECK_FOR_UPDATES_RESULT:
       let release = action.payload;
 
       return _.extend({}, state, {
-        checkingForUpdate: AsyncState.result(state.checkingForUpdate, release),
+        checkingForUpdate: AsyncState.result(release),
         newVersionAvailable: semver.gt(release.tag_name, state.version),
       });
 
@@ -68,29 +68,29 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.CHOOSE_DIARY_START:
       return _.extend({}, state, {
-        choosing: AsyncState.start(state.choosing),
+        choosing: AsyncState.start(),
       });
 
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
-        choosing: AsyncState.result(state.choosing, action.payload),
+        choosing: AsyncState.result(action.payload),
         lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
       });
 
     case Actions.CHOOSE_DIARY_ERROR:
       return _.extend({}, state, {
-        choosing: AsyncState.error(state.choosing, action.payload),
+        choosing: AsyncState.error(action.payload),
       });
 
     case Actions.CHOOSE_DIARY_RESET:
       return _.extend({}, state, {
-        choosing: AsyncState.reset(state.choosing),
+        choosing: AsyncState.reset(),
       });
 
     case Actions.OPEN_DIARY_START:
       return _.extend({}, state, {
-        opening: AsyncState.start(state.opening),
-        derivingKeys: AsyncState.reset(state.derivingKeys),
+        opening: AsyncState.start(),
+        derivingKeys: AsyncState.reset(),
         name: null,
         password: null,
         derivedKeys: null,
@@ -101,23 +101,23 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         name: action.payload.name,
         password: action.payload.password,
-        opening: AsyncState.result(state.opening, action.payload),
+        opening: AsyncState.result(action.payload),
       });
 
     case Actions.OPEN_DIARY_ERROR:
       return _.extend({}, state, {
-        opening: AsyncState.error(state.opening, action.payload),
+        opening: AsyncState.error(action.payload),
       });
 
     case Actions.OPEN_DIARY_RESET:
       return _.extend({}, state, {
-        opening: AsyncState.reset(state.opening),
+        opening: AsyncState.reset(),
       });
 
     case Actions.CREATE_DIARY_START:
       return _.extend({}, state, {
-        creating: AsyncState.start(state.creating),
-        derivingKeys: AsyncState.reset(state.derivingKeys),
+        creating: AsyncState.start(),
+        derivingKeys: AsyncState.reset(),
         name: null,
         password: null,
         derivedKeys: null,
@@ -128,38 +128,38 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         name: action.payload.name,
         password: action.payload.password,
-        creating: AsyncState.result(state.creating, action.payload),
+        creating: AsyncState.result(action.payload),
       });
 
     case Actions.CREATE_DIARY_ERROR:
       return _.extend({}, state, {
-        creating: AsyncState.error(state.creating, action.payload),
+        creating: AsyncState.error(action.payload),
       });
 
     case Actions.CREATE_DIARY_RESET:
       return _.extend({}, state, {
-        creating: AsyncState.reset(state.creating),
+        creating: AsyncState.reset(),
       });
 
     case Actions.LOAD_ENTRIES_START:
       return _.extend({}, state, {
-        loadingEntries: AsyncState.start(state.loadingEntries),
+        loadingEntries: AsyncState.start(),
       });
 
     case Actions.LOAD_ENTRIES_RESULT:
       return _.extend({}, state, {
-        loadingEntries: AsyncState.result(state.loadingEntries, action.payload),
+        loadingEntries: AsyncState.result(action.payload),
         entries: action.payload.entries || {},
       });
 
     case Actions.LOAD_ENTRIES_ERROR:
       return _.extend({}, state, {
-        loadingEntries: AsyncState.error(state.loadingEntries, action.payload),
+        loadingEntries: AsyncState.error(action.payload),
       });
 
     case Actions.LOAD_ENTRIES_RESET:
       return _.extend({}, state, {
-        loadingEntries: AsyncState.reset(state.loadingEntries),
+        loadingEntries: AsyncState.reset(),
       });
 
     case Actions.SAVE_ENTRIES_REQUESTED:
@@ -169,28 +169,28 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.SAVE_ENTRIES_START:
       return _.extend({}, state, {
-        savingEntries: AsyncState.start(state.savingEntries),
+        savingEntries: AsyncState.start(),
       });
 
     case Actions.SAVE_ENTRIES_RESULT:
       return _.extend({}, state, {
-        savingEntries: AsyncState.result(state.savingEntries),
+        savingEntries: AsyncState.result(),
         saveEntriesRequested: state.saveEntriesRequested - 1,
       });
 
     case Actions.SAVE_ENTRIES_ERROR:
       return _.extend({}, state, {
-        savingEntries: AsyncState.error(state.savingEntries, action.payload),
+        savingEntries: AsyncState.error(action.payload),
       });
 
     case Actions.SAVE_ENTRIES_RESET:
       return _.extend({}, state, {
-        savingEntries: AsyncState.reset(state.savingEntries),
+        savingEntries: AsyncState.reset(),
       });
 
     case Actions.UPDATE_ENTRY_START:
       return _.extend({}, state, {
-        updatingEntry: AsyncState.start(state.updatingEntry),
+        updatingEntry: AsyncState.start(),
       });
 
     case Actions.UPDATE_ENTRY_RESULT:
@@ -200,18 +200,18 @@ exports.diary = function(state = InitialState.diary(), action) {
       entries[newEntry.id] = newEntry;
 
       return _.extend({}, state, {
-        updatingEntry: AsyncState.result(state.updatingEntry, action.payload),
+        updatingEntry: AsyncState.result(action.payload),
         entries: entries,
       });
 
     case Actions.UPDATE_ENTRY_ERROR:
       return _.extend({}, state, {
-        updatingEntry: AsyncState.error(state.updatingEntry, action.payload),
+        updatingEntry: AsyncState.error(action.payload),
       });
 
     case Actions.UPDATE_ENTRY_RESET:
       return _.extend({}, state, {
-        updatingEntry: AsyncState.reset(state.updatingEntry),
+        updatingEntry: AsyncState.reset(),
       });
 
     case Actions.DELETE_ENTRY:
@@ -224,55 +224,69 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.DERIVE_KEYS_START:
       return _.extend({}, state, {
-        derivingKeys: AsyncState.start(state.derivingKeys),
+        derivingKeys: AsyncState.start(),
         derivedKeys: null,
       });
 
     case Actions.DERIVE_KEYS_RESULT:
       return _.extend({}, state, {
-        derivingKeys: AsyncState.result(state.derivingKeys, action.payload),
+        derivingKeys: AsyncState.result(action.payload),
         derivedKeys: action.payload,
       });
 
     case Actions.DERIVE_KEYS_ERROR:
       return _.extend({}, state, {
-        derivingKeys: AsyncState.error(state.derivingKeys, action.payload),
+        derivingKeys: AsyncState.error(action.payload),
       });
 
     case Actions.CHANGE_PASSWORD_START:
       return _.extend({}, state, {
-        changingPassword: AsyncState.start(state.changingPassword),
+        changingPassword: AsyncState.start(),
       });
     case Actions.CHANGE_PASSWORD_RESULT:
       return _.extend({}, state, {
-        changingPassword: AsyncState.result(state.changingPassword, action.payload),
+        changingPassword: AsyncState.result(action.payload),
         password: action.payload.password,
         derivedKeys: action.payload.derivedKeys,
       });
     case Actions.CHANGE_PASSWORD_ERROR:
       return _.extend({}, state, {
-        changingPassword: AsyncState.error(state.changingPassword, action.payload),
+        changingPassword: AsyncState.error(action.payload),
       });
     case Actions.CHANGE_PASSWORD_RESET:
       return _.extend({}, state, {
-        changingPassword: AsyncState.reset(state.changingPassword),
+        changingPassword: AsyncState.reset(),
       });
 
     case Actions.EXPORT_DATA_START:
       return _.extend({}, state, {
-        exporting: AsyncState.start(state.exporting),
+        exporting: AsyncState.start(),
       });
     case Actions.EXPORT_DATA_RESULT:
       return _.extend({}, state, {
-        exporting: AsyncState.result(state.exporting, action.payload),
+        exporting: AsyncState.result(action.payload),
       });
     case Actions.EXPORT_DATA_ERROR:
       return _.extend({}, state, {
-        exporting: AsyncState.error(state.exporting, action.payload),
+        exporting: AsyncState.error(action.payload),
       });
     case Actions.EXPORT_DATA_RESET:
       return _.extend({}, state, {
-        exporting: AsyncState.reset(state.exporting),
+        exporting: AsyncState.reset(),
+      });
+
+
+    case Actions.BUILD_SEARCH_INDEX_START:
+      return _.extend({}, state, {
+        searchIndexing: AsyncState.start(),
+      });
+    case Actions.BUILD_SEARCH_INDEX_RESULT:
+      return _.extend({}, state, {
+        searchIndexing: AsyncState.result(),
+      });
+    case Actions.BUILD_SEARCH_INDEX_ERROR:
+      return _.extend({}, state, {
+        searchIndexing: AsyncState.error(action.payload),
       });
 
 

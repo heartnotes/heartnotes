@@ -7,8 +7,9 @@ html
     link(href="./css/app.css", rel="stylesheet", type="text/css")
   body
     main
-    // we include worker script here just so that electron packer includes it in release
-    script(src="./js/worker.js", type="text/javascript")
+    // we include worker scripts here just so that electron packer includes them in release
+    script(src="./js/worker-sjcl.js", type="text/javascript")
+    script(src="./js/worker-search.js", type="text/javascript")
       
     script(src="./js/vendor.js", type="text/javascript")
     script(src="./ckeditor/ckeditor.js", type="text/javascript")

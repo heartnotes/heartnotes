@@ -13,11 +13,8 @@ console.log('importScripts base URL', operative.getBaseURL());
 
 
 export default class WebWorker {
-  constructor (func, logger) {
-    this.worker = operative(func, [
-      'worker.js'
-    ]);
-
+  constructor (func, logger, importScripts) {
+    this.worker = operative(func, importScripts);
     this.logger = logger;
   }
 
@@ -52,5 +49,8 @@ export default class WebWorker {
     });
   }
 }
+
+
+
 
 
