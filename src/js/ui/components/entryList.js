@@ -13,6 +13,7 @@ var FormatUtils = require('../../utils/format'),
 module.exports = React.createClass({
   propTypes: {
     entries : React.PropTypes.object,
+    searchKeyword: React.PropTypes.string,
     selected: React.PropTypes.string,
     truncLength: React.PropTypes.number,
   },
@@ -20,20 +21,54 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       entries : {},
+      searchKeyword: null,
       selected: null,
       truncLength: 300,
     };
   },
 
   render: function() {
-    var self = this;
+    var listItems = [];
 
-    var listItems = [],
-      lastMonthYear = moment(0);
+    if (this.props.searchKeyword) {
+      this._buildSearchResults(listItems, this.props.entries);
+    } else {
+      this._buildSortedEntries(listItems, this.props.entries);
+    }
 
-    var entries = SortingUtils.sortEntriesReverseChrono(this.props.entries);
+    return (
+      <ul className="entryList">
+        {listItems}
+      </ul>
+    );
+  },
 
-    _.forEach(entries, function(entry) {
+
+  _buildSearchResults: function(listItems, entries) {
+    listItems.push(
+      <li className="break-row" key='results-header'>
+        Filter: {'"' + this.props.searchKeyword + '"'}
+      </li>
+    );
+
+    if (!entries.length) {
+      listItems.push(
+        <li key="noentry" className="entry none">No results found.</li>
+      );
+    } else {
+      _.forEach(entries, (entry) => {
+        this._addEntryToList(listItems, entry);
+      });
+    }
+  },
+
+
+  _buildSortedEntries: function(listItems, entries) {
+    var lastMonthYear = moment(0);
+
+    entries = SortingUtils.sortEntriesReverseChrono(entries);
+
+    _.forEach(entries, (entry) => {
       var date = moment(entry.ts);
 
       // if month different to current month then set as current month and display it
@@ -46,7 +81,7 @@ module.exports = React.createClass({
         }
 
         listItems.push(
-          <li className="month" key={date.valueOf()}>
+          <li className="break-row" key={date.valueOf()}>
             <DateString format={monthFormat} date={date} /> 
           </li>
         );
@@ -54,39 +89,36 @@ module.exports = React.createClass({
         lastMonthYear = date;
       }
 
-      var entryText = FormatUtils.htmlToStr(entry.body),
-        pruned = _.trunc(entryText, self.props.truncLength);
-
-      var selectedClass = (self.props.selected === entry.id ? 'selected': '');
-
-      listItems.push(
-        <li key={entry.id} 
-          data-id={entry.id} 
-          className={"entry " + selectedClass}
-          onClick={self._onSelect}>
-            <DateString format="D" date={date} /> 
-            <span className="text">{pruned}</span>
-        </li>
-      )
+      this._addEntryToList(listItems, entry);
     });
 
     // if empty
     if (!listItems.length) {
       listItems.push(
-        <li key="noentry"
-          className={"entry none"}>
-            No entries yet
-        </li>
+        <li key="noentry" className="entry none">No entries.</li>
       )
     }
-
-    return (
-      <ul className="entryList">
-        {listItems}
-      </ul>
-    );
   },
 
+
+  _addEntryToList: function(listItems, entry) {
+    let date = moment(entry.ts);
+
+    let entryText = FormatUtils.htmlToStr(entry.body),
+      pruned = _.trunc(entryText, this.props.truncLength);
+
+    let selectedClass = (this.props.selected === entry.id ? 'selected': '');
+
+    listItems.push(
+      <li key={entry.id} 
+        data-id={entry.id} 
+        className={"entry " + selectedClass}
+        onClick={this._onSelect}>
+          <DateString format="D" date={date} /> 
+          <span className="text">{pruned}</span>
+      </li>
+    );
+  },
 
 
   _onSelect: function(e) {

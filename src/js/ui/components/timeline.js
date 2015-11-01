@@ -8,6 +8,7 @@ module.exports = React.createClass({
   propTypes: {
     entries : React.PropTypes.object,
     selected : React.PropTypes.string,
+    searchKeyword: React.PropTypes.string,
     onSelect: React.PropTypes.func,
   },
 
@@ -24,6 +25,7 @@ module.exports = React.createClass({
       <div className="timeline">
         <EntryListFilter />
         <EntryList 
+          searchKeyword={this.props.searchKeyword}
           entries={this.props.entries} 
           selected={this.props.selected}
           onSelect={this.props.onSelect} />

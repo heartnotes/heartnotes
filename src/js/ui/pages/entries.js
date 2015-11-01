@@ -29,6 +29,7 @@ var Component = React.createClass({
           <Timeline 
             entries={entries}
             selected={entryId}
+            searchKeyword={this.props.data.diary.searching.keyword}
             onSelect={this._onSelect} />
           <ToggleButton 
             openClass="toggle-timeline open"

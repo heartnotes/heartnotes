@@ -102,6 +102,15 @@
       // border none !important
 
 
+.entry-list-filter
+  background-color $gray
+  padding 0.5em 0.4em 0.5em
+  position relative
+  input
+    @extends $bigDarkInput
+    font-size 0.8rem
+    width 100%
+
 
 ul.entryList
   display block
@@ -116,7 +125,7 @@ ul.entryList
     border-top 1px $gray-light
     border-bottom 1px solid $gray-light
     
-    &.month
+    &.break-row
       text-align center
       text-transform uppercase
       color $black

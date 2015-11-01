@@ -1,41 +1,46 @@
 import _ from 'lodash';
 import React from 'react';
 
-import Loading from './loading';
-import { connectRedux } from '../helpers/decorators';
+import { connectRedux, storeMethods } from '../helpers/decorators';
 
 
 var Component = React.createClass({
+  getInitialState: function() {
+    return {
+      keyword: null,
+    };
+  },
+  
   render: function() {
     let filterText = null;
 
-    let keyword = _.get(this.props.diary, 'searching.keyword');
-    if (keyword && keyword.length) {
-      filterText = (
-        <div className="filter-description">Filter by {keyword}</div>
-      );
-    }
-
-    let loading = null;
-    if (_.get(this.props.data.diary, 'searching.inProgress')) {
-      loading = (
-        <Loading />
-      );
-    }
+    let keyword = this.state.keyword;
 
     return (
       <div className="entry-list-filter">
-        <input value={keyword} type="text" placeholder="Filter..." onChange={this._onChange} />
-        {loading}
-        {filterText}
+        <input ref="input" value={keyword} type="text" placeholder="Search..." onChange={this._onChange} />
       </div>
     );
   },
 
+  componentWillReceiveProps: function(newProps) {
+    if (newProps.data.diary.searching.keyword !== this.state.keyword) {
+      this.setState({
+        keyword: newProps.data.diary.searching.keyword
+      });
+    }
+  },
+  
 
   _onChange: function(e) {
-    this.props.actions.search(e.currentTarget.value);
-  }
+    let keyword = e.currentTarget.value;
+
+    this.setState({
+      keyword: keyword,
+    });
+
+    this.props.actions.search(keyword);
+  },
 
 });
 

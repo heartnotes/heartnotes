@@ -40,12 +40,12 @@ export default class Methods {
 
 
   getTimelineEntries () {
-    this.logger.debug('get timeline entries');
-
     if (_.get(this.state.diary.searching.keyword, 'length')) {
       return this.state.diary.searching.results;
     } else {
       return this.state.diary.entries;
     }
   }
+
+
 }

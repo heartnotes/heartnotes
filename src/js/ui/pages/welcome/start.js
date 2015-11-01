@@ -46,7 +46,7 @@ var Component = React.createClass({
       content = (
         <div className="open-existing">
           <p>
-            <label>Current:</label>
+            <label>Diary:</label>
             <span>{lastDiaryName}</span>
             {this._buildChooseAnotherDiaryButton()}
           </p>
