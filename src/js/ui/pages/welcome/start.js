@@ -35,7 +35,7 @@ var Component = React.createClass({
       );
 
       var buttonAttrs = {
-        onClick: this._checkPassword,
+        onClick: this._openDiary,
         animActive: !!this.props.data.diary.opening.inProgress,
       };
 
@@ -50,7 +50,7 @@ var Component = React.createClass({
             <span>{lastDiaryName}</span>
             {this._buildChooseAnotherDiaryButton()}
           </p>
-          <form onSubmit={this._checkPassword}>
+          <form onSubmit={this._openDiary}>
             <div className="field row">
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>
@@ -130,7 +130,7 @@ var Component = React.createClass({
   },
 
 
-  _checkPassword: function(e) {
+  _openDiary: function(e) {
     e.preventDefault();
 
     this.props.actions.openDiary(

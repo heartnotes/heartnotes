@@ -68,7 +68,7 @@ module.exports = React.createClass({
     // position body
     this.$body.css({
       top: (targetTop + this.$target.height() + 2) + 'px',
-      left: ((parentOuterWidth - this.$body.outerWidth()) / 2) + 'px'
+      left: ((parentOuterWidth - this.$body.outerWidth()) / 2) + 'px',
     });
   },
 
