@@ -24,7 +24,8 @@ module.exports = (paths, options = {}) ->
         version: 'v0.34.3'
         packaging: true
         asar: false
-        platforms: ['darwin-x64' ,'win32-ia32']
+        platforms: ['darwin-x64']
+        # platforms: ['darwin-x64' ,'win32-ia32']
         platformResources:
           darwin:
               CFBundleDisplayName: packageJson.name
