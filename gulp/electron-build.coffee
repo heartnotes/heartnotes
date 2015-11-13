@@ -32,11 +32,11 @@ module.exports = (paths, options = {}) ->
               CFBundleName: packageJson.name
               CFBundleVersion: packageJson.version
               icon: path.join(paths.assets, 'logo.icns')
-          win:
-              "version-string": packageJson.version
-              "file-version": packageJson.version
-              "product-version": packageJson.version
-              "icon": path.join(paths.assets, 'logo.icns')
+          # win:
+          #     "version-string": packageJson.version
+          #     "file-version": packageJson.version
+          #     "product-version": packageJson.version
+          #     "icon": path.join(paths.assets, 'logo.icns')
       })
       .pipe gulp.dest("")
 
