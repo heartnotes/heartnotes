@@ -1,6 +1,6 @@
 var React = require('react');
 
-var Popup = require('./popup');
+var ActionProgress = require('./actionProgress');
 
 
 module.exports = React.createClass({
@@ -23,9 +23,9 @@ module.exports = React.createClass({
     }
 
     return (
-      <Popup msg={derivingMsg} show={!!derivingMsg}>
+      <ActionProgress msg={derivingMsg}>
         {this.props.children}
-      </Popup>
+      </ActionProgress>
     );
   },
 

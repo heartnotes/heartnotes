@@ -180,6 +180,19 @@ $popupBody
   z-index 20
   transition opacity 0.1s linear
   color $red-light
+  border-radius 10px
+  border 1px solid $red-light
+  background-color $black
+  padding 1em
+  font-size 1.2rem
+  font-style normal
+  line-height 1.5em
+  width 20rem
+  box-shadow 0px 0px 10px 1px $red-light
+  p
+    margin-bottom 1em
+  small
+    font-size 75%
 
 .popup-wrapper
   position relative
@@ -189,20 +202,6 @@ $popupBody
 
   .popup-body
     @extend $popupBody
-    display block
-    border-radius 10px
-    border 1px solid $red-light
-    background-color $black
-    padding 1em
-    font-size 1.2rem
-    font-style normal
-    line-height 1.5em
-    width 20rem
-    box-shadow 0px 0px 10px 1px $red-light
-    p
-      margin-bottom 1em
-    small
-      font-size 75%
 
 
 .new-password-input
@@ -319,5 +318,22 @@ $menu
   
   
 
-  
+.action-progress
+  position relative
+  .msg
+    display block
+    margin 1rem auto
+    color $red-light
+    font-size 1.2rem
+    font-style normal
+    line-height 1.5em
+    width 20rem
+    transition all 0.2s linear
+    max-height 0
+    &.shown
+      max-height 10000px
+      padding 1em
+      border 1px solid $red-light
+      border-radius 10px
+      box-shadow 0px 0px 10px 1px $red-light
 

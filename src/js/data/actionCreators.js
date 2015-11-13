@@ -266,7 +266,7 @@ export function openDiary(name, password) {
           });
       })
       .then(() => {
-        dispatch(buildAction(Actions.OPEN_DIARY_RESULT, {
+        return dispatch(buildAction(Actions.OPEN_DIARY_RESULT, {
           name: name,
           password: password,
         }));
@@ -274,9 +274,9 @@ export function openDiary(name, password) {
       .catch((err) => {
         Logger.error(err);
 
-        dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err));          
-
-        Q.delay(2000).then(() => {
+        dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err))
+        
+        return Q.delay(2000).then(() => {
           dispatch(buildAction(Actions.OPEN_DIARY_RESET));
         });
       });
@@ -583,6 +583,7 @@ export function search(keyword) {
     }, 250);
   };
 }
+
 
 
 
