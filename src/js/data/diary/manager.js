@@ -14,17 +14,24 @@ import { instance as Crypto } from '../crypto/index';
 const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 
-export class StorageManager {
+export class DiaryManager {
 
-  constructor(storage) {
-    this.logger = Logger.create('storage');
-
+  constructor(storage, data = {}) {
     this.storage = storage;
 
-    this.diary = null;
-    this.entries = null;
-    this.meta = null;
+    this._name = data.name;
+    this._entries = data.entries || {};
+    this._meta = data.meta;
+    this._derivedKeys = {};
+
+    this.logger = Logger.create(`diary[${this.name}]`);
   }
+
+
+  get encryptionKey () {
+    return this._derivedKeys.key1;
+  }
+
 
   /**
    * @return {Promise}
@@ -34,65 +41,35 @@ export class StorageManager {
       return Q.reject(new Error('Diary not loaded'));
     }
 
-    let encKey = this.encryptionKey();
-
-    return Crypto.encrypt(encKey, entry)
+    return Crypto.encrypt(this.encryptionKey, entry)
       .then((encryptedEntry) => {
-        this._entries[entry.id] = entry;
+        this.entries[entry.id] = encryptedEntry;
 
-        return entry;
+        return this.storage.saveDiary({
+          name: this.name,
+          data: {
+            entries: this.entries,
+            meta: this.meta,
+          },
+        });
       });
   }
 
 
-  /**
-   * @return {Promise}
-   */
-  createNewDiary (data) {
-    this.logger.info('create new');
-
-    return this.storage.createNewDiary(data)
-      .then((diaryName) => {
-        if (!diaryName) {
-          throw new Error('Failed to create new diary');
-        }
-
-        if (diaryName) {
-          this.name = diaryName;
-          this.entries = _.get(data, 'entries', {});
-          this.meta = data.meta;
-        }
-
-        return diar
-      });
+  get meta () {
+    return this._meta;
   }
 
-
-  /**
-   * @return {Promise}
-   */
-  createNewDiary(data) {
+  get name () {
+    return this._name;
   }
 
-
-  selectDiary() {
-    return this.storage.selectDiary();
-  }
-
-
-
-  loadMetaDataFromDiary(diaryName) {
-    this.logger.info('load metadata', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then( (data) => {
-        return _.get(this._cache[diaryName], 'meta');
-      });
+  get entries () {
+    return this._entries;
   }
 
 
   saveMetaDataToDiary(diaryName, metadata) {
-    this.logger.info('save metadata', diaryName);
 
     return this._loadDiary(diaryName)
       .then((data) => {

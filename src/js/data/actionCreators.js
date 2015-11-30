@@ -409,15 +409,13 @@ export function updateEntry(id, ts, content) {
         resolve(entry);
       }
     })
-      .then(function entryReady(entry) {
+      .then(function saveToDiary(entry) {
         entry.body = content;
-
+        
+        return Storage.saveEntry(entry);
+      })
+      .then(function entrySaved(entry) {
         dispatch(buildAction(Actions.UPDATE_ENTRY_RESULT, entry));
-
-        return saveDiary(dispatch, getState)
-          .then(function() {
-            return entry;
-          });
       })
       .then(function updateSearchIndex(entry) {
         return Search.add({
