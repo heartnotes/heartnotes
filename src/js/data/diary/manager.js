@@ -5,22 +5,26 @@ import Logger from '../../utils/logger';
 
 import BrowserStorage from './browser';
 import FileStorage from './file';
+import { Actions, buildAction } from './actions';
 
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
+import { instance as Search } from './search/index';
 
 
 
 const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 
-export class DiaryManager {
+export default class DiaryManager {
 
-  constructor(storage, data = {}) {
+  constructor(dispatch, storage, data = {}) {
     this.storage = storage;
+    this.dispatch = dispatch;
 
     this._name = data.name;
-    this._entries = data.entries || {};
+    this._entries = null;
+    this._encryptedEntries = data.entries || {};
     this._meta = data.meta;
     this._derivedKeys = {};
 
@@ -28,29 +32,191 @@ export class DiaryManager {
   }
 
 
-  get encryptionKey () {
-    return this._derivedKeys.key1;
+  enterPassword(password) {
+    this.dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+      password: password,
+    }));
+
+    return Crypto.deriveKey(password, {
+      salt: this.meta.salt,
+      iterations: this.meta.iterations,
+    })
+      .then((derivedKeyData) => {
+        this._derivedKeys = derivedKeyData;
+
+        // now test that keys are correct
+        return Crypto.decrypt(this.encryptionKey, this.meta.keyTest)
+          .then((plainData) => {
+            if (plainData !== this.encryptionKey) {
+              throw new Error('Password incorrect');
+            }
+
+            this.dispatch(buildAction(Actions.DERIVE_KEYS_RESULT));
+          })
+          .catch((err) => {
+            this.dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
+
+            throw err;
+          });
+      });
   }
+
+
+
+
+  decryptEntries() {
+    if (!this.encryptionKey) {
+      return Q.reject(new Error('Please enter a password first.'));
+    }
+
+    this.dispatch(buildAction(Actions.LOAD_ENTRIES_START));
+
+    return Q.try(() => {
+      if (_.isEmpty(this.encryptedEntries)) {
+        this.logger.info('no existing entries found');
+
+        return {};
+      } else {
+        if (!this.meta.format || '1.0.0' === this.meta.format) {
+          return this._decryptOldFormat();
+        } else {
+          return this._decryptNewFormat(this.meta.format);
+        }
+      }
+    })
+      .then(() => {
+        this._rebuildSearchIndex();
+      })
+  }
+
+
+
+  _decryptOldFormat () {
+    return Crypto.decrypt(
+      this.encryptionKey, this.encryptedEntries
+    )
+      .then((entries) => {
+        this._entries = entries;
+        this._encryptedEntries = {};  // clear original so that we can save to new format
+
+        this.dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
+          entries: entries
+        }));
+
+        return this._rebuildSearchIndex();
+      });
+  }
+
+
+  _decryptNewFormat () {
+    this._entries = {};
+
+    _.each(this.encryptedEntries, (e) => {
+      this._entries[e.id] = {
+        decrypting: true,
+      };
+    });
+
+    this.dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
+      entries: this._entries
+    }));
+
+    Q.map(_.values(this.encryptedEntries), (encryptedEntry) => {
+      Crypto.decrypt(this.encryptionKey, encryptedEntry)
+        .then((entry) => {
+          this._entries[entry.id] = entry;
+
+          return this._addToSearchIndex(entry);
+        })
+        .catch((err) => {
+          this.logger.error(err);
+
+          this.dispatch(buildAction(Actions.DECRYPT_ENTRY_ERROR, err));
+        })
+    });
+
+    return entries;
+  }
+
+
+  _rebuildSearchIndex() {
+    let entries = this.entries;
+
+    this.logger.debug('rebuild search index', _.keys(entries).length);
+
+    this.dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_START));
+
+    return Search.reset()
+      .then(function() {
+        return Search.addMany(entries);
+      })
+      .then(function() {
+        this.dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_RESULT));
+      })
+      .catch(function(err) {
+        this.dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_ERROR, err));
+      });
+  }
+
+
+  _addToSearchIndex(entry) {
+    this.logger.debug('add to search index', entry.id);
+
+    return Search.add({
+      id: entry.id,
+      ts: entry.ts,
+      body: entry.body,
+    });
+  }
+
+
+
+    this.dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+      password: password,
+    }));
+
+    return Crypto.deriveKey(password, {
+      salt: this.meta.salt,
+      iterations: this.meta.iterations,
+    })
+      .then((derivedKeyData) => {
+        this._derivedKeys = derivedKeyData;
+
+        // now test that keys are correct
+        return Crypto.decrypt(this.encryptionKey, this.meta.keyTest)
+          .then((plainData) => {
+            if (plainData !== this.encryptionKey) {
+              throw new Error('Password incorrect');
+            }
+
+            this.dispatch(buildAction(Actions.DERIVE_KEYS_RESULT));
+          })
+          .catch((err) => {
+            this.dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
+
+            throw err;
+          });
+      });
+  }
+
+
 
 
   /**
    * @return {Promise}
    */
-  saveEntry (entry) {
-    if (!this.loaded()) {
-      return Q.reject(new Error('Diary not loaded'));
-    }
-
-    return Crypto.encrypt(this.encryptionKey, entry)
+  saveEntry (dispatch, entry) {
+    return this._ensureLoaded(dispatch)
+      .then(() => {
+        return Crypto.encrypt(this.encryptionKey, entry)
+      })
       .then((encryptedEntry) => {
         this.entries[entry.id] = encryptedEntry;
 
         return this.storage.saveDiary({
           name: this.name,
-          data: {
-            entries: this.entries,
-            meta: this.meta,
-          },
+          meta: this.meta,
+          entries: this.encryptedEntries,
         });
       });
   }
@@ -68,95 +234,31 @@ export class DiaryManager {
     return this._entries;
   }
 
+  get encryptedEntries () {
+    return this._encryptedEntries;
+  }
 
-  saveMetaDataToDiary(diaryName, metadata) {
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        data.meta = metadata;
-      });
+  get encryptionKey () {
+    return this._derivedKeys.key1;
   }
 
 
-  loadEntriesFromDiary (diaryName) {
-    this.logger.info('load entries', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        return data.entries;
-      });
+  _ensureLoaded (dispatch) {
+    if (!this._entries && this._encryptedEntries) {
+      return this._decryptEntries(dispatch);
+    } else {
+      return Q.reject(new Error('Diary not loaded'));
+    }
   }
-
 
   /**
-   * This just saves to internal cache without persisting.
+   * @return {Promise}
    */
-  saveEntriesToDiary (diaryName, entryData) {
-    this.logger.info('save entries', diaryName, entryData.length + ' chars');
+  _decryptEntries () {
 
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        data.entries = entryData;
-      });
   }
-
-
-  persist (diaryName) {
-    this.logger.info('persist to permanent storage', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        return this.storage.saveDiary(diaryName, data);
-      });
-  }
-
-
-
-  exportToFile (content) {
-   this.logger.info('export to file', content.length);
-
-   return this.fileStorage.exportToFile(content);
-  }
-
-
-  _setLastAccessedDiaryDetails (diaryName) {
-    this.browserStorage.set(LAST_ACCESSED_DIARY_KEY, {
-      name: diaryName,
-      storage: this.storage.type(),
-    });
-  }
-
-
-  _loadDiary(diaryName) {
-    this.logger.debug('load diary', diaryName);
-
-    return Promise.resolve()
-      .then(() => {
-        if (!this._cache[diaryName]) {
-          return this.storage.loadDiary(diaryName)
-            .then((data) => {
-              this._cache[diaryName] = data;
-
-              return data;
-            });
-        } else {
-          return this._cache[diaryName];
-        }
-      })
-      .then((data) => {
-        this._setLastAccessedDiaryDetails(diaryName);
-
-        return data;
-      });
-  }
-
-
 }
 
 
 
-exports.instance = new StorageManager();
-
-
-
-
+export function new DiaryManager()

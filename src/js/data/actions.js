@@ -64,9 +64,26 @@ const actionTypes = [
   'SEARCH_ERROR',
 ];
 
+var Actions = exports.Actions = {};
+
 actionTypes.forEach(function(type) {
-  exports[type] = type;
+  Actions[type] = type;
 });
+
+
+
+export function buildAction(type, payload = {}) {
+  if (payload && payload instanceof Error) {
+    payload = {
+      error: payload
+    };
+  }
+
+  return {
+    type: type,
+    payload: payload,
+  };
+};
 
 
 

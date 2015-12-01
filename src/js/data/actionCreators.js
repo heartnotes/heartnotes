@@ -14,24 +14,6 @@ import { instance as Crypto } from './crypto/index';
 var Logger = require('../utils/logger').create('ac');
 
 
-// ------------------------------------------------------
-// Builders
-// ------------------------------------------------------
-
-function buildAction(type, payload = {}) {
-  if (payload && payload instanceof Error) {
-    payload = {
-      error: payload
-    };
-  }
-
-  return {
-    type: type,
-    payload: payload,
-  };
-};
-
-
 
 // ------------------------------------------------------
 // Re-usable methods
