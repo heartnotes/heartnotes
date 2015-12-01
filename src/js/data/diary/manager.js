@@ -20,7 +20,8 @@ export default class DiaryManager {
 
   constructor(dispatch, storage, data = {}) {
     this.storage = storage;
-    this.dispatch = dispatch;
+    
+    this._dispatcher = dispatch;
 
     this._name = data.name;
     this._entries = null;
@@ -32,10 +33,12 @@ export default class DiaryManager {
   }
 
 
+
+
   enterPassword(password) {
-    this.dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+    this.dispatch(Actions.DERIVE_KEYS_START, {
       password: password,
-    }));
+    });
 
     return Crypto.deriveKey(password, {
       salt: this.meta.salt,
@@ -51,10 +54,10 @@ export default class DiaryManager {
               throw new Error('Password incorrect');
             }
 
-            this.dispatch(buildAction(Actions.DERIVE_KEYS_RESULT));
+            this.dispatch(Actions.DERIVE_KEYS_RESULT);
           })
           .catch((err) => {
-            this.dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
+            this.dispatch(Actions.DERIVE_KEYS_ERROR, err);
 
             throw err;
           });
@@ -69,7 +72,7 @@ export default class DiaryManager {
       return Q.reject(new Error('Please enter a password first.'));
     }
 
-    this.dispatch(buildAction(Actions.LOAD_ENTRIES_START));
+    this.dispatch(Actions.LOAD_ENTRIES_START);
 
     return Q.try(() => {
       if (_.isEmpty(this.encryptedEntries)) {
@@ -91,133 +94,69 @@ export default class DiaryManager {
 
 
 
-  _decryptOldFormat () {
-    return Crypto.decrypt(
-      this.encryptionKey, this.encryptedEntries
-    )
-      .then((entries) => {
-        this._entries = entries;
-        this._encryptedEntries = {};  // clear original so that we can save to new format
+  /**
+   * @return {Promise}
+   */
+  updateEntry (id, ts, content) {
+    this.dispatch(Actions.UPDATE_ENTRY_START);
 
-        this.dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
-          entries: entries
-        }));
+    let entry = this.getEntry(id) || this.getEntryByDate(ts);
 
-        return this._rebuildSearchIndex();
-      });
-  }
+    return new Q.try(() => {
+      if (!entry) {
+        ts = moment(ts || Date.now()).startOf('day').valueOf();
 
+        this.logger.debug('create entry', ts);
 
-  _decryptNewFormat () {
-    this._entries = {};
+        return Crypto.hash(ts, Math.random() * 100000)
+          .then((newId) => {
+            return resolve({
+              id: newId,
+              ts: ts,
+            });
+          });
+      } else {
+        return entry;
+      }
+    })
+      .then((entry) => {
+        entry.body = content;
+        this.entries[entry.id] = entry;
 
-    _.each(this.encryptedEntries, (e) => {
-      this._entries[e.id] = {
-        decrypting: true,
-      };
-    });
-
-    this.dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
-      entries: this._entries
-    }));
-
-    Q.map(_.values(this.encryptedEntries), (encryptedEntry) => {
-      Crypto.decrypt(this.encryptionKey, encryptedEntry)
-        .then((entry) => {
-          this._entries[entry.id] = entry;
-
-          return this._addToSearchIndex(entry);
-        })
-        .catch((err) => {
-          this.logger.error(err);
-
-          this.dispatch(buildAction(Actions.DECRYPT_ENTRY_ERROR, err));
-        })
-    });
-
-    return entries;
-  }
-
-
-  _rebuildSearchIndex() {
-    let entries = this.entries;
-
-    this.logger.debug('rebuild search index', _.keys(entries).length);
-
-    this.dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_START));
-
-    return Search.reset()
-      .then(function() {
-        return Search.addMany(entries);
+        return this._saveEntry(entry);
       })
-      .then(function() {
-        this.dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_RESULT));
+      .then((entry) => {
+        this.dispatch(Actions.UPDATE_ENTRY_RESULT, entry);
+
+        this._addToSearchIndex(entry);
       })
       .catch(function(err) {
-        this.dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_ERROR, err));
+        this.logger.error(err);
+        this.dispatch(Actions.UPDATE_ENTRY_ERROR, err);
+
+        return Q.delay(2000).then(() => {
+          this.dispatch(Actions.UPDATE_ENTRY_RESET);
+        });
       });
   }
-
-
-  _addToSearchIndex(entry) {
-    this.logger.debug('add to search index', entry.id);
-
-    return Search.add({
-      id: entry.id,
-      ts: entry.ts,
-      body: entry.body,
-    });
-  }
-
-
-
-    this.dispatch(buildAction(Actions.DERIVE_KEYS_START, {
-      password: password,
-    }));
-
-    return Crypto.deriveKey(password, {
-      salt: this.meta.salt,
-      iterations: this.meta.iterations,
-    })
-      .then((derivedKeyData) => {
-        this._derivedKeys = derivedKeyData;
-
-        // now test that keys are correct
-        return Crypto.decrypt(this.encryptionKey, this.meta.keyTest)
-          .then((plainData) => {
-            if (plainData !== this.encryptionKey) {
-              throw new Error('Password incorrect');
-            }
-
-            this.dispatch(buildAction(Actions.DERIVE_KEYS_RESULT));
-          })
-          .catch((err) => {
-            this.dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
-
-            throw err;
-          });
-      });
-  }
-
-
 
 
   /**
    * @return {Promise}
    */
-  saveEntry (dispatch, entry) {
-    return this._ensureLoaded(dispatch)
-      .then(() => {
-        return Crypto.encrypt(this.encryptionKey, entry)
-      })
+  _saveEntry (entry) {
+    return Crypto.encrypt(this.encryptionKey, entry)
       .then((encryptedEntry) => {
-        this.entries[entry.id] = encryptedEntry;
+        this.encryptedEntries[entry.id] = encryptedEntry;
 
         return this.storage.saveDiary({
           name: this.name,
           meta: this.meta,
           entries: this.encryptedEntries,
         });
+      })
+      .then(() => {
+        return entry;
       });
   }
 
@@ -243,20 +182,89 @@ export default class DiaryManager {
   }
 
 
-  _ensureLoaded (dispatch) {
-    if (!this._entries && this._encryptedEntries) {
-      return this._decryptEntries(dispatch);
-    } else {
-      return Q.reject(new Error('Diary not loaded'));
-    }
+  _decryptOldFormat () {
+    return Crypto.decrypt(
+      this.encryptionKey, this.encryptedEntries
+    )
+      .then((entries) => {
+        this._entries = entries;
+        this._encryptedEntries = {};  // clear original so that we can save to new format
+
+        this.dispatch(Actions.LOAD_ENTRIES_RESULT, {
+          entries: entries
+        }));
+
+        return this._rebuildSearchIndex();
+      });
   }
 
-  /**
-   * @return {Promise}
-   */
-  _decryptEntries () {
 
+  _decryptNewFormat () {
+    this._entries = {};
+
+    _.each(this.encryptedEntries, (e) => {
+      this._entries[e.id] = {
+        decrypting: true,
+      };
+    });
+
+    this.dispatch(Actions.LOAD_ENTRIES_RESULT, {
+      entries: this._entries
+    });
+
+    Q.map(_.values(this.encryptedEntries), (encryptedEntry) => {
+      Crypto.decrypt(this.encryptionKey, encryptedEntry)
+        .then((entry) => {
+          this._entries[entry.id] = entry;
+
+          return this._addToSearchIndex(entry);
+        })
+        .catch((err) => {
+          this.logger.error(err);
+
+          this.dispatch(Actions.DECRYPT_ENTRY_ERROR, err);
+        })
+    });
+
+    return entries;
   }
+
+
+  _rebuildSearchIndex() {
+    let entries = this.entries;
+
+    this.logger.debug('rebuild search index', _.keys(entries).length);
+
+    this.dispatch(Actions.BUILD_SEARCH_INDEX_START);
+
+    return Search.reset()
+      .then(function() {
+        return Search.addMany(entries);
+      })
+      .then(function() {
+        this.dispatch(Actions.BUILD_SEARCH_INDEX_RESULT);
+      })
+      .catch(function(err) {
+        this.dispatch(Actions.BUILD_SEARCH_INDEX_ERROR, err);
+      });
+  }
+
+
+  _addToSearchIndex(entry) {
+    this.logger.debug('add to search index', entry.id);
+
+    return Search.add({
+      id: entry.id,
+      ts: entry.ts,
+      body: entry.body,
+    });
+  }
+
+
+  dispatch (actionId, arg = {}) {
+    this._dispatcher(buildAction(action, arg));
+  }
+
 }
 
 
