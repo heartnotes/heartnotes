@@ -86,7 +86,6 @@ export default class AuthManager {
   }
 
 
-
   get meta () {
     return this._meta;
   }

@@ -9,13 +9,14 @@ Features:
 * Rock-solid encryption (AES-256-GCM)
 * Auto-save diary as you type
 * Timeline view for easy access to past entries
+* Search using lunr.js
 * Export diary to readable HTML file at any time
 
 Fetch the latest release from [http://heartnot.es](http://heartnot.es).
 
 ## Technology
 
-Built using React.js + Flummox + Electron.js.
+Built using React.js + Redux + Electron.js.
 
 ### Encryption details
 
