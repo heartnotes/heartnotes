@@ -10,6 +10,7 @@ import Methods from './methods';
 import { instance as Storage } from './storage/index';
 import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
+import { instance as Dispatcher } from './dispatcher';
 
 var Logger = require('../utils/logger').create('ac');
 
@@ -150,10 +151,11 @@ function rebuildSearchIndex(dispatch, entries) {
 
 
 export function init() {
-  return function(dispatch) {
-    dispatch(buildAction(Actions.INIT));
+  return function(dispatch, getState) {
+    Dispatcher.init(dispatch, getState);
 
-    dispatch(buildAction(Actions.CHECK_FOR_UPDATES_START));
+    Dispatcher.do(Actions.INIT);
+    Dispatcher.do(Actions.CHECK_FOR_UPDATES_START);
 
     return Q.cast($.ajax({
       cache: false,
@@ -161,11 +163,12 @@ export function init() {
       url: "https://api.github.com/repos/heartnotes/heartnotes/releases/latest"
     }))
       .then((release) => {
-        dispatch(buildAction(Actions.CHECK_FOR_UPDATES_RESULT, release));
+        Dispatcher.do(Actions.CHECK_FOR_UPDATES_RESULT, release);
       })
       .catch((err) => {
         Logger.error(err);
-        dispatch(buildAction(Actions.CHECK_FOR_UPDATES_ERROR, err));
+        
+        Dispatcher.do(Actions.CHECK_FOR_UPDATES_ERROR, err);
       });      
   };
 };
