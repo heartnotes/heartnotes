@@ -10,6 +10,7 @@ import { Actions, buildAction } from './actions';
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Search } from './search/index';
+import { instance as Dispatcher } from './dispatcher';
 
 
 
@@ -18,10 +19,8 @@ const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 export default class DiaryManager {
 
-  constructor(dispatch, storage, data = {}) {
+  constructor(storage, data = {}) {
     this.storage = storage;
-    
-    this._dispatcher = dispatch;
 
     this._name = data.name;
     this._entries = null;
@@ -30,38 +29,6 @@ export default class DiaryManager {
     this._derivedKeys = {};
 
     this.logger = Logger.create(`diary[${this.name}]`);
-  }
-
-
-
-
-  enterPassword(password) {
-    this.dispatch(Actions.DERIVE_KEYS_START, {
-      password: password,
-    });
-
-    return Crypto.deriveKey(password, {
-      salt: this.meta.salt,
-      iterations: this.meta.iterations,
-    })
-      .then((derivedKeyData) => {
-        this._derivedKeys = derivedKeyData;
-
-        // now test that keys are correct
-        return Crypto.decrypt(this.encryptionKey, this.meta.keyTest)
-          .then((plainData) => {
-            if (plainData !== this.encryptionKey) {
-              throw new Error('Password incorrect');
-            }
-
-            this.dispatch(Actions.DERIVE_KEYS_RESULT);
-          })
-          .catch((err) => {
-            this.dispatch(Actions.DERIVE_KEYS_ERROR, err);
-
-            throw err;
-          });
-      });
   }
 
 
