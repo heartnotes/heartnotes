@@ -1,8 +1,9 @@
 "use strict";
 
 import _ from 'lodash';
-import Logger from '../../utils/logger';
+import moment from 'moment';
 
+import Logger from '../../utils/logger';
 import BrowserStorage from './browser';
 import FileStorage from './file';
 
@@ -126,25 +127,25 @@ export class StorageManager {
   }
 
 
-  getLastAccessedDiaryDetails () {
-    this.browserStorage.get(LAST_ACCESSED_DIARY_KEY, {
-      name: diaryName,
-    });
-  }
-
 
 
   loadDiary (diaryName) {
     this._loadDiary(diaryName)
       .then((data) => {
-        return new Diary(data);
+        return new Diary(this, data);
       })
+  }
+
+
+  getLastAccessedDiaryDetails () {
+    this.browserStorage.get(LAST_ACCESSED_DIARY_KEY);
   }
 
 
   _setLastAccessedDiaryDetails (diaryName) {
     this.browserStorage.set(LAST_ACCESSED_DIARY_KEY, {
       name: diaryName,
+      when: moment.valueOf(),
     });
   }
 

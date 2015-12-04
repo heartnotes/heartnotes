@@ -93,6 +93,40 @@ export class Dispatcher {
 
 
 
+  createDiary (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.CREATE_DIARY_START, data);
+      case 'result':
+        return this._do(Actions.CREATE_DIARY_RESULT, data);
+      case 'error':
+        this._do(Actions.CREATE_DIARY_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.CREATE_DIARY_RESET);          
+        });
+    }
+  }
+
+
+
+  openDiary (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.OPEN_DIARY_START, data);
+      case 'result':
+        return this._do(Actions.OPEN_DIARY_RESULT, data);
+      case 'error':
+        this._do(Actions.OPEN_DIARY_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.OPEN_DIARY_RESET);          
+        });
+    }
+  }
+
+
+
   closeDiary () {
     this._do(Actions.CLOSE_DIARY);
   }

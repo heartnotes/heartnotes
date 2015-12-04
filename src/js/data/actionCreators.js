@@ -11,9 +11,9 @@ import { instance as Storage } from './storage/index';
 import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
 import { instance as Dispatcher } from './dispatcher';
+import { instance as Auth } from './auth/index';
 
 var Logger = require('../utils/logger').create('ac');
-
 
 
 // ------------------------------------------------------
@@ -142,72 +142,38 @@ export function closeDiary() {
 
 export function openDiary(name, password) {
   return function(dispatch) {
-    Dispatcher.openDiary('start', {
-      name: name,
-      password: password,
-    });
-
-    return Storage.loadMetaDataFromDiary(name)
-      .then((metaData) => {
-        if (!metaData) {
-          throw new Error('Data file not found: ' + name);
-        }
-
-        Dispatcher.do(Actions.DERIVE_KEYS_START, {
-          metaData: metaData, 
-          password: password,
-        }));
-
-        return Crypto.deriveKey(password, {
-          salt: metaData.salt,
-          iterations: metaData.iterations,
-        })
-          .then((derivedKeyData) => {
-            // now test that keys are correct
-            return Crypto.decrypt(derivedKeyData.key1, metaData.keyTest)
-              .then((plainData) => {
-                if (plainData !== derivedKeyData.key1) {
-                  throw new Error('Password incorrect');
-                }
-
-                dispatch(buildAction(Actions.DERIVE_KEYS_RESULT, derivedKeyData));
-              })
-              .catch((err) => {
-                dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
-
-                throw err;
-              });
-          });
-      })
-      .then(() => {
-        return dispatch(buildAction(Actions.OPEN_DIARY_RESULT, {
-          name: name,
-          password: password,
-        }));
-      })
-      .catch((err) => {
-        Logger.error(err);
-
-        dispatch(buildAction(Actions.OPEN_DIARY_ERROR, err))
-        
-        return Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.OPEN_DIARY_RESET));
-        });
+    return Storage.loadDiary(name)
+      .then((diary) => {
+        return diary.open(password);
       });
   }
 }
 
 
 
-
-
-
-
-
 export function createDiary(password) {
   return function(dispatch) {
-    dispatch(buildAction(Actions.CREATE_DIARY_START));
+    Dispatcher.createDiary('start');
 
+    return Auth.setNewPassword(password)
+      .then(() => {
+        return Storage.createNewDiary(_.pick(derivedKeyData, 'meta'))
+          .then((name) => {
+            if (!name) {
+              throw new Error('Please choose a location to save the file in');
+            }
+
+            dispatch(buildAction(Actions.CREATE_DIARY_RESULT, {
+              name: name,
+              password: password,
+            }));
+
+            showAlert(dispatch, 'Diary created!');
+          });
+      })
+      .catch((err) => {
+        Dispatcher.createDiary('error', err);
+      })
 
     return deriveKeyFromNewPassword(dispatch, password)
       .then((derivedKeyData) => {

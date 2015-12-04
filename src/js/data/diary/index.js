@@ -10,18 +10,20 @@ import { Actions, buildAction } from './actions';
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Search } from './search/index';
+import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from './dispatcher';
-
+import { instance as Auth } from '../auth/index';
 
 
 const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 
-export default class DiaryManager {
+/**
+ * Represents a diary.
+ */
+export default class Diary {
 
-  constructor(storage, data = {}) {
-    this.storage = storage;
-
+  constructor(data = {}) {
     this._name = data.name;
     this._entries = null;
     this._encryptedEntries = data.entries || {};
@@ -30,6 +32,28 @@ export default class DiaryManager {
 
     this.logger = Logger.create(`diary[${this.name}]`);
   }
+
+
+  /**
+   * Open this diary using given password.
+   * 
+   * @return {Promise}
+   */
+  open (password) {
+    Dispatcher.openDiary('start', {
+      name: name,
+      password: password,
+    });
+
+    return Auth.enterPassword(password, this.meta)
+      .then(() => {
+        Dispatcher.openDiary('result', this);
+      })
+      .catch((err) => {
+        Dispatcher.openDiary('erorr', err);
+      });
+  }
+
 
 
   decryptEntries() {
@@ -233,5 +257,3 @@ export default class DiaryManager {
 }
 
 
-
-export function new DiaryManager()

@@ -74,7 +74,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
         choosing: AsyncState.result(action.payload),
-        lastAccessedDiaryName: action.payload.name,
+        lastAccessedDiary: action.payload.name,
       });
 
     case Actions.CHOOSE_DIARY_ERROR:
@@ -91,16 +91,12 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         opening: AsyncState.start(),
         derivingKeys: AsyncState.reset(),
-        name: null,
-        password: null,
-        derivedKeys: null,
-        entries: null,
+        diary: null,
       });
 
     case Actions.OPEN_DIARY_RESULT:
       return _.extend({}, state, {
-        name: action.payload.name,
-        password: action.payload.password,
+        diary: action.payload,
         opening: AsyncState.result(action.payload),
       });
 

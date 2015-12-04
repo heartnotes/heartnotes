@@ -7,38 +7,52 @@ import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
 import { Actions } from '../actions';
+import { instance as Dispatcher } from '../dispatcher';
 
 
-export default class AuthManager {
+export class AuthManager {
 
-  constructor(dispatcher) {
+  constructor() {
     this.logger = Logger.create(`auth`);
-
-    this._password = null;
-    this._derivedKeys = {};
   }
 
 
   /** 
    * @return {Promise}
    */
-  setNewPassword(password) {
+  createPassword(password) {
     Dispatcher.do(Actions.DERIVE_KEYS_START, {
       password: password
     });
 
     return Crypto.deriveNewKey(password) 
       .then((derivedKeyData) => {
-        // encrypt key with itself to produce key checking value
-        return Crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
-          .then((keyTest) => {
-            Dispatcher.do(Actions.DERIVE_KEYS_RESULT);
+        let masterKey = derivedKeyData.key1;
 
-            this._meta = {
-              keyTest: keyTest,
-              salt: derivedKeyData.salt,
-              iterations: derivedKeyData.iterations,              
-            };
+        // hash the password
+        return Crypto.hash(password)
+          .then((hash) => {
+            // now genereate encryption key
+            return Crypto.deriveNewKey(hash);
+          })
+          .then((encryptionKeyData) => {
+            // now encrypt the encryption key with master key
+            return Crypto.encrypt(masterKey, {
+              key: encryptionKeyData.key1,
+              check: 'ok',  /* for checking password when we decrypt later on */
+            })
+              .then((encryptionKeyBundle) => {
+                Dispatcher.do(Actions.DERIVE_KEYS_RESULT);
+
+                this._password = password;
+                this._masterKey = masterKey;
+                this._encryptionKey = encryptionKeyBundle.key1;
+                this._meta = {
+                  encKeyBundle: encryptionKeyBundle,
+                  salt: derivedKeyData.salt,
+                  iterations: derivedKeyData.iterations,              
+                };
+              });
           });
       })
       .catch((err) => {
@@ -54,7 +68,7 @@ export default class AuthManager {
    * @return {Promise}
    */
   enterPassword(password, meta) {
-    Dispather.do(Actions.DERIVE_KEYS_START, {
+    Dispatcher.do(Actions.DERIVE_KEYS_START, {
       password: password,
     });
 
@@ -63,19 +77,32 @@ export default class AuthManager {
       iterations: meta.iterations,
     })
       .then((derivedKeyData) => {
-        this._derivedKeys = derivedKeyData;
+        let masterKey = derivedKeyData.key1;
 
-        // now test that keys are correct
-        return Crypto.decrypt(meta.key1, meta.keyTest)
+        let encKeyBundle = (meta.format) ? meta.encKeyBundle : meta.keyTest;
+
+        return Crypto.decrypt(masterKey, encKeyBundle)
           .then((plainData) => {
-            if (plainData !== meta.key1) {
-              throw new Error('Password incorrect');
+            if (!meta.format) {
+              if (plainData !== masterKey) {
+                throw new Error('Password incorrect');
+              }              
+
+              this._encryptionKey = masterKey;
+
+            } else {
+              if (plainData.check !== 'ok') {
+                throw new Error('Password incorrect');
+              }
+
+              this._encryptionKey = plainData.key;
             }
 
-            this.meta = meta;
-            this.password = password;
-            
-            Dispatcher.do(Actions.DERIVE_KEYS_RESULT, derivedKeyData);            
+            this._password = password;
+            this._masterKey = masterKey;
+            this._meta = meta;
+
+            Dispatcher.do(Actions.DERIVE_KEYS_RESULT);            
           })
           .catch((err) => {
             Dispatcher.do(Actions.DERIVE_KEYS_ERROR, err);
@@ -90,12 +117,21 @@ export default class AuthManager {
     return this._meta;
   }
 
+  get password () {
+    return this._password;
+  }
+
+  get masterKey () {
+    return this._masterKey;
+  }
+
   get encryptionKey () {
-    return this._derivedKeys.key1;
+    return this._encryptionKey;
   }
 
 }
 
 
 
-export function new DiaryManager()
+AuthManager.instance = new AuthManager();
+
