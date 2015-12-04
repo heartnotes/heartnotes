@@ -49,10 +49,10 @@ export class Auth {
                 this._masterKey = masterKey;
                 this._encryptionKey = encryptionKey;
                 this._meta = {
-                  encKeyBundle: encKeyBundle,
+                  bundle: encKeyBundle,
                   salt: derivedKeyData.salt,
                   iterations: derivedKeyData.iterations,              
-                  format: Diary.CURRENT_META_FORMAT,
+                  version: Detect.version(),
                 };
               });
           });
@@ -79,11 +79,11 @@ export class Auth {
       .then((derivedKeyData) => {
         let masterKey = derivedKeyData.key1;
 
-        let encKeyBundle = (meta.format) ? meta.encKeyBundle : meta.keyTest;
+        let encKeyBundle = (meta.version) ? meta.bundle : meta.keyTest;
 
         return Crypto.decrypt(masterKey, encKeyBundle)
           .then((plainData) => {
-            if (!meta.format) {
+            if (!meta.version) {
               if (plainData !== masterKey) {
                 throw new Error('Password incorrect');
               }              

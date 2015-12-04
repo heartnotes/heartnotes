@@ -25,8 +25,11 @@ export class Dispatcher {
   }
 
 
-  alertUser (data) {
-    this._do(Actions.Actions.USER_ALERT, data);
+  alertUser (msg, type = 'info') {
+    this._do(Actions.USER_ALERT, {
+      type: type,
+      msg: msg,
+    });
 
     return Q.delay(2000).then(() => {
       this._do(Actions.USER_ALERT, {

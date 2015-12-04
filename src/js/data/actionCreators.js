@@ -89,7 +89,7 @@ export function init() {
     Dispatcher.setup(dispatch, getState);
 
     Dispatcher.initApp();
-    
+
     Dispatcher.checkForUpdates('start');
 
     return Q.cast($.ajax({
@@ -162,12 +162,12 @@ export function createDiary(password) {
         return Storage.createNewDiary(Auth.meta)
           .then((diary) => {
             if (!diary) {
-              throw new Error('Please choose a location to save the file in');
+              throw new Error('Sorry, there was unexpected error.');
             }
 
             Dispatcher.createDiary('result', diary);
 
-            Dispatcher.showAlert('Diary created!');
+            Dispatcher.alertUser('Diary created!');
           });
       })
       .catch((err) => {

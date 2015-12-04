@@ -44,7 +44,11 @@ export class StorageManager {
     return this.storage.createNewDiary(data)
       .then((diaryName) => {
         if (!diaryName) {
-          throw new Error('Failed to create new diary');
+          let err = new Error('Please choose a location to save the file in.');
+
+          this.logger.error(err);
+
+          throw err;
         }
 
         return this.loadDiary(diaryName);
@@ -53,10 +57,10 @@ export class StorageManager {
 
 
   loadDiary (diaryName) {
-    this._loadDiary(diaryName)
+    return this._loadDiary(diaryName)
       .then((data) => {
         return new Diary(diaryName, data);
-      })
+      });
   }
 
 
@@ -117,7 +121,14 @@ export class StorageManager {
         this._setLastAccessedDiaryDetails(diaryName);
 
         return data;
-      });
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        err = new Error('There was an error loading the diary.');
+
+        throw err;
+      })
   }
 
 

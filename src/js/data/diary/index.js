@@ -3,19 +3,14 @@
 import _ from 'lodash';
 import Logger from '../../utils/logger';
 
-import BrowserStorage from './browser';
-import FileStorage from './file';
-import { Actions, buildAction } from './actions';
-
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
-import { instance as Search } from './search/index';
+import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
-import { instance as Dispatcher } from './dispatcher';
+import { instance as Dispatcher } from '../dispatcher';
 import { instance as Auth } from '../auth/index';
 
 
-const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 
 /**
@@ -64,7 +59,7 @@ export default class Diary {
 
         return {};
       } else {
-        if (!this._meta.format) {
+        if (!this._meta.version) {
           return this._decryptOldFormat();
         } else {
           return this._decryptNewFormat();
@@ -167,10 +162,10 @@ export default class Diary {
     )
       .then((entries) => {
         this._entries = entries;
-        this._encryptedEntries = {};  // clear original so that we can save to new format
+        this._encryptedEntries = {};  // clear original so that we can save to new version
 
         Dispatcher.loadEntries('progress', {
-          msg: 'Upgrading diary to new format'
+          msg: 'Upgrading diary to new version'
         });
 
         // now let's re-save each entry, individually encrypted
@@ -265,7 +260,6 @@ export default class Diary {
 }
 
 
-const Diary.CURRENT_META_FORMAT = '1.0.0';
 
 
 
