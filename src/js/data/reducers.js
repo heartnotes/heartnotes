@@ -1,7 +1,7 @@
 import semver from 'semver';
 import _ from 'lodash';
 
-import Actions from './actions';
+import { Actions } from './actions';
 import InitialState from './initialState';
 import * as AsyncState from './asyncState';
 import { instance as Storage } from './storage/index';

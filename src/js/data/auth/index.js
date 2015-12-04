@@ -22,9 +22,7 @@ export class Auth {
    * @return {Promise}
    */
   createPassword(password) {
-    Dispatcher.do(Actions.DERIVE_KEYS_START, {
-      password: password
-    });
+    Dispatcher.createPassword('start');
 
     return Crypto.deriveNewKey(password) 
       .then((derivedKeyData) => {
@@ -45,7 +43,7 @@ export class Auth {
               check: 'ok',  /* for checking password when we decrypt later on */
             })
               .then((encKeyBundle) => {
-                Dispatcher.do(Actions.DERIVE_KEYS_RESULT);
+                Dispatcher.createPassword('result');
 
                 this._password = password;
                 this._masterKey = masterKey;
@@ -60,7 +58,7 @@ export class Auth {
           });
       })
       .catch((err) => {
-        Dispatcher.do(Actions.DERIVE_KEYS_ERROR, err);
+        Dispatcher.createPassword('error', err);
 
         throw err;
       });
@@ -72,9 +70,7 @@ export class Auth {
    * @return {Promise}
    */
   enterPassword(password, meta) {
-    Dispatcher.do(Actions.DERIVE_KEYS_START, {
-      password: password,
-    });
+    Dispatcher.enterPassword('start');
 
     return Crypto.deriveKey(password, {
       salt: meta.salt,
@@ -106,10 +102,10 @@ export class Auth {
             this._masterKey = masterKey;
             this._meta = meta;
 
-            Dispatcher.do(Actions.DERIVE_KEYS_RESULT);            
+            Dispatcher.enterPassword('result');            
           })
           .catch((err) => {
-            Dispatcher.do(Actions.DERIVE_KEYS_ERROR, err);
+            Dispatcher.enterPassword('error', err);
 
             throw err;
           });
@@ -137,5 +133,5 @@ export class Auth {
 
 
 
-Auth.instance = new Auth();
+exports.instance = new Auth();
 

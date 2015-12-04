@@ -13,6 +13,7 @@ import { instance as Crypto } from './crypto/index';
 import { instance as Dispatcher } from './dispatcher';
 import { instance as Auth } from './auth/index';
 
+
 var Logger = require('../utils/logger').create('ac');
 
 
@@ -85,9 +86,10 @@ function saveDiary(dispatch, getState) {
 
 export function init() {
   return function(dispatch, getState) {
-    Dispatcher.init(dispatch, getState);
+    Dispatcher.setup(dispatch, getState);
 
-    Dispatcher.init();
+    Dispatcher.initApp();
+    
     Dispatcher.checkForUpdates('start');
 
     return Q.cast($.ajax({

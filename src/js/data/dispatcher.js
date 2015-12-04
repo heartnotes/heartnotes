@@ -4,32 +4,23 @@ import _ from 'lodash';
 import Q from 'bluebird';
 import Logger from '../utils/logger';
 
-import { Actions, buildAction } from '../actions';
+import { Actions, buildAction } from './actions';
 
 
 export class Dispatcher {
 
   constructor() {
-    this.logger = Logger.create(`dispatcher`);
+    this.logger = Logger.create('dispatch');
   }
 
-
-  init (dispatchFunction, getStateFunction) {
+  setup (dispatchFunction, getStateFunction) {
     this._dispatch = dispatchFunction;
     this._getState = getStateFunction;
   }
 
 
-  _do (actionId, data) {
-    if (!this._dispatch) {
-      throw new Error('Dispatcher not yet initialized');
-    }
 
-    this._dispatch(buildAction(actionId, data));
-  }
-
-
-  init () {
+  initApp () {
     this._do(Actions.INIT);
   }
 
@@ -146,10 +137,42 @@ export class Dispatcher {
 
 
 
+  createPassword (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.DERIVE_KEYS_START, data);
+      case 'result':
+        return this._do(Actions.DERIVE_KEYS_RESULT, data);
+      case 'error':
+        this._do(Actions.DERIVE_KEYS_ERROR, data);
+    }
+  }
+
+
+
+  enterPassword (state, data) {
+    this.createPassword(state, data);
+  }
+
+
+
   closeDiary () {
     this._do(Actions.CLOSE_DIARY);
+  }
+
+
+
+
+  _do (actionId, data) {
+    if (!this._dispatch) {
+      throw new Error('Dispatcher not yet initialized');
+    }
+
+    this._dispatch(buildAction(actionId, data));
   }
 }
 
 
-Dispatcher.instance = new Dispatcher();
+exports.instance = new Dispatcher();
+
+

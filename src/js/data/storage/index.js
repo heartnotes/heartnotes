@@ -17,14 +17,15 @@ const LAST_ACCESSED_DIARY_KEY = 'last datafile';
 
 export class StorageManager {
 
-  constructor(storage) {
+  constructor() {
     this.logger = Logger.create('storage');
 
-    this.storage = storage;
+    this.browserStorage = new BrowserStorage(this.logger);
+    this.fileStorage = new FileStorage(this.logger);
 
-    this.diary = null;
-    this.entries = null;
-    this.meta = null;
+    this.storage = (Detect.isElectronApp() ? this.fileStorage : this.browserStorage);
+
+    this._cache = {};
   }
 
 
