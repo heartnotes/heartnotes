@@ -127,6 +127,25 @@ export class Dispatcher {
 
 
 
+  loadEntries (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.LOAD_ENTRIES_START, data);
+      case 'progress':
+        return this._do(Actions.LOAD_ENTRIES_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.LOAD_ENTRIES_RESULT, data);
+      case 'error':
+        this._do(Actions.LOAD_ENTRIES_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.LOAD_ENTRIES_RESET);          
+        });
+    }
+  }
+
+
+
   closeDiary () {
     this._do(Actions.CLOSE_DIARY);
   }

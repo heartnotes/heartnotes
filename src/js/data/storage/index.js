@@ -33,8 +33,12 @@ export class StorageManager {
   /**
    * @return {Promise}
    */
-  createNewDiary (data) {
+  createNewDiary (meta) {
     this.logger.info('create new');
+
+    let data = {
+      meta: meta
+    };
 
     return this.storage.createNewDiary(data)
       .then((diaryName) => {
@@ -42,70 +46,21 @@ export class StorageManager {
           throw new Error('Failed to create new diary');
         }
 
-        if (diaryName) {
-          this.name = diaryName;
-          this.entries = _.get(data, 'entries', {});
-          this.meta = data.meta;
-        }
-
-        return diar
+        return this.loadDiary(diaryName);
       });
   }
 
 
-  /**
-   * @return {Promise}
-   */
-  createNewDiary(data) {
+  loadDiary (diaryName) {
+    this._loadDiary(diaryName)
+      .then((data) => {
+        return new Diary(diaryName, data);
+      })
   }
 
 
   selectDiary() {
     return this.storage.selectDiary();
-  }
-
-
-
-  loadMetaDataFromDiary(diaryName) {
-    this.logger.info('load metadata', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then( (data) => {
-        return _.get(this._cache[diaryName], 'meta');
-      });
-  }
-
-
-  saveMetaDataToDiary(diaryName, metadata) {
-    this.logger.info('save metadata', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        data.meta = metadata;
-      });
-  }
-
-
-  loadEntriesFromDiary (diaryName) {
-    this.logger.info('load entries', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        return data.entries;
-      });
-  }
-
-
-  /**
-   * This just saves to internal cache without persisting.
-   */
-  saveEntriesToDiary (diaryName, entryData) {
-    this.logger.info('save entries', diaryName, entryData.length + ' chars');
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        data.entries = entryData;
-      });
   }
 
 
@@ -126,15 +81,6 @@ export class StorageManager {
    return this.fileStorage.exportToFile(content);
   }
 
-
-
-
-  loadDiary (diaryName) {
-    this._loadDiary(diaryName)
-      .then((data) => {
-        return new Diary(this, data);
-      })
-  }
 
 
   getLastAccessedDiaryDetails () {

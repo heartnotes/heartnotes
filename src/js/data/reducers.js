@@ -59,10 +59,7 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.CLOSE_DIARY:
       return _.extend({}, state, {
-        name: null,
-        password: null,
-        derivedKeys: null,
-        entries: null,
+        diary: null,
       });
 
 
@@ -114,16 +111,12 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         creating: AsyncState.start(),
         derivingKeys: AsyncState.reset(),
-        name: null,
-        password: null,
-        derivedKeys: null,
-        entries: null,
+        diary: null,
       });
 
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
-        name: action.payload.name,
-        password: action.payload.password,
+        diary: action.payload,
         creating: AsyncState.result(action.payload),
       });
 
@@ -142,16 +135,18 @@ exports.diary = function(state = InitialState.diary(), action) {
         loadingEntries: AsyncState.start(),
       });
 
-    case Actions.LOAD_ENTRIES_RESULT:
-      let loadedEntries = action.payload.entries || {};
+    case Actions.LOAD_ENTRIES_PROGRESS:
+      return _.extend({}, state, {
+        loadingEntries: AsyncState.progress(action.payload),
+      });
 
+    case Actions.LOAD_ENTRIES_RESULT:
       return _.extend({}, state, {
         loadingEntries: AsyncState.result(action.payload),
-        entries: loadedEntries,
         searching: {
           inProgress: false,
           keyword: null,
-          results: loadedEntries,
+          results: null,
         },
       });
 

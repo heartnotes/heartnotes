@@ -6,11 +6,12 @@ import Logger from '../../utils/logger';
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
+import Diary from '../diary/index';
 import { Actions } from '../actions';
-import { instance as Dispatcher } from '../dispatcher';
 
 
-export class AuthManager {
+
+export class Auth {
 
   constructor() {
     this.logger = Logger.create(`auth`);
@@ -30,27 +31,30 @@ export class AuthManager {
         let masterKey = derivedKeyData.key1;
 
         // hash the password
-        return Crypto.hash(password)
+        return Crypto.hash(password, Math.random() * 100000)
           .then((hash) => {
             // now genereate encryption key
             return Crypto.deriveNewKey(hash);
           })
           .then((encryptionKeyData) => {
+            let encryptionKey = encryptionKeyData.key1;
+
             // now encrypt the encryption key with master key
             return Crypto.encrypt(masterKey, {
-              key: encryptionKeyData.key1,
+              key: encryptionKey,
               check: 'ok',  /* for checking password when we decrypt later on */
             })
-              .then((encryptionKeyBundle) => {
+              .then((encKeyBundle) => {
                 Dispatcher.do(Actions.DERIVE_KEYS_RESULT);
 
                 this._password = password;
                 this._masterKey = masterKey;
-                this._encryptionKey = encryptionKeyBundle.key1;
+                this._encryptionKey = encryptionKey;
                 this._meta = {
-                  encKeyBundle: encryptionKeyBundle,
+                  encKeyBundle: encKeyBundle,
                   salt: derivedKeyData.salt,
                   iterations: derivedKeyData.iterations,              
+                  format: Diary.CURRENT_META_FORMAT,
                 };
               });
           });
@@ -133,5 +137,5 @@ export class AuthManager {
 
 
 
-AuthManager.instance = new AuthManager();
+Auth.instance = new Auth();
 

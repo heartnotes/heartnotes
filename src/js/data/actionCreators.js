@@ -155,49 +155,21 @@ export function createDiary(password) {
   return function(dispatch) {
     Dispatcher.createDiary('start');
 
-    return Auth.setNewPassword(password)
+    return Auth.createPassword(password)
       .then(() => {
-        return Storage.createNewDiary(_.pick(derivedKeyData, 'meta'))
-          .then((name) => {
-            if (!name) {
+        return Storage.createNewDiary(Auth.meta)
+          .then((diary) => {
+            if (!diary) {
               throw new Error('Please choose a location to save the file in');
             }
 
-            dispatch(buildAction(Actions.CREATE_DIARY_RESULT, {
-              name: name,
-              password: password,
-            }));
+            Dispatcher.createDiary('result', diary);
 
-            showAlert(dispatch, 'Diary created!');
+            Dispatcher.showAlert('Diary created!');
           });
       })
       .catch((err) => {
         Dispatcher.createDiary('error', err);
-      })
-
-    return deriveKeyFromNewPassword(dispatch, password)
-      .then((derivedKeyData) => {
-        return Storage.createNewDiary(_.pick(derivedKeyData, 'meta'))
-          .then((name) => {
-            if (!name) {
-              throw new Error('Please choose a location to save the file in');
-            }
-
-            dispatch(buildAction(Actions.CREATE_DIARY_RESULT, {
-              name: name,
-              password: password,
-            }));
-
-            showAlert(dispatch, 'Diary created!');
-          });
-      })
-      .catch(function(err) {
-        Logger.error(err);
-        dispatch(buildAction(Actions.CREATE_DIARY_ERROR, err));
-
-        return Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.CREATE_DIARY_RESET));      
-        });
       });
   };
 }
@@ -206,57 +178,9 @@ export function createDiary(password) {
 
 export function loadEntries() {
   return function(dispatch, getState) {
-    let diary = getState().diary;
+    let diary = getState().diary.diary;
 
-    dispatch(buildAction(Actions.LOAD_ENTRIES_START));
-
-    return Q.try(function() {
-      if (!diary.name) {
-        throw new Error('No diary loaded');
-      }      
-
-      return Storage.loadEntriesFromDiary(diary.name);
-    })
-      .then( function gotEntries(encryptedEntries) {
-        if (!encryptedEntries) {
-          Logger.info('no existing entries found');
-
-          return {};
-        } else {
-          Logger.info('decrypt entries', encryptedEntries.length);
-
-          return Crypto.decrypt(
-            diary.derivedKeys.key1, encryptedEntries
-          )
-            .catch(function(err) {
-              Logger.error('entry decryption error', err);
-
-              throw err;
-            });
-        }
-      })
-      .then(function gotEntries(entries) {
-        Logger.debug('decrypted entries', _.keys(entries).length);
-
-        dispatch(buildAction(Actions.LOAD_ENTRIES_RESULT, {
-          entries: entries
-        }));
-
-        return entries;
-      })
-      .then(function buildSearchIndex(entries) {
-        Logger.debug('rebuild search index', _.keys(entries).length);
-
-        return rebuildSearchIndex(dispatch, entries);
-      })
-      .catch(function(err) {
-        Logger.error(err);
-        dispatch(buildAction(Actions.LOAD_ENTRIES_ERROR, err));
-
-        return Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.LOAD_ENTRIES_RESET));      
-        });
-      });
+    return diary.loadEntries();
   };
 }
 
