@@ -74,7 +74,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
         choosing: AsyncState.result(action.payload),
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
+        lastAccessedDiaryName: action.payload.name,
       });
 
     case Actions.CHOOSE_DIARY_ERROR:

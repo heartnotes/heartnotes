@@ -29,10 +29,8 @@ var Component = React.createClass({
   render: function() { 
     var content = null;
 
-    if (this.props.data.diary.lastAccessedDiaryDetails) {
-      var lastDiaryName = StringUtils.formatDiaryDetails(
-        this.props.data.diary.lastAccessedDiaryDetails
-      );
+    if (this.props.data.diary.lastAccessedDiaryName) {
+      var lastDiaryName = this.props.data.diary.lastAccessedDiaryName;
 
       var buttonAttrs = {
         onClick: this._openDiary,

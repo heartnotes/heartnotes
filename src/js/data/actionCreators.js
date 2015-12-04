@@ -21,55 +21,8 @@ var Logger = require('../utils/logger').create('ac');
 // ------------------------------------------------------
 
 
-
-function deriveKeyFromNewPassword (dispatch, password) {
-  dispatch(buildAction(Actions.DERIVE_KEYS_START, {
-    password: password
-  }));
-
-  return Crypto.deriveNewKey(password) 
-    .then((derivedKeyData) => {
-      // encrypt key with itself to produce key checking value
-      return Crypto.encrypt(derivedKeyData.key1, derivedKeyData.key1)
-        .then((keyTest) => {
-          dispatch(buildAction(Actions.DERIVE_KEYS_RESULT, derivedKeyData));
-
-          return _.extend({}, derivedKeyData, {
-            meta: {
-              keyTest: keyTest,
-              salt: derivedKeyData.salt,
-              iterations: derivedKeyData.iterations,
-            }
-          });
-        });
-    })
-    .catch((err) => {
-      dispatch(buildAction(Actions.DERIVE_KEYS_ERROR, err));
-
-      throw err;
-    });
-}
-
-
-
-function showAlert(dispatch, msg, type = 'info') {
-  dispatch(buildAction(Actions.USER_ALERT, {
-    msg: msg,
-    type: type,
-  }));
-
-  return Q.delay(2000).then(() => {
-    dispatch(buildAction(Actions.USER_ALERT, {
-      msg: null,
-      type: null,
-    }));      
-  });
-}
-
-
-
 function doSaveDiary(dispatch, getState, encKey) {
-  dispatch(buildAction(Actions.SAVE_ENTRIES_START));
+  Dispatcher.saveEntries('start');
 
   let diary = getState().diary;
   let { entries, name, derivedKeys } = diary;
@@ -96,7 +49,7 @@ function doSaveDiary(dispatch, getState, encKey) {
       return Storage.persist(name);
     })
     .then(function allDone() {
-      dispatch(buildAction(Actions.SAVE_ENTRIES_RESULT));
+      Dispatcher.saveEntries('result');
     })
     .then(function shouldWeResave() {
       if (0 <= getState().diary.saveEntriesRequested) {
@@ -106,11 +59,7 @@ function doSaveDiary(dispatch, getState, encKey) {
     .catch(function(err) {
       Logger.error('diary save error', err);
 
-      dispatch(buildAction(Actions.SAVE_ENTRIES_ERROR, err));
-
-      return Q.delay(2000).then(() => {
-        dispatch(buildAction(Actions.SAVE_ENTRIES_RESET));
-      });
+      Dispatcher.saveEntries('error', err);
     });
 }
 
@@ -118,29 +67,13 @@ function doSaveDiary(dispatch, getState, encKey) {
 
 
 function saveDiary(dispatch, getState) {
-  dispatch(buildAction(Actions.SAVE_ENTRIES_REQUESTED));
+  Dispatcher.saveEntries('requested');
 
   if (!getState().diary.savingEntries.inProgress) {
     return doSaveDiary(dispatch, getState);
   }
 }
 
-
-
-function rebuildSearchIndex(dispatch, entries) {
-  dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_START));
-
-  return Search.reset()
-    .then(function() {
-      return Search.addMany(entries);
-    })
-    .then(function() {
-      dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_RESULT));
-    })
-    .catch(function(err) {
-      dispatch(buildAction(Actions.BUILD_SEARCH_INDEX_ERROR, err));
-    });
-}
 
 
 
@@ -154,8 +87,8 @@ export function init() {
   return function(dispatch, getState) {
     Dispatcher.init(dispatch, getState);
 
-    Dispatcher.do(Actions.INIT);
-    Dispatcher.do(Actions.CHECK_FOR_UPDATES_START);
+    Dispatcher.init();
+    Dispatcher.checkForUpdates('start');
 
     return Q.cast($.ajax({
       cache: false,
@@ -163,12 +96,12 @@ export function init() {
       url: "https://api.github.com/repos/heartnotes/heartnotes/releases/latest"
     }))
       .then((release) => {
-        Dispatcher.do(Actions.CHECK_FOR_UPDATES_RESULT, release);
+        Dispatcher.checkForUpdates('result', release);
       })
       .catch((err) => {
         Logger.error(err);
         
-        Dispatcher.do(Actions.CHECK_FOR_UPDATES_ERROR, err);
+        Dispatcher.checkForUpdates('error', err);
       });      
   };
 };
@@ -177,7 +110,7 @@ export function init() {
 
 export function chooseDiary() {
   return function(dispatch) {
-    dispatch(buildAction(Actions.CHOOSE_DIARY_START));
+    Dispatcher.chooseDiary('start');
     
     return Storage.selectDiary()
       .then( (diaryName) => {
@@ -185,18 +118,14 @@ export function chooseDiary() {
           return;
         }
 
-        return Storage.loadMetaDataFromDiary(diaryName);
+        return Storage.loadDiary(diaryName);
       })
-      .then( (data) => {
-        dispatch(buildAction(Actions.CHOOSE_DIARY_RESULT, data));
+      .then( (diary) => {
+        Dispatcher.chooseDiary('result', diary);
       })
       .catch( (err) => {
         Logger.error(err);
-        dispatch(buildAction(Actions.CHOOSE_DIARY_ERROR, err));
-
-        return Q.delay(2000).then(() => {
-          dispatch(buildAction(Actions.CHOOSE_DIARY_RESET));
-        })
+        Dispatcher.chooseDiary('error', err);
       });
   }
 };
@@ -205,7 +134,7 @@ export function chooseDiary() {
 
 export function closeDiary() {
   return function(dispatch) {
-    dispatch(buildAction(Actions.CLOSE_DIARY));
+    Dispatcher.closeDiary();
   }
 }
 
@@ -213,10 +142,10 @@ export function closeDiary() {
 
 export function openDiary(name, password) {
   return function(dispatch) {
-    dispatch(buildAction(Actions.OPEN_DIARY_START, {
+    Dispatcher.openDiary('start', {
       name: name,
       password: password,
-    }));
+    });
 
     return Storage.loadMetaDataFromDiary(name)
       .then((metaData) => {
@@ -224,7 +153,7 @@ export function openDiary(name, password) {
           throw new Error('Data file not found: ' + name);
         }
 
-        dispatch(buildAction(Actions.DERIVE_KEYS_START, {
+        Dispatcher.do(Actions.DERIVE_KEYS_START, {
           metaData: metaData, 
           password: password,
         }));

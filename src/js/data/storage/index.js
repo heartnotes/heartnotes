@@ -8,7 +8,7 @@ import FileStorage from './file';
 
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
-
+import Diary from '../diary/index';
 
 
 const LAST_ACCESSED_DIARY_KEY = 'last datafile';
@@ -26,23 +26,7 @@ export class StorageManager {
     this.meta = null;
   }
 
-  /**
-   * @return {Promise}
-   */
-  saveEntry (entry) {
-    if (!this.loaded()) {
-      return Q.reject(new Error('Diary not loaded'));
-    }
 
-    let encKey = this.encryptionKey();
-
-    return Crypto.encrypt(encKey, entry)
-      .then((encryptedEntry) => {
-        this._entries[entry.id] = entry;
-
-        return entry;
-      });
-  }
 
 
   /**
@@ -142,10 +126,25 @@ export class StorageManager {
   }
 
 
+  getLastAccessedDiaryDetails () {
+    this.browserStorage.get(LAST_ACCESSED_DIARY_KEY, {
+      name: diaryName,
+    });
+  }
+
+
+
+  loadDiary (diaryName) {
+    this._loadDiary(diaryName)
+      .then((data) => {
+        return new Diary(data);
+      })
+  }
+
+
   _setLastAccessedDiaryDetails (diaryName) {
     this.browserStorage.set(LAST_ACCESSED_DIARY_KEY, {
       name: diaryName,
-      storage: this.storage.type(),
     });
   }
 

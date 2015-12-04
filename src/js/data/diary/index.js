@@ -32,8 +32,6 @@ export default class DiaryManager {
   }
 
 
-
-
   decryptEntries() {
     if (!this.encryptionKey) {
       return Q.reject(new Error('Please enter a password first.'));

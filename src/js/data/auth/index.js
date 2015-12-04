@@ -74,8 +74,8 @@ export default class AuthManager {
 
             this.meta = meta;
             this.password = password;
-
-            Dispatcher.do(Actions.DERIVE_KEYS_RESULT, derivedKeyData);
+            
+            Dispatcher.do(Actions.DERIVE_KEYS_RESULT, derivedKeyData);            
           })
           .catch((err) => {
             Dispatcher.do(Actions.DERIVE_KEYS_ERROR, err);
