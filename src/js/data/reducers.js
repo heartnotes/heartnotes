@@ -218,7 +218,7 @@ exports.diary = function(state = InitialState.diary(), action) {
       });
     case Actions.DELETE_ENTRY_RESULT:
       return _.extend({}, state, {
-        deletingEntry: AsyncState.result(deletingEntry),
+        deletingEntry: AsyncState.result(action.payload),
       });
     case Actions.DELETE_ENTRY_ERROR:
       return _.extend({}, state, {
