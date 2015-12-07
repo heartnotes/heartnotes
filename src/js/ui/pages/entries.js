@@ -22,7 +22,7 @@ var Component = React.createClass({
   render: function() { 
     let diaryMgr = this.props.data.diary.diaryMgr;
 
-    let entries = diaryMgr.timelineEntries;
+    let entries = _.get(diaryMgr, 'timelineEntries');
 
     let entryId = this.props.params.entryId;
 

@@ -52,19 +52,17 @@ export class Dispatcher {
   }
 
 
-  saveEntries (state, data) {
+  saveDiary (state, data) {
     switch (state) {
-      case 'requested':
-        return this._do(Actions.SAVE_ENTRIES_REQUESTED, data);
       case 'start':
-        return this._do(Actions.SAVE_ENTRIES_START, data);
+        return this._do(Actions.SAVE_DIARY_START, data);
       case 'result':
-        return this._do(Actions.SAVE_ENTRIES_RESULT, data);
+        return this._do(Actions.SAVE_DIARY_RESULT, data);
       case 'error':
-        this._do(Actions.SAVE_ENTRIES_ERROR, data);
+        this._do(Actions.SAVE_DIARY_ERROR, data);
 
         return Q.delay(2000).then(() => {
-          this._do(Actions.SAVE_ENTRIES_RESET);          
+          this._do(Actions.SAVE_DIARY_RESET);          
         });
     }
   }

@@ -12,7 +12,7 @@ import Logo from './components/logo';
 
 var Component = React.createClass({
   mixins: [Navigation],
-  
+
   render: function() {    
     var content = null;
 

@@ -8,7 +8,6 @@ import BrowserStorage from './browser';
 import FileStorage from './file';
 
 import Detect from '../../utils/detect';
-import { instance as Crypto } from '../crypto/index';
 import Diary from '../diary/index';
 
 

@@ -237,12 +237,22 @@ export default class Diary {
    * @return {Promise}
    */
   _saveDiary () {
+    Dispatcher.saveDiary('start');
+
     this.logger.debug('save to storage');
 
     return Storage.saveDiary(this._name, {
-      meta: this._meta,
+      meta: Auth.meta, /* use the meta from Auth as it will be in the correct format */
       entries: this._encryptedEntries,
-    });
+    })
+      .then(() => {
+        Dispatcher.saveDiary('result');
+      })
+      .catch((err) => {
+        Dispatcher.saveDiary('error', err);
+
+        throw err;
+      });
   }
 
 
@@ -273,7 +283,7 @@ export default class Diary {
 
         this._encryptedEntries = encryptedEntries;
 
-        return this.storage.saveDiary(this._name, {
+        return Storage.saveDiary(this._name, {
           meta: this._meta,
           entries: this._encryptedEntries,
         });

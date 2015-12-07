@@ -60,6 +60,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CLOSE_DIARY:
       return _.extend({}, state, {
         diaryMgr: null,
+        loadingEntries: AsyncState.reset(),
       });
 
 
@@ -71,7 +72,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
         choosing: AsyncState.result(action.payload),
-        lastAccessedDiary: action.payload.name,
+        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
       });
 
     case Actions.CHOOSE_DIARY_ERROR:

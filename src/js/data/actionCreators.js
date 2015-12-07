@@ -17,66 +17,6 @@ import Diary from './diary/index';
 var Logger = require('../utils/logger').create('ac');
 
 
-// ------------------------------------------------------
-// Re-usable methods
-// ------------------------------------------------------
-
-
-function doSaveDiary(dispatch, getState, encKey) {
-  Dispatcher.saveEntries('start');
-
-  let diary = getState().diary;
-  let { entries, name, derivedKeys } = diary;
-  encKey = encKey || derivedKeys.key1;
-
-  return Q.resolve()
-    .then(function encryptEntries() {
-      if (!name) {
-        throw new Error('No diary to save to');
-      }
-
-      return Crypto.encrypt(encKey, entries);
-    })
-    .catch(function unableToEncrypt(err) {
-      Logger.error('entry encryption error', err);
-      throw err;
-    })
-    .then(function saveToDiary(saveData) {
-      Logger.debug('encypted entries', saveData.length + ' bytes');
-
-      return Storage.saveEntriesToDiary(name, saveData);
-    })
-    .then(function persist() {
-      return Storage.persist(name);
-    })
-    .then(function allDone() {
-      Dispatcher.saveEntries('result');
-    })
-    .then(function shouldWeResave() {
-      if (0 <= getState().diary.saveEntriesRequested) {
-        return doSaveDiary(dispatch, getState);
-      }
-    })
-    .catch(function(err) {
-      Logger.error('diary save error', err);
-
-      Dispatcher.saveEntries('error', err);
-    });
-}
-
-
-
-
-function saveDiary(dispatch, getState) {
-  Dispatcher.saveEntries('requested');
-
-  if (!getState().diary.savingEntries.inProgress) {
-    return doSaveDiary(dispatch, getState);
-  }
-}
-
-
-
 
 // ------------------------------------------------------
 // Action creators

@@ -38,16 +38,14 @@ export class Auth {
             let encryptionKey = encryptionKeyData.key1;
 
             // now encrypt the encryption key with master key
-            return Crypto.encrypt(masterKey, {
-              key: encryptionKey,
-              check: 'ok',  /* for checking password when we decrypt later on */
-            })
+            return this._generateEncKeyBundle(masterKey, encryptionKey)
               .then((encKeyBundle) => {
                 Dispatcher.createPassword('result');
 
                 this._password = password;
                 this._masterKey = masterKey;
                 this._encryptionKey = encryptionKey;
+
                 this._meta = {
                   bundle: encKeyBundle,
                   salt: derivedKeyData.salt,
@@ -89,7 +87,14 @@ export class Auth {
               }              
 
               this._encryptionKey = masterKey;
-
+              
+              // upgrade to newer format
+              return this._generateEncKeyBundle(masterKey, masterKey)
+                .then((encKeyBundle) => {
+                  delete meta.keyTest;
+                  meta.bundle = encKeyBundle;
+                  meta.version = Detect.version();
+                });
             } else {
               if (plainData.check !== 'ok') {
                 throw new Error('Password incorrect');
@@ -97,11 +102,13 @@ export class Auth {
 
               this._encryptionKey = plainData.key;
             }
-
+          })
+          .then(() => {
             this._password = password;
             this._masterKey = masterKey;
             this._meta = meta;
-
+          })
+          .then(() => {
             Dispatcher.enterPassword('result');            
           })
           .catch((err) => {
@@ -129,6 +136,22 @@ export class Auth {
     return this._encryptionKey;
   }
 
+
+  _generateEncKeyBundle (masterKey, encryptionKey) {
+    return Crypto.encrypt(masterKey, {
+      key: encryptionKey,
+      check: 'ok',  /* for checking password when we decrypt later on */
+    });
+  }
+
+  _rebuildMeta () {
+    this._meta = {
+      bundle: encKeyBundle,
+      salt: derivedKeyData.salt,
+      iterations: derivedKeyData.iterations,              
+      version: Detect.version(),
+    };
+  }
 }
 
 
