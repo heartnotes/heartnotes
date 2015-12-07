@@ -116,7 +116,7 @@ export default class Diary {
         this.logger.debug('update entry');
 
         entry.body = content;
-        entry.up = moment.valueOf();
+        entry.up = moment().valueOf();
         this._entries[entry.id] = entry;
 
         return this._saveEntry(entry);
