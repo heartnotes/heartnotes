@@ -196,6 +196,24 @@ export class Dispatcher {
   }
 
 
+
+  exportToFile (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.EXPORT_DATA_START, data);
+      case 'result':
+        return this._do(Actions.EXPORT_DATA_RESULT, data);
+      case 'error':
+        this._do(Actions.EXPORT_DATA_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.EXPORT_DATA_RESET);          
+        });
+    }
+  }
+
+
+
   buildSearchIndex (state, data) {
     switch (state) {
       case 'start':

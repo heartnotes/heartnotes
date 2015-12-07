@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Logger from '../../utils/logger';
 import Q from 'bluebird';
 import moment from 'moment';
+import React from 'react';
 
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
@@ -11,6 +12,7 @@ import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
 import { instance as Auth } from '../auth/index';
+import ExportedEntries from '../../ui/components/ExportedEntries';
 
 
 
@@ -165,11 +167,44 @@ export default class Diary {
   }
 
 
-
+  /**
+   * @return {Promise}
+   */
   changePassword (oldPassword, newPassword) {
     return Auth.changePassword(oldPassword, newPassword)
       .then(() => {
         return this._saveDiary();
+      });
+  }
+
+
+  /**
+   * @return {Promise}
+   */
+  exportToFile () {
+    Dispatcher.exportToFile('start');
+
+    let content = React.renderToString(
+      <ExportedEntries entries={this.entries} />
+    );
+
+    return Storage.exportToFile(content)
+      .then(function didUserCancel(filePath) {
+        // user cancelled?
+        if (!filePath) {
+          return Dispatcher.exportToFile('reset');
+        }
+
+        Dispatcher.exportToFile('result', {
+          filePath: filePath
+        });
+      })
+      .catch(function(err) {
+        this.logger.error(err);
+
+        Dispatcher.exportToFile('error', err);
+
+        throw err;
       });
   }
 

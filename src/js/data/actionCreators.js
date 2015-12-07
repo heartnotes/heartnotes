@@ -4,7 +4,6 @@ import $ from 'jquery';
 import moment from 'moment';
 import React from 'react';
 
-import ExportedEntries from '../ui/components/ExportedEntries';
 import Actions from './actions';
 import { instance as Storage } from './storage/index';
 import { instance as Search } from './search/index';
@@ -169,38 +168,15 @@ export function changePassword (oldPassword, newPassword) {
 
 export function exportData() {
   return function(dispatch, getState) {
-    dispatch(buildAction(Actions.EXPORT_DATA_START));
+    let diaryMgr = getState().diary.diaryMgr;
 
-    let { entries } = getState().diary;
-
-    let content = React.renderToString(
-      <ExportedEntries entries={entries} />
-    );
-
-    return Storage.exportToFile(content)
-      .then(function didUserCancel(filePath) {
-        // user cancelled?
-        if (!filePath) {
-          return dispatch(buildAction(Actions.EXPORT_DATA_RESET));
-        }
-
-        dispatch(buildAction(Actions.EXPORT_DATA_RESULT, {
-          filePath: filePath,
-        }));
-
-        return showAlert(dispatch, 'Data exported!');
-      })
-      .catch(function(err) {
-        Logger.error(err);
-        dispatch(buildAction(Actions.EXPORT_DATA_ERROR, err));
-
-        return Q.delay(2000).then(function() {
-          dispatch(buildAction(Actions.EXPORT_DATA_RESET));
-        });
+    return diaryMgr.exportToFile()
+      .then(() => {
+        Dispatcher.alertUser('Diary exported!');
       });
-
   }
 }
+
 
 
 var searchTimeout = null;

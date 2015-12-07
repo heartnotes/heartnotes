@@ -14,7 +14,7 @@ var Component = React.createClass({
   render: function() { 
     var exportDataButtonAttrs = {
       onClick: this._export,
-      animActive: !!this.props.nowExportingData,
+      animActive: !!this.props.data.diary.exporting.inProgress,
     };
 
     return (
