@@ -67,6 +67,8 @@ export default class Diary {
 
         return this._rebuildSearchIndex();
       } else {
+        throw new Error('asdl;fjads;lf dlskjf la;sdkj a;lsdj fl');
+        
         this.logger.info('existing entries found');
 
         if (!this._meta.version) {

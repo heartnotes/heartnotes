@@ -27,7 +27,8 @@ var Component = React.createClass({
       loadingError = (
         <div>
           <div className="error">
-            <Icon name="exclamation-triangle" tooltip={msg} />
+            <Icon name="exclamation-triangle" />
+            {msg}
           </div>
           <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
         </div>
