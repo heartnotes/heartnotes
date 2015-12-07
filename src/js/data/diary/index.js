@@ -279,10 +279,9 @@ export default class Diary {
         });
       })
       .then(() => {
-        return this._rebuildSearchIndex();
-      })
-      .then(() => {
         Dispatcher.loadEntries('result');
+
+        return this._rebuildSearchIndex();
       });
   }
 
@@ -309,8 +308,6 @@ export default class Diary {
           this._entries[id] = entry;
 
           Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
-
-          return this._addToSearchIndex(entry);
         })
         .catch((err) => {
           this.logger.error(err);
@@ -322,6 +319,8 @@ export default class Diary {
     }))
       .then(() => {
         Dispatcher.loadEntries('result');
+
+        return this._rebuildSearchIndex();
       });
   }
 

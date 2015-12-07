@@ -133,6 +133,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.LOAD_ENTRIES_START:
       return _.extend({}, state, {
         loadingEntries: AsyncState.start(),
+        searchIndexing: AsyncState.reset(),
       });
 
     case Actions.LOAD_ENTRIES_PROGRESS:

@@ -1,8 +1,8 @@
-var React = require('react');
+import React from 'react';
 
-
-var Icon = require('../../components/icon'),
-  Button = require('../../components/button');
+import Icon from '../../components/icon';
+import Button from '../../components/button';
+import Loading from '../../components/loading';
 
 import { connectRedux } from '../../helpers/decorators';
 
@@ -21,10 +21,7 @@ var Component = React.createClass({
 
     if (progressMsg2) {
       progressMsg2 = (
-        <span>
-          <Icon name="cog" spin={true} />
-          {progressMsg2}
-        </span>
+        <Loading text={progressMsg2} />
       );
     }
 

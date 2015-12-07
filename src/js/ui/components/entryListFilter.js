@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 
 import { connectRedux } from '../helpers/decorators';
+import Loading from './loading';
 
 
 var Component = React.createClass({
@@ -12,14 +13,25 @@ var Component = React.createClass({
   },
   
   render: function() {
-    let filterText = null;
+    let content = null;
 
-    let keyword = this.state.keyword;
+    let searchIndexing = this.props.data.diary.searchIndexing;
 
-    return (
-      <div className="entry-list-filter">
+    if (!searchIndexing.success) {
+      content = (
+        <Loading text="Rebuilding search..." />
+      );
+    } else {
+      let filterText = null;
+
+      let keyword = this.state.keyword;
+
+      content = (
         <input ref="input" value={keyword} type="text" placeholder="Search..." onChange={this._onChange} />
-      </div>
+      );
+    }
+    return (
+      <div className="entry-list-filter">{content}</div>
     );
   },
 
