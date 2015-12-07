@@ -3,7 +3,7 @@
 var StringUtils = require('../../utils/string');
 
 
-const PREFIX = 'heartnotes_';
+const PREFIX = '';
 
 
 export default class LocalStorage {

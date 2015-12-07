@@ -29,8 +29,10 @@ var Component = React.createClass({
   render: function() { 
     var content = null;
 
-    if (this.props.data.diary.lastAccessedDiaryName) {
-      var lastDiaryName = this.props.data.diary.lastAccessedDiaryName;
+    if (this.props.data.diary.lastAccessedDiaryDetails) {
+      var lastDiaryName = StringUtils.formatDiaryName(
+        this.props.data.diary.lastAccessedDiaryDetails.name
+      );
 
       var buttonAttrs = {
         onClick: this._openDiary,
@@ -95,7 +97,7 @@ var Component = React.createClass({
       return;
     }
 
-    if (this.props.data.diary.name) {
+    if (this.props.data.diary.diaryMgr) {
       this.props.showStep('loadDiary');
     }
   },

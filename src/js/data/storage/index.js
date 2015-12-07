@@ -12,7 +12,7 @@ import { instance as Crypto } from '../crypto/index';
 import Diary from '../diary/index';
 
 
-const LAST_ACCESSED_DIARY_KEY = 'last datafile';
+const LAST_ACCESSED_DIARY_KEY = 'last_accessed';
 
 
 export class StorageManager {
@@ -89,7 +89,7 @@ export class StorageManager {
 
 
   getLastAccessedDiaryDetails () {
-    this.browserStorage.get(LAST_ACCESSED_DIARY_KEY);
+    return this.browserStorage.get(LAST_ACCESSED_DIARY_KEY);
   }
 
 

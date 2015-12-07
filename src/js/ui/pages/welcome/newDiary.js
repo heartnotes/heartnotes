@@ -49,7 +49,7 @@ var Component = React.createClass({
           </div>
         </form>
         <UserShouldRememberPasswordDialog ref="rememberDialog" />
-        <Button size="xs" color="dark" onClick={this._goBack}>Back</Button>
+        <Button size="xs" onClick={this._goBack}>Back</Button>
       </div>
     );
   },
@@ -60,7 +60,7 @@ var Component = React.createClass({
       return;
     }
     
-    if (this.props.data.diary.name) {
+    if (this.props.data.diary.diaryMgr) {
       this.props.showStep('loadDiary');
     }
   },

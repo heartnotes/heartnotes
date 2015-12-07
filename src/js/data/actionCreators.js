@@ -180,9 +180,9 @@ export function createDiary(password) {
 
 export function loadEntries() {
   return function(dispatch, getState) {
-    let diary = getState().diary.diary;
+    let diaryMgr = getState().diary.diaryMgr;
 
-    return diary.loadEntries();
+    return diaryMgr.loadEntries();
   };
 }
 

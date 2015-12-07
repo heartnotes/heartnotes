@@ -54,7 +54,7 @@ export default class Diary {
     Dispatcher.loadEntries('start');
 
     return Q.try(() => {
-      if (_.isEmpty(this.encryptedEntries)) {
+      if (_.isEmpty(this._encryptedEntries)) {
         this.logger.info('no existing entries found');
 
         return {};

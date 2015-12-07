@@ -59,7 +59,7 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.CLOSE_DIARY:
       return _.extend({}, state, {
-        diary: null,
+        diaryMgr: null,
       });
 
 
@@ -88,12 +88,12 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         opening: AsyncState.start(),
         derivingKeys: AsyncState.reset(),
-        diary: null,
+        diaryMgr: null,
       });
 
     case Actions.OPEN_DIARY_RESULT:
       return _.extend({}, state, {
-        diary: action.payload,
+        diaryMgr: action.payload,
         opening: AsyncState.result(action.payload),
       });
 
@@ -111,12 +111,12 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         creating: AsyncState.start(),
         derivingKeys: AsyncState.reset(),
-        diary: null,
+        diaryMgr: null,
       });
 
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
-        diary: action.payload,
+        diaryMgr: action.payload,
         creating: AsyncState.result(action.payload),
       });
 

@@ -15,18 +15,7 @@ exports.random = function(len) {
 
 
 
-exports.formatDiaryDetails = function(diaryDetails) {
-  let { name, storage } = (diaryDetails || {});
-
-  name = name || '';
-
-  switch (storage) {
-    case 'file':
-      // extract filename part (slow method but works well!)
-      return name.replace(/^.*[\\\/]/, '');
-      break;
-    default:
-      return name;
-  }
+exports.formatDiaryName = function(name) {
+  return name.replace(/^.*[\\\/]/, '');
 };
 
