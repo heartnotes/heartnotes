@@ -5,6 +5,7 @@ export function start() {
     inProgress: true,
     progressMsg: null,
     result: null,
+    success: false,
     error: null,
   };
 }
@@ -14,6 +15,7 @@ export function progress(payload) {
     inProgress: true,
     progressMsg: payload.msg,
     result: payload,
+    success: false,
     error: null,
   };
 }
@@ -24,6 +26,7 @@ export function result(payload) {
     inProgress: false,
     progressMsg: null,
     result: payload,
+    success: true,
     error: null,
   };
 }
@@ -33,6 +36,7 @@ export function error(payload) {
     inProgress: false,
     progressMsg: null,
     result: null,
+    success: false,
     error: payload.error,
   };
 }
@@ -42,6 +46,7 @@ export function reset() {
     inProgress: false,
     progressMsg: null,
     result: null,
+    success: false,
     error: null,
   };
 }

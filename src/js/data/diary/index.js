@@ -63,7 +63,9 @@ export default class Diary {
 
         this._entries = {};
 
-        return;
+        Dispatcher.loadEntries('result');
+
+        return this._rebuildSearchIndex();
       } else {
         this.logger.info('existing entries found');
 
@@ -74,10 +76,6 @@ export default class Diary {
         }
       }
     })
-      .then(() => {
-        Dispatcher.loadEntries('result');
-        this._rebuildSearchIndex();
-      })
       .catch((err) => {
         Dispatcher.loadEntries('error', err);
 
@@ -103,16 +101,18 @@ export default class Diary {
 
         return Crypto.hash(ts, Math.random() * 100000)
           .then((newId) => {
-            return resolve({
+            return {
               id: newId,
               ts: ts,
-            });
+            };
           });
       } else {
         return entry;
       }
     })
       .then((entry) => {
+        this.logger.debug('update entry');
+
         entry.body = content;
         entry.up = moment.valueOf();
         this._entries[entry.id] = entry;
@@ -124,7 +124,7 @@ export default class Diary {
 
         return this._addToSearchIndex(entry);
       })
-      .catch(function(err) {
+      .catch((err) => {
         this.logger.error(err);
 
         Dispatcher.updateEntry('error', err);
@@ -175,6 +175,11 @@ export default class Diary {
     return this._entries;
   }
 
+  get timelineEntries () {
+    // TODO: if have a search filter then show filtered entries
+    return this._entries;
+  }
+
 
 
   getEntryById (id) {
@@ -190,10 +195,12 @@ export default class Diary {
     this.logger.debug('get entry by date', date, ts);
 
     var entry = _.find(this._entries || {}, function(e) {
-      return e.ts === ts;
+      return moment(e.ts).startOf('day').valueOf() === ts;
     });
 
-    this.logger.debug('got by date', ts, entry ? entry.id : null);
+    if (entry) {
+      this.logger.debug('got by date', ts, entry.id);
+    }
 
     return entry;
   }
@@ -211,7 +218,9 @@ export default class Diary {
    * @return {Promise}
    */
   _saveEntry (entry) {
-    return Crypto.encrypt(this.encryptionKey, entry)
+    this.logger.debug('save entry', entry.id);
+
+    return Crypto.encrypt(Auth.encryptionKey, entry)
       .then((encryptedEntry) => {
         this._encryptedEntries[entry.id] = encryptedEntry;
 
@@ -228,7 +237,9 @@ export default class Diary {
    * @return {Promise}
    */
   _saveDiary () {
-    return this.storage.saveDiary(this._name, {
+    this.logger.debug('save to storage');
+
+    return Storage.saveDiary(this._name, {
       meta: this._meta,
       entries: this._encryptedEntries,
     });
@@ -268,6 +279,9 @@ export default class Diary {
         });
       })
       .then(() => {
+        return this._rebuildSearchIndex();
+      })
+      .then(() => {
         Dispatcher.loadEntries('result');
       });
   }
@@ -293,7 +307,10 @@ export default class Diary {
 
           this._entries[id] = entry;
 
+
           Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
+
+          return this._addToSearchIndex(entry);
         })
         .catch((err) => {
           this.logger.error(err);
@@ -317,13 +334,13 @@ export default class Diary {
     Dispatcher.buildSearchIndex('start');
 
     return Search.reset()
-      .then(function() {
+      .then(() => {
         return Search.addMany(entries);
       })
-      .then(function() {
+      .then(() => {
         Dispatcher.buildSearchIndex('result');
       })
-      .catch(function(err) {
+      .catch((err) => {
         Dispatcher.buildSearchIndex('error', err);
       });
   }

@@ -13,7 +13,7 @@ var Component = React.createClass({
   render: function() {    
     var content = null;
 
-    if (_.get(this.props.data, 'diary.diaryMgr.entries')) {
+    if (_.get(this.props.data, 'diary.loadingEntries.success')) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();

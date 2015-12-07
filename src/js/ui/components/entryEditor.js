@@ -163,8 +163,10 @@ var Component = React.createClass({
   _getActiveEntry: function() {
     let entry = null;
 
+    let diaryMgr = this.props.data.diary.diaryMgr;
+
     if (this.state.changedToDate) {
-      entry = this.props.methods.getEntryByDate(this.state.changedToDate);
+      entry = diaryMgr.getEntryByDate(this.state.changedToDate);
 
       if (!entry) {
         entry = {
@@ -172,10 +174,10 @@ var Component = React.createClass({
         };
       }
     } else {
-      entry = this.props.methods.getEntry(this.props.entryId);
+      entry = diaryMgr.getEntryById(this.props.entryId);
 
       if (!entry) {
-        entry = this.props.methods.getTodayEntry() || {};
+        entry = diaryMgr.getEntryForToday() || {};
       }
     }
 
