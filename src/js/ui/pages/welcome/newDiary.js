@@ -71,7 +71,9 @@ var Component = React.createClass({
     });
   },
 
-  _savePassword: function() {
+  _savePassword: function(e) {
+    e.preventDefault();
+    
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
         this.props.actions.createDiary(this.state.password);

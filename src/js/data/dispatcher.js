@@ -180,6 +180,20 @@ export class Dispatcher {
   }
 
 
+  changePassword (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.CHANGE_PASSWORD_START, data);
+      case 'result':
+        return this._do(Actions.CHANGE_PASSWORD_RESULT, data);
+      case 'error':
+        this._do(Actions.CHANGE_PASSWORD_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.CHANGE_PASSWORD_RESET);          
+        });
+    }
+  }
 
 
   buildSearchIndex (state, data) {

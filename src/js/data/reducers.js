@@ -118,6 +118,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
         diaryMgr: action.payload,
+        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
         creating: AsyncState.result(action.payload),
       });
 

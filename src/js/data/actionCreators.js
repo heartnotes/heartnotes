@@ -99,10 +99,10 @@ export function createDiary(password) {
 
     return Auth.createPassword(password)
       .then(() => {
-        return Diary.createNew(meta)
+        return Diary.createNew(Auth.meta)
           .then((diary) => {
             if (!diary) {
-              throw new Error('Sorry, there was unexpected error.');
+              throw new Error('Sorry, there was an unexpected error.');
             }
 
             Dispatcher.createDiary('result', diary);
@@ -111,7 +111,11 @@ export function createDiary(password) {
           });
       })
       .catch((err) => {
+        Logger.error(err);
+
         Dispatcher.createDiary('error', err);
+
+        throw err;
       });
   };
 }
@@ -152,42 +156,11 @@ export function deleteEntry(id) {
 
 export function changePassword (oldPassword, newPassword) {
   return function(dispatch, getState) {
-    dispatch(buildAction(Actions.CHANGE_PASSWORD_START));
+    let diaryMgr = getState().diary.diaryMgr;
 
-    let diary = getState().diary;
-
-    return Q.resolve()
-      .then(function checkOldPassword() {
-        if (diary.password !== oldPassword) {
-          throw new Error('Your current password is wrong');
-        }
-      })
-      .then(function updateMetaData() {
-        return deriveKeyFromNewPassword(dispatch, newPassword)
-          .then(function saveMetadata(derivedKeyData) {
-            return Storage.saveMetaDataToDiary(
-              diary.name, derivedKeyData.meta
-            )
-              .then(function saveEntries() {
-                return doSaveDiary(dispatch, getState, derivedKeyData.key1);
-              })
-              .then(function allDataUpdated() {
-                dispatch(buildAction(Actions.CHANGE_PASSWORD_RESULT, {
-                  password: newPassword,
-                  derivedKeys: derivedKeyData,
-                }));
-
-                return showAlert(dispatch, 'Password updated!');
-              });
-          });
-      })      
-      .catch(function(err){
-        Logger.error(err);
-        dispatch(buildAction(Actions.CHANGE_PASSWORD_ERROR, err));
-
-        return Q.delay(2000).then(function() {
-          dispatch(buildAction(Actions.CHANGE_PASSWORD_RESET));
-        });
+    return diaryMgr.changePassword(oldPassword, newPassword)
+      .then(() => {
+        Dispatcher.alertUser('Password changed!');
       });
   }
 }

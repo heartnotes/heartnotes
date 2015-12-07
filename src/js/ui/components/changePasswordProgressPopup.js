@@ -11,11 +11,9 @@ module.exports = React.createClass({
     let { diary } = this.props.data;
 
     if (diary.changingPassword.inProgress) {
-      if (diary.derivingKeys.inProgress) {
-        derivingMsg = (
-          <div>Saving new password.....</div>
-        );
-      }
+      derivingMsg = (
+        <div>Saving new password.....</div>
+      );
     }
 
     if (diary.changingPassword.error) {

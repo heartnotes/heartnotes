@@ -35,11 +35,7 @@ export class StorageManager {
     return this.storage.createNewDiary(data)
       .then((diaryName) => {
         if (!diaryName) {
-          let err = new Error('Please choose a location to save the file in.');
-
-          this.logger.error(err);
-
-          throw err;
+          throw new Error('Please choose a location to save the file in.');
         }
 
         return this.loadDiary(diaryName);

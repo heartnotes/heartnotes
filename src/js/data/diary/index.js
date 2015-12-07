@@ -166,6 +166,15 @@ export default class Diary {
 
 
 
+  changePassword (oldPassword, newPassword) {
+    return Auth.changePassword(oldPassword, newPassword)
+      .then(() => {
+        return this._saveDiary();
+      });
+  }
+
+
+
   get name () {
     return this._name;
   }

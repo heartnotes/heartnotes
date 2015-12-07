@@ -1,5 +1,6 @@
 "use strict";
 
+import Q from 'bluebird';
 import _ from 'lodash';
 import Logger from '../../utils/logger';
 
@@ -46,16 +47,13 @@ export class Auth {
                 this._masterKey = masterKey;
                 this._encryptionKey = encryptionKey;
 
-                this._meta = {
-                  bundle: encKeyBundle,
-                  salt: derivedKeyData.salt,
-                  iterations: derivedKeyData.iterations,              
-                  version: Detect.version(),
-                };
+                this._meta = this._buildMeta(encKeyBundle, derivedKeyData);
               });
           });
       })
       .catch((err) => {
+        this.logger.error(err);
+
         Dispatcher.createPassword('error', err);
 
         throw err;
@@ -87,7 +85,7 @@ export class Auth {
               }              
 
               this._encryptionKey = masterKey;
-              
+
               // upgrade to newer format
               return this._generateEncKeyBundle(masterKey, masterKey)
                 .then((encKeyBundle) => {
@@ -112,10 +110,47 @@ export class Auth {
             Dispatcher.enterPassword('result');            
           })
           .catch((err) => {
+            this.logger.error(err);
+
             Dispatcher.enterPassword('error', err);
 
             throw err;
           });
+      });
+  }
+
+
+  changePassword (oldPassword, newPassword) {
+    Dispatcher.changePassword('start');
+
+    return Q.resolve()
+      .then(() => {
+        if (this._password !== oldPassword) {
+          throw new Error('Your current password is wrong');
+        }
+      })
+      .then(() => {
+        return Crypto.deriveNewKey(newPassword);
+      })
+      .then((derivedKeyData) => {
+        let masterKey = derivedKeyData.key1;
+
+        return this._generateEncKeyBundle(masterKey, this._encryptionKey)
+          .then((encKeyBundle) => {
+            this._masterKey = masterKey;
+            this._password = newPassword;
+            
+            this._meta = this._buildMeta(encKeyBundle, derivedKeyData);
+
+            Dispatcher.changePassword('result');
+          });
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.changePassword('error', err);
+
+        throw err;
       });
   }
 
@@ -144,8 +179,8 @@ export class Auth {
     });
   }
 
-  _rebuildMeta () {
-    this._meta = {
+  _buildMeta (encKeyBundle, derivedKeyData) {
+    return {
       bundle: encKeyBundle,
       salt: derivedKeyData.salt,
       iterations: derivedKeyData.iterations,              

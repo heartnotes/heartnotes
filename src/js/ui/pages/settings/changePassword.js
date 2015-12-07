@@ -25,7 +25,7 @@ var Component = React.createClass({
   render: function() { 
     var changePasswordButtonAttrs = {
       onClick: this._saveNewPassword,
-      animActive: !!this.props.nowChangingPassword,
+      animActive: !!this.props.data.diary.changingPassword.inProgress,
     };
 
     if (!_.get(this.state.oldPassword, 'length') || !_.get(this.state.newPassword, 'length')) {
@@ -50,7 +50,7 @@ var Component = React.createClass({
               passwordPlaceholder="New password"
               confirmPlaceholder="Confirm new password"
               onChange={this._setNewPassword} 
-              requiredStrength={1} 
+              requiredStrength={0} 
               tabIndex={2} />
           </div>
           <div className="action row">
