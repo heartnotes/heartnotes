@@ -2,6 +2,7 @@
 
 import _ from 'lodash';
 import Logger from '../../utils/logger';
+import Q from 'bluebird';
 
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
@@ -57,8 +58,12 @@ export default class Diary {
       if (_.isEmpty(this._encryptedEntries)) {
         this.logger.info('no existing entries found');
 
-        return {};
+        this._entries = {};
+
+        return;
       } else {
+        this.logger.info('existing entries found');
+
         if (!this._meta.version) {
           return this._decryptOldFormat();
         } else {
@@ -67,7 +72,8 @@ export default class Diary {
       }
     })
       .then(() => {
-        return this._rebuildSearchIndex();
+        Dispatcher.loadEntries('result');
+        this._rebuildSearchIndex();
       })
       .catch((err) => {
         Dispatcher.loadEntries('error', err);
@@ -232,17 +238,17 @@ export default class Diary {
 
     this.logger.debug('rebuild search index', _.keys(entries).length);
 
-    this.dispatch(Actions.BUILD_SEARCH_INDEX_START);
+    Dispatcher.buildSearchIndex('start');
 
     return Search.reset()
       .then(function() {
         return Search.addMany(entries);
       })
       .then(function() {
-        this.dispatch(Actions.BUILD_SEARCH_INDEX_RESULT);
+        Dispatcher.buildSearchIndex('result');
       })
       .catch(function(err) {
-        this.dispatch(Actions.BUILD_SEARCH_INDEX_ERROR, err);
+        Dispatcher.buildSearchIndex('error', err);
       });
   }
 

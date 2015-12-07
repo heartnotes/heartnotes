@@ -130,11 +130,7 @@ export class Dispatcher {
       case 'result':
         return this._do(Actions.LOAD_ENTRIES_RESULT, data);
       case 'error':
-        this._do(Actions.LOAD_ENTRIES_ERROR, data);
-
-        return Q.delay(2000).then(() => {
-          this._do(Actions.LOAD_ENTRIES_RESET);          
-        });
+        return this._do(Actions.LOAD_ENTRIES_ERROR, data);
     }
   }
 
@@ -148,6 +144,20 @@ export class Dispatcher {
         return this._do(Actions.DERIVE_KEYS_RESULT, data);
       case 'error':
         this._do(Actions.DERIVE_KEYS_ERROR, data);
+    }
+  }
+
+
+
+
+  buildSearchIndex (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.BUILD_SEARCH_INDEX_START, data);
+      case 'result':
+        return this._do(Actions.BUILD_SEARCH_INDEX_RESULT, data);
+      case 'error':
+        this._do(Actions.BUILD_SEARCH_INDEX_ERROR, data);
     }
   }
 

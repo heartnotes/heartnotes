@@ -1,20 +1,19 @@
 import _ from 'lodash';
-var React = require('react');
+import React from 'react';
 
 import { connectRedux } from './helpers/decorators';
-
-var MainMenu = require('./components/mainMenu'),
-  SubMenu = require('./components/subMenu'),
-  WelcomeView = require('./pages/welcome/index'),
-  UserAlert = require('./components/userAlert'),
-  Logo = require('./components/logo');
+import MainMenu from './components/mainMenu';
+import SubMenu from './components/subMenu';
+import WelcomeView from './pages/welcome/index';
+import UserAlert from './components/userAlert';
+import Logo from './components/logo';
 
 
 var Component = React.createClass({
   render: function() {    
     var content = null;
 
-    if (this.props.data.diary.name && this.props.data.diary.entries) {
+    if (_.get(this.props.data, 'diary.diaryMgr.entries')) {
       content = this._buildDefault();
     } else {
       content = this._buildWelcome();
