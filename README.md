@@ -38,13 +38,17 @@ Now let's generate the encryption key:
 * Use salt and hash as inputs to PBKDF2-SHA512 to generate a 512-bit key. _(The number of iterations of PBKDF2 is set such that generation takes 1 second on the user's machine- on a Macbook Air 2012 this easily results in >10000 iterations._
 * Set the first 256 bits of the key as the ENCRYPTION key.
 
-We use the ENCRYPTION key to encrypt all entries. 
+Notes:
 
-We encrypt the ENCRYPTION key using the MASTER key (AES-256-GCM, random IV) and save it in the user's diary file.
+* We use the ENCRYPTION key to encrypt the actual entry data. 
+* We encrypt the ENCRYPTION key using the MASTER key (AES-256-GCM, random IV) and save it as a bundle in the user's diary file.
+* The ENCRYPTION key is currently never changed. 
 
-The next time the user enters the right password, we use the stored salt and 
-iteration count to regenerate the right MASTER key. We then use this to decrypt 
-the bundle containing the ENCRYPTION key.
+The next time the user enters the right password, we:
+
+* Use the stored salt and iteration count to regenerate the right MASTER key. 
+* We use this to decrypt the bundle containing the ENCRYPTION key.
+
 
 ## Development
 
