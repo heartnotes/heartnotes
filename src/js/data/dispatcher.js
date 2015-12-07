@@ -121,6 +121,40 @@ export class Dispatcher {
 
 
 
+  updateEntry (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.UPDATE_ENTRY_START, data);
+      case 'result':
+        return this._do(Actions.UPDATE_ENTRY_RESULT, data);
+      case 'error':
+        this._do(Actions.UPDATE_ENTRY_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.UPDATE_ENTRY_RESET);          
+        });
+    }
+  }
+
+
+
+  deleteEntry (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.DELETE_ENTRY_START, data);
+      case 'result':
+        return this._do(Actions.DELETE_ENTRY_RESULT, data);
+      case 'error':
+        this._do(Actions.DELETE_ENTRY_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.DELETE_ENTRY_RESET);          
+        });
+    }
+  }
+
+
+
   loadEntries (state, data) {
     switch (state) {
       case 'start':

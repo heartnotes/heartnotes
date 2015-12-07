@@ -7,7 +7,7 @@ import Icon from '../components/icon';
 import ToggleButton from '../components/toggleButton';
 import EntryEditor from '../components/entryEditor';
 
-import { connectRedux, storeMethods } from '../helpers/decorators';
+import { connectRedux } from '../helpers/decorators';
 
 
 var Component = React.createClass({
@@ -62,7 +62,7 @@ var Component = React.createClass({
 
 
 
-module.exports = connectRedux()(storeMethods()(Component));
+module.exports = connectRedux()(Component);
 
 
 

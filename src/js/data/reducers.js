@@ -212,12 +212,21 @@ exports.diary = function(state = InitialState.diary(), action) {
         updatingEntry: AsyncState.reset(),
       });
 
-    case Actions.DELETE_ENTRY:
-      let entries = _.extend({}, state.entries);
-      delete entries[action.payload.entry.id];
-
+    case Actions.DELETE_ENTRY_START:
       return _.extend({}, state, {
-        entries: entries,
+        deletingEntry: AsyncState.start(),
+      });
+    case Actions.DELETE_ENTRY_RESULT:
+      return _.extend({}, state, {
+        deletingEntry: AsyncState.result(deletingEntry),
+      });
+    case Actions.DELETE_ENTRY_ERROR:
+      return _.extend({}, state, {
+        deletingEntry: AsyncState.error(action.payload),
+      });
+    case Actions.DELETE_ENTRY_RESET:
+      return _.extend({}, state, {
+        deletingEntry: AsyncState.reset(),
       });
 
     case Actions.DERIVE_KEYS_START:

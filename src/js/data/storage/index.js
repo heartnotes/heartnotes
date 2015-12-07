@@ -24,22 +24,14 @@ export class StorageManager {
     this.fileStorage = new FileStorage(this.logger);
 
     this.storage = (Detect.isElectronApp() ? this.fileStorage : this.browserStorage);
-
-    this._cache = {};
   }
-
-
 
 
   /**
    * @return {Promise}
    */
-  createNewDiary (meta) {
+  createNewDiary (data) {
     this.logger.info('create new');
-
-    let data = {
-      meta: meta
-    };
 
     return this.storage.createNewDiary(data)
       .then((diaryName) => {
@@ -56,6 +48,9 @@ export class StorageManager {
   }
 
 
+  /**
+   * @return {Promise}
+   */
   loadDiary (diaryName) {
     return this._loadDiary(diaryName)
       .then((data) => {
@@ -64,18 +59,18 @@ export class StorageManager {
   }
 
 
-  selectDiary() {
-    return this.storage.selectDiary();
+  /**
+   * @return {Promise}
+   */
+  saveDiary (diaryName, data) {
+    this.logger.info('save diary', diaryName);
+
+    return this.storage.saveDiary(diaryName, data);
   }
 
 
-  persist (diaryName) {
-    this.logger.info('persist to permanent storage', diaryName);
-
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        return this.storage.saveDiary(diaryName, data);
-      });
+  selectDiary() {
+    return this.storage.selectDiary();
   }
 
 
@@ -85,7 +80,6 @@ export class StorageManager {
 
    return this.fileStorage.exportToFile(content);
   }
-
 
 
   getLastAccessedDiaryDetails () {
@@ -104,19 +98,7 @@ export class StorageManager {
   _loadDiary(diaryName) {
     this.logger.debug('load diary', diaryName);
 
-    return Promise.resolve()
-      .then(() => {
-        if (!this._cache[diaryName]) {
-          return this.storage.loadDiary(diaryName)
-            .then((data) => {
-              this._cache[diaryName] = data;
-
-              return data;
-            });
-        } else {
-          return this._cache[diaryName];
-        }
-      })
+    return this.storage.loadDiary(diaryName)
       .then((data) => {
         this._setLastAccessedDiaryDetails(diaryName);
 

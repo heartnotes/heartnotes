@@ -11,7 +11,7 @@ var DateString = require('./date'),
   AskUserDialog = require('./askUserDialog');
 
 
-import { connectRedux, storeMethods } from '../helpers/decorators';
+import { connectRedux } from '../helpers/decorators';
 
 
 
@@ -218,5 +218,5 @@ var Component = React.createClass({
 module.exports = connectRedux([
   'updateEntry',
   'deleteEntry',
-])(storeMethods()(Component));
+])(Component);
 

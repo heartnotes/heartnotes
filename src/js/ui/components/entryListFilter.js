@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 
-import { connectRedux, storeMethods } from '../helpers/decorators';
+import { connectRedux } from '../helpers/decorators';
 
 
 var Component = React.createClass({

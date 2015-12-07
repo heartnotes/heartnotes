@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { BaseComponent } from './components';
 import Logger from '../../utils/logger';
 import * as ActionCreators from '../../data/actionCreators';
-import Methods from '../../data/methods';
 
 
 /**
@@ -36,42 +35,5 @@ export function connectRedux(actionCreators = []) {
     )(Component);
   }
 }
-
-
-
-
-/**
- * Intermediate layer between `connectRedux` and component which adds useful 
- * methods for sorting and filtering redux data.
- */
-export function storeMethods() {
-  return function decorator(Component) {
-
-    class Decorator extends BaseComponent {
-      render () {
-        let props = this.props;
-
-        let methods = new Methods(props.data);
-
-        props.methods = {};
-
-        Object.getOwnPropertyNames(methods.constructor.prototype)
-          .filter(m => typeof methods[m] === 'function' && 'constructor' !== m)
-          .forEach(m => {
-            props.methods[m] = methods[m].bind(methods);
-          });
-
-        return (
-          <Component {...props} />
-        );
-      }
-    }
-
-    return Decorator;
-    
-  }
-}
-
-
 
 

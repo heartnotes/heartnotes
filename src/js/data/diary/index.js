@@ -3,6 +3,7 @@
 import _ from 'lodash';
 import Logger from '../../utils/logger';
 import Q from 'bluebird';
+import moment from 'moment';
 
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
@@ -45,7 +46,9 @@ export default class Diary {
         Dispatcher.openDiary('result', this);
       })
       .catch((err) => {
-        Dispatcher.openDiary('erorr', err);
+        Dispatcher.openDiary('error', err);
+
+        throw err;
       });
   }
 
@@ -77,6 +80,8 @@ export default class Diary {
       })
       .catch((err) => {
         Dispatcher.loadEntries('error', err);
+
+        throw err;
       });
   }
 
@@ -86,11 +91,11 @@ export default class Diary {
    * @return {Promise}
    */
   updateEntry (id, ts, content) {
-    this.dispatch(Actions.UPDATE_ENTRY_START);
+    Dispatcher.updateEntry('start');
 
-    let entry = this.getEntry(id) || this.getEntryByDate(ts);
+    let entry = this.getEntryById(id) || this.getEntryByDate(ts);
 
-    return new Q.try(() => {
+    return Q.try(() => {
       if (!entry) {
         ts = moment(ts || Date.now()).valueOf();
 
@@ -115,19 +120,50 @@ export default class Diary {
         return this._saveEntry(entry);
       })
       .then((entry) => {
-        this.dispatch(Actions.UPDATE_ENTRY_RESULT, entry);
+        Dispatcher.updateEntry('result');
 
-        this._addToSearchIndex(entry);
+        return this._addToSearchIndex(entry);
       })
       .catch(function(err) {
         this.logger.error(err);
-        this.dispatch(Actions.UPDATE_ENTRY_ERROR, err);
 
-        return Q.delay(2000).then(() => {
-          this.dispatch(Actions.UPDATE_ENTRY_RESET);
-        });
+        Dispatcher.updateEntry('error', err);
+
+        throw err;
       });
   }
+
+
+
+  /**
+   * @return {Promise}
+   */
+  deleteEntry (id) {
+    if (!this._entries[id]) {
+      return Q.reject(new Error('Entry not found: ' + id));
+    }
+
+    Dispatcher.deleteEntry('start');
+
+    delete this._entries[id];
+    delete this._encryptedEntries[id];
+
+    return this._saveDiary()
+      .then(() => {
+        Dispatcher.deleteEntry('result');
+      })
+      .then(() => {
+        return this._removeFromSearchIndex(id);
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.deleteEntry('error', err);
+
+        throw err;
+      });
+  }
+
 
 
   get name () {
@@ -140,22 +176,62 @@ export default class Diary {
   }
 
 
+
+  getEntryById (id) {
+    this.logger.debug('get entry by id', id);
+
+    return (this._entries || {})[id];
+  }
+
+
+  getEntryByDate (date) {
+    var ts = moment(date).startOf('day').valueOf();
+
+    this.logger.debug('get entry by date', date, ts);
+
+    var entry = _.find(this._entries || {}, function(e) {
+      return e.ts === ts;
+    });
+
+    this.logger.debug('got by date', ts, entry ? entry.id : null);
+
+    return entry;
+  }
+
+
+  getEntryForToday () {
+    this.logger.debug('get today\'s entry');
+    
+    return this.getEntryByDate(new Date());
+  }
+
+
+
   /**
    * @return {Promise}
    */
   _saveEntry (entry) {
     return Crypto.encrypt(this.encryptionKey, entry)
       .then((encryptedEntry) => {
-        this.encryptedEntries[entry.id] = encryptedEntry;
+        this._encryptedEntries[entry.id] = encryptedEntry;
 
-        return this.storage.saveDiary(this._name, {
-          meta: this._meta,
-          entries: this._encryptedEntries,
-        });
+        return this._saveDiary();
       })
       .then(() => {
         return entry;
       });
+  }
+
+
+
+  /**
+   * @return {Promise}
+   */
+  _saveDiary () {
+    return this.storage.saveDiary(this._name, {
+      meta: this._meta,
+      entries: this._encryptedEntries,
+    });
   }
 
 
@@ -263,9 +339,21 @@ export default class Diary {
     });
   }
 
+  _removeFromSearchIndex(id) {
+    this.logger.debug('remove from search index', id);
+
+    return Search.remove({
+      id: id,
+    });
+  }
+
 }
 
 
-
+Diary.createNew = (meta) => {
+  return Storage.createNewDiary({
+    meta: meta
+  });
+};
 
 

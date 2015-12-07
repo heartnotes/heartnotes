@@ -32,6 +32,7 @@ exports.diary = function() {
     changingPassword: {},
     loadingEntries: {},
     updatingEntry: {},
+    deletingEntry: {},
     savingEntries: {},
     searchIndexing: {},
     searching: {},

@@ -6,12 +6,12 @@ import React from 'react';
 
 import ExportedEntries from '../ui/components/ExportedEntries';
 import Actions from './actions';
-import Methods from './methods';
 import { instance as Storage } from './storage/index';
 import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
 import { instance as Dispatcher } from './dispatcher';
 import { instance as Auth } from './auth/index';
+import Diary from './diary/index';
 
 
 var Logger = require('../utils/logger').create('ac');
@@ -159,7 +159,7 @@ export function createDiary(password) {
 
     return Auth.createPassword(password)
       .then(() => {
-        return Storage.createNewDiary(Auth.meta)
+        return Diary.createNew(meta)
           .then((diary) => {
             if (!diary) {
               throw new Error('Sorry, there was unexpected error.');
@@ -191,53 +191,9 @@ export function loadEntries() {
 
 export function updateEntry(id, ts, content) {
   return function(dispatch, getState) {
-    dispatch(buildAction(Actions.UPDATE_ENTRY_START));
+    let diaryMgr = getState().diary.diaryMgr;
 
-    let methods = new Methods(getState());
-
-    return new Q(function(resolve, reject) {
-      var entry = methods.getEntry(id) || methods.getEntryByDate(ts);
-
-      if (!entry) {
-        ts = moment(ts || Date.now()).startOf('day').valueOf();
-
-        Logger.debug('create entry', ts);
-
-        Crypto.hash(ts, Math.random() * 100000)
-          .then(function hashedVal(newId) {
-            resolve({
-              id: newId,
-              ts: ts,
-            });
-          })
-          .catch(reject);
-      } else {
-        resolve(entry);
-      }
-    })
-      .then(function saveToDiary(entry) {
-        entry.body = content;
-        
-        return Storage.saveEntry(entry);
-      })
-      .then(function entrySaved(entry) {
-        dispatch(buildAction(Actions.UPDATE_ENTRY_RESULT, entry));
-      })
-      .then(function updateSearchIndex(entry) {
-        return Search.add({
-          id: entry.id,
-          ts: entry.ts,
-          body: entry.body,
-        });
-      })
-      .catch(function(err) {
-        Logger.error(err);
-        dispatch(buildAction(Actions.UPDATE_ENTRY_ERROR, err));
-
-        return Q.delay(2000).then(function() {
-          dispatch(buildAction(Actions.UPDATE_ENTRY_RESET));
-        });
-      })
+    return diaryMgr.updateEntry(id, ts, content);
   }
 }
 
@@ -245,33 +201,9 @@ export function updateEntry(id, ts, content) {
 
 export function deleteEntry(id) {
   return function(dispatch, getState) {
-    let methods = new Methods(getState());
+    let diaryMgr = getState().diary.diaryMgr;
 
-    return Q.resolve()
-      .then(function getEntry() {
-        var entry = methods.getEntry(id);
-
-        if (!entry) {
-          throw new Error('Entry not found: ' + id);
-        }
-
-        return entry;
-      })
-      .then(function deleteEntry(entry) {
-        dispatch(buildAction(Actions.DELETE_ENTRY, {
-          entry: entry,
-        }));
-
-        return saveDiary(dispatch, getState);
-      })
-      .then(function updateSearchIndex() {
-        return Search.remove({
-          id: id
-        });
-      })
-      .catch(function(err) {
-        Logger.error(err);
-      });
+    return diaryMgr.deleteEntry(id);
   }
 }
 

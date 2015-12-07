@@ -6,15 +6,18 @@ var moment = require('moment');
 var Timeline = require('../components/timeline'),
   EntryEditor = require('../components/entryEditor');
 
-import { connectRedux, storeMethods } from '../helpers/decorators';
+import { connectRedux } from '../helpers/decorators';
 
 
 
 
 var Component = React.createClass({
   render: function() { 
-    let loaded = !!this.props.data.entries,
-      todayEntryId = this.props.methods.getTodayEntry();
+    let diaryMgr = this.props.data.diary.diaryMgr;
+
+    let loaded = !!diaryMgr.entries,
+      todayEntry = diaryMgr.getEntryForToday(),
+      todayEntryId = _.get(todayEntry, 'id');
 
     return (
       <div className="newEntry">
@@ -26,4 +29,4 @@ var Component = React.createClass({
 
 
 
-module.exports = connectRedux()(storeMethods()(Component));
+module.exports = connectRedux()(Component);
