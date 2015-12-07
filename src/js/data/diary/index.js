@@ -67,8 +67,6 @@ export default class Diary {
 
         return this._rebuildSearchIndex();
       } else {
-        throw new Error('asdl;fjads;lf dlskjf la;sdkj a;lsdj fl');
-        
         this.logger.info('existing entries found');
 
         if (!this._meta.version) {
@@ -259,9 +257,7 @@ export default class Diary {
         this._entries = entries;
         this._encryptedEntries = {};  // clear original so that we can save to new version
 
-        Dispatcher.loadEntries('progress', {
-          msg: 'Upgrading diary to new version'
-        });
+        Dispatcher.loadEntries('progress', 'Upgrading to new format');
 
         // now let's re-save each entry, individually encrypted
         return Q.props(_.mapValues(entries, (entry) => {
@@ -273,6 +269,8 @@ export default class Diary {
         }));
       })
       .then((encryptedEntries) => {
+        Dispatcher.loadEntries('progress', 'Saving new format');
+
         this._encryptedEntries = encryptedEntries;
 
         return this.storage.saveDiary(this._name, {
@@ -302,13 +300,13 @@ export default class Diary {
     let total = _.keys(this._encryptedEntries).length;
     let done = 0;
 
-    Q.all(_.map(this._encryptedEntries, (entryEnc, id) => {
+
+    return Q.all(_.map(this._encryptedEntries, (entryEnc, id) => {
       return Crypto.decrypt(Auth.encryptionKey, entryEnc)
         .then((entry) => {
           entry.id = id;
 
           this._entries[id] = entry;
-
 
           Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
 

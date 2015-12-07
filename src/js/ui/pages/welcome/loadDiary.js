@@ -14,14 +14,26 @@ var Component = React.createClass({
   },
 
   render: function() { 
-    var progressMsg = "Loading diary...";
+    let activity = this.props.data.diary.loadingEntries;
 
-    var loadingError = null;
-    if (this.props.data.diary.loadingEntries.error) {
+    let progressMsg = "Loading diary...",
+      progressMsg2 = activity.progressMsg;
+
+    if (progressMsg2) {
+      progressMsg2 = (
+        <span>
+          <Icon name="cog" spin={true} />
+          {progressMsg2}
+        </span>
+      );
+    }
+
+    let loadingError = null;
+    if (activity.error) {
       progressMsg += 'failed!';
 
-      var msg = (
-        <span>{this.props.data.diary.loadingEntries.error.toString()}</span>
+      let msg = (
+        <span>{activity.error.toString()}</span>
       );
 
       loadingError = (
@@ -38,6 +50,7 @@ var Component = React.createClass({
     return (
       <div className="load-diary step">
         <p>{progressMsg}</p>
+        <p className="progress-message">{progressMsg2}</p>
         {loadingError}
       </div>
     );

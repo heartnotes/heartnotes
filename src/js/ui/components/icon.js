@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var _  = require('lodash');
 var React = require('react');
+var Classnames = require('classnames');
 
 
 var Popup = require('./popup');
@@ -10,12 +11,14 @@ var Popup = require('./popup');
 module.exports = React.createClass({
   propTypes: {
     name : React.PropTypes.string,
+    spin: React.PropTypes.bool,
     tooltip : React.PropTypes.object,
   },
 
   getDefaultProps: function() {
     return {
       name : '',
+      spin: false,
       tooltip : null,
     };
   },
@@ -27,8 +30,16 @@ module.exports = React.createClass({
   },
 
   render: function() {
+    let classes = {
+      'icon-widget': true,
+      fa: true,
+      'fa-spin': !!this.props.spin,
+    };
+
+    classes[`fa-${this.props.name}`] = true;
+
     var icon = (
-      <i ref="icon" className={"icon-widget fa fa-" + this.props.name} />
+      <i ref="icon" className={Classnames(classes)} />
     );
 
     if (this.props.tooltip) {

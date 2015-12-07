@@ -13,8 +13,8 @@ export function start() {
 export function progress(payload) {
   return {
     inProgress: true,
-    progressMsg: payload.msg,
-    result: payload,
+    progressMsg: payload,
+    result: null,
     success: false,
     error: null,
   };
