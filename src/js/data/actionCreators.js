@@ -182,28 +182,36 @@ export function exportData() {
 var searchTimeout = null;
 
 export function search(keyword) {
-  return function(dispatch) {
-    // use a timeout so that we wait for user to finish typing before searching
+  return function(dispatch, getState) {
+    // use a timeout so that we don't keep making calls to the index
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
 
+    if (!_.get(keyword, 'length')) {
+      keyword = null;
+    }
+
     searchTimeout = setTimeout(function() {
-      dispatch(buildAction(Actions.SEARCH_START, {
-        keyword: keyword
-      }));
+      Dispatcher.search('start', {
+        keyword: keyword,
+      });
 
       // if empty then return immediately
-      if (!_.get(keyword, 'length')) {
-        return dispatch(buildAction(Actions.SEARCH_RESULT, []));
+      if (!keyword) {
+        return Dispatcher.search('result', []);
       }
 
       Search.search(keyword)
         .then(function(results) {
-          dispatch(buildAction(Actions.SEARCH_RESULT, results));
+          Dispatcher.search('result', results);
         })
         .catch(function(err) {
-          dispatch(buildAction(Actions.SEARCH_ERROR, err));
+          Logger.error(err);
+
+          Dispatcher.search('error', err);
+
+          throw err;
         });
     }, 250);
   };

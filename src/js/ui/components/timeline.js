@@ -23,7 +23,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div className="timeline">
-        <EntryListFilter />
+        <EntryListFilter searchKeyword={this.props.searchKeyword} />
         <EntryList 
           searchKeyword={this.props.searchKeyword}
           entries={this.props.entries} 

@@ -195,14 +195,8 @@ exports.diary = function(state = InitialState.diary(), action) {
       });
 
     case Actions.UPDATE_ENTRY_RESULT:
-      let entries = _.extend({}, state.entries),
-        newEntry = action.payload;
-
-      entries[newEntry.id] = newEntry;
-
       return _.extend({}, state, {
         updatingEntry: AsyncState.result(action.payload),
-        entries: entries,
       });
 
     case Actions.UPDATE_ENTRY_ERROR:
@@ -302,33 +296,16 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.SEARCH_START:
       return _.extend({}, state, {
-        searching: _.extend({}, state.searching, {
-          keyword: action.payload.keyword,
-          error: null,
-          inProgress: true,
-        }),
+        searching: AsyncState.start(),
+        searchKeyword: action.payload.keyword,
       });
     case Actions.SEARCH_RESULT:
-      let filteredEntries = state.entries;
-
-      if (_.get(state.searching.keyword, 'length')) {
-        filteredEntries = _.map(action.payload || [], (r) => {
-          return filteredEntries[r.ref];
-        });
-      }
-
       return _.extend({}, state, {
-        searching: _.extend({}, state.searching, {
-          results: filteredEntries,
-          inProgress: false,
-        }),
+        searching: AsyncState.result(action.payload),
       });
     case Actions.SEARCH_ERROR:
       return _.extend({}, state, {
-        searching: _.extend({}, state.searching, {
-          inProgress: false,
-          error: action.payload.error,
-        }),
+        searching: AsyncState.error(action.payload),
       });
 
     default:

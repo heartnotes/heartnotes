@@ -6,6 +6,16 @@ import Loading from './loading';
 
 
 var Component = React.createClass({
+  propTypes: {
+    searchKeyword: React.PropTypes.string,
+  },
+  
+  getDefaultProps: function() {
+    return {
+      searchKeyword: null,
+    };
+  },
+
   getInitialState: function() {
     return {
       keyword: null,
@@ -36,9 +46,9 @@ var Component = React.createClass({
   },
 
   componentWillReceiveProps: function(newProps) {
-    if (newProps.data.diary.searching.keyword !== this.state.keyword) {
+    if (newProps.searchKeyword !== this.state.keyword) {
       this.setState({
-        keyword: newProps.data.diary.searching.keyword
+        keyword: newProps.searchKeyword
       });
     }
   },

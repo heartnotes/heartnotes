@@ -219,11 +219,6 @@ export default class Diary {
     return this._entries;
   }
 
-  get timelineEntries () {
-    // TODO: if have a search filter then show filtered entries
-    return this._entries;
-  }
-
 
 
   getEntryById (id) {

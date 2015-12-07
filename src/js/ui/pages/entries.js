@@ -20,9 +20,15 @@ var Component = React.createClass({
   },
 
   render: function() { 
-    let diaryMgr = this.props.data.diary.diaryMgr;
+    let { diary } = this.props.data;
 
-    let entries = _.get(diaryMgr, 'timelineEntries');
+    let entries = diary.diaryMgr.entries;
+
+    if (_.get(diary.searching.result, 'length')) {
+      entries = _.map(diary.searching.result, (result) => {
+        return entries[result.ref];
+      });
+    }
 
     let entryId = this.props.params.entryId;
 
@@ -32,7 +38,7 @@ var Component = React.createClass({
           <Timeline 
             entries={entries}
             selected={entryId}
-            searchKeyword={this.props.data.diary.searching.keyword}
+            searchKeyword={diary.searchKeyword}
             onSelect={this._onSelect} />
           <ToggleButton 
             openClass="toggle-timeline open"

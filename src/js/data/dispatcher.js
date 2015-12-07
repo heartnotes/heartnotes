@@ -226,6 +226,18 @@ export class Dispatcher {
   }
 
 
+  search (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.SEARCH_START, data);
+      case 'result':
+        return this._do(Actions.SEARCH_RESULT, data);
+      case 'error':
+        this._do(Actions.SEARCH_ERROR, data);
+    }
+  }
+
+
 
   enterPassword (state, data) {
     this.createPassword(state, data);
