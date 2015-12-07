@@ -103,7 +103,7 @@ module.exports = React.createClass({
 
     var strengthTooltip = (
       <div className="password-strength-hints">
-        <p>Use uppercase and lowercase letters, numbers and symbols to ensure a strong password.</p>
+        <span>Use uppercase and lowercase letters, numbers and symbols to ensure a strong password.</span>
       </div>
     );
 

@@ -39,7 +39,7 @@ var Component = React.createClass({
           <div className="input-fields row">
             <NewPasswordInput 
               onChange={this._setPassword} 
-              requiredStrength={1}
+              requiredStrength={0}
               tabIndex={1} />
           </div>
           <div className="action row">

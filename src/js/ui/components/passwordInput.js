@@ -37,16 +37,19 @@ module.exports = React.createClass({
 
     if (this.props.showToggleButton) {
       var toggleIcon = 'bold',
+        toggleText = 'Show',
         toggleTooltip = 'Show typing';
 
       if (this.state.showTyping) {
         inputType = 'text';  
         toggleIcon = 'circle';
+        toggleText = 'Hide';
         toggleTooltip = 'Hide typing';
       }
 
       toggleElem = (
         <IconButton 
+          className="toggle-button"
           ref="toggleButton"
           icon={toggleIcon} 
           onClick={this._toggleTyping}
