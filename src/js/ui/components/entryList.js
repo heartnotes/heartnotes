@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import Classnames from 'classnames';
 
 var _ = require('lodash'),
   moment = require('moment');
@@ -9,13 +10,58 @@ var FormatUtils = require('../../utils/format'),
   DateString = require('./date');
 
 
+var EntryListItem = React.createClass({
+  propTypes: {
+    entry: React.PropTypes.object.isRequired,
+    onClick: React.PropTypes.func.isRequired,
+    selected: React.PropTypes.bool,
+    truncLength: React.PropTypes.number,
+  },
+
+  getDefaultProps: function() {
+    return {
+      selected: false,
+      truncLength: 300,
+    };
+  },
+
+  render: function() {
+    let classes = Classnames({
+      'entry': true,
+      selected: !!this.props.selected,
+    });
+
+    let date = moment(this.props.entry.ts);
+
+    let entryText = FormatUtils.htmlToStr(this.props.entry.body),
+      pruned = _.trunc(entryText, this.props.truncLength);
+
+    return (
+      <li className={classes} onClick={this._onClick}>
+        <div className="inner">
+          <DateString format="D" date={date} className="day" /> 
+          <DateString format="HH:mm" date={date} className="time" /> 
+          <span className="text">{pruned}</span>
+        </div>
+      </li>
+    );
+  },
+
+
+  _onClick: function() {
+    this.props.onClick(this.props.entry.id);
+  },
+
+});
+
+
+
 
 module.exports = React.createClass({
   propTypes: {
     entries : React.PropTypes.object,
     searchKeyword: React.PropTypes.string,
     selected: React.PropTypes.string,
-    truncLength: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
@@ -23,7 +69,6 @@ module.exports = React.createClass({
       entries : {},
       searchKeyword: null,
       selected: null,
-      truncLength: 300,
     };
   },
 
@@ -102,28 +147,19 @@ module.exports = React.createClass({
 
 
   _addEntryToList: function(listItems, entry) {
-    let date = moment(entry.ts);
-
-    let entryText = FormatUtils.htmlToStr(entry.body),
-      pruned = _.trunc(entryText, this.props.truncLength);
-
-    let selectedClass = (this.props.selected === entry.id ? 'selected': '');
-
     listItems.push(
-      <li key={entry.id} 
-        data-id={entry.id} 
-        className={"entry " + selectedClass}
-        onClick={this._onSelect}>
-          <DateString format="D" date={date} /> 
-          <span className="text">{pruned}</span>
-      </li>
+      <EntryListItem 
+        key={entry.id} 
+        entry={entry} 
+        selected={this.props.selected === entry.id} 
+        onClick={this._onSelect} />
     );
   },
 
 
-  _onSelect: function(e) {
+  _onSelect: function(id) {
     if (this.props.onSelect) {
-      this.props.onSelect(e.currentTarget.dataset.id);
+      this.props.onSelect(id);
     }
   },
 

@@ -138,9 +138,10 @@ ul.entryList
       padding 0.4em 0
       
     &.entry
-      padding 0.5em
       transition background-color 0.3s linear
       color $gray-dark
+      height 80px
+      padding 0.5rem  
       
       &.none
         cursor default
@@ -153,21 +154,34 @@ ul.entryList
         cursor pointer
         background-color $gray-blue
         color $white
+        
+      > .inner
+        position relative
       
-      .text, .date
-        display inline-block
-        height 50px
+        .text
+          position absolute
+          top 0
+          right 0
+          overflow hidden
+          line-height 1.2em
+          width calc(100% - 4rem)
+          max-height calc(80px - 1rem)
 
-      .text
-        overflow hidden
-        line-height 1.2em
-        width calc(100% - 2.5rem)
+        .date
+          position absolute
+          top 0
+          left 0
+          width 2.5rem
+          text-align center
+          &.day
+            font-size 2.5rem
+            font-weight bold
+            height 2rem
+          &.time
+            top 2.2rem
+            font-size 0.8rem
+            margin-top 0.2em
 
-      .date
-        vertical-align top
-        width 2.5rem
-        font-size 1.4rem  
-        font-weight bold
         
 
 .password-input
