@@ -15,12 +15,14 @@ var EntryListItem = React.createClass({
     entry: React.PropTypes.object.isRequired,
     onClick: React.PropTypes.func.isRequired,
     selected: React.PropTypes.bool,
+    isSearchResult: React.PropTypes.bool,
     truncLength: React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
       selected: false,
+      isSearchResult: false,
       truncLength: 300,
     };
   },
@@ -36,11 +38,19 @@ var EntryListItem = React.createClass({
     let entryText = FormatUtils.htmlToStr(this.props.entry.body),
       pruned = _.trunc(entryText, this.props.truncLength);
 
+    let dayFormat = this.props.isSearchResult ? 'MMMD' : 'D';
+    let dayClasses = Classnames({
+      day: true,
+      month: !!this.props.isSearchResult,
+    });
+
     return (
       <li className={classes} onClick={this._onClick}>
         <div className="inner">
-          <DateString format="D" date={date} className="day" /> 
-          <DateString format="HH:mm" date={date} className="time" /> 
+          <div className="date-time">
+            <DateString format={dayFormat} date={date} className={dayClasses} /> 
+            <DateString format="HH:mm" date={date} className="time" /> 
+          </div>
           <span className="text">{pruned}</span>
         </div>
       </li>
@@ -152,6 +162,7 @@ module.exports = React.createClass({
         key={entry.id} 
         entry={entry} 
         selected={this.props.selected === entry.id} 
+        isSearchResult={!!this.props.searchKeyword}
         onClick={this._onSelect} />
     );
   },
