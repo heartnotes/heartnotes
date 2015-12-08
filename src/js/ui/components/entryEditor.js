@@ -46,8 +46,8 @@ var Component = React.createClass({
     var deleteButton = null;
     if (this.props.canDelete) {
       deleteButton = (
-        <span>
-          <IconButton className="delete-button"
+        <span className="delete-button">
+          <IconButton
             onClick={this._onDelete}
             icon="trash" 
             tooltip="Delete entry"/>
@@ -63,12 +63,16 @@ var Component = React.createClass({
       ? 'MMMM Do, YYYY'
       : 'MMMM Do';
 
+    let timeFormat = 'HH:mm';
+
+//    <DatePicker onSelect={this._onChangeDate} 
+//      date={entryDate} tooltip="Change date"/>
+
     return (
       <div className="entryEditor">
         <div className="meta">
-          <DateString format={dateFormat} date={entryDate} />
-          <DatePicker onSelect={this._onChangeDate} 
-            date={entryDate} tooltip="Change date"/>
+          <DateString className="day" format={dateFormat} date={entryDate} />
+          <DateString className="time" format={timeFormat} date={entryDate} />
           {deleteButton}
         </div>
         <div className="editor">

@@ -70,6 +70,7 @@
   display table
   
   .meta
+    position relative
     display table-row
     height 2.5rem
     text-align center
@@ -77,22 +78,34 @@
     font-weight 100
     color $gray-dark
     
+    .separator
+      padding 0 0.5em
+    
     .date
       font-family $header-font
       height 100%
       display inline-block
       padding-top 0.1em
+      &.time
+        font-size 60%
+        color $gray-dark
+        &:before
+          content '-'
+          padding 0 0.3em 0 0.4em
+          color #ccc
+          font-size 80%
       
     .date-picker
-      position: relative;
-      top: -0.15em;
-      left: 0.3em;
+      position relative
+      top -0.15em
+      left 0.3em
       
     .delete-button
-      @extends $contentActionButton
-      position relative
-      left: 1em;
-      top: -0.3em;
+      position absolute
+      right 0.1em
+      top -0.1em
+      .icon-button
+        @extends $contentActionButton
     
   .editor
     display table-row
