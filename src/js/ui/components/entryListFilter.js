@@ -23,12 +23,13 @@ var Component = React.createClass({
   },
   
   render: function() {
-    let content = null;
+    let filter = null,
+      summary = null;
 
     let searchIndexing = this.props.data.diary.searchIndexing;
 
     if (!searchIndexing.success) {
-      content = (
+      filter = (
         <Loading text="Rebuilding search..." />
       );
     } else {
@@ -36,12 +37,21 @@ var Component = React.createClass({
 
       let keyword = this.state.keyword;
 
-      content = (
+      filter = (
         <input ref="input" value={keyword} type="text" placeholder="Search..." onChange={this._onChange} />
       );
+
+      if (keyword) {
+        summary = (
+          <span className="filter-summary">Filter by: {keyword}</span>
+        );
+      }
     }
     return (
-      <div className="entry-list-filter">{content}</div>
+      <div className="entry-list-filter">
+        {filter}
+        {summary}
+      </div>
     );
   },
 

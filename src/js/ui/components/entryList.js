@@ -100,12 +100,6 @@ module.exports = React.createClass({
 
 
   _buildSearchResults: function(listItems, entries) {
-    listItems.push(
-      <li className="break-row" key='results-header'>
-        Filter: {'"' + this.props.searchKeyword + '"'}
-      </li>
-    );
-
     if (!entries.length) {
       listItems.push(
         <li key="noentry" className="entry none">No results found.</li>
