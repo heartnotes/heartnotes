@@ -12,7 +12,7 @@ var DateString = require('./date'),
 
 
 import { connectRedux } from '../helpers/decorators';
-
+import * as DateUtils from '../../utils/date';
 
 
 
@@ -138,8 +138,8 @@ var Component = React.createClass({
     var newId = newProps.entryId || -1,
       oldId = this.props.entryId || -1;
 
-    var oldDate = moment(this.state.changedToDate || Date.now()).startOf('minute').valueOf(), 
-      newDate = moment(newState.changedToDate || Date.now()).startOf('minute').valueOf();
+    var oldDate = DateUtils.getNormalizedTimestamp(this.state.changedToDate || Date.now()),
+      newDate = DateUtils.getNormalizedTimestamp(newState.changedToDate || Date.now());
 
     var oldIsReady = !!this.props.data.entries,
       newIsReady = !!newProps.data.entries;

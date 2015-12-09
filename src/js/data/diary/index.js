@@ -13,6 +13,7 @@ import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
 import { instance as Auth } from '../auth/index';
 import ExportedEntries from '../../ui/components/ExportedEntries';
+import * as DateUtils from '../../utils/date';
 
 
 
@@ -97,7 +98,7 @@ export default class Diary {
 
     return Q.try(() => {
       if (!entry) {
-        ts = moment(ts || Date.now()).startOf('minute').valueOf();
+        ts = DateUtils.getNormalizedTimestamp(ts || Date.now());
 
         this.logger.debug('create entry', ts);
 
@@ -229,12 +230,12 @@ export default class Diary {
 
 
   getEntryByDate (date) {
-    var ts = moment(date).startOf('minute').valueOf();
+    var ts = DateUtils.getNormalizedTimestamp(date);
 
     this.logger.debug('get entry by date', date, ts);
 
     var entry = _.find(this._entries || {}, function(e) {
-      return moment(e.ts).startOf('day').valueOf() === ts;
+      return DateUtils.getNormalizedTimestamp(e.ts) === ts;
     });
 
     if (entry) {
