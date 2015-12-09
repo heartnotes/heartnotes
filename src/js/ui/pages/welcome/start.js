@@ -92,17 +92,6 @@ var Component = React.createClass({
 
 
 
-  componentDidUpdate: function() {
-    if (!this.props.isActive) {
-      return;
-    }
-
-    if (this.props.data.diary.diaryMgr) {
-      this.props.showStep('loadDiary');
-    }
-  },
-
-
   _buildChooseAnotherDiaryButton: function() {
     if (Detect.isElectronApp()) {
       let choosingError = this.props.data.diary.choosing.error;
@@ -136,7 +125,10 @@ var Component = React.createClass({
     this.props.actions.openDiary(
       _.get(this.props.data.diary.lastAccessedDiaryDetails, 'name'),
       this.state.password
-    );
+    )
+      .then(() => {
+        this.props.showStep('loadDiary');
+      });
   },
 
 

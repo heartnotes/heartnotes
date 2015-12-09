@@ -298,6 +298,8 @@ export default class Diary {
 
 
   _decryptOldFormat () {
+    this.logger.debug("decrypt OLD format");
+
     this._entries = {};
 
     return Crypto.decrypt(
@@ -337,6 +339,8 @@ export default class Diary {
 
 
   _decryptNewFormat () {
+    this.logger.debug("decrypt NEW format");
+
     this._entries = {};
 
     _.each(this._encryptedEntries, (e, id) => {
@@ -349,24 +353,28 @@ export default class Diary {
     let total = _.keys(this._encryptedEntries).length;
     let done = 0;
 
+    // decrypt one at a time!
+    let decryptionPromise = _.reduce([], (prevPromise, entryEnc, id) => {
+      return prevPromise.then(() => {
+        return Crypto.decrypt(Auth.encryptionKey, entryEnc)
+          .then((entry) => {
+            entry.id = id;
 
-    return Q.all(_.map(this._encryptedEntries, (entryEnc, id) => {
-      return Crypto.decrypt(Auth.encryptionKey, entryEnc)
-        .then((entry) => {
-          entry.id = id;
+            this._entries[id] = entry;
 
-          this._entries[id] = entry;
+            Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
+          })
+          .catch((err) => {
+            this.logger.error(err);
 
-          Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
-        })
-        .catch((err) => {
-          this.logger.error(err);
+            Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
 
-          Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
+            throw err;
+          });
+      });
+    }, Q.resolve());
 
-          throw err;
-        });
-    }))
+    return decryptionPromise
       .then(() => {
         Dispatcher.loadEntries('result');
 
