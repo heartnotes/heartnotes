@@ -16,7 +16,7 @@ var Component = React.createClass({
     let diaryMgr = this.props.data.diary.diaryMgr;
 
     let loaded = !!diaryMgr.entries,
-      todayEntry = diaryMgr.getEntryForToday(),
+      todayEntry = diaryMgr.getEntryForNow(),
       todayEntryId = _.get(todayEntry, 'id');
 
     return (

@@ -39,6 +39,10 @@ module.exports = React.createClass({
     }
   },
 
+  isShown: function() {
+    return !!this.state.show;
+  },
+
   show: function() {
     if (this.isMounted()) {
       this.setState({

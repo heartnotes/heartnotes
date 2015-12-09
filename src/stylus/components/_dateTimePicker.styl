@@ -1,0 +1,76 @@
+.date-time-picker
+  & > button
+    @extends $contentActionButton
+    
+  .overlay
+    > .rdt
+      margin 1em 0
+      table
+        margin 0 auto
+        border-collapse collapse
+        
+        th, td
+          padding 0.25em
+          
+        th.rdtSwitch
+          text-align center
+          color $gray
+          
+        th.rdtPrev, th.rdtNext
+          > button
+            @extends $button
+            font-size 2rem
+            padding 0 0.4em 0.1em
+            
+        th.dow
+          color $gray-dark
+          font-weight bold
+          font-size 80%
+          
+        td.rdtDay, td.rdtMonth, td.rdtYear
+          color $gray
+          cursor pointer
+          &:hover
+            outline 1px solid $gray
+          &.rdtToday
+            position relative
+            background-color $black
+            &:before
+              content: '';
+              display: inline-block;
+              border-left: 10px solid transparent;
+              border-bottom: 10px solid #428bca;
+              border-top-color: rgba(0, 0, 0, 0.2);
+              position: absolute;
+              bottom: 4px;
+              right: 4px;
+          &.rdtOld, &.rdtNew
+            color $gray-darker
+          &.rdtActive
+            outline 1px solid $white
+            
+        .rdtCounters
+          text-align center
+          margin 1em 0
+          > div
+            display inline-block
+            vertical-align middle
+            &.rdtCounter
+              padding 0 0.5em
+              .rdtCount
+                font-size 3rem
+                margin 0.3em 0
+                color $gray
+              .rdtBtn
+                @extends $button
+                font-size 1rem
+                padding 0 0.6em 0.2em
+        
+        tfoot
+          margin 1em 0
+          td.rdtTimeToggle
+            color $gray
+            text-align center
+            border-top 1px solid $gray-dark
+        
+    

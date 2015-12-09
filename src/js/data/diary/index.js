@@ -97,7 +97,7 @@ export default class Diary {
 
     return Q.try(() => {
       if (!entry) {
-        ts = moment(ts || Date.now()).valueOf();
+        ts = moment(ts || Date.now()).startOf('minute').valueOf();
 
         this.logger.debug('create entry', ts);
 
@@ -229,7 +229,7 @@ export default class Diary {
 
 
   getEntryByDate (date) {
-    var ts = moment(date).startOf('day').valueOf();
+    var ts = moment(date).startOf('minute').valueOf();
 
     this.logger.debug('get entry by date', date, ts);
 
@@ -245,7 +245,7 @@ export default class Diary {
   }
 
 
-  getEntryForToday () {
+  getEntryForNow () {
     this.logger.debug('get today\'s entry');
     
     return this.getEntryByDate(new Date());

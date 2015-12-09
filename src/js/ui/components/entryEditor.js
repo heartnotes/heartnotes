@@ -6,7 +6,7 @@ var { Navigation } = require('react-router');
 
 
 var DateString = require('./date'),
-  DatePicker = require('./datePicker'),
+  DateTimePicker = require('./dateTimePicker'),
   IconButton = require('./iconButton'),
   AskUserDialog = require('./askUserDialog');
 
@@ -63,16 +63,17 @@ var Component = React.createClass({
       ? 'MMMM Do, YYYY'
       : 'MMMM Do';
 
-    let timeFormat = 'HH:mm';
-
-//    <DatePicker onSelect={this._onChangeDate} 
-//      date={entryDate} tooltip="Change date"/>
+    let timeFormat = 'h:mma';
 
     return (
       <div className="entryEditor">
         <div className="meta">
           <DateString className="day" format={dateFormat} date={entryDate} />
           <DateString className="time" format={timeFormat} date={entryDate} />
+          <DateTimePicker 
+            onSelect={this._onChangeDate} 
+            date={entryDate} 
+            tooltip="Change date and time" />
           {deleteButton}
         </div>
         <div className="editor">
@@ -137,8 +138,8 @@ var Component = React.createClass({
     var newId = newProps.entryId || -1,
       oldId = this.props.entryId || -1;
 
-    var oldDate = moment(this.state.changedToDate || Date.now()).startOf('day').valueOf(), 
-      newDate = moment(newState.changedToDate || Date.now()).startOf('day').valueOf();
+    var oldDate = moment(this.state.changedToDate || Date.now()).startOf('minute').valueOf(), 
+      newDate = moment(newState.changedToDate || Date.now()).startOf('minute').valueOf();
 
     var oldIsReady = !!this.props.data.entries,
       newIsReady = !!newProps.data.entries;
@@ -181,7 +182,7 @@ var Component = React.createClass({
       entry = diaryMgr.getEntryById(this.props.entryId);
 
       if (!entry) {
-        entry = diaryMgr.getEntryForToday() || {};
+        entry = diaryMgr.getEntryForNow() || {};
       }
     }
 
