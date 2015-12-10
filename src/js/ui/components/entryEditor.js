@@ -2,8 +2,6 @@ var _ = require('lodash'),
   moment = require('moment'),
   React = require('react');
 
-var { Navigation } = require('react-router');
-
 
 var DateString = require('./date'),
   DateTimePicker = require('./dateTimePicker'),
@@ -17,8 +15,6 @@ import * as DateUtils from '../../utils/date';
 
 
 var Component = React.createClass({
-  mixins: [Navigation],
-
   propTypes: {
     entryId: React.PropTypes.string,
     canDelete: React.PropTypes.bool,
@@ -211,7 +207,7 @@ var Component = React.createClass({
       if ('Yes' === choice) {
         this.props.actions.deleteEntry(this._getActiveEntry().id)
           .then(() => {
-            this.transitionTo('entries');
+            this.props.history.pushState(null, '/entries');
           });
       }
     });

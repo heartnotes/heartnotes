@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react';
-import { Link, Navigation } from 'react-router';
 
 import Timeline from '../components/timeline';
 import Icon from '../components/icon';
@@ -11,8 +10,6 @@ import { connectRedux } from '../helpers/decorators';
 
 
 var Component = React.createClass({
-  mixins: [Navigation],
-
   getInitialState: function() {
     return {
       layout: 'split',
@@ -30,7 +27,7 @@ var Component = React.createClass({
       });
     }
 
-    let entryId = this.props.params.entryId;
+    let entryId = _.get(this.props.data, 'router.params.entryId');
 
     return (
       <div className={"entriesView " + this.state.layout}>
@@ -55,9 +52,7 @@ var Component = React.createClass({
 
 
   _onSelect: function(entryId) {
-    this.transitionTo('entries', {
-      entryId: entryId
-    });
+    this.props.history.pushState(null, `/entries/${entryId}`);
   },
 
 

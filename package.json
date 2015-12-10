@@ -32,6 +32,7 @@
     "gulp-stylus": "~2.0.2",
     "gulp-uglify": "~1.2.0",
     "gulp-util": "~3.0.4",
+    "history": "~1.13.1",
     "jquery": "~2.1.4",
     "lodash": "~3.9.3",
     "logarama": "~1.1.0",
@@ -44,13 +45,16 @@
     "pickadate": "~3.5.6",
     "pikaday": "git://github.com/dbushell/Pikaday.git#8e22c27454c0345306d4a4a2c0aa8b1cde97e120",
     "pouchdb": "~3.6.0",
-    "react": "~0.13.3",
-    "react-ladda": "~2.0.4",
+    "react": "~0.14.3",
+    "react-datetime": "~2.0.1",
+    "react-dom": "~0.14.3",
+    "react-ladda": "~4.0.0",
     "react-redux": "~2.1.2",
-    "react-router": "git://github.com/waigo/react-router.git#93fb595a2181e52f9947a8cf101ecbdd310c8978",
+    "react-router": "~1.0.2",
     "reactify": "~1.1.1",
     "redux": "~3.0.0",
     "redux-logger": "~2.0.1",
+    "redux-router": "~1.0.0-beta5",
     "redux-thunk": "~1.0.0",
     "run-sequence": "~1.1.0",
     "rupture": "~0.6.1",
@@ -66,9 +70,6 @@
       "reactify",
       "browserify-shim"
     ]
-  },
-  "browser": {
-    "react-router": "./node_modules/react-router/build/umd/ReactRouter.js"
   },
   "browserify-shim": {
     "ipc": "global:ipc",

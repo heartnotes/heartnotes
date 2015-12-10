@@ -354,31 +354,32 @@ export default class Diary {
     let done = 0;
 
     // decrypt one at a time!
-    let decryptionPromise = _.reduce([], (prevPromise, entryEnc, id) => {
-      return prevPromise.then(() => {
-        return Crypto.decrypt(Auth.encryptionKey, entryEnc)
-          .then((entry) => {
-            entry.id = id;
+    let decryptionPromise = Q.resolve();
+    // let decryptionPromise = _.reduce([], (prevPromise, entryEnc, id) => {
+    //   return prevPromise.then(() => {
+    //     return Crypto.decrypt(Auth.encryptionKey, entryEnc)
+    //       .then((entry) => {
+    //         entry.id = id;
 
-            this._entries[id] = entry;
+    //         this._entries[id] = entry;
 
-            Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
-          })
-          .catch((err) => {
-            this.logger.error(err);
+    //         Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
+    //       })
+    //       .catch((err) => {
+    //         this.logger.error(err);
 
-            Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
+    //         Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
 
-            throw err;
-          });
-      });
-    }, Q.resolve());
+    //         throw err;
+    //       });
+    //   });
+    // }, Q.resolve());
 
     return decryptionPromise
       .then(() => {
         Dispatcher.loadEntries('result');
 
-        return this._rebuildSearchIndex();
+        // return this._rebuildSearchIndex();
       });
   }
 

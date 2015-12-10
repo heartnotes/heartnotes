@@ -61,7 +61,10 @@ var Component = React.createClass({
 
     // if just became active then kick-off entry loading
     if (!oldProps.isActive) {
-      this.props.actions.loadEntries();
+      // wait for 'show step' animation to end
+      setTimeout(() => {
+        this.props.actions.loadEntries();
+      }, 2000);
     }
   },
 

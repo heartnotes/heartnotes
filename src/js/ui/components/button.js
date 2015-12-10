@@ -25,7 +25,9 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var buttonAttrs = {};
+    var buttonAttrs = {
+      onClick: this.props.onClick,
+    };
 
     if (this.props.disabled) {
       buttonAttrs.disabled = true;
@@ -33,13 +35,12 @@ module.exports = React.createClass({
 
     return (
       <LaddaButton 
-        color={this.props.color}
-        active={this.props.animActive} 
-        style={this.props.animStyle}
-        size={this.props.size}>
-        <button className="btn" onClick={this.props.onClick} {...buttonAttrs}>
+        buttonColor={this.props.color}
+        loading={this.props.animActive} 
+        buttonStyle={this.props.animStyle}
+        buttonSize={this.props.size}
+        {...buttonAttrs}>
           {this.props.children}
-        </button>
       </LaddaButton>
     );
   },

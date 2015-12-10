@@ -1,25 +1,20 @@
 var React = require('react');
 
-var Router = require('react-router');
-var { Navigation } = Router;
-
 var IconButton = require('./iconButton');
 
 
 
 module.exports = React.createClass({
-  mixins: [ Navigation ],
-
   render: function() {
     var items = [
       {
         icon: 'plus',
-        route: 'newEntry',
+        route: '/newEntry',
         desc: 'Add entry',
       },
       {
         icon: 'th-list',
-        route: 'entries',
+        route: '/entries',
         desc: 'View timeline',
       },
     ];
@@ -43,7 +38,7 @@ module.exports = React.createClass({
     var self = this;
 
     return function() {
-      self.transitionTo(item.route);
+      this.props.history.pushState(null, item.route);
     };
   },
 

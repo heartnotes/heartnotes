@@ -1,58 +1,67 @@
-// setup root logger first, as it's used by other modules
-var React = require('react');
-var Router = require('react-router');
-var $ = require('jquery');
-
-var { Route, DefaultRoute, RouteHandler } = Router;
-
-var Logger = require('./utils/logger');
-import Store from './data/store';
+import React from 'react';
+import { IndexRoute, Route } from 'react-router';
+import { ReduxRouter } from 'redux-router';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
 import { Provider } from 'react-redux';
 
 
-var Layout = require('./ui/layout');
-var EntriesView = require('./ui/pages/entries');
-var NewEntry = require('./ui/pages/newEntry');
-var SettingsView = require('./ui/pages/settings/index');
+import Logger from './utils/logger';
+import Store from './data/store';
+import Layout from './ui/layout';
+import EntriesView from './ui/pages/entries';
+import NewEntry from './ui/pages/newEntry';
+import SettingsView from './ui/pages/settings/index';
 
 
-var App = React.createClass({
-  getInitialState: function() {
-    return {
+
+class App extends React.Component {
+  constructor () {
+    super();
+
+    this.state = {
       logger: Logger,
     };
-  },
+  }
 
-  render: function() {
+  render () {
     return (
-      <Provider store={Store}>
-        {() => 
-          <Layout {...this.props} {...this.state}>
-            <RouteHandler {...this.props}  {...this.state}/>
-          </Layout>
-        }
-      </Provider>
+      <Layout {...this.props} {...this.state}>
+        {this.props.children}
+      </Layout>
     );
-  },
-});
+  }
+}
 
 
-
-var routes = (
-  <Route handler={App}>
-    <DefaultRoute handler={EntriesView} />
-    <Route name="entries" path="/entries/:entryId?" handler={EntriesView} />
-    <Route name="newEntry" path="/newEntry" handler={NewEntry} />
-    <Route name="settings" path="/settings" handler={SettingsView} />
+const Routes = (
+  <Route component={App}>
+    <IndexRoute component={EntriesView} />
+    <Route name="entries" path="/entries/:entryId?" component={EntriesView} />
+    <Route name="newEntry" path="/newEntry" component={NewEntry} />
+    <Route name="settings" path="/settings" component={SettingsView} />
+    <Route path="*" component={EntriesView}/>
   </Route>
 );
 
 
-Router.run(routes, Router.HashLocation, function(Handler, state) {
-  React.render(
-    <Handler routes={state.routes} params={state.params} query={state.query} />, 
-    $('main').get(0)
-  );
-});
- 
+const store = Store.create(Routes);
+
+
+class RootComponent extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <ReduxRouter>{Routes}</ReduxRouter>
+      </Provider>
+    );
+  }
+}
+
+
+ReactDOM.render(
+  <RootComponent />,
+  $('main').get(0)
+);
+
 

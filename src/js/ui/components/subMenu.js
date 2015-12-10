@@ -1,8 +1,5 @@
 var React = require('react');
 
-var Router = require('react-router');
-var { Link, Navigation } = Router;
-
 var IconButton = require('./iconButton');
 
 
@@ -10,8 +7,6 @@ import { connectRedux } from '../helpers/decorators';
 
 
 var Component = React.createClass({
-  mixins: [ Navigation ],
-
   render: function() {
     var items = [
       {
@@ -46,7 +41,7 @@ var Component = React.createClass({
 
 
   _showSettings: function() {
-    this.transitionTo('settings');
+    this.props.history.pushState(null, '/settings');
   },
 });
 

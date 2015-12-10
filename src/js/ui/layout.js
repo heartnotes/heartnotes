@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react';
-import { Navigation } from 'react-router';
 
 import { connectRedux } from './helpers/decorators';
 import MainMenu from './components/mainMenu';
@@ -11,8 +10,6 @@ import Logo from './components/logo';
 
 
 var Component = React.createClass({
-  mixins: [Navigation],
-
   render: function() {    
     var content = null;
 
@@ -58,7 +55,7 @@ var Component = React.createClass({
   },
 
   _onLogoClick: function() {
-    this.transitionTo('entries');
+    this.props.history.pushState(null, '/entries');
   }
 
 });
