@@ -11,7 +11,9 @@ import Store from './data/store';
 import Layout from './ui/layout';
 import EntriesView from './ui/pages/entries';
 import NewEntry from './ui/pages/newEntry';
-import SettingsView from './ui/pages/settings/index';
+import AccountSettingsView from './ui/pages/settings/account';
+import BackupRestoreView from './ui/pages/settings/backupRestore';
+import ExportDataView from './ui/pages/settings/exportData';
 
 
 
@@ -40,7 +42,9 @@ const Routes = (
     <Route name="entries" path="/entries" component={EntriesView} />
     <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
     <Route name="newEntry" path="/newEntry" component={NewEntry} />
-    <Route name="settings" path="/settings" component={SettingsView} />
+    <Route name="account" path="/settings" component={AccountSettingsView} />
+    <Route name="exportData" path="/settings/exportData" component={ExportDataView} />
+    <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route path="*" component={EntriesView}/>
   </Route>
 );

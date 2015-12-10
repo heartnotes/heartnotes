@@ -3,11 +3,11 @@ var _ = require('lodash'),
 
 var moment = require('moment');
 
-var Button = require('../../components/button'),
-  ChangePasswordProgressPopup = require('../../components/changePasswordProgressPopup'),
-  PasswordInput = require('../../components/passwordInput'),
-  NewPasswordInput = require('../../components/newPasswordInput'),
-  UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
+var Button = require('../button'),
+  ChangePasswordProgressPopup = require('../changePasswordProgressPopup'),
+  PasswordInput = require('../passwordInput'),
+  NewPasswordInput = require('../newPasswordInput'),
+  UserShouldRememberPasswordDialog = require('../userShouldRememberPasswordDialog');
 
 
 import { connectRedux } from '../../helpers/decorators';
