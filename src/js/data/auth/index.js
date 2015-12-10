@@ -90,8 +90,7 @@ export default class Auth {
 
               this._encryptionKey = masterKey;
 
-              this._meta = _.extend({}, meta);
-              delete this._meta.keyTest;
+              this._meta = _.pick(meta, 'salt', 'iterations');
 
               // upgrade to newer format
               return this._generateEncKeyBundle(masterKey, masterKey)

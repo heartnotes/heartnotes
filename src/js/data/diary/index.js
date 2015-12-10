@@ -302,6 +302,8 @@ export default class Diary {
 
     this._entries = {};
 
+    Dispatcher.loadEntries('progress', `Decrypting entries`);
+
     return Crypto.decrypt(
       this._auth.encryptionKey, this._encryptedEntries
     )
@@ -319,8 +321,10 @@ export default class Diary {
             ts: entry.ts,
             up: entry.up,
           })
-            .then(() => {
+            .then((encryptedEntry) => {
               Dispatcher.loadEntries('progress', `Upgrading diary...(${++done}/${total})`);
+
+              return encryptedEntry;
             });
         }));
       })
@@ -330,7 +334,7 @@ export default class Diary {
         this._encryptedEntries = encryptedEntries;
 
         return Storage.saveDiary(this._name, {
-          meta: this._meta,
+          meta: this._auth.meta,
           entries: this._encryptedEntries,
         });
       })
