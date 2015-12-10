@@ -104,6 +104,7 @@ export default class Auth {
                 throw new Error('Password incorrect');
               }
 
+              this._meta = meta;
               this._encryptionKey = plainData.key;
             }
           })

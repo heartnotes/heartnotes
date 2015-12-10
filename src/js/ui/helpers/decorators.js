@@ -49,8 +49,8 @@ export function routing() {
         props.history = this.history;
 
         props.history.navigate = function(route, query) {
-          console.log(props.history.createHref(route, query));
-          props.history.pushState(null, props.history.createHref(route, query));
+          window.location = props.history.createHref(route, query);
+          // props.history.replaceState(null, props.history.createHref(route, query));
         };
 
         return (

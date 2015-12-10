@@ -37,7 +37,8 @@ class App extends React.Component {
 const Routes = (
   <Route component={App}>
     <IndexRoute component={EntriesView} />
-    <Route name="entries" path="/entries/:entryId?" component={EntriesView} />
+    <Route name="entries" path="/entries" component={EntriesView} />
+    <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
     <Route name="newEntry" path="/newEntry" component={NewEntry} />
     <Route name="settings" path="/settings" component={SettingsView} />
     <Route path="*" component={EntriesView}/>

@@ -7,7 +7,7 @@ let createHistory = null;
 if (typeof window === 'undefined') {
   createHistory = require('history/lib/createMemoryHistory');
 } else {
-  createHistory = require('history/lib/createBrowserHistory');  
+  createHistory = require('history/lib/createHashHistory');  
 }
 
 import * as reducers from './reducers';
