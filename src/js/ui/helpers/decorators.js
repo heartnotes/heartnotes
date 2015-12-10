@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import { History } from 'react-router';
 
 import { connect } from 'react-redux';
 
@@ -34,6 +35,30 @@ export function connectRedux(actionCreators = []) {
       }
     )(Component);
   }
+}
+
+
+export function routing() {
+  return function decorator(Component) {
+    return React.createClass({
+      mixins: [History],
+
+      render: function() {
+        let props = Object.assign({}, this.props);
+
+        props.history = this.history;
+
+        props.history.navigate = function(route, query) {
+          console.log(props.history.createHref(route, query));
+          props.history.pushState(null, props.history.createHref(route, query));
+        };
+
+        return (
+          <Component {...props} />
+        );
+      }
+    });
+  };
 }
 
 

@@ -6,7 +6,7 @@ import Icon from '../components/icon';
 import ToggleButton from '../components/toggleButton';
 import EntryEditor from '../components/entryEditor';
 
-import { connectRedux } from '../helpers/decorators';
+import { connectRedux, routing } from '../helpers/decorators';
 
 
 var Component = React.createClass({
@@ -44,7 +44,8 @@ var Component = React.createClass({
             onChange={this._onToggleTimeline} />
           <EntryEditor 
             entryId={entryId}
-            canDelete={true} />
+            canDelete={true} 
+            {...this.props} />
         </div>
       </div>
     );
@@ -52,7 +53,7 @@ var Component = React.createClass({
 
 
   _onSelect: function(entryId) {
-    this.props.history.pushState(null, `/entries/${entryId}`);
+    this.props.history.navigate(`/entries/${entryId}`);
   },
 
 
@@ -66,7 +67,7 @@ var Component = React.createClass({
 
 
 
-module.exports = connectRedux()(Component);
+module.exports = connectRedux()(routing()(Component));
 
 
 

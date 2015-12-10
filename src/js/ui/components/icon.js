@@ -54,7 +54,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    this.$icon = $(React.findDOMNode(this.refs.icon));
+    this.$icon = $(this.refs.icon);
     
     this.$icon.off('mouseover').on('mouseover', this._showPopup);
     this.$icon.off('mouseout').on('mouseout', this._hidePopup);

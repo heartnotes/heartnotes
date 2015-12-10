@@ -9,7 +9,7 @@ var DateString = require('./date'),
   AskUserDialog = require('./askUserDialog');
 
 
-import { connectRedux } from '../helpers/decorators';
+import { connectRedux, routing } from '../helpers/decorators';
 import * as DateUtils from '../../utils/date';
 
 
@@ -89,7 +89,7 @@ var Component = React.createClass({
   },
 
   componentDidMount: function() {
-    var textNode = React.findDOMNode(this.refs.editorBody);
+    var textNode = this.refs.editorBody;
 
     this.editor = CKEDITOR.replace(textNode, {
       extraPlugins: 'maxheight',
@@ -207,7 +207,7 @@ var Component = React.createClass({
       if ('Yes' === choice) {
         this.props.actions.deleteEntry(this._getActiveEntry().id)
           .then(() => {
-            this.props.history.pushState(null, '/entries');
+            this.props.history.navigate('/entries');
           });
       }
     });
@@ -221,5 +221,5 @@ var Component = React.createClass({
 module.exports = connectRedux([
   'updateEntry',
   'deleteEntry',
-])(Component);
+])(routing()(Component));
 

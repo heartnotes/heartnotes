@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 
-import { connectRedux } from './helpers/decorators';
+import { connectRedux, routing } from './helpers/decorators';
 import MainMenu from './components/mainMenu';
 import SubMenu from './components/subMenu';
 import WelcomeView from './pages/welcome/index';
@@ -55,12 +55,14 @@ var Component = React.createClass({
   },
 
   _onLogoClick: function() {
-    this.props.history.pushState(null, '/entries');
+    this.props.history.navigate('/entries');
   }
 
 });
 
 
-module.exports = connectRedux(['init'])(Component);
+module.exports = connectRedux([
+  'init'
+])(routing()(Component));
 
 

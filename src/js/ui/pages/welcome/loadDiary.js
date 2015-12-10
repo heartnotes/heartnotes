@@ -16,18 +16,15 @@ var Component = React.createClass({
   render: function() { 
     let activity = this.props.data.diary.loadingEntries;
 
-    let progressMsg = "Loading diary...",
-      progressMsg2 = activity.progressMsg;
-
-    if (progressMsg2) {
-      progressMsg2 = (
-        <Loading text={progressMsg2} />
-      );
-    }
+    let progressMsg = (
+      <Loading text="Loading diary" />
+    );
+    
+    let progressMsg2 = activity.progressMsg;
 
     let loadingError = null;
     if (activity.error) {
-      progressMsg += 'failed!';
+      progressMsg = 'Loading diary failed!';
 
       let msg = (
         <span>{activity.error.toString()}</span>
@@ -64,7 +61,7 @@ var Component = React.createClass({
       // wait for 'show step' animation to end
       setTimeout(() => {
         this.props.actions.loadEntries();
-      }, 2000);
+      }, 1000);
     }
   },
 

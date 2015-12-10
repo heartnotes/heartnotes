@@ -3,7 +3,7 @@ var React = require('react');
 var IconButton = require('./iconButton');
 
 
-import { connectRedux } from '../helpers/decorators';
+import { connectRedux, routing } from '../helpers/decorators';
 
 
 var Component = React.createClass({
@@ -41,12 +41,12 @@ var Component = React.createClass({
 
 
   _showSettings: function() {
-    this.props.history.pushState(null, '/settings');
+    this.props.history.navigate('/settings');
   },
 });
 
 
 module.exports = connectRedux([
   'closeDiary'
-])(Component);
+])(routing()(Component));
 

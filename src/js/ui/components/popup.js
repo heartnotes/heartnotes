@@ -42,8 +42,8 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    this.$body = $(React.findDOMNode(this.refs.body));
-    this.$target = $(React.findDOMNode(this.refs.target));
+    this.$body = $(this.refs.body);
+    this.$target = $(this.refs.target);
 
     this._reposition();
 

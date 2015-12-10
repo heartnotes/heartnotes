@@ -41,8 +41,8 @@ module.exports = React.createClass({
 
     this.datePicker = new Pikaday({ 
       firstDay: 1,
-      field: React.findDOMNode(this.refs.field),
-      container: React.findDOMNode(this.refs.overlay),
+      field: this.refs.field,
+      container: this.refs.overlay,
       onClose: this._hide,
       onSelect: this.props.onSelect,
       defaultDate: date,

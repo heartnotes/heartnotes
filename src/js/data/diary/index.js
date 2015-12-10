@@ -11,7 +11,7 @@ import { instance as Crypto } from '../crypto/index';
 import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
-import { instance as Auth } from '../auth/index';
+import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/ExportedEntries';
 import * as DateUtils from '../../utils/date';
 
@@ -27,7 +27,7 @@ export default class Diary {
     this._name = name;
     this._entries = null;
     this._encryptedEntries = data.entries || {};
-    this._meta = data.meta;
+    this._auth = new Auth(data.meta);
 
     this.logger = Logger.create(`diary[${name}]`);
   }
@@ -44,7 +44,7 @@ export default class Diary {
       password: password,
     });
 
-    return Auth.enterPassword(password, this._meta)
+    return this._auth.enterPassword(password)
       .then(() => {
         Dispatcher.openDiary('result', this);
       })
@@ -72,7 +72,7 @@ export default class Diary {
       } else {
         this.logger.info('existing entries found');
 
-        if (!this._meta.version) {
+        if (!this._auth.originalMeta.version) {
           return this._decryptOldFormat();
         } else {
           return this._decryptNewFormat();
@@ -80,7 +80,7 @@ export default class Diary {
       }
     })
       .catch((err) => {
-        Dispatcher.loadEntries('error', err);
+        Dispatcher.loadEntries('error', new Error('There was an error loading your diary entries.'));
 
         throw err;
       });
@@ -172,7 +172,7 @@ export default class Diary {
    * @return {Promise}
    */
   changePassword (oldPassword, newPassword) {
-    return Auth.changePassword(oldPassword, newPassword)
+    return this._auth.changePassword(oldPassword, newPassword)
       .then(() => {
         return this._saveDiary();
       });
@@ -260,7 +260,7 @@ export default class Diary {
   _saveEntry (entry) {
     this.logger.debug('save entry', entry.id);
 
-    return Crypto.encrypt(Auth.encryptionKey, entry)
+    return Crypto.encrypt(this._auth.encryptionKey, entry)
       .then((encryptedEntry) => {
         this._encryptedEntries[entry.id] = encryptedEntry;
 
@@ -282,7 +282,7 @@ export default class Diary {
     this.logger.debug('save to storage');
 
     return Storage.saveDiary(this._name, {
-      meta: Auth.meta, /* use the meta from Auth as it will be in the correct format */
+      meta: this._auth.meta,
       entries: this._encryptedEntries,
     })
       .then(() => {
@@ -303,21 +303,25 @@ export default class Diary {
     this._entries = {};
 
     return Crypto.decrypt(
-      Auth.encryptionKey, this._encryptedEntries
+      this._auth.encryptionKey, this._encryptedEntries
     )
       .then((entries) => {
         this._entries = entries;
         this._encryptedEntries = {};  // clear original so that we can save to new version
 
-        Dispatcher.loadEntries('progress', 'Upgrading to new format');
+        let done = 0,
+          total = _.keys(entries).length;
 
         // now let's re-save each entry, individually encrypted
         return Q.props(_.mapValues(entries, (entry) => {
-          return Crypto.encrypt(Auth.encryptionKey, {
+          return Crypto.encrypt(this._auth.encryptionKey, {
             body: entry.body,
             ts: entry.ts,
             up: entry.up,
-          });
+          })
+            .then(() => {
+              Dispatcher.loadEntries('progress', `Upgrading diary...(${++done}/${total})`);
+            });
         }));
       })
       .then((encryptedEntries) => {
@@ -343,43 +347,37 @@ export default class Diary {
 
     this._entries = {};
 
-    _.each(this._encryptedEntries, (e, id) => {
-      this._entries[id] = {
-        id: id,
-        decrypting: true,
-      };
-    });
+    let encryptedEntries = this._encryptedEntries || {};
 
-    let total = _.keys(this._encryptedEntries).length;
+    let total = _.keys(encryptedEntries).length;
     let done = 0;
 
     // decrypt one at a time!
-    let decryptionPromise = Q.resolve();
-    // let decryptionPromise = _.reduce([], (prevPromise, entryEnc, id) => {
-    //   return prevPromise.then(() => {
-    //     return Crypto.decrypt(Auth.encryptionKey, entryEnc)
-    //       .then((entry) => {
-    //         entry.id = id;
+    let decryptionPromise = _.reduce(encryptedEntries, (prevPromise, entryEnc, id) => {
+      return prevPromise.then(() => {
+        return Crypto.decrypt(this._auth.encryptionKey, entryEnc)
+          .then((entry) => {
+            entry.id = id;
 
-    //         this._entries[id] = entry;
+            this._entries[id] = entry;
 
-    //         Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
-    //       })
-    //       .catch((err) => {
-    //         this.logger.error(err);
+            Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
+          })
+          .catch((err) => {
+            this.logger.error(err);
 
-    //         Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
+            Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
 
-    //         throw err;
-    //       });
-    //   });
-    // }, Q.resolve());
+            throw err;
+          });
+      });
+    }, Q.resolve());
 
     return decryptionPromise
       .then(() => {
         Dispatcher.loadEntries('result');
 
-        // return this._rebuildSearchIndex();
+        return this._rebuildSearchIndex();
       });
   }
 
@@ -425,10 +423,15 @@ export default class Diary {
 }
 
 
-Diary.createNew = (meta) => {
-  return Storage.createNewDiary({
-    meta: meta
-  });
+Diary.createNew = (password) => {
+  let auth = new Auth();
+
+  auth.createPassword(password)
+    .then(() => {
+      return Storage.createNewDiary({
+        meta: auth.meta
+      });
+    });
 };
 
 

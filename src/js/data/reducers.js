@@ -96,6 +96,7 @@ exports.diary = function(state = InitialState.diary(), action) {
       return _.extend({}, state, {
         diaryMgr: action.payload,
         opening: AsyncState.result(action.payload),
+        loadingEntries: AsyncState.reset(),
       });
 
     case Actions.OPEN_DIARY_ERROR:

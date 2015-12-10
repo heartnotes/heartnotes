@@ -167,6 +167,14 @@ export class Dispatcher {
   }
 
 
+  loadEntry (state, data) {
+    switch (state) {
+      case 'error':
+        return this._do(Actions.LOAD_ENTRY_ERROR, data);
+    }
+  }
+
+
 
   createPassword (state, data) {
     switch (state) {

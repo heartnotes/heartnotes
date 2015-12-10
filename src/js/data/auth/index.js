@@ -12,10 +12,12 @@ import { Actions } from '../actions';
 
 
 
-export class Auth {
+export default class Auth {
 
-  constructor() {
+  constructor(meta) {
     this.logger = Logger.create(`auth`);
+    this._originalMeta = meta || {};
+    this._meta = null;
   }
 
 
@@ -47,7 +49,7 @@ export class Auth {
                 this._masterKey = masterKey;
                 this._encryptionKey = encryptionKey;
 
-                this._meta = this._buildMeta(encKeyBundle, derivedKeyData);
+                this._meta = this._originalMeta = this._buildMeta(encKeyBundle, derivedKeyData);
               });
           });
       })
@@ -65,8 +67,10 @@ export class Auth {
   /** 
    * @return {Promise}
    */
-  enterPassword(password, meta) {
+  enterPassword(password) {
     Dispatcher.enterPassword('start');
+
+    let meta = this._originalMeta;
 
     return Crypto.deriveKey(password, {
       salt: meta.salt,
@@ -86,12 +90,14 @@ export class Auth {
 
               this._encryptionKey = masterKey;
 
+              this._meta = _.extend({}, meta);
+              delete this._meta.keyTest;
+
               // upgrade to newer format
               return this._generateEncKeyBundle(masterKey, masterKey)
                 .then((encKeyBundle) => {
-                  delete meta.keyTest;
-                  meta.bundle = encKeyBundle;
-                  meta.version = Detect.version();
+                  this._meta.bundle = encKeyBundle;
+                  this._meta.version = Detect.version();
                 });
             } else {
               if (plainData.check !== 'ok') {
@@ -104,7 +110,6 @@ export class Auth {
           .then(() => {
             this._password = password;
             this._masterKey = masterKey;
-            this._meta = meta;
           })
           .then(() => {
             Dispatcher.enterPassword('result');            
@@ -140,7 +145,7 @@ export class Auth {
             this._masterKey = masterKey;
             this._password = newPassword;
             
-            this._meta = this._buildMeta(encKeyBundle, derivedKeyData);
+            this._meta = this._originalMeta = this._buildMeta(encKeyBundle, derivedKeyData);
 
             Dispatcher.changePassword('result');
           });
@@ -154,8 +159,21 @@ export class Auth {
       });
   }
 
+  /**
+   * Use this when decrypting entries
+   */
+  get originalMeta () {
+    return this._originalMeta;
+  }
 
+  /**
+   * Use this one when saving a diary.
+   */
   get meta () {
+    if (!this._meta) {
+      throw new Error('Meta not yet calculated');
+    }
+
     return this._meta;
   }
 
@@ -189,7 +207,4 @@ export class Auth {
   }
 }
 
-
-
-exports.instance = new Auth();
 

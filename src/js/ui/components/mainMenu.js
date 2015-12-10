@@ -1,10 +1,11 @@
-var React = require('react');
+import React from 'react';
 
-var IconButton = require('./iconButton');
+import IconButton from './iconButton';
+import { routing } from '../helpers/decorators';
 
 
 
-module.exports = React.createClass({
+var Component = React.createClass({
   render: function() {
     var items = [
       {
@@ -35,11 +36,13 @@ module.exports = React.createClass({
 
 
   _goRoute: function(item) {
-    var self = this;
-
-    return function() {
-      this.props.history.pushState(null, item.route);
+    return () => {
+      this.props.history.navigate(item.route);
     };
   },
 
 });
+
+
+module.exports = routing()(Component);
+

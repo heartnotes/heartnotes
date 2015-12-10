@@ -9,7 +9,6 @@ import { instance as Storage } from './storage/index';
 import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
 import { instance as Dispatcher } from './dispatcher';
-import { instance as Auth } from './auth/index';
 import Diary from './diary/index';
 
 
@@ -96,18 +95,15 @@ export function createDiary(password) {
   return function(dispatch) {
     Dispatcher.createDiary('start');
 
-    return Auth.createPassword(password)
-      .then(() => {
-        return Diary.createNew(Auth.meta)
-          .then((diary) => {
-            if (!diary) {
-              throw new Error('Sorry, there was an unexpected error.');
-            }
+    return Diary.createNew(password)
+      .then((diary) => {
+        if (!diary) {
+          throw new Error('Sorry, there was an unexpected error.');
+        }
 
-            Dispatcher.createDiary('result', diary);
+        Dispatcher.createDiary('result', diary);
 
-            Dispatcher.alertUser('Diary created!');
-          });
+        Dispatcher.alertUser('Diary created!');
       })
       .catch((err) => {
         Logger.error(err);
