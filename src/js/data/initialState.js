@@ -23,7 +23,6 @@ exports.diary = function() {
     name: null,
     derivedKeys: null,
     entries: null,
-
     creating: {},
     opening: {},
     choosing: {},

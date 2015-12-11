@@ -29,6 +29,9 @@ export default class Diary {
     this._encryptedEntries = data.entries || {};
     this._auth = new Auth(data.meta);
 
+    this._backupFilePath = _.get(data, 'backup.file', null);
+    this._lastBackupTime = _.get(data, 'backup.ts', null);
+
     this.logger = Logger.create(`diary[${name}]`);
   }
 
@@ -220,6 +223,15 @@ export default class Diary {
     return this._entries;
   }
 
+
+  get backupFilePath () {
+    return this._backupFilePath;
+  }
+
+
+  get lastBackupTime () {
+    return this._lastBackupTime;
+  }
 
 
   getEntryById (id) {
