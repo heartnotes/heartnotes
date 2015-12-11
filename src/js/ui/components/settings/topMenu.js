@@ -47,7 +47,7 @@ var Tab = React.createClass({
   },
 
   _onClick: function() {
-    this.props.onSelect(item.route);
+    this.props.onSelect(this.props.item);
   },
 });
 
@@ -65,7 +65,7 @@ var Component = React.createClass({
           key={item.id}
           item={item} 
           active={item.id === this.props.tab} 
-          onSelect={this.props._onSelect} />
+          onSelect={this._onSelect} />
       );
     });
 
