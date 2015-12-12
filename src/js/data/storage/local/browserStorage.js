@@ -1,5 +1,6 @@
 "use strict";
 
+import Q from 'bluebird';
 var StringUtils = require('../../utils/string');
 
 
@@ -40,7 +41,7 @@ export default class LocalStorage {
   loadDiary (diaryName) {
     this.logger.debug('load diary', diaryName);
 
-    return Promise.resolve(
+    return Q.resolve(
       this.get(`diary_${diaryName}`)
     );
   }
@@ -49,7 +50,7 @@ export default class LocalStorage {
   saveDiary (diaryName, data) {
     this.logger.debug('save diary', diaryName);
 
-    return Promise.resolve(
+    return Q.resolve(
       this.set(`diary_${diaryName}`, data)
     );
   }

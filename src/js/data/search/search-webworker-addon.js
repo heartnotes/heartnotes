@@ -1,4 +1,5 @@
 import lunr from 'lunr';
+import Q from 'bluebird';
 
 import Logger from '../../utils/logger';
 
@@ -22,7 +23,7 @@ export default class SearchWorker {
       this.ref('id');
     });
 
-    return Promise.resolve();
+    return Q.resolve();
   }
 
 
@@ -34,7 +35,7 @@ export default class SearchWorker {
       this.lunr.add(entry, false);
     });
 
-    return Promise.resolve();
+    return Q.resolve();
   }
 
 
@@ -45,7 +46,7 @@ export default class SearchWorker {
     this.lunr.remove(entry, false);
     this.lunr.add(entry, false);
 
-    return Promise.resolve();
+    return Q.resolve();
   }
 
 
@@ -55,14 +56,14 @@ export default class SearchWorker {
 
     this.lunr.remove(entry, false);
 
-    return Promise.resolve();
+    return Q.resolve();
   }
 
 
   search (keyword) {
     this.logger.debug('search', keyword);
 
-    return Promise.resolve(this.lunr.search(keyword));
+    return Q.resolve(this.lunr.search(keyword));
   }
 
 }

@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import Logger from '../../utils/logger';
 import BrowserStorage from './browser';
-import FileStorage from './file';
+import ElectronDiskStorage from './disk';
 
 import Detect from '../../utils/detect';
 import Diary from '../diary/index';
@@ -19,10 +19,21 @@ export class StorageManager {
   constructor() {
     this.logger = Logger.create('storage');
 
-    this.browserStorage = new BrowserStorage(this.logger);
-    this.fileStorage = new FileStorage(this.logger);
+    this._localStorage = new BrowserStorage(this.logger);
 
-    this.storage = (Detect.isElectronApp() ? this.fileStorage : this.browserStorage);
+    if (Detect.isElectronApp()) {
+      this._backupStorage = new ElectronDiskStorage(this.logger);
+    }
+  }
+
+
+  get localStorage () {
+    return this._localStorage;
+  }
+
+
+  get backupStorage () {
+    return this._backupStorage;
   }
 
 

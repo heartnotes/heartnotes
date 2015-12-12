@@ -1,6 +1,7 @@
 "use strict";
 
 var path = require('path');
+import Q from 'bluebird';
 
 let rootDomain = location.origin;
 
@@ -24,7 +25,7 @@ export default class WebWorker {
 
     self.logger.debug('run');
 
-    return new Promise(function(resolve, reject) {
+    return new Q(function(resolve, reject) {
       args.push(function(err, data) {
         if (err) {
           err = '' + err;
