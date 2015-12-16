@@ -1,65 +1,83 @@
 "use strict";
 
 import Q from 'bluebird';
-var StringUtils = require('../../utils/string');
+import StringUtils from '../../utils/string';
 
 
-const PREFIX = '';
 
-
-export default class LocalStorage {
+export default class BrowserStorage {
 
   constructor(logger) {
     this.logger = logger.create('browser');
   }
 
-  type () {
-    return 'browser';
+  createNewDiary (name, data) {
+    return Q.try(() => {
+      this.logger.debug('create new diary', data);
+
+      let id = `diary_${name}_${StringUtils.random(10)}`;
+
+      this.set(id, data);
+
+      let diaries = this.get('diaries');
+      diaries = diaries || {};
+      diaries[id] = name;
+      this.set('diaries', diaries);
+
+      this.set('last_opened', id);
+    });
   }
 
 
-  createNewDiary (data) {
-    this.logger.debug('create new diary', data);
+  loadDiary (diaryId) {
+    this.logger.debug('load diary', diaryId);
 
-    var name = StringUtils.rand(8);
+    return Q.resolve(
+      this.get(diaryId)
+    )
+      .then((data) => {
+        this.set('last_opened', diaryId);
 
-    return this.saveDiary(diaryName, data)
-      .then(() => {
-        return name;
+        return data;
       });
   }
 
 
-
-  selectDiary() {
-    // nothing to do!!
-    // TODO: perhaps we should refactor the userStore such that it's more 
-    // intimately tied in with storage, to avoid this sort of empty function
-  }
-
-
-  loadDiary (diaryName) {
-    this.logger.debug('load diary', diaryName);
+  saveDiary (diaryId, data) {
+    this.logger.debug('save diary', diaryId);
 
     return Q.resolve(
-      this.get(`diary_${diaryName}`)
+      this.set(diaryId, data)
     );
   }
 
 
-  saveDiary (diaryName, data) {
-    this.logger.debug('save diary', diaryName);
+  getLastOpened() {
+    let id = this.get('last_opened');
 
-    return Q.resolve(
-      this.set(`diary_${diaryName}`, data)
-    );
+    if (!id) {
+      return null;
+    }
+
+    let list = this.getDiaryList();
+
+    return {
+      id: id,
+      name: list[id],
+    };
+  }
+
+
+
+  getDiaryList() {
+    return this.get('diaries');
   }
 
 
 
   get (key) {
     try {
-      var value = window.localStorage.getItem(PREFIX + key);
+      var value = window.localStorage.getItem(key);
 
       this.logger.debug('get', key, 
         value ? (value.length < 512 ? value : `(${value.length} bytes)`) : value
@@ -82,7 +100,7 @@ export default class LocalStorage {
         value.length < 512 ? value : `(${value.length} bytes)`
       );
 
-      return window.localStorage.setItem(PREFIX + key, value);
+      return window.localStorage.setItem(key, value);
     } catch (err) {
       this.logger.error('set', key, err);      
     }

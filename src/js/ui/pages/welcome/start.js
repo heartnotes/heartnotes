@@ -29,9 +29,9 @@ var Component = React.createClass({
   render: function() { 
     var content = null;
 
-    if (this.props.data.diary.lastAccessedDiaryDetails) {
+    if (this.props.data.diary.lastOpenedDiary) {
       var lastDiaryName = StringUtils.formatDiaryName(
-        this.props.data.diary.lastAccessedDiaryDetails.name
+        this.props.data.diary.lastOpenedDiary.name
       );
 
       var buttonAttrs = {

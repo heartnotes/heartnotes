@@ -91,17 +91,19 @@ export function openDiary(name, password) {
 
 
 
-export function createDiary(password) {
+export function createDiary(name, password) {
   return function(dispatch) {
-    Dispatcher.createDiary('start');
+    Dispatcher.createDiary('start', {
+      name: name
+    });
 
-    return Diary.createNew(password)
-      .then((diary) => {
-        if (!diary) {
+    return Diary.createNew(name, password)
+      .then((diaryMgr) => {
+        if (!diaryMgr) {
           throw new Error('Sorry, there was an unexpected error.');
         }
 
-        Dispatcher.createDiary('result', diary);
+        Dispatcher.createDiary('result', diaryMgr);
 
         Dispatcher.alertUser('Diary created!');
       })

@@ -1,4 +1,5 @@
-var React = require('react');
+import _ from 'lodash';
+import React from 'react';
 
 var Button = require('../../components/button'),
   NewPasswordInput = require('../../components/newPasswordInput'),
@@ -17,6 +18,7 @@ var Component = React.createClass({
 
   getInitialState: function() {
     return {
+      name: null,
       password: null,
     }
   },
@@ -27,20 +29,25 @@ var Component = React.createClass({
       animActive: !!this.props.data.diary.creating.inProgress,
     };
 
-    if (!this.state.password || !this.state.password.length) {
+    if (!_.get(this.state.password, 'length') || !_.get(this.state.name, 'length')) {
       buttonAttrs.disabled = true;
     }
 
     return (
       <div className="new-diary step">
-        <p className="info1">Please remember your password.</p>
-        <p className="info2">Or else you will not be able to open your diary!</p>
-        <form onSubmit={this._savePassword}>
+        <p className="info1">Please remember your password!</p>
+        <form onSubmit={this._createNew}>
           <div className="input-fields row">
+            <input type="text"
+              ref="name"
+              onInput={this._setName} 
+              value={this.state.name} 
+              placeholder="Diary name"
+              tabIndex={1} />
             <NewPasswordInput 
               onChange={this._setPassword} 
               requiredStrength={0}
-              tabIndex={1} />
+              tabIndex={2} />
           </div>
           <div className="action row">
             <CreateDiaryProgressPopup {...this.props}>
@@ -65,18 +72,25 @@ var Component = React.createClass({
     }
   },
 
-  _setPassword: function(passwd) {
+  _setPassword: function(password) {
     this.setState({
-      password: passwd
+      password: password
     });
   },
 
-  _savePassword: function(e) {
+  _setName: function(name) {
+    this.setState({
+      name: name
+    });
+  },
+
+
+  _createNew: function(e) {
     e.preventDefault();
     
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.actions.createDiary(this.state.password);
+        this.props.actions.createDiary(this.state.name, this.state.password);
       }
     });
   },

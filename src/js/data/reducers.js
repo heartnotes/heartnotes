@@ -7,6 +7,9 @@ import * as AsyncState from './asyncState';
 import { instance as Storage } from './storage/index';
 
 
+import LocalStorage = Storage.local;
+
+
 exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
     case Actions.CHECK_FOR_UPDATES_START:
@@ -54,7 +57,8 @@ exports.diary = function(state = InitialState.diary(), action) {
   switch (action.type) {
     case Actions.INIT:
       return _.extend({}, state, {
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails()
+        availableDiaries: LocalStorage.getDiaryList(),
+        lastOpenedDiary: LocalStorage.getLastOpened(),
       });
 
     case Actions.CLOSE_DIARY:
@@ -94,6 +98,7 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.OPEN_DIARY_RESULT:
       return _.extend({}, state, {
+        lastOpenedDiary: LocalStorage.getLastOpened(),
         diaryMgr: action.payload,
         opening: AsyncState.result(action.payload),
         loadingEntries: AsyncState.reset(),
@@ -118,8 +123,9 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
+        availableDiaries: LocalStorage.getDiaryList(),
+        lastOpenedDiary: LocalStorage.getLastOpened(),
         diaryMgr: action.payload,
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
         creating: AsyncState.result(action.payload),
       });
 

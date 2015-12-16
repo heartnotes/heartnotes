@@ -27,12 +27,12 @@ export class StorageManager {
   }
 
 
-  get localStorage () {
+  get local () {
     return this._localStorage;
   }
 
 
-  get backupStorage () {
+  get backup () {
     return this._backupStorage;
   }
 
