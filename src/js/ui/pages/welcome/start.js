@@ -1,6 +1,9 @@
 var _ = require('lodash'),
   React = require('react');
 
+import SelectBox from 'react-select-box';
+
+
 var Detect = require('../../../utils/detect'),
   StringUtils = require('../../../utils/string'),
   Button = require('../../components/button'),
@@ -27,16 +30,18 @@ var Component = React.createClass({
   },
 
   render: function() { 
+    let { opening, lastOpenedDiary, availableDiaries } = this.props.data.diary;
+
     var content = null;
 
-    if (this.props.data.diary.lastOpenedDiary) {
-      var lastDiaryName = StringUtils.formatDiaryName(
-        this.props.data.diary.lastOpenedDiary.name
+    if (_.values(availableDiaries).length) {
+      var lastDiaryName = !lastOpenedDiary ? null : StringUtils.formatDiaryName(
+        lastOpenedDiary.name
       );
 
       var buttonAttrs = {
         onClick: this._openDiary,
-        animActive: !!this.props.data.diary.opening.inProgress,
+        animActive: !!opening.inProgress,
       };
 
       if (!this.state.password || !this.state.password.length) {
@@ -62,17 +67,7 @@ var Component = React.createClass({
           </form>
         </div>
       );
-    } else {
-      content = (
-        <div className="open-existing">
-          <p>
-            <label>Open existing diary</label>
-            {this._buildChooseAnotherDiaryButton()}
-          </p>
-        </div>
-      );
     }
-
 
     content = (
       <div>
@@ -93,29 +88,23 @@ var Component = React.createClass({
 
 
   _buildChooseAnotherDiaryButton: function() {
-    if (Detect.isElectronApp()) {
-      let choosingError = this.props.data.diary.choosing.error;
+    let { lastOpenedDiary, availableDiaries } = this.props.data.diary;
 
-      let popupMsg = (!!choosingError)
-        ? (<div>{'' + choosingError}</div>)
-        : null;
-
+    let options = _.map(availableDiaries, (name, id) => {
       return (
-        <span className="choose-diary">
-          <Popup 
-              msg={popupMsg} 
-              show={!!choosingError}>
-            <IconButton 
-              ref="chooseDiaryButton"
-              icon="folder-open"
-              onClick={this._chooseDiary}
-              tooltip="Choose a diary" />
-          </Popup>
-        </span>
+        <option value={id}>{name}</option>
       );
-    } else {
-      return null;
-    }
+    });
+
+    return (
+      <SelectBox 
+        label="Choose diary"
+        className='choose-diary-select-box'
+        onChange={this._chooseDiary}
+        value={_.get(lastOpenedDiary, 'id')}>
+          {options}
+      </SelectBox>
+    );
   },
 
 
@@ -143,9 +132,8 @@ var Component = React.createClass({
     this.props.showStep('newDiary');
   },
 
-
-  _chooseDiary: function() {    
-    this.props.actions.chooseDiary();
+  _chooseDiary: function(id) {    
+    this.props.actions.chooseDiary(id);
   },
 
 });

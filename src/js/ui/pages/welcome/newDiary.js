@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
 
@@ -44,6 +45,8 @@ var Component = React.createClass({
               value={this.state.name} 
               placeholder="Diary name"
               tabIndex={1} />
+          </div>
+          <div className="input-fields row">
             <NewPasswordInput 
               onChange={this._setPassword} 
               requiredStrength={0}
@@ -78,9 +81,11 @@ var Component = React.createClass({
     });
   },
 
-  _setName: function(name) {
+  _setName: function(e) {
+    let name = $(e.currentTarget).val();
+
     this.setState({
-      name: name
+      name: name,
     });
   },
 

@@ -8,7 +8,7 @@ exports.random = function(len) {
   var text = "";
 
   for( var i=0; i < len; i++ )
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
+      text += POSSIBLE.charAt(Math.floor(Math.random() * POSSIBLE.length));
 
   return text;
 };

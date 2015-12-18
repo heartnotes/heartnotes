@@ -4,8 +4,10 @@ import _ from 'lodash';
 import moment from 'moment';
 
 import Logger from '../../utils/logger';
-import BrowserStorage from './browser';
-import ElectronDiskStorage from './disk';
+import BrowserStorage from './local/browserStorage';
+import ElectronDiskStorage from './backup/electronDiskStorage';
+
+import ElectronExporter from './export/electronDiskExport';
 
 import Detect from '../../utils/detect';
 import Diary from '../diary/index';
@@ -23,6 +25,7 @@ export class StorageManager {
 
     if (Detect.isElectronApp()) {
       this._backupStorage = new ElectronDiskStorage(this.logger);
+      this._exporter = new ElectronExporter(this.logger);
     }
   }
 
@@ -35,6 +38,12 @@ export class StorageManager {
   get backup () {
     return this._backupStorage;
   }
+
+
+  get export () {
+    return this._exporter;
+  }
+
 
 
   /**

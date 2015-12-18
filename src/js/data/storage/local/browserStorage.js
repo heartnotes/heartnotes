@@ -1,7 +1,7 @@
 "use strict";
 
 import Q from 'bluebird';
-import StringUtils from '../../utils/string';
+import StringUtils from '../../../utils/string';
 
 
 
@@ -25,6 +25,8 @@ export default class BrowserStorage {
       this.set('diaries', diaries);
 
       this.set('last_opened', id);
+
+      return this.loadDiary(id);
     });
   }
 

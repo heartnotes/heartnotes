@@ -7,7 +7,7 @@ import * as AsyncState from './asyncState';
 import { instance as Storage } from './storage/index';
 
 
-import LocalStorage = Storage.local;
+var LocalStorage = Storage.local;
 
 
 exports.app = function(state = InitialState.app(), action) {
@@ -76,7 +76,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
         choosing: AsyncState.result(action.payload),
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
+        lastOpenedDiary: LocalStorage.getLastOpened(),
       });
 
     case Actions.CHOOSE_DIARY_ERROR:
