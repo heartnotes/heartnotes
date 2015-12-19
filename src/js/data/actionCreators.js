@@ -74,12 +74,9 @@ export function closeDiary() {
 
 
 
-export function openDiary(id, password) {
+export function openDiary(username, password) {
   return function(dispatch) {
-    return Diary.load(id)
-      .then((diaryMr) => {
-        return diaryMr.open(password);
-      });
+    return Diary.load(username, password);
   }
 }
 

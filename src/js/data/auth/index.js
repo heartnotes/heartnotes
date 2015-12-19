@@ -21,6 +21,12 @@ export default class Auth {
   }
 
 
+  authWithServer (username, password) {
+    
+  }
+
+
+
   /** 
    * @return {Promise}
    */

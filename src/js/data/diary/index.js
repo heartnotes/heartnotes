@@ -455,6 +455,10 @@ Diary.createNew = (name, password) => {
 
 
 Diary.open = (id, password) => {
+  let auth = new Auth();
+
+  auth.
+
   return Storage.local.openDiary(id)
     .then((data) => {
       let diaryMgr = new Diary(data);
