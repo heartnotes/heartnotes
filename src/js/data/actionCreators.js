@@ -74,11 +74,11 @@ export function closeDiary() {
 
 
 
-export function openDiary(name, password) {
+export function openDiary(id, password) {
   return function(dispatch) {
-    return Storage.loadDiary(name)
-      .then((diary) => {
-        return diary.open(password);
+    return Diary.load(id)
+      .then((diaryMr) => {
+        return diaryMr.open(password);
       });
   }
 }

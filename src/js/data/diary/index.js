@@ -23,8 +23,8 @@ import * as DateUtils from '../../utils/date';
  */
 export default class Diary {
 
-  constructor(name, data = {}) {
-    this._name = name;
+  constructor(data = {}) {
+    this._name = data.name;
     this._entries = null;
     this._encryptedEntries = data.entries || {};
     this._auth = new Auth(data.meta);
@@ -43,7 +43,7 @@ export default class Diary {
    */
   open (password) {
     Dispatcher.openDiary('start', {
-      name: name,
+      name: this._name,
       password: password,
     });
 
@@ -452,5 +452,20 @@ Diary.createNew = (name, password) => {
       return new Diary(name, data);
     });
 };
+
+
+Diary.open = (id, password) => {
+  return Storage.local.openDiary(id)
+    .then((data) => {
+      let diaryMgr = new Diary(data);
+
+      return diaryMgr.open(password)
+        .then(() => {
+          return diaryMgr;
+        });
+    });
+};
+
+
 
 

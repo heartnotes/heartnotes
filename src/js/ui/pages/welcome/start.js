@@ -113,7 +113,7 @@ var Component = React.createClass({
     e.preventDefault();
 
     this.props.actions.openDiary(
-      _.get(this.props.data.diary.lastAccessedDiaryDetails, 'name'),
+      this.props.data.diary.lastOpenedDiary.id,
       this.state.password
     )
       .then(() => {

@@ -11,8 +11,10 @@ export default class BrowserStorage {
     this.logger = logger.create('browser');
   }
 
-  createNewDiary (name, data) {
+  createNewDiary (name, data = {}) {
     return Q.try(() => {
+      data.name = name;
+
       this.logger.debug('create new diary', data);
 
       let id = `diary_${name}_${StringUtils.random(10)}`;
