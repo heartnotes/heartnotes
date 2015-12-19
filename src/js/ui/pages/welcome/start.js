@@ -48,15 +48,16 @@ var Component = React.createClass({
         buttonAttrs.disabled = true;
       }
 
+      let passwordInputClassName = lastDiaryName ? 'open' : 'close';
+
       content = (
         <div className="open-existing">
-          <p>
+          <div>
             <label>Diary:</label>
-            <span>{lastDiaryName}</span>
             {this._buildChooseAnotherDiaryButton()}
-          </p>
+          </div>
           <form onSubmit={this._openDiary}>
-            <div className="field row">
+            <div className={`field row ${passwordInputClassName}`}>
               <PasswordInput password={this.state.password} onChange={this._setPassword} />
             </div>
             <div className="action row">
@@ -92,16 +93,16 @@ var Component = React.createClass({
 
     let options = _.map(availableDiaries, (name, id) => {
       return (
-        <option value={id}>{name}</option>
+        <option key={id} value={id}>{name}</option>
       );
     });
 
     return (
       <SelectBox 
         label="Choose diary"
-        className='choose-diary-select-box'
+        className="choose-diary-selector"
         onChange={this._chooseDiary}
-        value={_.get(lastOpenedDiary, 'id')}>
+        value={_.get(lastOpenedDiary, 'id', null)}>
           {options}
       </SelectBox>
     );
