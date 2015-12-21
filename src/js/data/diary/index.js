@@ -458,13 +458,7 @@ Diary.open = (username, password) => {
   let auth = new Auth();
 
   return auth.login(username, password)
-    .then((meta) => {
-      return Storage.local.saveDiaryMeta(username, meta)
-        .then(() => {
-          return meta;
-        });
-    })
-    .then((meta) => {
+    .then(() => {
       return new Diary(auth);
     });
 };
