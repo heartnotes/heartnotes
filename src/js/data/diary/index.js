@@ -454,19 +454,18 @@ Diary.createNew = (name, password) => {
 };
 
 
-Diary.open = (id, password) => {
+Diary.open = (username, password) => {
   let auth = new Auth();
 
-  auth.
-
-  return Storage.local.openDiary(id)
-    .then((data) => {
-      let diaryMgr = new Diary(data);
-
-      return diaryMgr.open(password)
+  return auth.login(username, password)
+    .then((meta) => {
+      return Storage.local.saveDiaryMeta(username, meta)
         .then(() => {
-          return diaryMgr;
+          return meta;
         });
+    })
+    .then((meta) => {
+      return new Diary(auth);
     });
 };
 

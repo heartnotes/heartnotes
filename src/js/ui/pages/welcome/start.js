@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  $ = require('jquery'),
   React = require('react');
 
 

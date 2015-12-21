@@ -102,6 +102,24 @@ export class Dispatcher {
 
 
 
+
+  login (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.LOGIN_START, data);
+      case 'result':
+        return this._do(Actions.LOGIN_RESULT, data);
+      case 'error':
+        this._do(Actions.LOGIN_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.LOGIN_RESET);          
+        });
+    }
+  }
+
+
+
   openDiary (state, data) {
     switch (state) {
       case 'start':

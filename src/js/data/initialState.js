@@ -24,6 +24,7 @@ exports.diary = function() {
     derivedKeys: null,
     entries: null,
     creating: {},
+    loggingIn: {},
     opening: {},
     choosing: {},
     exporting: {},

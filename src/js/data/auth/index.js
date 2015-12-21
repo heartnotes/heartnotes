@@ -7,9 +7,9 @@ import Logger from '../../utils/logger';
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
+import { instance as Api } fron '../api/index';
 import Diary from '../diary/index';
 import { Actions } from '../actions';
-
 
 
 export default class Auth {
@@ -21,10 +21,13 @@ export default class Auth {
   }
 
 
-  authWithServer (username, password) {
-    
-  }
+  login (username, password) {
+    Dispatcher.login('start');
 
+    return Api.post('login', {
+      username: username,
+    })
+  }
 
 
   /** 

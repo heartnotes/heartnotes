@@ -3,20 +3,28 @@ import _ from 'lodash';
 import Q from 'bluebird';
 import qs from 'query-string';
 
-import Logger from './logger';
-import * as Detect from './detect';
+import Logger from '../../util/logger';
+import * as Detect from '../../util/detect';
 
 
-export default class Api {
-  constructor (baseUrl, options) {
+const LIVE_BASE_URL = 'https://heartnot.es/api';
+
+
+export class Api {
+  constructor (options) {
     this.logger = Logger.create(`api`);
 
-    this.baseUrl = baseUrl;
-
     this.options = _.extend({
+      baseUrl: LIVE_BASE_URL,
       globalQueryParams: {},
       timeout: 5000,
     }, options);
+
+    this._fixtures = {};
+  }
+
+  addFixture(remoteMethodName, handler) {
+    this._fixtures[remoteMethodName] = handler;
   }
 
   get (remoteMethodName, queryParams = {}, options = {}) {
@@ -46,16 +54,28 @@ export default class Api {
 
     return initPromise
       .then(() => {
-        return Q.resolve(
-          $.ajax({
-            url: `${this.baseUrl}/${remoteMethodName}` + (query.length ? `?${query}` : ''),
-            cache: false,
-            sync: false,
-            timeout: options.timeout,
-            method: httpMethod,
-            data: body,
-          })
-        );        
+        if (!Detect.inDevMode() && this._fixtures[remoteMethodName]) {
+          this.logger.warn('Fixtures enabled in non-dev mode! Needs fixing');
+        }
+
+        if (this._fixtures[remoteMethodName]) {
+          this.logger.debug('Fixtures call');
+
+          return this._fixtures[remoteMethodName].call(this, httpMethod.toLowerCase(), queryParams, body);
+        } else {
+          return Q.resolve(
+            this.logger.debug('Server call');
+
+            $.ajax({
+              url: `${this.options.baseUrl}/${remoteMethodName}` + (query.length ? `?${query}` : ''),
+              cache: false,
+              sync: false,
+              timeout: options.timeout,
+              method: httpMethod,
+              data: body,
+            })
+          );        
+        }
       })
       .then((data) => {
         this.logger.info(`Got response from ${remoteMethodName}`);
@@ -93,4 +113,9 @@ export default class Api {
 
 
 }
+
+
+
+exports.instance = new Api();
+
 

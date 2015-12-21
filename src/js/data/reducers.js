@@ -89,6 +89,26 @@ exports.diary = function(state = InitialState.diary(), action) {
         choosing: AsyncState.reset(),
       });
 
+    case Actions.LOGIN_START:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.start(),
+      });
+
+    case Actions.LOGIN_RESULT:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.result(action.payload),
+      });
+
+    case Actions.LOGIN_ERROR:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.error(action.payload),
+      });
+
+    case Actions.LOGIN_RESET:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.reset(),
+      });
+
     case Actions.OPEN_DIARY_START:
       return _.extend({}, state, {
         opening: AsyncState.start(),

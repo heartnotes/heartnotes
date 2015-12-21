@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 
 
 import Logger from './utils/logger';
+import Detet from './utils/detect';
 import Store from './data/store';
 import Layout from './ui/layout';
 import EntriesView from './ui/pages/entries';
@@ -14,6 +15,11 @@ import NewEntry from './ui/pages/newEntry';
 import AccountSettingsView from './ui/pages/settings/account';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import ExportDataView from './ui/pages/settings/exportData';
+
+// API fixtures
+//if (Detect.inDevMode()) {
+  require('./data/api/fixtures');
+//}
 
 
 

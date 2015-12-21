@@ -48,24 +48,6 @@ export function init() {
 
 
 
-export function chooseDiary(id) {
-  return function(dispatch) {
-    Dispatcher.chooseDiary('start');
-    
-    return Storage.local.loadDiary(id)
-      .then( () => {
-        Dispatcher.chooseDiary('result');
-      })
-      .catch( (err) => {
-        Logger.error(err);
-        
-        Dispatcher.chooseDiary('error', err);
-      });
-  }
-};
-
-
-
 export function closeDiary() {
   return function(dispatch) {
     Dispatcher.closeDiary();
