@@ -11,73 +11,17 @@ export default class BrowserStorage {
     this.logger = logger.create('browser');
   }
 
-  createNewDiary (name, data = {}) {
-    return Q.try(() => {
-      data.name = name;
-
-      this.logger.debug('create new diary', data);
-
-      let id = `diary_${name}_${StringUtils.random(10)}`;
-
-      this.set(id, data);
-
-      let diaries = this.get('diaries');
-      diaries = diaries || {};
-      diaries[id] = name;
-      this.set('diaries', diaries);
-
-      this.set('last_opened', id);
-
-      return this.loadDiary(id);
-    });
+  loadSettings (diaryId) {
+    return Q.resolve(this.get(`${diaryId} settings`));
   }
 
-
-  loadDiary (diaryId) {
-    this.logger.debug('load diary', diaryId);
-
-    return Q.resolve(
-      this.get(diaryId)
-    )
-      .then((data) => {
-        this.set('last_opened', diaryId);
-
-        return data;
-      });
+  loadEntries (diaryId) {
+    return Q.resolve(this.get(`${diaryId} entries`));
   }
 
-
-  saveDiary (diaryId, data) {
-    this.logger.debug('save diary', diaryId);
-
-    return Q.resolve(
-      this.set(diaryId, data)
-    );
+  saveEntries (diaryId, entries) {
+    return Q.resolve(this.set(`${diaryId} entries`, entries));
   }
-
-
-  getLastOpened() {
-    let id = this.get('last_opened');
-
-    if (!id) {
-      return null;
-    }
-
-    let list = this.getDiaryList();
-
-    return {
-      id: id,
-      name: list[id],
-    };
-  }
-
-
-
-  getDiaryList() {
-    return this.get('diaries');
-  }
-
-
 
   get (key) {
     try {

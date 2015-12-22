@@ -27,40 +27,15 @@ export default class Diary {
     this._id = id;
     this._auth = auth;
 
-    this._entries = {};
     this._encryptedEntries = {};
+    this._entries = {};
 
-    this._localSettings = Storage.local.getSettings(this._id);
-    this._encryptedEntries = Storage.local.getEntries(this._id);
-
-    this._backupFilePath = _.get(this._localSettings, 'backup.file', null);
-    this._lastBackupTime = _.get(this._localSettings, 'backup.ts', null);
+    this._backupFilePath = null;
+    this._lastBackupTime = null;
 
     this.logger = Logger.create(`diary[${this._id}]`);
   }
 
-
-  /**
-   * Open this diary using given password.
-   * 
-   * @return {Promise}
-   */
-  open (password) {
-    Dispatcher.openDiary('start', {
-      name: this._id,
-      password: password,
-    });
-
-    return this._auth.enterPassword(password)
-      .then(() => {
-        Dispatcher.openDiary('result', this);
-      })
-      .catch((err) => {
-        Dispatcher.openDiary('error', err);
-
-        throw err;
-      });
-  }
 
 
 
@@ -228,16 +203,6 @@ export default class Diary {
   }
 
 
-  get backupFilePath () {
-    return this._backupFilePath;
-  }
-
-
-  get lastBackupTime () {
-    return this._lastBackupTime;
-  }
-
-
   getEntryById (id) {
     this.logger.debug('get entry by id', id);
 
@@ -268,6 +233,26 @@ export default class Diary {
     return this.getEntryByDate(new Date());
   }
 
+
+  _loadEncryptedEntries () {
+    return Storage.local.loadEntries(this._id)
+      .then((encryptedEntries) => {
+        return encryptedEntries || {};
+      });
+  }
+
+
+  _saveEncryptedEntries () {
+    return Storage.local.saveEntries(this._id, this._encryptedEntries);
+  }
+
+
+  _loadBackupSettings () {
+    return Storage.local.loadSettings(this._id)
+      .then((settings) => {
+        return _.get(settings, 'backup', {});
+      });
+  }
 
 
   /**
@@ -320,9 +305,12 @@ export default class Diary {
 
     Dispatcher.loadEntries('progress', `Decrypting entries`);
 
-    return Crypto.decrypt(
-      this._auth.encryptionKey, this._encryptedEntries
-    )
+    return this._loadEncryptedEntries(this._id)
+      .then((encryptedEntries) => {
+        return Crypto.decrypt(
+          this._auth.encryptionKey, this._encryptedEntries
+        );
+      })
       .then((entries) => {
         this._entries = entries;
         this._encryptedEntries = {};  // clear original so that we can save to new version
@@ -349,10 +337,7 @@ export default class Diary {
 
         this._encryptedEntries = encryptedEntries;
 
-        return Storage.saveDiary(this._id, {
-          meta: this._auth.meta,
-          entries: this._encryptedEntries,
-        });
+        return this._saveEncryptedEntries();
       })
       .then(() => {
         Dispatcher.loadEntries('result');
@@ -367,33 +352,34 @@ export default class Diary {
 
     this._entries = {};
 
-    let encryptedEntries = this._encryptedEntries || {};
+    return this._loadEncryptedEntries()
+      .then((encryptedEntries) => {
+        this._encryptedEntries = encryptedEntries || {};
 
-    let total = _.keys(encryptedEntries).length;
-    let done = 0;
+        let total = _.keys(encryptedEntries).length;
+        let done = 0;
 
-    // decrypt one at a time!
-    let decryptionPromise = _.reduce(encryptedEntries, (prevPromise, entryEnc, id) => {
-      return prevPromise.then(() => {
-        return Crypto.decrypt(this._auth.encryptionKey, entryEnc)
-          .then((entry) => {
-            entry.id = id;
+        // decrypt one at a time!
+        return _.reduce(encryptedEntries, (prevPromise, entryEnc, id) => {
+          return prevPromise.then(() => {
+            return Crypto.decrypt(this._auth.encryptionKey, entryEnc)
+              .then((entry) => {
+                entry.id = id;
 
-            this._entries[id] = entry;
+                this._entries[id] = entry;
 
-            Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
-          })
-          .catch((err) => {
-            this.logger.error(err);
+                Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
+              })
+              .catch((err) => {
+                this.logger.error(err);
 
-            Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
+                Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
 
-            throw err;
+                throw err;
+              });
           });
-      });
-    }, Q.resolve());
-
-    return decryptionPromise
+        }, Q.resolve());
+      })
       .then(() => {
         Dispatcher.loadEntries('result');
 

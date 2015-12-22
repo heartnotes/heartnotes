@@ -58,7 +58,7 @@ export function closeDiary() {
 
 export function openDiary(username, password) {
   return function(dispatch) {
-    return Diary.load(username, password);
+    return Diary.open(username, password);
   }
 }
 
