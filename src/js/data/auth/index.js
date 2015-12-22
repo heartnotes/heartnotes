@@ -14,19 +14,42 @@ import { Actions } from '../actions';
 
 export default class Auth {
 
-  constructor(meta) {
+  constructor(credentials) {
     this.logger = Logger.create(`auth`);
-    this._originalMeta = meta || {};
-    this._meta = null;
+    this._originalCredentials = credentials || {};
+    this._credentials = null;
   }
 
 
+  /** 
+   * @return {Promise}
+   */
   login (username, password) {
     Dispatcher.login('start');
 
-    return Api.post('login', {
+    return Api.get('credentials', {
       username: username,
     })
+      .then((credentials) => {
+        this.logger.debug('Got credentials', credentials);
+
+        this._originalCredentials = credentials;
+
+        return this.enterPassword(password);
+      })
+      .then(() => {
+        return this._authWithServer(username);
+      })
+      .then(() => {
+        Dispatcher.login('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.login('error', err);
+
+        throw err;
+      });
   }
 
 
@@ -38,7 +61,8 @@ export default class Auth {
 
     return Crypto.deriveNewKey(password) 
       .then((derivedKeyData) => {
-        let masterKey = derivedKeyData.key1;
+        let masterKey = derivedKeyData.key1,
+          authKey = derivedKeyData.key2;
 
         // hash the password
         return Crypto.hash(password, Math.random() * 100000)
@@ -56,9 +80,11 @@ export default class Auth {
 
                 this._password = password;
                 this._masterKey = masterKey;
+                this._authKey = authKey;
                 this._encryptionKey = encryptionKey;
 
-                this._meta = this._originalMeta = this._buildMeta(encKeyBundle, derivedKeyData);
+                this._credentials = this._originalCredentials 
+                  = this._buildCredentials(encKeyBundle, derivedKeyData);
               });
           });
       })
@@ -79,46 +105,48 @@ export default class Auth {
   enterPassword(password) {
     Dispatcher.enterPassword('start');
 
-    let meta = this._originalMeta;
+    let credentials = this._originalCredentials;
 
     return Crypto.deriveKey(password, {
-      salt: meta.salt,
-      iterations: meta.iterations,
+      salt: credentials.salt,
+      iterations: credentials.iterations,
     })
       .then((derivedKeyData) => {
-        let masterKey = derivedKeyData.key1;
+        let masterKey = derivedKeyData.key1,
+          authKey = derivedKeyData.key2;
 
-        let encKeyBundle = (meta.version) ? meta.bundle : meta.keyTest;
+        let encKeyBundle = (credentials.version) ? credentials.bundle : credentials.keyTest;
 
         return Crypto.decrypt(masterKey, encKeyBundle)
           .then((plainData) => {
-            if (!meta.version) {
+            if (!credentials.version) {
               if (plainData !== masterKey) {
                 throw new Error('Password incorrect');
               }              
 
               this._encryptionKey = masterKey;
 
-              this._meta = _.pick(meta, 'salt', 'iterations');
+              this._credentials = _.pick(credentials, 'salt', 'iterations');
 
               // upgrade to newer format
               return this._generateEncKeyBundle(masterKey, masterKey)
                 .then((encKeyBundle) => {
-                  this._meta.bundle = encKeyBundle;
-                  this._meta.version = Detect.version();
+                  this._credentials.bundle = encKeyBundle;
+                  this._credentials.version = Detect.version();
                 });
             } else {
               if (plainData.check !== 'ok') {
                 throw new Error('Password incorrect');
               }
 
-              this._meta = meta;
+              this._credentials = credentials;
               this._encryptionKey = plainData.key;
             }
           })
           .then(() => {
             this._password = password;
             this._masterKey = masterKey;
+            this._authKey = authKey;
           })
           .then(() => {
             Dispatcher.enterPassword('result');            
@@ -147,14 +175,17 @@ export default class Auth {
         return Crypto.deriveNewKey(newPassword);
       })
       .then((derivedKeyData) => {
-        let masterKey = derivedKeyData.key1;
+        let masterKey = derivedKeyData.key1,
+          authKey = derivedKeyData.key2;
 
         return this._generateEncKeyBundle(masterKey, this._encryptionKey)
           .then((encKeyBundle) => {
             this._masterKey = masterKey;
+            this._authKey = authKey;
             this._password = newPassword;
             
-            this._meta = this._originalMeta = this._buildMeta(encKeyBundle, derivedKeyData);
+            this._credentials = this._originalCredentials 
+              = this._buildCredentials(encKeyBundle, derivedKeyData);
 
             Dispatcher.changePassword('result');
           });
@@ -168,26 +199,58 @@ export default class Auth {
       });
   }
 
+  
+  /**
+   * @return {Promise}
+   */
+  _authWithServer (username) {
+    Dispatcher.authWithServer('start');
+
+    this._authenticatedWithServer = false;
+
+    return Api.post('login', {
+      user: username,
+      key: this.authKey,
+    })
+      .then(() => {
+        this._authenticatedWithServer = true;
+
+        Dispatcher.authWithServer('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.authWithServer('error', err);        
+
+        throw err;
+      });
+  }
+
+
   /**
    * Use this when decrypting entries
    */
   get originalMeta () {
-    return this._originalMeta;
+    return this._originalCredentials;
   }
 
   /**
    * Use this one when saving a diary.
    */
-  get meta () {
-    if (!this._meta) {
+  get credentials () {
+    if (!this._credentials) {
       throw new Error('Meta not yet calculated');
     }
 
-    return this._meta;
+    return this._credentials;
   }
 
   get password () {
     return this._password;
+  }
+
+  get authKey () {
+    return this._authKey;
   }
 
   get masterKey () {
@@ -198,6 +261,10 @@ export default class Auth {
     return this._encryptionKey;
   }
 
+  get authenticatedWithServer () {
+    return !!this._authenticatedWithServer;
+  }
+
 
   _generateEncKeyBundle (masterKey, encryptionKey) {
     return Crypto.encrypt(masterKey, {
@@ -206,7 +273,7 @@ export default class Auth {
     });
   }
 
-  _buildMeta (encKeyBundle, derivedKeyData) {
+  _buildCredentials (encKeyBundle, derivedKeyData) {
     return {
       bundle: encKeyBundle,
       salt: derivedKeyData.salt,

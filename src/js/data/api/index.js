@@ -3,8 +3,8 @@ import _ from 'lodash';
 import Q from 'bluebird';
 import qs from 'query-string';
 
-import Logger from '../../util/logger';
-import * as Detect from '../../util/detect';
+import Logger from '../../utils/logger';
+import * as Detect from '../../utils/detect';
 
 
 const LIVE_BASE_URL = 'https://heartnot.es/api';
@@ -63,18 +63,16 @@ export class Api {
 
           return this._fixtures[remoteMethodName].call(this, httpMethod.toLowerCase(), queryParams, body);
         } else {
-          return Q.resolve(
-            this.logger.debug('Server call');
+          this.logger.debug('Server call');
 
-            $.ajax({
-              url: `${this.options.baseUrl}/${remoteMethodName}` + (query.length ? `?${query}` : ''),
-              cache: false,
-              sync: false,
-              timeout: options.timeout,
-              method: httpMethod,
-              data: body,
-            })
-          );        
+          return Q.cast($.ajax({
+            url: `${this.options.baseUrl}/${remoteMethodName}` + (query.length ? `?${query}` : ''),
+            cache: false,
+            sync: false,
+            timeout: options.timeout,
+            method: httpMethod,
+            data: body,
+          }));
         }
       })
       .then((data) => {

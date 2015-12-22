@@ -23,16 +23,20 @@ import * as DateUtils from '../../utils/date';
  */
 export default class Diary {
 
-  constructor(data = {}) {
-    this._name = data.name;
-    this._entries = null;
-    this._encryptedEntries = data.entries || {};
-    this._auth = new Auth(data.meta);
+  constructor(id, auth) {
+    this._id = id;
+    this._auth = auth;
 
-    this._backupFilePath = _.get(data, 'backup.file', null);
-    this._lastBackupTime = _.get(data, 'backup.ts', null);
+    this._entries = {};
+    this._encryptedEntries = {};
 
-    this.logger = Logger.create(`diary[${name}]`);
+    this._localSettings = Storage.local.getSettings(this._id);
+    this._encryptedEntries = Storage.local.getEntries(this._id);
+
+    this._backupFilePath = _.get(this._localSettings, 'backup.file', null);
+    this._lastBackupTime = _.get(this._localSettings, 'backup.ts', null);
+
+    this.logger = Logger.create(`diary[${this._id}]`);
   }
 
 
@@ -43,7 +47,7 @@ export default class Diary {
    */
   open (password) {
     Dispatcher.openDiary('start', {
-      name: this._name,
+      name: this._id,
       password: password,
     });
 
@@ -215,7 +219,7 @@ export default class Diary {
 
 
   get name () {
-    return this._name;
+    return this._id;
   }
 
 
@@ -293,7 +297,7 @@ export default class Diary {
 
     this.logger.debug('save to storage');
 
-    return Storage.saveDiary(this._name, {
+    return Storage.saveDiary(this._id, {
       meta: this._auth.meta,
       entries: this._encryptedEntries,
     })
@@ -345,7 +349,7 @@ export default class Diary {
 
         this._encryptedEntries = encryptedEntries;
 
-        return Storage.saveDiary(this._name, {
+        return Storage.saveDiary(this._id, {
           meta: this._auth.meta,
           entries: this._encryptedEntries,
         });
@@ -459,7 +463,7 @@ Diary.open = (username, password) => {
 
   return auth.login(username, password)
     .then(() => {
-      return new Diary(auth);
+      return new Diary(username, auth);
     });
 };
 

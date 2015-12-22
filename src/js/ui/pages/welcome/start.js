@@ -98,7 +98,6 @@ var Component = React.createClass({
   },
 
 
-
   _setPassword: function(p) {
     this.setState({
       password: p,

@@ -120,6 +120,24 @@ export class Dispatcher {
 
 
 
+
+  authWithServer (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.AUTH_WITH_SERVER_START, data);
+      case 'result':
+        return this._do(Actions.AUTH_WITH_SERVER_RESULT, data);
+      case 'error':
+        this._do(Actions.AUTH_WITH_SERVER_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.AUTH_WITH_SERVER_RESET);          
+        });
+    }
+  }
+
+
+
   openDiary (state, data) {
     switch (state) {
       case 'start':
