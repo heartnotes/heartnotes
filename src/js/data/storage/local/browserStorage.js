@@ -12,15 +12,25 @@ export default class BrowserStorage {
   }
 
   loadSettings (diaryId) {
-    return Q.resolve(this.get(`${diaryId} settings`));
+    this.set('last opened', diaryId);
+
+    return this.get(`${diaryId} settings`);
   }
 
   loadEntries (diaryId) {
-    return Q.resolve(this.get(`${diaryId} entries`));
+    this.set('last opened', diaryId);
+
+    return this.get(`${diaryId} entries`);
   }
 
   saveEntries (diaryId, entries) {
-    return Q.resolve(this.set(`${diaryId} entries`, entries));
+    this.set('last opened', diaryId);
+
+    return this.set(`${diaryId} entries`, entries);
+  }
+
+  getLastAccessed () {
+    return this.get('last accessed');
   }
 
   get (key) {

@@ -14,3 +14,7 @@ Api.addFixture('credentials', (method, query, body) => {
   return credentials[query.username];
 });
 
+
+Api.addFixture('login', (method, query, body) => {
+  return credentials[query.username];
+});

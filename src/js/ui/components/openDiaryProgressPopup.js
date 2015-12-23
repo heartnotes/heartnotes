@@ -1,31 +1,34 @@
-var React = require('react');
+import _ from 'lodash';
+import React from 'react';
 
-var ActionProgress = require('./actionProgress');
+import ActionProgress from './actionProgress';
 
 
 module.exports = React.createClass({
 
   render: function() {
-    var derivingMsg = null;
+    let msg = null;
 
     let { diary } = this.props.data;
 
-    if (diary.opening.inProgress) {
-      if (diary.derivingKeys.inProgress) {
-        derivingMsg = (
-          <div>Checking password.....</div>
-        );
-      }
+    let { loggingIn } = diary;
+
+    if (loggingIn.inProgress) {
+      msg = (
+        <div>Checking password.....</div>
+      );
     }
 
-    if (diary.opening.error) {
-      derivingMsg = (
-        <div className="error">Sorry, password incorrect!</div>
+    if (diary.loggingIn.error) {
+      let errMsg = _.get(loggingIn.error, 'message', 'Sorry, password incorrect');
+
+      msg = (
+        <div className="error">{errMsg}</div>
       );
     }
 
     return (
-      <ActionProgress msg={derivingMsg}>
+      <ActionProgress msg={msg}>
         {this.props.children}
       </ActionProgress>
     );

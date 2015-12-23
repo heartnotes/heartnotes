@@ -57,8 +57,7 @@ exports.diary = function(state = InitialState.diary(), action) {
   switch (action.type) {
     case Actions.INIT:
       return _.extend({}, state, {
-        availableDiaries: LocalStorage.getDiaryList(),
-        lastOpenedDiary: LocalStorage.getLastOpened(),
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
       });
 
     case Actions.CLOSE_DIARY:
@@ -76,7 +75,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
         choosing: AsyncState.result(action.payload),
-        lastOpenedDiary: LocalStorage.getLastOpened(),
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
       });
 
     case Actions.CHOOSE_DIARY_ERROR:
@@ -118,7 +117,7 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.OPEN_DIARY_RESULT:
       return _.extend({}, state, {
-        lastOpenedDiary: LocalStorage.getLastOpened(),
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
         diaryMgr: action.payload,
         opening: AsyncState.result(action.payload),
         loadingEntries: AsyncState.reset(),
@@ -143,8 +142,7 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
-        availableDiaries: LocalStorage.getDiaryList(),
-        lastOpenedDiary: LocalStorage.getLastOpened(),
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
         diaryMgr: action.payload,
         creating: AsyncState.result(action.payload),
       });

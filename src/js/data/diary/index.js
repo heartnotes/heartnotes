@@ -235,23 +235,19 @@ export default class Diary {
 
 
   _loadEncryptedEntries () {
-    return Storage.local.loadEntries(this._id)
-      .then((encryptedEntries) => {
-        return encryptedEntries || {};
-      });
+    return Q.resolve(Storage.local.loadEntries(this._id) || {});
   }
 
 
   _saveEncryptedEntries () {
-    return Storage.local.saveEntries(this._id, this._encryptedEntries);
+    return Q.resolve(Storage.local.saveEntries(this._id, this._encryptedEntries));
   }
 
 
   _loadBackupSettings () {
-    return Storage.local.loadSettings(this._id)
-      .then((settings) => {
-        return _.get(settings, 'backup', {});
-      });
+    let settings = Storage.local.loadSettings(this._id);
+
+    return Q.resolve( _.get(settings, 'backup', {}));
   }
 
 
@@ -429,7 +425,7 @@ export default class Diary {
 }
 
 
-Diary.createNew = (name, password) => {
+Diary.createNew = function(name, password) {
   let auth = new Auth();
 
   return auth.createPassword(password)
@@ -444,7 +440,7 @@ Diary.createNew = (name, password) => {
 };
 
 
-Diary.open = (username, password) => {
+Diary.open = function(username, password) {
   let auth = new Auth();
 
   return auth.login(username, password)

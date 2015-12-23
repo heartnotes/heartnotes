@@ -43,7 +43,7 @@ var Component = React.createClass({
               ref="name"
               onInput={this._setName} 
               value={this.state.name} 
-              placeholder="Diary name"
+              placeholder="Email address"
               tabIndex={1} />
           </div>
           <div className="input-fields row">

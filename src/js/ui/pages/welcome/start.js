@@ -28,20 +28,19 @@ var Component = React.createClass({
   },
 
   render: function() { 
-    let { opening } = this.props.data.diary;
+    let { loggingIn } = this.props.data.diary;
 
     let username = this._getUsername();
 
     let buttonAttrs = {
       onClick: this._openDiary,
-      animActive: !!opening.inProgress,
+      animActive: !!loggingIn.inProgress,
       disabled: !_.get(this.state.password, 'length') || !_.get(this.state.username, 'length'),
     };
 
     return (
       <div className="start step">
         <div className="open-existing">
-          <div><label>Open diary</label></div>
           <form onSubmit={this._openDiary}>
             <div className="field row">
               <input type="text"
@@ -49,14 +48,14 @@ var Component = React.createClass({
                 onInput={this._setUsername} 
                 value={username} 
                 placeholder="Email address"
-                tabIndex={1} />
+                tabIndex='1' />
             </div>
             <div className="field row">
               <PasswordInput 
                 placeholder="Password"
                 password={this.state.password} 
                 onChange={this._setPassword} 
-                tabIndex={2} />
+                tabIndex={1} />
             </div>
             <div className="action row">
               <OpenDiaryProgressPopup {...this.props}>
@@ -76,7 +75,7 @@ var Component = React.createClass({
   _getUsername: function() {
     let { lastOpenedDiary } = this.props.data.diary;
 
-    return this.state.username || _.get(lastOpenedDiary, 'username', '');
+    return this.state.username || lastOpenedDiary || '';
   },
 
 

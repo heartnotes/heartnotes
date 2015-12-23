@@ -7,11 +7,14 @@ import Logger from '../../utils/logger';
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
-import { instance as Api } fron '../api/index';
+import { instance as Api } from '../api/index';
 import Diary from '../diary/index';
 import { Actions } from '../actions';
 
 
+/**
+ * Authentication manager.
+ */
 export default class Auth {
 
   constructor(credentials) {
@@ -32,6 +35,10 @@ export default class Auth {
     })
       .then((credentials) => {
         this.logger.debug('Got credentials', credentials);
+
+        if (!_.get(credentials, 'salt')) {
+          throw new Error('User not found');
+        }
 
         this._originalCredentials = credentials;
 
@@ -118,6 +125,9 @@ export default class Auth {
         let encKeyBundle = (credentials.version) ? credentials.bundle : credentials.keyTest;
 
         return Crypto.decrypt(masterKey, encKeyBundle)
+          .catch((err) => {
+            throw new Error('Password incorrect');
+          })
           .then((plainData) => {
             if (!credentials.version) {
               if (plainData !== masterKey) {
