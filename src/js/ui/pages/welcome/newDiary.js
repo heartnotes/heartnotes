@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 
 var Button = require('../../components/button'),
+  EmailInput = require('../../components/emailInput'),
   NewPasswordInput = require('../../components/newPasswordInput'),
   CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup'),
   UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
@@ -19,7 +20,7 @@ var Component = React.createClass({
 
   getInitialState: function() {
     return {
-      name: null,
+      id: null,
       password: null,
     }
   },
@@ -30,7 +31,7 @@ var Component = React.createClass({
       animActive: !!this.props.data.diary.creating.inProgress,
     };
 
-    if (!_.get(this.state.password, 'length') || !_.get(this.state.name, 'length')) {
+    if (!_.get(this.state.password, 'length') || !_.get(this.state.id, 'length')) {
       buttonAttrs.disabled = true;
     }
 
@@ -39,11 +40,8 @@ var Component = React.createClass({
         <p className="info1">Please remember your password!</p>
         <form onSubmit={this._createNew}>
           <div className="input-fields row">
-            <input type="text"
-              ref="name"
-              onInput={this._setName} 
-              value={this.state.name} 
-              placeholder="Email address"
+            <EmailInput 
+              onChange={this._setId} 
               tabIndex={1} />
           </div>
           <div className="input-fields row">
@@ -81,11 +79,9 @@ var Component = React.createClass({
     });
   },
 
-  _setName: function(e) {
-    let name = $(e.currentTarget).val();
-
+  _setId: function(id) {
     this.setState({
-      name: name,
+      id: id,
     });
   },
 
@@ -95,7 +91,7 @@ var Component = React.createClass({
     
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.actions.createDiary(this.state.name, this.state.password);
+        this.props.actions.createDiary(this.state.id, this.state.password);
       }
     });
   },

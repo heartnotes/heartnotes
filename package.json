@@ -62,6 +62,7 @@
     "rupture": "~0.6.1",
     "shelljs": "~0.5.1",
     "sjcl": "~1.0.3",
+    "validator": "^4.4.0",
     "vinyl-source-stream2": "~0.1.1",
     "watchify": "~3.2.1",
     "yargs": "~3.9.1"

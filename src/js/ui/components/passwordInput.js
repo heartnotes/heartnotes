@@ -17,7 +17,7 @@ module.exports = React.createClass({
 
   getDefaultProps: function() {
     return {
-      placeholder: 'Enter password',
+      placeholder: 'Password',
       showToggleButton: false,
       password: '',
       onChange : null,
