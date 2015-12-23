@@ -94,7 +94,7 @@ export default class Decrypter {
           });
       });
     }, Q.resolve())
-      .then((entries) => {
+      .then(() => {
         return {
           encryptedEntries: encryptedEntries,
           entries: entries,

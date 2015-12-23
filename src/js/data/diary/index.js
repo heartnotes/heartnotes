@@ -52,6 +52,9 @@ export default class Diary {
         return this.decryptor.decrypt(this._encryptedEntries);
       })
       .then((result) => {
+        this.logger.debug('loaded entries');
+        this.logger.debug(result);
+
         this._encryptedEntries = result.encryptedEntries;
         this._entries = result.entries;
 
