@@ -14,7 +14,7 @@ import { instance as Dispatcher } from '../dispatcher';
 import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/ExportedEntries';
 import * as DateUtils from '../../utils/date';
-
+import Decryptor from './decryptor';
 
 
 
@@ -34,8 +34,9 @@ export default class Diary {
     this._lastBackupTime = null;
 
     this.logger = Logger.create(`diary[${this._id}]`);
-  }
 
+    this.decryptor = new Decryptor(this.logger, auth);
+  }
 
 
 
@@ -48,34 +49,18 @@ export default class Diary {
       .then((encryptedEntries) => {
         this._encryptedEntries = encryptedEntries || {};
 
-        let total = _.keys(encryptedEntries).length;
-        let done = 0;
+        return this.decryptor.decrypt(this._encryptedEntries);
+      })
+      .then((result) => {
+        this._encryptedEntries = result.encryptedEntries;
+        this._entries = result.entries;
 
-        // decrypt one at a time!
-        return _.reduce(encryptedEntries, (prevPromise, entryEnc, id) => {
-          return prevPromise.then(() => {
-            return Crypto.decrypt(this._auth.encryptionKey, entryEnc)
-              .then((entry) => {
-                entry.id = id;
-
-                this._entries[id] = entry;
-
-                Dispatcher.loadEntries('progress', `Decrypting...(${++done}/${total})`);
-              })
-              .catch((err) => {
-                this.logger.error(err);
-
-                Dispatcher.loadEntry('error', `Error decrypting entry ${id}`);
-
-                throw err;
-              });
-          });
-        }, Q.resolve());
+        return this._saveEncryptedEntries();
       })
       .then(() => {
         Dispatcher.loadEntries('result');
 
-        return this._rebuildSearchIndex();
+        this._rebuildSearchIndex();
       })
       .catch((err) => {
         Dispatcher.loadEntries('error', new Error('There was an error loading your diary entries.'));
@@ -284,56 +269,6 @@ export default class Diary {
       })
       .then(() => {
         return entry;
-      });
-  }
-
-
-
-  _decryptOldFormat () {
-    this.logger.debug("decrypt OLD format");
-
-    this._entries = {};
-
-    Dispatcher.loadEntries('progress', `Decrypting entries`);
-
-    return this._loadEncryptedEntries(this._id)
-      .then((encryptedEntries) => {
-        return Crypto.decrypt(
-          this._auth.encryptionKey, this._encryptedEntries
-        );
-      })
-      .then((entries) => {
-        this._entries = entries;
-        this._encryptedEntries = {};  // clear original so that we can save to new version
-
-        let done = 0,
-          total = _.keys(entries).length;
-
-        // now let's re-save each entry, individually encrypted
-        return Q.props(_.mapValues(entries, (entry) => {
-          return Crypto.encrypt(this._auth.encryptionKey, {
-            body: entry.body,
-            ts: entry.ts,
-            up: entry.up,
-          })
-            .then((encryptedEntry) => {
-              Dispatcher.loadEntries('progress', `Upgrading diary...(${++done}/${total})`);
-
-              return encryptedEntry;
-            });
-        }));
-      })
-      .then((encryptedEntries) => {
-        Dispatcher.loadEntries('progress', 'Saving new format');
-
-        this._encryptedEntries = encryptedEntries;
-
-        return this._saveEncryptedEntries();
-      })
-      .then(() => {
-        Dispatcher.loadEntries('result');
-
-        return this._rebuildSearchIndex();
       });
   }
 

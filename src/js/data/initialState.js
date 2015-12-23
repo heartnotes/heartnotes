@@ -28,6 +28,7 @@ exports.diary = function() {
     opening: {},
     choosing: {},
     exporting: {},
+    decryptEntries: {},
     derivingKeys: {},
     changingPassword: {},
     loadingEntries: {},

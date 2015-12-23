@@ -188,6 +188,25 @@ export class Dispatcher {
   }
 
 
+
+  decryptEntries (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.DECRYPT_ENTRIES_START, data);
+      case 'progress':
+        return this._do(Actions.DECRYPT_ENTRIES_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.DECRYPT_ENTRIES_RESULT, data);
+      case 'error':
+        return this._do(Actions.DECRYPT_ENTRIES_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.DECRYPT_ENTRIES_RESET);          
+        });
+    }
+  }
+
+
   loadEntry (state, data) {
     switch (state) {
       case 'error':

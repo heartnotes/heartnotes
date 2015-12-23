@@ -189,6 +189,32 @@ exports.diary = function(state = InitialState.diary(), action) {
       });
 
 
+    case Actions.DECRYPT_ENTRIES_START:
+      return _.extend({}, state, {
+        decryptEntries: AsyncState.start(),
+      });
+
+    case Actions.DECRYPT_ENTRIES_PROGRESS:
+      return _.extend({}, state, {
+        decryptEntries: AsyncState.progress(action.payload),
+      });
+
+    case Actions.DECRYPT_ENTRIES_RESULT:
+      return _.extend({}, state, {
+        decryptEntries: AsyncState.result(action.payload),
+      });
+
+    case Actions.DECRYPT_ENTRIES_ERROR:
+      return _.extend({}, state, {
+        decryptEntries: AsyncState.error(action.payload),
+      });
+
+    case Actions.DECRYPT_ENTRIES_RESET:
+      return _.extend({}, state, {
+        decryptEntries: AsyncState.reset(),
+      });
+
+
     case Actions.UPDATE_ENTRY_START:
       return _.extend({}, state, {
         updatingEntry: AsyncState.start(),

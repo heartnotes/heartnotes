@@ -240,7 +240,7 @@ export default class Auth {
   /**
    * Use this when decrypting entries
    */
-  get originalMeta () {
+  get originalCredentials () {
     return this._originalCredentials;
   }
 
