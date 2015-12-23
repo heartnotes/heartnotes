@@ -58,7 +58,19 @@ export function closeDiary() {
 
 export function openDiary(username, password) {
   return function(dispatch) {
-    return Diary.open(username, password);
+    Dispatcher.openDiary('start');
+
+    return Diary.open(username, password)
+      .then((diaryMgr) =>  {
+        Dispatcher.openDiary('result', diaryMgr);
+      })
+      .catch((err) => {
+        Logger.error(err);
+
+        Dispatcher.openDiary('error', err);
+
+        throw err;
+      });
   }
 }
 
