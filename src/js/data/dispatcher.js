@@ -52,21 +52,6 @@ export class Dispatcher {
   }
 
 
-  saveDiary (state, data) {
-    switch (state) {
-      case 'start':
-        return this._do(Actions.SAVE_DIARY_START, data);
-      case 'result':
-        return this._do(Actions.SAVE_DIARY_RESULT, data);
-      case 'error':
-        this._do(Actions.SAVE_DIARY_ERROR, data);
-
-        return Q.delay(2000).then(() => {
-          this._do(Actions.SAVE_DIARY_RESET);          
-        });
-    }
-  }
-
 
   chooseDiary (state, data) {
     switch (state) {

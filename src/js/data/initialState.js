@@ -33,7 +33,6 @@ exports.diary = function() {
     loadingEntries: {},
     updatingEntry: {},
     deletingEntry: {},
-    savingEntries: {},
     searchIndexing: {},
     searching: {},
     saveEntriesRequested: 0,

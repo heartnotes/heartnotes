@@ -188,31 +188,6 @@ exports.diary = function(state = InitialState.diary(), action) {
         loadingEntries: AsyncState.reset(),
       });
 
-    case Actions.SAVE_ENTRIES_REQUESTED:
-      return _.extend({}, state, {
-        saveEntriesRequested: state.saveEntriesRequested + 1,
-      });
-
-    case Actions.SAVE_ENTRIES_START:
-      return _.extend({}, state, {
-        savingEntries: AsyncState.start(),
-      });
-
-    case Actions.SAVE_ENTRIES_RESULT:
-      return _.extend({}, state, {
-        savingEntries: AsyncState.result(),
-        saveEntriesRequested: state.saveEntriesRequested - 1,
-      });
-
-    case Actions.SAVE_ENTRIES_ERROR:
-      return _.extend({}, state, {
-        savingEntries: AsyncState.error(action.payload),
-      });
-
-    case Actions.SAVE_ENTRIES_RESET:
-      return _.extend({}, state, {
-        savingEntries: AsyncState.reset(),
-      });
 
     case Actions.UPDATE_ENTRY_START:
       return _.extend({}, state, {
