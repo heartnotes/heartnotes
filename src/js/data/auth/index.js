@@ -19,6 +19,7 @@ export default class Auth {
 
   constructor(meta) {
     this.logger = Logger.create(`auth`);
+    this._id = null;
     this._originalMeta = meta || {};
     this._meta = null;
   }
@@ -42,9 +43,11 @@ export default class Auth {
 
         this._originalMeta = meta;
 
-        return this.enterPassword(password);
+        return this._enterPassword(password);
       })
       .then(() => {
+        this._id = username;
+
         return this._authWithServer(username);
       })
       .then(() => {
@@ -67,15 +70,17 @@ export default class Auth {
   signUp (username, password) {
     Dispatcher.signUp('start');
 
-    return this.createPassword(password)
+    return this._createPassword(password)
       .then(() => {
+        this._id = username;
+
         return Api.post('signUp', {}, {
           username: username,
           key: this.authKey,
           meta: this.meta,
         });
       })
-      .then(() => {
+      .then(() => {        
         Dispatcher.signUp('result');
       })
       .catch((err) => {
@@ -88,11 +93,99 @@ export default class Auth {
   }
 
 
+  /**
+   * @return {Promise}
+   */
+  changePassword (oldPassword, newPassword) {
+    Dispatcher.changePassword('start');
+
+    return Q.resolve()
+      .then(() => {
+        if (this._password !== oldPassword) {
+          throw new Error('Your current password is wrong');
+        }
+      })
+      .then(() => {
+        return Crypto.deriveNewKey(newPassword);
+      })
+      .then((derivedKeyData) => {
+        let masterKey = derivedKeyData.key1,
+          authKey = derivedKeyData.key2;
+
+        return this._generateEncKeyBundle(masterKey, this._encryptionKey)
+          .then((encKeyBundle) => {
+            let newMeta = this._buildMeta(encKeyBundle, derivedKeyData);
+
+            return Api.post('updatePassword', {}, {
+              username: this._id,
+              key: authKey,
+              meta: newMeta,
+            })
+              .then(() => {
+                this._masterKey = masterKey;
+                this._authKey = authKey;
+                this._password = newPassword;
+                
+                this._meta = this._originalMeta = newMeta;
+
+                Dispatcher.changePassword('result');
+              });
+          });
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.changePassword('error', err);
+
+        throw err;
+      });
+  }
+
+
+
+  /**
+   * Use this when decrypting entries
+   */
+  get originalMeta () {
+    return this._originalMeta;
+  }
+
+  /**
+   * Use this one when saving a diary.
+   */
+  get meta () {
+    if (!this._meta) {
+      throw new Error('Meta not yet calculated');
+    }
+
+    return this._meta;
+  }
+
+  get password () {
+    return this._password;
+  }
+
+  get authKey () {
+    return this._authKey;
+  }
+
+  get masterKey () {
+    return this._masterKey;
+  }
+
+  get encryptionKey () {
+    return this._encryptionKey;
+  }
+
+  get authenticatedWithServer () {
+    return !!this._authenticatedWithServer;
+  }
+
 
   /** 
    * @return {Promise}
    */
-  createPassword(password) {
+  _createPassword(password) {
     Dispatcher.createPassword('start');
 
     return Crypto.deriveNewKey(password) 
@@ -138,7 +231,7 @@ export default class Auth {
   /** 
    * @return {Promise}
    */
-  enterPassword(password) {
+  _enterPassword(password) {
     Dispatcher.enterPassword('start');
 
     let meta = this._originalMeta;
@@ -198,84 +291,6 @@ export default class Auth {
             throw err;
           });
       });
-  }
-
-
-  changePassword (oldPassword, newPassword) {
-    Dispatcher.changePassword('start');
-
-    return Q.resolve()
-      .then(() => {
-        if (this._password !== oldPassword) {
-          throw new Error('Your current password is wrong');
-        }
-      })
-      .then(() => {
-        return Crypto.deriveNewKey(newPassword);
-      })
-      .then((derivedKeyData) => {
-        let masterKey = derivedKeyData.key1,
-          authKey = derivedKeyData.key2;
-
-        return this._generateEncKeyBundle(masterKey, this._encryptionKey)
-          .then((encKeyBundle) => {
-            this._masterKey = masterKey;
-            this._authKey = authKey;
-            this._password = newPassword;
-            
-            this._meta = this._originalMeta 
-              = this._buildMeta(encKeyBundle, derivedKeyData);
-
-            Dispatcher.changePassword('result');
-          });
-      })
-      .catch((err) => {
-        this.logger.error(err);
-
-        Dispatcher.changePassword('error', err);
-
-        throw err;
-      });
-  }
-
-
-
-  /**
-   * Use this when decrypting entries
-   */
-  get originalMeta () {
-    return this._originalMeta;
-  }
-
-  /**
-   * Use this one when saving a diary.
-   */
-  get meta () {
-    if (!this._meta) {
-      throw new Error('Meta not yet calculated');
-    }
-
-    return this._meta;
-  }
-
-  get password () {
-    return this._password;
-  }
-
-  get authKey () {
-    return this._authKey;
-  }
-
-  get masterKey () {
-    return this._masterKey;
-  }
-
-  get encryptionKey () {
-    return this._encryptionKey;
-  }
-
-  get authenticatedWithServer () {
-    return !!this._authenticatedWithServer;
   }
 
   

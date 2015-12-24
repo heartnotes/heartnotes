@@ -20,11 +20,22 @@ export class Api {
       timeout: 5000,
     }, options);
 
-    this._fixtures = {};
+    this._fixtures = {
+      get: {},
+      post: {},
+    };
   }
 
-  addFixture(remoteMethodName, handler) {
-    this._fixtures[remoteMethodName] = handler;
+  addFixture(httpMethod, remoteMethodName, handler) {
+    this._fixtures[httpMethod][remoteMethodName] = handler;
+  }
+
+  addFixtureGet(remoteMethodName, handler) {
+    this.addFixture('get', remoteMethodName, handler);
+  }
+
+  addFixturePost(remoteMethodName, handler) {
+    this.addFixture('post', remoteMethodName, handler);
   }
 
   get (remoteMethodName, queryParams = {}, options = {}) {
@@ -58,11 +69,13 @@ export class Api {
           this.logger.warn('Fixtures enabled in non-dev mode! Needs fixing');
         }
 
-        if (this._fixtures[remoteMethodName]) {
+        let httpMethodLowercase = httpMethod.toLowerCase();
+
+        if (this._fixtures[httpMethodLowercase][remoteMethodName]) {
           this.logger.debug('Fixtures call');
 
           return Q.try(() => {
-            return this._fixtures[remoteMethodName].call(this, httpMethod.toLowerCase(), queryParams, body);
+            return this._fixtures[httpMethodLowercase][remoteMethodName].call(this, queryParams, body);
           });
         } else {
           this.logger.debug('Server call');

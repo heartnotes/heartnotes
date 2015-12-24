@@ -161,10 +161,7 @@ export default class Diary {
    * @return {Promise}
    */
   changePassword (oldPassword, newPassword) {
-    return this._auth.changePassword(oldPassword, newPassword)
-      .then(() => {
-        return this._saveDiary();
-      });
+    return this._auth.changePassword(oldPassword, newPassword);
   }
 
 

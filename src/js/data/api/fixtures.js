@@ -29,24 +29,31 @@ var _throw = function(msg) {
 }
 
 
-Api.addFixture('meta', (method, query, body) => {
+Api.addFixtureGet('meta', (query, body) => {
   return _.get(users[query.username], 'meta');
 });
 
 
-Api.addFixture('login', (method, query, body) => {
+Api.addFixturePost('login', (query, body) => {
   if (_.get(users[body.username], 'key') !== body.key) {
     _throw('Password incorrect');
   }
 });
 
 
-Api.addFixture('signUp', (method, query, body) => {
+Api.addFixturePost('signUp', (query, body) => {
   users[body.username] = {
     key: body.key,
     meta: body.meta,
   };
 });
 
+
+Api.addFixturePost('updatePassword', (query, body) => {
+  users[body.username] = {
+    key: body.key,
+    meta: body.meta,
+  };
+});
 
 
