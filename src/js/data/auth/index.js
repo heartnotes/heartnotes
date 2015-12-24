@@ -17,10 +17,10 @@ import { Actions } from '../actions';
  */
 export default class Auth {
 
-  constructor(credentials) {
+  constructor(meta) {
     this.logger = Logger.create(`auth`);
-    this._originalCredentials = credentials || {};
-    this._credentials = null;
+    this._originalMeta = meta || {};
+    this._meta = null;
   }
 
 
@@ -30,17 +30,17 @@ export default class Auth {
   login (username, password) {
     Dispatcher.login('start');
 
-    return Api.get('credentials', {
+    return Api.get('meta', {
       username: username,
     })
-      .then((credentials) => {
-        this.logger.debug('Got credentials', credentials);
+      .then((meta) => {
+        this.logger.debug('Got meta', meta);
 
-        if (!_.get(credentials, 'salt')) {
+        if (!_.get(meta, 'salt')) {
           throw new Error('User not found');
         }
 
-        this._originalCredentials = credentials;
+        this._originalMeta = meta;
 
         return this.enterPassword(password);
       })
@@ -58,6 +58,35 @@ export default class Auth {
         throw err;
       });
   }
+
+
+
+  /** 
+   * @return {Promise}
+   */
+  signUp (username, password) {
+    Dispatcher.signUp('start');
+
+    return this.createPassword(password)
+      .then(() => {
+        return Api.post('signUp', {}, {
+          username: username,
+          key: this.authKey,
+          meta: this.meta,
+        });
+      })
+      .then(() => {
+        Dispatcher.signUp('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.signUp('error', err);
+
+        throw err;
+      });
+  }
+
 
 
   /** 
@@ -90,8 +119,8 @@ export default class Auth {
                 this._authKey = authKey;
                 this._encryptionKey = encryptionKey;
 
-                this._credentials = this._originalCredentials 
-                  = this._buildCredentials(encKeyBundle, derivedKeyData);
+                this._meta = this._originalMeta 
+                  = this._buildMeta(encKeyBundle, derivedKeyData);
               });
           });
       })
@@ -112,44 +141,44 @@ export default class Auth {
   enterPassword(password) {
     Dispatcher.enterPassword('start');
 
-    let credentials = this._originalCredentials;
+    let meta = this._originalMeta;
 
     return Crypto.deriveKey(password, {
-      salt: credentials.salt,
-      iterations: credentials.iterations,
+      salt: meta.salt,
+      iterations: meta.iterations,
     })
       .then((derivedKeyData) => {
         let masterKey = derivedKeyData.key1,
           authKey = derivedKeyData.key2;
 
-        let encKeyBundle = (credentials.version) ? credentials.bundle : credentials.keyTest;
+        let encKeyBundle = (meta.version) ? meta.bundle : meta.keyTest;
 
         return Crypto.decrypt(masterKey, encKeyBundle)
           .catch((err) => {
             throw new Error('Password incorrect');
           })
           .then((plainData) => {
-            if (!credentials.version) {
+            if (!meta.version) {
               if (plainData !== masterKey) {
                 throw new Error('Password incorrect');
               }              
 
               this._encryptionKey = masterKey;
 
-              this._credentials = _.pick(credentials, 'salt', 'iterations');
+              this._meta = _.pick(meta, 'salt', 'iterations');
 
               // upgrade to newer format
               return this._generateEncKeyBundle(masterKey, masterKey)
                 .then((encKeyBundle) => {
-                  this._credentials.bundle = encKeyBundle;
-                  this._credentials.version = Detect.version();
+                  this._meta.bundle = encKeyBundle;
+                  this._meta.version = Detect.version();
                 });
             } else {
               if (plainData.check !== 'ok') {
                 throw new Error('Password incorrect');
               }
 
-              this._credentials = credentials;
+              this._meta = meta;
               this._encryptionKey = plainData.key;
             }
           })
@@ -194,8 +223,8 @@ export default class Auth {
             this._authKey = authKey;
             this._password = newPassword;
             
-            this._credentials = this._originalCredentials 
-              = this._buildCredentials(encKeyBundle, derivedKeyData);
+            this._meta = this._originalMeta 
+              = this._buildMeta(encKeyBundle, derivedKeyData);
 
             Dispatcher.changePassword('result');
           });
@@ -218,7 +247,7 @@ export default class Auth {
 
     this._authenticatedWithServer = false;
 
-    return Api.post('login', {
+    return Api.post('login', {}, {
       user: username,
       key: this.authKey,
     })
@@ -240,19 +269,19 @@ export default class Auth {
   /**
    * Use this when decrypting entries
    */
-  get originalCredentials () {
-    return this._originalCredentials;
+  get originalMeta () {
+    return this._originalMeta;
   }
 
   /**
    * Use this one when saving a diary.
    */
-  get credentials () {
-    if (!this._credentials) {
+  get meta () {
+    if (!this._meta) {
       throw new Error('Meta not yet calculated');
     }
 
-    return this._credentials;
+    return this._meta;
   }
 
   get password () {
@@ -283,7 +312,7 @@ export default class Auth {
     });
   }
 
-  _buildCredentials (encKeyBundle, derivedKeyData) {
+  _buildMeta (encKeyBundle, derivedKeyData) {
     return {
       bundle: encKeyBundle,
       salt: derivedKeyData.salt,

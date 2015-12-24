@@ -59,7 +59,7 @@ var Component = React.createClass({
             </div>
             <div className="action row">
               <OpenDiaryProgressPopup {...this.props}>
-                <Button {...buttonAttrs}>Open</Button>
+                <Button {...buttonAttrs}>Login</Button>
               </OpenDiaryProgressPopup>
             </div>
           </form>

@@ -13,7 +13,7 @@ export default class Decrypter {
 
 
   decrypt (encryptedEntries) {
-    if (!this._auth.credentials.version) {
+    if (!this._auth.meta.version) {
       return this._decryptOldFormat(encryptedEntries);
     } else {
       return this._decryptNewFormat(encryptedEntries);

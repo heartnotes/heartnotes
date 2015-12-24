@@ -37,7 +37,6 @@ var Component = React.createClass({
 
     return (
       <div className="new-diary step">
-        <p className="info1">Please remember your password!</p>
         <form onSubmit={this._createNew}>
           <div className="input-fields row">
             <EmailInput 
@@ -52,7 +51,7 @@ var Component = React.createClass({
           </div>
           <div className="action row">
             <CreateDiaryProgressPopup {...this.props}>
-              <Button {...buttonAttrs}>Next</Button>
+              <Button {...buttonAttrs}>Create diary</Button>
             </CreateDiaryProgressPopup>
           </div>
         </form>

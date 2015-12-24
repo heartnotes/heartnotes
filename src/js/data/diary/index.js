@@ -318,27 +318,22 @@ export default class Diary {
 }
 
 
-Diary.createNew = function(name, password) {
+Diary.createNew = function(id, password) {
   let auth = new Auth();
 
-  return auth.createPassword(password)
+  return auth.signUp(id, password)
     .then(() => {
-      return Storage.local.createNewDiary(name, {
-        meta: auth.meta
-      });
-    })
-    .then((data) => {
-      return new Diary(name, data);
+      return new Diary(id, auth);
     });
 };
 
 
-Diary.open = function(username, password) {
+Diary.open = function(id, password) {
   let auth = new Auth();
 
-  return auth.login(username, password)
+  return auth.login(id, password)
     .then(() => {
-      return new Diary(username, auth);
+      return new Diary(id, auth);
     });
 };
 

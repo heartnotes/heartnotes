@@ -9,8 +9,8 @@ import ChangePassword from '../../components/settings/changePassword';
 module.exports = React.createClass({
   render: function() { 
     return (
-      <Layout tab="account" {...this.props}>
-        Account info coming soon...
+      <Layout tab="changePassword" {...this.props}>
+        <ChangePassword {...this.props} />
       </Layout>
     );
   },

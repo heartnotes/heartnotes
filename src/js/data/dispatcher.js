@@ -19,7 +19,6 @@ export class Dispatcher {
   }
 
 
-
   initApp () {
     this._do(Actions.INIT);
   }
@@ -104,6 +103,20 @@ export class Dispatcher {
   }
 
 
+  signUp (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.SIGN_UP_START, data);
+      case 'result':
+        return this._do(Actions.SIGN_UP_RESULT, data);
+      case 'error':
+        this._do(Actions.SIGN_UP_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.SIGN_UP_RESET);          
+        });
+    }
+  }
 
 
   authWithServer (state, data) {

@@ -76,13 +76,13 @@ export function openDiary(username, password) {
 
 
 
-export function createDiary(name, password) {
+export function createDiary(id, password) {
   return function(dispatch) {
     Dispatcher.createDiary('start', {
-      name: name
+      id: id
     });
 
-    return Diary.createNew(name, password)
+    return Diary.createNew(id, password)
       .then((diaryMgr) => {
         if (!diaryMgr) {
           throw new Error('Sorry, there was an unexpected error.');

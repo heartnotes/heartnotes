@@ -61,7 +61,9 @@ export class Api {
         if (this._fixtures[remoteMethodName]) {
           this.logger.debug('Fixtures call');
 
-          return this._fixtures[remoteMethodName].call(this, httpMethod.toLowerCase(), queryParams, body);
+          return Q.try(() => {
+            return this._fixtures[remoteMethodName].call(this, httpMethod.toLowerCase(), queryParams, body);
+          });
         } else {
           this.logger.debug('Server call');
 
