@@ -38,7 +38,7 @@ export class Api {
   _request (httpMethod, remoteMethodName, queryParams, body, options) {
     options = _.extend({}, this.options, options);
 
-    this.logger.info(`${httpMethod}: ${remoteMethodName}`, queryParams, options);
+    this.logger.info(`${httpMethod}: ${remoteMethodName}`, queryParams, body, options);
 
     let query = qs.stringify(_.extend({}, queryParams, options.globalQueryParams));
 
@@ -94,15 +94,17 @@ export class Api {
           err.type = json.type;
           err.details = json.details;
         } else {
-          let whatHappened = response.responseText || response.statusText;
+          let errMsg = response.responseText || response.statusText;
 
-          let errMsg = 'Sorry, an unexpected error occurred.';
+          if (!errMsg) {
+            errMsg = 'Sorry, an unexpected error occurred.';
 
-          if ('timeout' === response.statusText) {
-            errMsg = 'Sorry, the request timed out.';
+            if ('timeout' === response.statusText) {
+              errMsg = 'Sorry, the request timed out.';
+            }
+
+            errMsg += ' Please restart the app and try again a bit later.';
           }
-
-          errMsg += ' Please restart the app and try again a bit later.';
 
           err = new Error(errMsg);
         }

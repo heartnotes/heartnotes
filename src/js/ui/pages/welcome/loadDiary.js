@@ -67,6 +67,8 @@ var Component = React.createClass({
   },
 
   _goBack: function() {
+    this.props.actions.closeDiary();
+    
     this.props.showStep('start');
   },
 
@@ -74,5 +76,8 @@ var Component = React.createClass({
 
 
 
-module.exports = connectRedux(['loadEntries'])(Component);
+module.exports = connectRedux([
+  'closeDiary',
+  'loadEntries',
+])(Component);
 

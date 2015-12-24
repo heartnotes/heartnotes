@@ -238,32 +238,6 @@ export default class Auth {
       });
   }
 
-  
-  /**
-   * @return {Promise}
-   */
-  _authWithServer (username) {
-    Dispatcher.authWithServer('start');
-
-    this._authenticatedWithServer = false;
-
-    return Api.post('login', {}, {
-      user: username,
-      key: this.authKey,
-    })
-      .then(() => {
-        this._authenticatedWithServer = true;
-
-        Dispatcher.authWithServer('result');
-      })
-      .catch((err) => {
-        this.logger.error(err);
-
-        Dispatcher.authWithServer('error', err);        
-
-        throw err;
-      });
-  }
 
 
   /**
@@ -302,6 +276,33 @@ export default class Auth {
 
   get authenticatedWithServer () {
     return !!this._authenticatedWithServer;
+  }
+
+  
+  /**
+   * @return {Promise}
+   */
+  _authWithServer (username) {
+    Dispatcher.authWithServer('start');
+
+    this._authenticatedWithServer = false;
+
+    return Api.post('login', {}, {
+      username: username,
+      key: this.authKey,
+    })
+      .then(() => {
+        this._authenticatedWithServer = true;
+
+        Dispatcher.authWithServer('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.authWithServer('error', err);        
+
+        throw err;
+      });
   }
 
 
