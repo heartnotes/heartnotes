@@ -197,7 +197,7 @@ export default class Diary {
 
 
 
-  get name () {
+  get id () {
     return this._id;
   }
 

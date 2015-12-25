@@ -55,7 +55,7 @@ var Component = React.createClass({
           </div>
           <div className="action row">
             <ChangePasswordProgressPopup {...this.props}>
-              <Button {...changePasswordButtonAttrs}>Save</Button>
+              <Button {...changePasswordButtonAttrs}>Save new password</Button>
             </ChangePasswordProgressPopup>
           </div>
         </form>
