@@ -88,8 +88,9 @@ You will find the `Heartnotes.app` OS X executable in `build-electron/relese/...
 4. Tag commit as <version>
 5. Push tag
 6. Do a production build (see above)
-7. Create release entry on Github and attach built executable
-8. Announce to world!
+7. Test production build
+8. Create release entry on Github and attach built executable
+9. Announce to world!
 
 
 
