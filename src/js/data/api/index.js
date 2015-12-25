@@ -2,12 +2,14 @@ import $ from 'jquery';
 import _ from 'lodash';
 import Q from 'bluebird';
 import qs from 'query-string';
+import isReachable from 'is-reachable';
+import urlParser from 'url-parse';
 
 import Logger from '../../utils/logger';
 import * as Detect from '../../utils/detect';
 
 
-const LIVE_BASE_URL = 'https://heartnot.es/api';
+const LIVE_SERVER = 'https://heartnot.es:443/api';
 
 
 export class Api {
@@ -15,7 +17,7 @@ export class Api {
     this.logger = Logger.create(`api`);
 
     this.options = _.extend({
-      baseUrl: LIVE_BASE_URL,
+      baseUrl: LIVE_SERVER,
       globalQueryParams: {},
       timeout: 5000,
     }, options);
@@ -28,6 +30,7 @@ export class Api {
 
   addFixture(httpMethod, remoteMethodName, handler) {
     this._fixtures[httpMethod][remoteMethodName] = handler;
+    this._fixturesEnabled = true;
   }
 
   addFixtureGet(remoteMethodName, handler) {
@@ -36,6 +39,20 @@ export class Api {
 
   addFixturePost(remoteMethodName, handler) {
     this.addFixture('post', remoteMethodName, handler);
+  }
+
+  areFixturesEnabled() {
+    return !!this._fixturesEnabled;
+  }
+
+  isServerReachable () {
+    return new Q(function(resolve, reject) {
+      let url = urlParser(this.options.baseUrl);
+
+      isReachable(url, function(err, online) {
+        resolve(!!online);
+      });
+    });
   }
 
   get (remoteMethodName, queryParams = {}, options = {}) {
@@ -65,18 +82,22 @@ export class Api {
 
     return initPromise
       .then(() => {
-        if (!Detect.inDevMode() && this._fixtures[remoteMethodName]) {
-          this.logger.warn('Fixtures enabled in non-dev mode! Needs fixing');
-        }
+        if (this.areFixturesEnabled()) {
+          this.logger.debug('Fixture call');
 
-        let httpMethodLowercase = httpMethod.toLowerCase();
+          if (!Detect.inDevMode()) {
+            this.logger.warn('Fixtures enabled in non-dev mode! Needs fixing');
+          }
 
-        if (this._fixtures[httpMethodLowercase][remoteMethodName]) {
-          this.logger.debug('Fixtures call');
+          let httpMethodLowercase = httpMethod.toLowerCase();
 
-          return Q.try(() => {
-            return this._fixtures[httpMethodLowercase][remoteMethodName].call(this, queryParams, body);
-          });
+          let handler = _.get(this._fixtures[httpMethodLowercase], remoteMethodName);
+
+          if (!handler) {
+            throw new Error(`Fixture handler not found for ${httpMethod} ${remoteMethodName}`);
+          }
+
+          return this._fixtures[httpMethodLowercase][remoteMethodName].call(this, queryParams, body);
         } else {
           this.logger.debug('Server call');
 

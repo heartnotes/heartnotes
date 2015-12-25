@@ -5,6 +5,7 @@ import Logger from '../../utils/logger';
 import Q from 'bluebird';
 import moment from 'moment';
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
@@ -171,11 +172,11 @@ export default class Diary {
   exportToFile () {
     Dispatcher.exportToFile('start');
 
-    let content = React.renderToString(
+    let content = ReactDOMServer.renderToString(
       <ExportedEntries entries={this.entries} />
     );
 
-    return Storage.exportToFile(content)
+    return Storage.export.saveNewHtmlFile(content)
       .then(function didUserCancel(filePath) {
         // user cancelled?
         if (!filePath) {
