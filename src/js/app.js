@@ -7,13 +7,20 @@ import { Provider } from 'react-redux';
 
 
 import Logger from './utils/logger';
+import Detet from './utils/detect';
 import Store from './data/store';
 import Layout from './ui/layout';
 import EntriesView from './ui/pages/entries';
 import NewEntry from './ui/pages/newEntry';
 import AccountSettingsView from './ui/pages/settings/account';
+import ChangePasswordView from './ui/pages/settings/changePassword';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import ExportDataView from './ui/pages/settings/exportData';
+
+// API fixtures
+//if (Detect.inDevMode()) {
+  require('./data/api/fixtures');
+//}
 
 
 
@@ -43,6 +50,7 @@ const Routes = (
     <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
     <Route name="newEntry" path="/newEntry" component={NewEntry} />
     <Route name="account" path="/settings" component={AccountSettingsView} />
+    <Route name="changePassword" path="/settings/changePassword" component={ChangePasswordView} />
     <Route name="exportData" path="/settings/exportData" component={ExportDataView} />
     <Route path="*" component={EntriesView}/>
   </Route>
@@ -50,6 +58,7 @@ const Routes = (
 
 
 const store = Store.create(Routes);
+
 
 
 class RootComponent extends React.Component {

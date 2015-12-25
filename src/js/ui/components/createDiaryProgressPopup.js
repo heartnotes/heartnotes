@@ -13,7 +13,7 @@ module.exports = React.createClass({
     if (diary.creating.inProgress) {
       if (diary.derivingKeys.inProgress) {
         derivingMsg = (
-          <div>Saving new diary.....</div>
+          <div>Creating diary.....</div>
         );
       }
     }

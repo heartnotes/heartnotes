@@ -19,7 +19,6 @@ export class Dispatcher {
   }
 
 
-
   initApp () {
     this._do(Actions.INIT);
   }
@@ -52,21 +51,6 @@ export class Dispatcher {
   }
 
 
-  saveDiary (state, data) {
-    switch (state) {
-      case 'start':
-        return this._do(Actions.SAVE_DIARY_START, data);
-      case 'result':
-        return this._do(Actions.SAVE_DIARY_RESULT, data);
-      case 'error':
-        this._do(Actions.SAVE_DIARY_ERROR, data);
-
-        return Q.delay(2000).then(() => {
-          this._do(Actions.SAVE_DIARY_RESET);          
-        });
-    }
-  }
-
 
   chooseDiary (state, data) {
     switch (state) {
@@ -96,6 +80,56 @@ export class Dispatcher {
 
         return Q.delay(2000).then(() => {
           this._do(Actions.CREATE_DIARY_RESET);          
+        });
+    }
+  }
+
+
+
+
+  login (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.LOGIN_START, data);
+      case 'result':
+        return this._do(Actions.LOGIN_RESULT, data);
+      case 'error':
+        this._do(Actions.LOGIN_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.LOGIN_RESET);          
+        });
+    }
+  }
+
+
+  signUp (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.SIGN_UP_START, data);
+      case 'result':
+        return this._do(Actions.SIGN_UP_RESULT, data);
+      case 'error':
+        this._do(Actions.SIGN_UP_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.SIGN_UP_RESET);          
+        });
+    }
+  }
+
+
+  authWithServer (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.AUTH_WITH_SERVER_START, data);
+      case 'result':
+        return this._do(Actions.AUTH_WITH_SERVER_RESULT, data);
+      case 'error':
+        this._do(Actions.AUTH_WITH_SERVER_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.AUTH_WITH_SERVER_RESET);          
         });
     }
   }
@@ -163,6 +197,25 @@ export class Dispatcher {
         return this._do(Actions.LOAD_ENTRIES_RESULT, data);
       case 'error':
         return this._do(Actions.LOAD_ENTRIES_ERROR, data);
+    }
+  }
+
+
+
+  decryptEntries (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.DECRYPT_ENTRIES_START, data);
+      case 'progress':
+        return this._do(Actions.DECRYPT_ENTRIES_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.DECRYPT_ENTRIES_RESULT, data);
+      case 'error':
+        return this._do(Actions.DECRYPT_ENTRIES_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.DECRYPT_ENTRIES_RESET);          
+        });
     }
   }
 

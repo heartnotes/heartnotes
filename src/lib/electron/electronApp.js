@@ -85,23 +85,23 @@ function createMainWindow() {
 // File open/save stuff
 
 
-var FILTERS = [
-  { name: 'Heartnotes diary files ' + __dirname, extensions: ['heartnotes'] },
-];
-
 ipc.on('synchronous-message', function(event, arg) {
-  switch (arg) {
+  var title = arg.title,
+    action = arg.action,
+    filters = arg.filters;
+
+  switch (action) {
 
     case 'openFile':
       console.log('Open file');
 
       try {
         event.returnValue = dialog.showOpenDialog(mainWindow, { 
-          title: 'Open diary',
+          title: title,
           properties: [ 
             'openFile', 
           ],
-          filters: FILTERS,
+          filters: filters,
         });
       } catch (err) {
         console.error(err);
@@ -111,31 +111,13 @@ ipc.on('synchronous-message', function(event, arg) {
 
       break;
 
-    case 'saveNewFile':
+    case 'saveFile':
       console.log('Save file');
 
       try {
         event.returnValue = dialog.showSaveDialog(mainWindow, { 
-          title: 'Create new diary',
-          filters: FILTERS,
-        });
-      } catch (err) {
-        console.error(err);
-
-        event.returnValue = null;
-      }
-
-      break;
-
-    case 'saveNewExportFile':
-      console.log('Choose export file');
-
-      try {
-        event.returnValue = dialog.showSaveDialog(mainWindow, { 
-          title: 'Export to file',
-          filters: [
-            { name: 'HTML', extensions: ['html'] },
-          ],
+          title: title,
+          filters: filters,
         });
       } catch (err) {
         console.error(err);

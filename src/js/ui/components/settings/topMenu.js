@@ -12,9 +12,19 @@ const ITEMS = [
     desc: 'Account',
   },
   {
+    id: 'changePassword',
+    route: '/settings/changePassword',
+    desc: 'Password',
+  },
+  {
+    id: 'backupRestore',
+    route: '/settings/backupRestore',
+    desc: 'Backup / Restore',
+  },
+  {
     id: 'exportData',
     route: '/settings/exportData',
-    desc: 'Export data',
+    desc: 'Export',
   },
 ];
 

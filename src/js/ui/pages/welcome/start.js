@@ -1,9 +1,9 @@
 var _ = require('lodash'),
+  $ = require('jquery'),
   React = require('react');
 
-var Detect = require('../../../utils/detect'),
-  StringUtils = require('../../../utils/string'),
-  Button = require('../../components/button'),
+
+var Button = require('../../components/button'),
   IconButton = require("../../components/iconButton"),
   Popup = require("../../components/popup"),
   PasswordInput = require('../../components/passwordInput'),
@@ -22,100 +22,60 @@ var Component = React.createClass({
 
   getInitialState: function() {
     return {
+      username: null,
       password: null,
     };
   },
 
   render: function() { 
-    var content = null;
+    let { loggingIn } = this.props.data.diary;
 
-    if (this.props.data.diary.lastAccessedDiaryDetails) {
-      var lastDiaryName = StringUtils.formatDiaryName(
-        this.props.data.diary.lastAccessedDiaryDetails.name
-      );
+    let username = this._getUsername();
 
-      var buttonAttrs = {
-        onClick: this._openDiary,
-        animActive: !!this.props.data.diary.opening.inProgress,
-      };
+    let buttonAttrs = {
+      onClick: this._openDiary,
+      animActive: !!loggingIn.inProgress,
+      disabled: !_.get(this.state.password, 'length') || !_.get(this.state.username, 'length'),
+    };
 
-      if (!this.state.password || !this.state.password.length) {
-        buttonAttrs.disabled = true;
-      }
-
-      content = (
+    return (
+      <div className="start step">
         <div className="open-existing">
-          <p>
-            <label>Diary:</label>
-            <span>{lastDiaryName}</span>
-            {this._buildChooseAnotherDiaryButton()}
-          </p>
           <form onSubmit={this._openDiary}>
             <div className="field row">
-              <PasswordInput password={this.state.password} onChange={this._setPassword} />
+              <input type="text"
+                ref="username"
+                onInput={this._setUsername} 
+                value={username} 
+                placeholder="Email address"
+                tabIndex='1' />
+            </div>
+            <div className="field row">
+              <PasswordInput 
+                placeholder="Password"
+                password={this.state.password} 
+                onChange={this._setPassword} 
+                tabIndex={1} />
             </div>
             <div className="action row">
               <OpenDiaryProgressPopup {...this.props}>
-                <Button {...buttonAttrs}>Open</Button>
+                <Button {...buttonAttrs}>Login</Button>
               </OpenDiaryProgressPopup>
             </div>
           </form>
         </div>
-      );
-    } else {
-      content = (
-        <div className="open-existing">
-          <p>
-            <label>Open existing diary</label>
-            {this._buildChooseAnotherDiaryButton()}
-          </p>
-        </div>
-      );
-    }
-
-
-    content = (
-      <div>
-        {content}
         <div className="create-new">
           <Button onClick={this._createNew}>Create new diary</Button>
         </div>
       </div>
     );
-
-    return (
-      <div className="start step">
-        {content}
-      </div>
-    );
   },
 
 
+  _getUsername: function() {
+    let { lastOpenedDiary } = this.props.data.diary;
 
-  _buildChooseAnotherDiaryButton: function() {
-    if (Detect.isElectronApp()) {
-      let choosingError = this.props.data.diary.choosing.error;
-
-      let popupMsg = (!!choosingError)
-        ? (<div>{'' + choosingError}</div>)
-        : null;
-
-      return (
-        <span className="choose-diary">
-          <Popup 
-              msg={popupMsg} 
-              show={!!choosingError}>
-            <IconButton 
-              ref="chooseDiaryButton"
-              icon="folder-open"
-              onClick={this._chooseDiary}
-              tooltip="Choose a diary" />
-          </Popup>
-        </span>
-      );
-    } else {
-      return null;
-    }
+    return this.state.username || lastOpenedDiary || '';
   },
 
 
@@ -123,12 +83,17 @@ var Component = React.createClass({
     e.preventDefault();
 
     this.props.actions.openDiary(
-      _.get(this.props.data.diary.lastAccessedDiaryDetails, 'name'),
+      this._getUsername(),
       this.state.password
     )
       .then(() => {
         this.props.showStep('loadDiary');
       });
+  },
+
+
+  _createNew: function() {
+    this.props.showStep('newDiary');
   },
 
 
@@ -139,14 +104,16 @@ var Component = React.createClass({
   },
 
 
-  _createNew: function() {
-    this.props.showStep('newDiary');
+  _setUsername: function(e) {
+    let name = $(e.currentTarget).val();
+
+    this.setState({
+      username: name,
+    });
   },
 
 
-  _chooseDiary: function() {    
-    this.props.actions.chooseDiary();
-  },
+
 
 });
 

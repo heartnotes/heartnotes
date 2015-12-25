@@ -2,6 +2,8 @@
 
 var _ = require('lodash');
 
+import Q from 'bluebird';
+
 import Logger from '../../utils/logger';
 var WebWorker= require('../../utils/webWorker');
 
@@ -193,7 +195,7 @@ export class Crypto {
     var password = sjcl.codec.hex.toBits(key);
 
     if (8 !== password.length) {
-      return Promise.reject(new Error(
+      return Q.reject(new Error(
         `Encryption password must be 256 bits (${password.length * 8} bits found)`
       ));
     }
@@ -241,7 +243,7 @@ export class Crypto {
     var password = sjcl.codec.hex.toBits(key);
 
     if (8 !== password.length) {
-      return Promise.reject(new CryptoError(
+      return Q.reject(new CryptoError(
         `Decryption password must be 256 bits (${password.length * 8} bits found)`
       ));
     }

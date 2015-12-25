@@ -1,7 +1,7 @@
 "use strict";
 
 var sjcl = require('./sjcl');
-
+import Q from 'bluebird';
 import { Timer } from 'clockmaker';
 
 
@@ -77,7 +77,7 @@ export default class Csrng {
 
     self.logger.debug('get random bytes', numBytes);
 
-    return new Promise(function(resolve, reject) {
+    return new Q(function(resolve, reject) {
       Timer(function(timer) {
         if (this._hasEntropy()) {
           timer.stop();

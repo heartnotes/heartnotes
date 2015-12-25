@@ -19,7 +19,7 @@ module.exports = React.createClass({
     return {
       onChange : null,
       requiredStrength: 2,
-      passwordPlaceholder: 'Enter password',
+      passwordPlaceholder: 'Password',
       confirmPlaceholder: 'Confirm password',
       tabIndex: 0,
     };

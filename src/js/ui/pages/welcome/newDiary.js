@@ -1,6 +1,9 @@
-var React = require('react');
+import $ from 'jquery';
+import _ from 'lodash';
+import React from 'react';
 
 var Button = require('../../components/button'),
+  EmailInput = require('../../components/emailInput'),
   NewPasswordInput = require('../../components/newPasswordInput'),
   CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup'),
   UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
@@ -17,6 +20,7 @@ var Component = React.createClass({
 
   getInitialState: function() {
     return {
+      id: null,
       password: null,
     }
   },
@@ -27,24 +31,27 @@ var Component = React.createClass({
       animActive: !!this.props.data.diary.creating.inProgress,
     };
 
-    if (!this.state.password || !this.state.password.length) {
+    if (!_.get(this.state.password, 'length') || !_.get(this.state.id, 'length')) {
       buttonAttrs.disabled = true;
     }
 
     return (
       <div className="new-diary step">
-        <p className="info1">Please remember your password.</p>
-        <p className="info2">Or else you will not be able to open your diary!</p>
-        <form onSubmit={this._savePassword}>
+        <form onSubmit={this._createNew}>
+          <div className="input-fields row">
+            <EmailInput 
+              onChange={this._setId} 
+              tabIndex={1} />
+          </div>
           <div className="input-fields row">
             <NewPasswordInput 
               onChange={this._setPassword} 
               requiredStrength={0}
-              tabIndex={1} />
+              tabIndex={2} />
           </div>
           <div className="action row">
             <CreateDiaryProgressPopup {...this.props}>
-              <Button {...buttonAttrs}>Next</Button>
+              <Button {...buttonAttrs}>Create diary</Button>
             </CreateDiaryProgressPopup>
           </div>
         </form>
@@ -65,18 +72,25 @@ var Component = React.createClass({
     }
   },
 
-  _setPassword: function(passwd) {
+  _setPassword: function(password) {
     this.setState({
-      password: passwd
+      password: password
     });
   },
 
-  _savePassword: function(e) {
+  _setId: function(id) {
+    this.setState({
+      id: id,
+    });
+  },
+
+
+  _createNew: function(e) {
     e.preventDefault();
     
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.actions.createDiary(this.state.password);
+        this.props.actions.createDiary(this.state.id, this.state.password);
       }
     });
   },

@@ -7,6 +7,9 @@ import * as AsyncState from './asyncState';
 import { instance as Storage } from './storage/index';
 
 
+var LocalStorage = Storage.local;
+
+
 exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
     case Actions.CHECK_FOR_UPDATES_START:
@@ -54,7 +57,7 @@ exports.diary = function(state = InitialState.diary(), action) {
   switch (action.type) {
     case Actions.INIT:
       return _.extend({}, state, {
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails()
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
       });
 
     case Actions.CLOSE_DIARY:
@@ -72,7 +75,7 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.CHOOSE_DIARY_RESULT:
       return _.extend({}, state, {
         choosing: AsyncState.result(action.payload),
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
       });
 
     case Actions.CHOOSE_DIARY_ERROR:
@@ -85,6 +88,46 @@ exports.diary = function(state = InitialState.diary(), action) {
         choosing: AsyncState.reset(),
       });
 
+    case Actions.LOGIN_START:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.start(),
+      });
+
+    case Actions.LOGIN_RESULT:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.result(action.payload),
+      });
+
+    case Actions.LOGIN_ERROR:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.error(action.payload),
+      });
+
+    case Actions.LOGIN_RESET:
+      return _.extend({}, state, {
+        loggingIn: AsyncState.reset(),
+      });
+
+    case Actions.SIGN_UP_START:
+      return _.extend({}, state, {
+        signingUp: AsyncState.start(),
+      });
+
+    case Actions.SIGN_UP_RESULT:
+      return _.extend({}, state, {
+        signingUp: AsyncState.result(action.payload),
+      });
+
+    case Actions.SIGN_UP_ERROR:
+      return _.extend({}, state, {
+        signingUp: AsyncState.error(action.payload),
+      });
+
+    case Actions.SIGN_UP_RESET:
+      return _.extend({}, state, {
+        signingUp: AsyncState.reset(),
+      });
+
     case Actions.OPEN_DIARY_START:
       return _.extend({}, state, {
         opening: AsyncState.start(),
@@ -94,6 +137,7 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.OPEN_DIARY_RESULT:
       return _.extend({}, state, {
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
         diaryMgr: action.payload,
         opening: AsyncState.result(action.payload),
         loadingEntries: AsyncState.reset(),
@@ -118,8 +162,8 @@ exports.diary = function(state = InitialState.diary(), action) {
 
     case Actions.CREATE_DIARY_RESULT:
       return _.extend({}, state, {
+        lastOpenedDiary: LocalStorage.getLastAccessed(),
         diaryMgr: action.payload,
-        lastAccessedDiaryDetails: Storage.getLastAccessedDiaryDetails(),
         creating: AsyncState.result(action.payload),
       });
 
@@ -164,31 +208,32 @@ exports.diary = function(state = InitialState.diary(), action) {
         loadingEntries: AsyncState.reset(),
       });
 
-    case Actions.SAVE_ENTRIES_REQUESTED:
+
+    case Actions.DECRYPT_ENTRIES_START:
       return _.extend({}, state, {
-        saveEntriesRequested: state.saveEntriesRequested + 1,
+        decryptEntries: AsyncState.start(),
       });
 
-    case Actions.SAVE_ENTRIES_START:
+    case Actions.DECRYPT_ENTRIES_PROGRESS:
       return _.extend({}, state, {
-        savingEntries: AsyncState.start(),
+        decryptEntries: AsyncState.progress(action.payload),
       });
 
-    case Actions.SAVE_ENTRIES_RESULT:
+    case Actions.DECRYPT_ENTRIES_RESULT:
       return _.extend({}, state, {
-        savingEntries: AsyncState.result(),
-        saveEntriesRequested: state.saveEntriesRequested - 1,
+        decryptEntries: AsyncState.result(action.payload),
       });
 
-    case Actions.SAVE_ENTRIES_ERROR:
+    case Actions.DECRYPT_ENTRIES_ERROR:
       return _.extend({}, state, {
-        savingEntries: AsyncState.error(action.payload),
+        decryptEntries: AsyncState.error(action.payload),
       });
 
-    case Actions.SAVE_ENTRIES_RESET:
+    case Actions.DECRYPT_ENTRIES_RESET:
       return _.extend({}, state, {
-        savingEntries: AsyncState.reset(),
+        decryptEntries: AsyncState.reset(),
       });
+
 
     case Actions.UPDATE_ENTRY_START:
       return _.extend({}, state, {

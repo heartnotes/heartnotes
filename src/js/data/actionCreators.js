@@ -48,30 +48,6 @@ export function init() {
 
 
 
-export function chooseDiary() {
-  return function(dispatch) {
-    Dispatcher.chooseDiary('start');
-    
-    return Storage.selectDiary()
-      .then( (diaryName) => {
-        if (!diaryName) {
-          return;
-        }
-
-        return Storage.loadDiary(diaryName);
-      })
-      .then( (diary) => {
-        Dispatcher.chooseDiary('result', diary);
-      })
-      .catch( (err) => {
-        Logger.error(err);
-        Dispatcher.chooseDiary('error', err);
-      });
-  }
-};
-
-
-
 export function closeDiary() {
   return function(dispatch) {
     Dispatcher.closeDiary();
@@ -80,22 +56,33 @@ export function closeDiary() {
 
 
 
-export function openDiary(name, password) {
+export function openDiary(username, password) {
   return function(dispatch) {
-    return Storage.loadDiary(name)
-      .then((diary) => {
-        return diary.open(password);
+    Dispatcher.openDiary('start');
+
+    return Diary.open(username, password)
+      .then((diaryMgr) =>  {
+        Dispatcher.openDiary('result', diaryMgr);
+      })
+      .catch((err) => {
+        Logger.error(err);
+
+        Dispatcher.openDiary('error', err);
+
+        throw err;
       });
   }
 }
 
 
 
-export function createDiary(password) {
+export function createDiary(id, password) {
   return function(dispatch) {
-    Dispatcher.createDiary('start');
+    Dispatcher.createDiary('start', {
+      id: id
+    });
 
-    return Diary.createNew(password)
+    return Diary.createNew(id, password)
       .then((diaryMgr) => {
         if (!diaryMgr) {
           throw new Error('Sorry, there was an unexpected error.');

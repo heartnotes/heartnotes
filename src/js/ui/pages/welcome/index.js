@@ -22,7 +22,8 @@ var Comonent = React.createClass({
   },
 
   render: function() { 
-    var newVersionMsg = null;
+    let newVersionMsg = null;
+
     if (this.props.data.app.newVersionAvailable) {
       newVersionMsg = (
         <a href="#" onClick={this._goToHomepage}>New version available!</a>

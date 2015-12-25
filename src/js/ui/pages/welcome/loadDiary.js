@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 
 import Icon from '../../components/icon';
@@ -20,7 +21,7 @@ var Component = React.createClass({
       <Loading text="Loading diary" />
     );
     
-    let progressMsg2 = activity.progressMsg;
+    let progressMsg2 = _.get(this.props.data.diary.decryptEntries, 'progressMsg');
 
     let loadingError = null;
     if (activity.error) {
@@ -66,6 +67,8 @@ var Component = React.createClass({
   },
 
   _goBack: function() {
+    this.props.actions.closeDiary();
+    
     this.props.showStep('start');
   },
 
@@ -73,5 +76,8 @@ var Component = React.createClass({
 
 
 
-module.exports = connectRedux(['loadEntries'])(Component);
+module.exports = connectRedux([
+  'closeDiary',
+  'loadEntries',
+])(Component);
 
