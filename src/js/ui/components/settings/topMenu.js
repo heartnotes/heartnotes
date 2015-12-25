@@ -12,11 +12,6 @@ const ITEMS = [
     desc: 'Account',
   },
   {
-    id: 'backupRestore',
-    route: '/settings/backupRestore',
-    desc: 'Backup and Restore',
-  },
-  {
     id: 'exportData',
     route: '/settings/exportData',
     desc: 'Export data',

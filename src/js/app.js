@@ -44,7 +44,6 @@ const Routes = (
     <Route name="newEntry" path="/newEntry" component={NewEntry} />
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="exportData" path="/settings/exportData" component={ExportDataView} />
-    <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route path="*" component={EntriesView}/>
   </Route>
 );

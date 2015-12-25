@@ -122,12 +122,7 @@ module.exports = React.createClass({
 
       // if month different to current month then set as current month and display it
       if (date.month() !== lastMonthYear.month() || date.year() !== lastMonthYear.year()) {
-        var monthFormat = 'MMMM';
-
-        // if year is different then add as suffix
-        if (date.year() !== lastMonthYear.year()) {
-          monthFormat += ' ' + 'YYYY';
-        }
+        var monthFormat = 'MMMM YYYY';
 
         listItems.push(
           <li className="break-row" key={date.valueOf()}>
