@@ -430,11 +430,16 @@ export default class Diary {
 Diary.createNew = (password) => {
   let auth = new Auth();
 
-  auth.createPassword(password)
+  return auth.createPassword(password)
     .then(() => {
       return Storage.createNewDiary({
         meta: auth.meta
       });
+    })
+    .then((diaryMgr) => {
+      diaryMgr._auth = auth;
+
+      return diaryMgr;
     });
 };
 

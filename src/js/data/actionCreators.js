@@ -96,12 +96,12 @@ export function createDiary(password) {
     Dispatcher.createDiary('start');
 
     return Diary.createNew(password)
-      .then((diary) => {
-        if (!diary) {
+      .then((diaryMgr) => {
+        if (!diaryMgr) {
           throw new Error('Sorry, there was an unexpected error.');
         }
 
-        Dispatcher.createDiary('result', diary);
+        Dispatcher.createDiary('result', diaryMgr);
 
         Dispatcher.alertUser('Diary created!');
       })
