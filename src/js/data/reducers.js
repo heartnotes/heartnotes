@@ -60,9 +60,44 @@ exports.diary = function(state = InitialState.diary(), action) {
         lastAccessedDiary: LocalStorage.getLastAccessed(),
       });
 
-    case Actions.BACKUP_CONFIG_UPDATED:
+    case Actions.ENABLE_BACKUPS_START:
       return _.extend({}, state, {
-        backupConfig: action.payload,
+        enablingBackups: AsyncState.start(),
+      });
+
+    case Actions.ENABLE_BACKUPS_RESULT:
+      return _.extend({}, state, {
+        enablingBackups: AsyncState.result(action.payload),
+      });
+
+    case Actions.ENABLE_BACKUPS_ERROR:
+      return _.extend({}, state, {
+        enablingBackups: AsyncState.error(action.payload),
+      });
+
+    case Actions.ENABLE_BACKUPS_RESET:
+      return _.extend({}, state, {
+        enablingBackups: AsyncState.reset(),
+      });
+
+    case Actions.DISABLE_BACKUPS_START:
+      return _.extend({}, state, {
+        disablingBackups: AsyncState.start(),
+      });
+
+    case Actions.DISABLE_BACKUPS_RESULT:
+      return _.extend({}, state, {
+        disablingBackups: AsyncState.result(action.payload),
+      });
+
+    case Actions.DISABLE_BACKUPS_ERROR:
+      return _.extend({}, state, {
+        disablingBackups: AsyncState.error(action.payload),
+      });
+
+    case Actions.DISABLE_BACKUPS_RESET:
+      return _.extend({}, state, {
+        disablingBackups: AsyncState.reset(),
       });
 
     case Actions.CLOSE_DIARY:

@@ -314,15 +314,33 @@ export class Dispatcher {
 
 
   enableBackups (state, data) {
-    if ('result' === state) {
-      return this._do(Actions.BACKUP_CONFIG_UPDATED, data);
+    switch (state) {
+      case 'start':
+        return this._do(Actions.ENABLE_BACKUPS_START, data);
+      case 'result':
+        return this._do(Actions.ENABLE_BACKUPS_RESULT, data);
+      case 'error':
+        this._do(Actions.ENABLE_BACKUPS_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.ENABLE_BACKUPS_RESET);          
+        });
     }
   }
 
 
   disableBackups (state, data) {
-    if ('result' === state) {
-      return this._do(Actions.BACKUP_CONFIG_UPDATED, data);
+    switch (state) {
+      case 'start':
+        return this._do(Actions.DISABLE_BACKUPS_START, data);
+      case 'result':
+        return this._do(Actions.DISABLE_BACKUPS_RESULT, data);
+      case 'error':
+        this._do(Actions.DISABLE_BACKUPS_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.DISABLE_BACKUPS_RESET);          
+        });
     }
   }
 

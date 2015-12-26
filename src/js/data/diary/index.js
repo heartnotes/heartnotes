@@ -162,7 +162,7 @@ export default class Diary {
     delete this._entries[id];
     delete this._encryptedEntries[id];
 
-    return this._saveDiary()
+    return this._saveEncryptedEntries()
       .then(() => {
         Dispatcher.deleteEntry('result');
       })
@@ -183,7 +183,10 @@ export default class Diary {
    * @return {Promise}
    */
   changePassword (oldPassword, newPassword) {
-    return this._auth.changePassword(oldPassword, newPassword);
+    return this._auth.changePassword(oldPassword, newPassword)
+      .then(() => {
+        return this._saveBackup();
+      });
   }
 
 
@@ -224,12 +227,15 @@ export default class Diary {
   enableBackups() {
     Dispatcher.enableBackups('start');
 
-    return Storage.backup.newBackupFile()
+    return Storage.backup.selectNewBackupFile()
       .then((storagePath) => {
         this._settings.backup = this._settings.backup || {};
         this._settings.backup.path = storagePath;
 
         return this._saveSettings();
+      })
+      .then(() => {
+        return this._saveBackup();
       })
       .then(() => {
         Dispatcher.enableBackups('result');
@@ -328,7 +334,10 @@ export default class Diary {
 
 
   _saveEncryptedEntries () {
-    return Storage.local.saveEntries(this._id, this._encryptedEntries);
+    return Storage.local.saveEntries(this._id, this._encryptedEntries)
+      .then(() => {
+        return this._saveBackup();
+      });
   }
 
 
@@ -336,6 +345,22 @@ export default class Diary {
     return Storage.local.saveSettings(this._id, this._settings);
   }
 
+
+  _saveBackup () {
+    if (this.backupFilePath) {
+      return Storage.backup.saveBackup(this.backupFilePath, {
+        meta: this._auth.meta,
+        entries: this._encryptedEntries,
+      })
+        .then(() => {
+          this._settings.backup.lastTime = Date.now();
+
+          return this._saveSettings();
+        });
+    } else {
+      return Q.resolve();
+    }
+  }
 
 
   /**

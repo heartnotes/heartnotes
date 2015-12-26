@@ -3,7 +3,10 @@
   width 100%
   height 100%
   padding 40px
-  text-align center
+  text-align left
+  
+  .overlay
+    text-align center
   
   h2
     color $white
@@ -18,12 +21,27 @@
     color $white
     
     h2
-      color $gray-dark
+      color $gray
     &.account
       .email-address
         p
           font-weight 100
           font-size 1.5rem
+          
+    &.backupRestore
+      .backupFile
+        p
+          margin 0 0 1em
+          font-size 1.2rem
+          label
+            font-weight 700
+            font-size 90%
+            color $gray-dark
+            margin-right 1em
+          &.last
+            margin-bottom 1.5em
+        button
+          margin-right 1em
           
 
   .settings-top-menu

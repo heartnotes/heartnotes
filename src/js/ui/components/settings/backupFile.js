@@ -4,6 +4,7 @@ import React from 'react';
 import Button from '../button';
 import DateFormat from '../date';
 import { connectRedux } from '../../helpers/decorators';
+import EnableBackupsProgressPopup from './enableBackupsProgressPopup';
 
 
 var Component = React.createClass({
@@ -20,12 +21,18 @@ var Component = React.createClass({
         <DateFormat date={diaryMgr.backupLastTime} format="MMMM DD, YYYY - HH:mm:ss" />
       );
 
-      statusText = 'active';
+      statusText = 'ACTIVE';
 
       backup = (
         <div>
-          <p className="file">{backupFilePath}</p>
-          <p className="last">Last backup: {lastBackupTime}</p>
+          <p className="file">
+            <label>Location:</label>
+            {backupFilePath}
+          </p>
+          <p className="last">
+            <label>Last time:</label>
+            {lastBackupTime}
+          </p>
           <Button>Change location</Button>
           <Button onClick={this._disableBackups}>Disable</Button>
         </div>
@@ -33,10 +40,15 @@ var Component = React.createClass({
     } else {
       statusText = 'inactive';
 
+      let btnAttrs = {
+        onClick: this._enableBackups,
+        animActive: !!_.get(this.props.data, 'diary.enablingBackups.inProgress'),
+      };
+
       backup = (
-        <div>
-          <Button onClick={this._enableBackups}>Set backup file</Button>
-        </div>
+        <EnableBackupsProgressPopup {...this.props}>
+          <Button {...btnAttrs}>Set backup file</Button>
+        </EnableBackupsProgressPopup>
       );
     }
 
