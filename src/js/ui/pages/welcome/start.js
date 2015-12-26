@@ -22,7 +22,7 @@ var Component = React.createClass({
 
   getInitialState: function() {
     return {
-      username: null,
+      id: null,
       password: null,
     };
   },
@@ -30,12 +30,12 @@ var Component = React.createClass({
   render: function() { 
     let { loggingIn } = this.props.data.diary;
 
-    let username = this._getUsername();
+    let id = this._getUsername();
 
     let buttonAttrs = {
       onClick: this._openDiary,
       animActive: !!loggingIn.inProgress,
-      disabled: !_.get(this.state.password, 'length') || !_.get(this.state.username, 'length'),
+      disabled: !_.get(this.state.password, 'length') || !_.get(id, 'length'),
     };
 
     return (
@@ -44,9 +44,9 @@ var Component = React.createClass({
           <form onSubmit={this._openDiary}>
             <div className="field row">
               <input type="text"
-                ref="username"
-                onInput={this._setUsername} 
-                value={username} 
+                ref="id"
+                onInput={this._setId} 
+                value={id} 
                 placeholder="Email address"
                 tabIndex='1' />
             </div>
@@ -73,9 +73,9 @@ var Component = React.createClass({
 
 
   _getUsername: function() {
-    let { lastOpenedDiary } = this.props.data.diary;
+    let { lastAccessedDiary } = this.props.data.diary;
 
-    return this.state.username || lastOpenedDiary || '';
+    return (null !== this.state.id ? this.state.id : lastAccessedDiary) || '';
   },
 
 
@@ -87,6 +87,8 @@ var Component = React.createClass({
       this.state.password
     )
       .then(() => {
+        this.setState(this.getInitialState());
+
         this.props.showStep('loadDiary');
       });
   },
@@ -104,11 +106,11 @@ var Component = React.createClass({
   },
 
 
-  _setUsername: function(e) {
-    let name = $(e.currentTarget).val();
+  _setId: function(e) {
+    let id = $(e.currentTarget).val();
 
     this.setState({
-      username: name,
+      id: id,
     });
   },
 

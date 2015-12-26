@@ -5,10 +5,8 @@ import moment from 'moment';
 
 import Logger from '../../utils/logger';
 import BrowserStorage from './local/browserStorage';
-import ElectronDiskStorage from './backup/electronDiskStorage';
-
+import ElectronDiskStorage from './backup/electronDiskBackup';
 import ElectronExporter from './export/electronDiskExport';
-
 import Detect from '../../utils/detect';
 import Diary from '../diary/index';
 

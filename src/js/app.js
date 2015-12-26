@@ -51,6 +51,7 @@ const Routes = (
     <Route name="newEntry" path="/newEntry" component={NewEntry} />
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="changePassword" path="/settings/changePassword" component={ChangePasswordView} />
+    <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route name="exportData" path="/settings/exportData" component={ExportDataView} />
     <Route path="*" component={EntriesView}/>
   </Route>

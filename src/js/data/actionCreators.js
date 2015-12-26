@@ -202,7 +202,26 @@ export function search(keyword) {
 
 
 
+export function enableBackups() {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
 
+    return diaryMgr.enableBackups()
+      .then(() => {
+        Dispatcher.alertUser('Backups now active');
+      });    
+  }
+}
+
+
+
+export function disableBackups() {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
+
+    return diaryMgr.disableBackups();
+  }
+}
 
 
 

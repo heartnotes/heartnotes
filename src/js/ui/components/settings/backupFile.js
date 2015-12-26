@@ -1,8 +1,7 @@
-var _ = require('lodash'),
-  React = require('react');
+import _ from 'lodash';
+import React from 'react';
 
-var Button = require('../button');
-
+import Button from '../button';
 import DateFormat from '../date';
 import { connectRedux } from '../../helpers/decorators';
 
@@ -11,36 +10,57 @@ var Component = React.createClass({
   render: function() {
     let { diaryMgr } = this.props.data.diary;
 
-    let backup = null;
+    let backup = null,
+      statusText = null;
 
     let backupFilePath = diaryMgr.backupFilePath;
 
     if (backupFilePath) {
       let lastBackupTime = (
-        <DateFormat date={diaryMgr.lastBackupTime} format="MMMM DD, YYYY - HH:mm:ss" />
+        <DateFormat date={diaryMgr.backupLastTime} format="MMMM DD, YYYY - HH:mm:ss" />
       );
+
+      statusText = 'active';
 
       backup = (
         <div>
           <p className="file">{backupFilePath}</p>
           <p className="last">Last backup: {lastBackupTime}</p>
+          <Button>Change location</Button>
+          <Button onClick={this._disableBackups}>Disable</Button>
         </div>
       );
     } else {
+      statusText = 'inactive';
+
       backup = (
-        <Button>Set backup file</Button>
+        <div>
+          <Button onClick={this._enableBackups}>Set backup file</Button>
+        </div>
       );
     }
 
     return (
       <div className="backupFile">
-        <h2>Automated file backups</h2>
+        <h2>Automated backups - {statusText}</h2>
         {backup}
       </div>
     );
   },
+
+  _enableBackups: function() {
+    this.props.actions.enableBackups();
+  },
+
+  _disableBackups: function() {
+    this.props.actions.disableBackups();
+  },
+
 });
 
 
-module.exports = connectRedux()(Component);
+module.exports = connectRedux([
+  'enableBackups',
+  'disableBackups',
+])(Component);
 

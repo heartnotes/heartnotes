@@ -31,12 +31,33 @@ export default class Diary {
     this._encryptedEntries = {};
     this._entries = {};
 
-    this._backupFilePath = null;
-    this._lastBackupTime = null;
-
     this.logger = Logger.create(`diary[${this._id}]`);
 
     this.decryptor = new Decryptor(this.logger, auth);
+  }
+
+
+  /**
+   * Call this after construction to load settings.
+   * 
+   * @return {Promise}
+   */
+  loadSettings() {
+    Dispatcher.loadSettings('start');
+
+    return Storage.local.loadSettings(this._id)
+      .then((settings) => {
+        Dispatcher.loadSettings('result');
+
+        this._settings = settings || {};
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.loadSettings('error', err);
+
+        throw err;
+      });
   }
 
 
@@ -197,15 +218,53 @@ export default class Diary {
   }
 
 
+  /**
+   * @return {Promise}
+   */
+  enableBackups() {
+    Dispatcher.enableBackups('start');
 
-  get id () {
-    return this._id;
+    return Storage.backup.newBackupFile()
+      .then((storagePath) => {
+        this._settings.backup = this._settings.backup || {};
+        this._settings.backup.path = storagePath;
+
+        return this._saveSettings();
+      })
+      .then(() => {
+        Dispatcher.enableBackups('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.enableBackups('error', err);
+
+        throw err;
+      });
   }
 
 
-  get entries () {
-    return this._entries;
+  /**
+   * @return {Promise}
+   */
+  disableBackups() {
+    Dispatcher.disableBackups('start');
+
+    delete this._settings.backup;
+
+    return this._saveSettings()
+      .then(() => {
+        Dispatcher.disableBackups('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.disableBackups('error', err);
+
+        throw err;
+      });
   }
+
 
 
   getEntryById (id) {
@@ -239,21 +298,44 @@ export default class Diary {
   }
 
 
+
+  get id () {
+    return this._id;
+  }
+
+
+  get entries () {
+    return this._entries;
+  }
+
+
+  get backupLastTime () {
+    let ts = _.get(this._settings, 'backup.lastTime', 0);
+
+    return moment(ts).toDate();
+  }
+
+
+  get backupFilePath () {
+    return _.get(this._settings, 'backup.path', null);
+  }
+
+
+
   _loadEncryptedEntries () {
-    return Q.resolve(Storage.local.loadEntries(this._id) || {});
+    return Storage.local.loadEntries(this._id) || {};
   }
 
 
   _saveEncryptedEntries () {
-    return Q.resolve(Storage.local.saveEntries(this._id, this._encryptedEntries));
+    return Storage.local.saveEntries(this._id, this._encryptedEntries);
   }
 
 
-  _loadBackupSettings () {
-    let settings = Storage.local.loadSettings(this._id);
-
-    return Q.resolve( _.get(settings, 'backup', {}));
+  _saveSettings () {
+    return Storage.local.saveSettings(this._id, this._settings);
   }
+
 
 
   /**
@@ -316,12 +398,24 @@ export default class Diary {
 }
 
 
+
+Diary._new = function(id, auth) {
+  let d = new Diary(id, auth);
+
+  return d.loadSettings()
+    .then(() => {
+      return d;
+    });
+}
+
+
+
 Diary.createNew = function(id, password) {
   let auth = new Auth();
 
   return auth.signUp(id, password)
     .then(() => {
-      return new Diary(id, auth);
+      return Diary._new(id, auth);
     });
 };
 
@@ -331,7 +425,7 @@ Diary.open = function(id, password) {
 
   return auth.login(id, password)
     .then(() => {
-      return new Diary(id, auth);
+      return Diary._new(id, auth);
     });
 };
 

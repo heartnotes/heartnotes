@@ -90,7 +90,10 @@ var Component = React.createClass({
     
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.actions.createDiary(this.state.id, this.state.password);
+        this.props.actions.createDiary(this.state.id, this.state.password)
+          .then(() => {
+            this.setState(this.getInitialState());
+          });
       }
     });
   },

@@ -187,6 +187,19 @@ export class Dispatcher {
 
 
 
+  loadSettings (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.LOAD_SETTINGS_START, data);
+      case 'result':
+        return this._do(Actions.LOAD_SETTINGS_RESULT, data);
+      case 'error':
+        return this._do(Actions.LOAD_SETTINGS_ERROR, data);
+    }
+  }
+
+
+
   loadEntries (state, data) {
     switch (state) {
       case 'start':
@@ -295,6 +308,21 @@ export class Dispatcher {
         return this._do(Actions.SEARCH_RESULT, data);
       case 'error':
         this._do(Actions.SEARCH_ERROR, data);
+    }
+  }
+
+
+
+  enableBackups (state, data) {
+    if ('result' === state) {
+      return this._do(Actions.BACKUP_CONFIG_UPDATED, data);
+    }
+  }
+
+
+  disableBackups (state, data) {
+    if ('result' === state) {
+      return this._do(Actions.BACKUP_CONFIG_UPDATED, data);
     }
   }
 

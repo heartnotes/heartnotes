@@ -11,23 +11,22 @@ const FILE_FILTERS = [
 
 
 
-export default class ElectronDiskStorage {
+export default class ElectronDiskBackup {
 
   constructor(logger) {
-    this.logger = logger.create('electronDiskStorage');
+    this.logger = logger.create('electronDiskBackup');
   }
 
 
-
-  saveNewDiaryBackup (data) {
-    this.logger.debug('save diary to new file', data);
+  newBackupFile () {
+    this.logger.debug('choose backup file');
 
     return new Q((resolve, reject) => {
       let storagePath;
 
       try {
         storagePath = ipc.sendSync('synchronous-message', {
-          title: 'Save diary backup',
+          title: 'Set backup file',
           action: 'saveFile',
           filters: FILE_FILTERS,
         });
@@ -41,15 +40,9 @@ export default class ElectronDiskStorage {
         this.logger.debug('save file dialog cancelled');
 
         return resolve(null);
+      } else {
+        resolve(storagePath);
       }
-
-      this.logger.info('file to create', storagePath);
-
-      this.saveDiaryToFile(storagePath, data)
-        .then(function() {
-          resolve(storagePath);
-        })
-        .catch(reject);
     });
   }
 
