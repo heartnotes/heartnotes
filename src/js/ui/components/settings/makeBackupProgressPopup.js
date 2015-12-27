@@ -10,15 +10,15 @@ module.exports = React.createClass({
 
     let { diary } = this.props.data;
 
-    if (_.get(diary, 'enablingBackups.inProgress')) {
+    if (_.get(diary, 'makingBackup.inProgress')) {
       msg = (
-        <div>Enabling backups.....</div>
+        <div>Making backup.....</div>
       );
     }
 
-    if (_.get(diary, 'enablingBackups.error')) {
+    if (_.get(diary, 'makingBackup.error')) {
       msg = (
-        <div className="error">{diary.enablingBackups.error.toString()}</div>
+        <div className="error">{diary.makingBackup.error.toString()}</div>
       );
     }
 

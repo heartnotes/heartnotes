@@ -37,8 +37,7 @@ exports.diary = function() {
     deletingEntry: {},
     searchIndexing: {},
     searching: {},
-    enablingBackups: {},
-    disablingBackups: {},
+    makingBackup: {},
     saveEntriesRequested: 0,
   };
 };

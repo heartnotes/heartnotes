@@ -183,10 +183,7 @@ export default class Diary {
    * @return {Promise}
    */
   changePassword (oldPassword, newPassword) {
-    return this._auth.changePassword(oldPassword, newPassword)
-      .then(() => {
-        return this._saveBackup();
-      });
+    return this._auth.changePassword(oldPassword, newPassword);
   }
 
 
@@ -224,48 +221,34 @@ export default class Diary {
   /**
    * @return {Promise}
    */
-  enableBackups() {
-    Dispatcher.enableBackups('start');
+  makeBackup() {
+    Dispatcher.backup('start');
 
     return Storage.backup.selectNewBackupFile()
-      .then((storagePath) => {
-        this._settings.backup = this._settings.backup || {};
-        this._settings.backup.path = storagePath;
+      .then((path) => {
+        if (!path) {
+          return;
+        }
 
-        return this._saveSettings();
+        return Storage.backup.saveBackup(path, {
+          meta: this._auth.meta,
+          entries: this._encryptedEntries,
+        })
+          .then(() => {
+            Dispatcher.alertUser('Backup successful');
+
+            this._settings.backup.lastTime = Date.now();
+
+            return this._saveSettings();
+          });
       })
       .then(() => {
-        return this._saveBackup();
-      })
-      .then(() => {
-        Dispatcher.enableBackups('result');
+        Dispatcher.backup('result');
       })
       .catch((err) => {
         this.logger.error(err);
 
-        Dispatcher.enableBackups('error', err);
-
-        throw err;
-      });
-  }
-
-
-  /**
-   * @return {Promise}
-   */
-  disableBackups() {
-    Dispatcher.disableBackups('start');
-
-    delete this._settings.backup;
-
-    return this._saveSettings()
-      .then(() => {
-        Dispatcher.disableBackups('result');
-      })
-      .catch((err) => {
-        this.logger.error(err);
-
-        Dispatcher.disableBackups('error', err);
+        Dispatcher.backup('error', err);
 
         throw err;
       });
@@ -322,44 +305,18 @@ export default class Diary {
   }
 
 
-  get backupFilePath () {
-    return _.get(this._settings, 'backup.path', null);
-  }
-
-
-
   _loadEncryptedEntries () {
     return Storage.local.loadEntries(this._id) || {};
   }
 
 
   _saveEncryptedEntries () {
-    return Storage.local.saveEntries(this._id, this._encryptedEntries)
-      .then(() => {
-        return this._saveBackup();
-      });
+    return Storage.local.saveEntries(this._id, this._encryptedEntries);
   }
 
 
   _saveSettings () {
     return Storage.local.saveSettings(this._id, this._settings);
-  }
-
-
-  _saveBackup () {
-    if (this.backupFilePath) {
-      return Storage.backup.saveBackup(this.backupFilePath, {
-        meta: this._auth.meta,
-        entries: this._encryptedEntries,
-      })
-        .then(() => {
-          this._settings.backup.lastTime = Date.now();
-
-          return this._saveSettings();
-        });
-    } else {
-      return Q.resolve();
-    }
   }
 
 

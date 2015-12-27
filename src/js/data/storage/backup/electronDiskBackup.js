@@ -26,7 +26,7 @@ export default class ElectronDiskBackup {
 
       try {
         storagePath = ipc.sendSync('synchronous-message', {
-          title: 'Set backup file',
+          title: 'Save new backup',
           action: 'saveFile',
           filters: FILE_FILTERS,
         });

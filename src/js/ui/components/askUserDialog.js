@@ -1,8 +1,6 @@
 var _ = require('lodash'),
   React = require('react');
 
-
-
 var Overlay = require('./overlay'),
   Button = require('./button');
 

@@ -202,14 +202,11 @@ export function search(keyword) {
 
 
 
-export function enableBackups() {
+export function makeBackup() {
   return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;
 
-    return diaryMgr.enableBackups()
-      .then(() => {
-        Dispatcher.alertUser('Backups now active');
-      });    
+    return diaryMgr.makeBackup();
   }
 }
 
