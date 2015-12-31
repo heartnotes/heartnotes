@@ -330,6 +330,24 @@ export class Dispatcher {
 
 
 
+  restore (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.RESTORE_START, data);
+      case 'progress':
+        return this._do(Actions.RESTORE_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.RESTORE_RESULT, data);
+      case 'error':
+        this._do(Actions.RESTORE_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.RESTORE_RESET);          
+        });
+    }
+  }
+
+
 
   enterPassword (state, data) {
     this.createPassword(state, data);

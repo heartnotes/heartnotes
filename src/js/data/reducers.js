@@ -80,6 +80,34 @@ exports.diary = function(state = InitialState.diary(), action) {
         makingBackup: AsyncState.reset(),
       });
 
+
+    case Actions.RESTORE_START:
+      return _.extend({}, state, {
+        restoringBackup: AsyncState.start(),
+      });
+
+    case Actions.RESTORE_PROGRESS:
+      return _.extend({}, state, {
+        restoringBackup: AsyncState.progress(action.payload),
+      });
+
+    case Actions.RESTORE_RESULT:
+      return _.extend({}, state, {
+        restoringBackup: AsyncState.result(action.payload),
+      });
+
+    case Actions.RESTORE_ERROR:
+      return _.extend({}, state, {
+        restoringBackup: AsyncState.error(action.payload),
+      });
+
+    case Actions.RESTORE_RESET:
+      return _.extend({}, state, {
+        restoringBackup: AsyncState.reset(),
+      });
+
+
+
     case Actions.CLOSE_DIARY:
       return _.extend({}, state, {
         diaryMgr: null,

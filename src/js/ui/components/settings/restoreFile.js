@@ -4,40 +4,50 @@ import React from 'react';
 import Button from '../button';
 import Overlay from '../overlay';
 import { connectRedux } from '../../helpers/decorators';
+import RestoreBackupProgressPopup from './restoreBackupProgressPopup';
 
 
-var RestoreOverlay = React.createClass({
-  getInitialState: function() {
-    return {
-      filePath: null,
-    }
-  },
+// var RestoreOverlay = React.createClass({
+//   getInitialState: function() {
+//     return {
+//       filePath: null,
+//     }
+//   },
 
-  render: function() {
-    return (
-      <Overlay ref="overlay">
-        <div className="restore-backup-dialog">
-          <div className="buttons">
-            <Button>Begin</Button>
-            <Button onClick={this.hide}>Cancel</Button>
-          </div>
-        </div>
-      </Overlay>
-    );
-  },
+//   render: function() {
+//     let cancelBtn = null;
 
-  show: function(filePath) {
-    this.setState({
-      filePath: filePath
-    });
+//     cancelBtn = (
+//       <Button onClick={this.hide}>Cancel</Button>
+//     );
+    
+//     return (
+//       <Overlay ref="overlay">
+//         <div className="restore-backup-dialog">
+//           <div className="buttons">
+//             <MakeBackupProgressPopup {...this.props}>
+//               <Button>Begin</Button>
+//             </MakeBackupProgressPopup>
+            
+//           </div>
+//         </div>
+//       </Overlay>
+//     );
+//   },
 
-    this.refs.overlay.show();
-  },
+//   show: function(filePath) {
+//     this.setState({
+//       filePath: filePath
+//     });
 
-  hide: function() {
-    this.refs.overlay.hide();
-  },
-});
+//     this.refs.overlay.show();
+//   },
+
+//   hide: function() {
+//     this.refs.overlay.hide();
+//   },
+// });
+
 
 
 
@@ -47,28 +57,27 @@ var Component = React.createClass({
     let { diaryMgr } = diary;
 
     let btnAttrs = {
-      onClick: this._selectBackupFile,
+      onClick: this._restoreBackup,
     };
 
     return (
       <div className="restore-file">
         <h2>Restore</h2>
-        <RestoreOverlay ref="task" />
+        <RestoreBackupProgressPopup {...this.props}>
+          <Button {...btnAttrs}>Restore from backup</Button>
+        </RestoreBackupProgressPopup>
       </div>
     );
   },
 
-  _selectBackupFile: function() {
-    this.props.actions.selectBackupFile()
-      .then((backupFile) => {
-        this.refs.task.show(backupFile);
-      });
+  _restoreBackup: function() {
+    this.props.actions.restoreBackup();
   },
 
 });
 
 
 module.exports = connectRedux([
-  'makeBackup',
+  'restoreBackup',
 ])(Component);
 

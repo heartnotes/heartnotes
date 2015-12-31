@@ -230,10 +230,16 @@ export default class Diary {
           return;
         }
 
-        return Storage.backup.saveBackup(path, {
-          meta: this._auth.meta,
-          entries: this._encryptedEntries,
+        // encrypt entries and id
+        return Crypto.encrypt(this._auth.encryptionKey, {
+          id: this._id,
+          entries: this._entries,
         })
+          .then((encryptedData) => {
+            return Storage.backup.saveBackup(path, {
+              data: encryptedData,
+            });
+          })
           .then(() => {
             Dispatcher.alertUser('Backup successful');
 
@@ -249,6 +255,66 @@ export default class Diary {
         this.logger.error(err);
 
         Dispatcher.backup('error', err);
+
+        throw err;
+      });
+  }
+
+
+
+  /**
+   * @return {Promise}
+   */
+  restoreBackup() {
+    Dispatcher.restore('start');
+
+    return Storage.backup.selectExistingBackupFile()
+      .then((path) => {
+        if (!path) {
+          return;
+        }
+
+        // load
+        return Storage.backup.loadBackup(path)
+          .then((raw) => {
+            let { data } = raw;
+            return Crypto.decrypt(this._auth.encryptionKey, data);
+          })
+          .then((data) => {
+            let { id, entries } = data;
+
+            if (id !== this._id) {
+              throw new Error('Backup data is for different account: ' + id);
+            }
+
+            let total = _.values(entries).length,
+              done = 0;
+
+            return this.decryptor.encrypt(entries, {
+              setUpdatedTo: Date.now(),
+              onEach: (encryptedEntry) => {
+                Dispatcher.restore('progress', `Restoring...(${++done}/${total})`);
+
+                return encryptedEntry; 
+              }
+            });
+          })
+          .then((encryptedEntries) => {
+            this._encryptedEntries = encryptedEntries;
+
+            return this._saveEncryptedEntries();
+          })
+          .then(() => {
+            Dispatcher.alertUser('Restore successful');
+          });
+      })
+      .then(() => {
+        Dispatcher.restore('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.restore('error', err);
 
         throw err;
       });

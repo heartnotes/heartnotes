@@ -38,6 +38,7 @@ exports.diary = function() {
     searchIndexing: {},
     searching: {},
     makingBackup: {},
+    restoringBackup: {},
     saveEntriesRequested: 0,
   };
 };

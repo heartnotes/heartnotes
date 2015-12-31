@@ -21,6 +21,23 @@ export default class Decrypter {
   }
 
 
+  encrypt (entries, options = {}) {
+    _.defaults(options, {
+      onEach: (encryptedEntry => encryptedEntry),
+      setUpdatedTo: null,
+    });
+
+    return Q.props(_.mapValues(entries, (entry) => {
+      return Crypto.encrypt(this._auth.encryptionKey, {
+        body: entry.body,
+        ts: entry.ts,
+        up: options.setUpdatedTo || entry.up,
+      })
+        .then(options.onEach);
+    }));
+  }
+
+
   _decryptOldFormat (encryptedEntries) {
     this.logger.debug("decrypt OLD format");
 
@@ -39,19 +56,13 @@ export default class Decrypter {
         let done = 0,
           total = _.keys(entries).length;
 
-        // now let's re-encrypt each entry
-        return Q.props(_.mapValues(entries, (entry) => {
-          return Crypto.encrypt(this._auth.encryptionKey, {
-            body: entry.body,
-            ts: entry.ts,
-            up: entry.up,
-          })
-            .then((encryptedEntry) => {
-              Dispatcher.decryptEntries('progress', `Upgrading diary...(${++done}/${total})`);
+        return this.encrypt(entries, {
+          onEach: (encryptedEntry) => {
+            Dispatcher.decryptEntries('progress', `Upgrading diary...(${++done}/${total})`);
 
-              return encryptedEntry;
-            });
-        }));
+            return encryptedEntry; 
+          }
+        });
       })
       .then((newlyEncryptedEntries) => {
         Dispatcher.decryptEntries('result');

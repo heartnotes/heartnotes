@@ -19,7 +19,7 @@ export default class ElectronDiskBackup {
 
 
   selectNewBackupFile () {
-    this.logger.debug('choose backup file');
+    this.logger.debug('new backup file');
 
     return new Q((resolve, reject) => {
       let storagePath;
@@ -48,23 +48,41 @@ export default class ElectronDiskBackup {
 
 
 
-  openDiaryBackup() {
-    var file = ipc.sendSync('synchronous-message', {
-      title: 'Open diary backup',
-      action: 'openFile',
-      filters: FILE_FILTERS,
+  selectExistingBackupFile () {
+    this.logger.debug('choose backup file');
+
+    return new Q((resolve, reject) => {
+      let file;
+
+      try {
+        file = ipc.sendSync('synchronous-message', {
+          title: 'Open backup',
+          action: 'openFile',
+          filters: FILE_FILTERS,
+        });
+      } catch (err) {
+        this.logger.error(err);
+
+        return reject(new Error('Open file dialog failed'));
+      }
+
+      if (!file) {
+        this.logger.debug('open file dialog cancelled');
+
+        return resolve(null);
+      } else {
+        if (Array.isArray(file)) {
+          file = file[0];
+        }
+
+        resolve(file);
+      }
     });
-
-    if (Array.isArray(file)) {
-      file = file[0];
-    }
-
-    return this._loadDiaryBackup(file);
   }
 
 
 
-  _loadDiaryBackup (storagePath) {
+  loadBackup (storagePath) {
     this.logger.debug('load diary backup', storagePath);
 
     return new Q((resolve, reject) => {

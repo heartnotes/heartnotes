@@ -212,6 +212,16 @@ export function makeBackup() {
 
 
 
+export function restoreBackup() {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
+
+    return diaryMgr.restoreBackup();
+  }
+}
+
+
+
 export function disableBackups() {
   return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;
