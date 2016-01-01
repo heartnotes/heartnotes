@@ -20,7 +20,7 @@ var Component = React.createClass({
     return (
       <div className="exportData">
         <h2>Export my data</h2>
-        <ProgressButton {...exportDataButtonAttrs}>Export to file</ProgressButton>
+        <ProgressButton {...exportDataButtonAttrs}>Export to HTML</ProgressButton>
       </div>
     );
   },

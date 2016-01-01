@@ -30,7 +30,7 @@ var Component = React.createClass({
           <label>Last backup:</label>
           {lastBackupTime}
         </p>
-        <ProgressButton {...btnAttrs}>Backup to file</ProgressButton>
+        <ProgressButton {...btnAttrs}>Create backup</ProgressButton>
       </div>
     );
   },

@@ -16,6 +16,7 @@ var Component = React.createClass({
           <h2>Email address</h2>
           <p>{diaryMgr.id}</p>
         </div>
+        <hr />
         <ChangePassword {...this.props} />
       </Layout>
     );
