@@ -225,15 +225,19 @@ export function restoreBackup() {
 
 
 
-export function sendFeedback(id, msg) {
+export function sendFeedback(msg) {
   return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
+
     Dispatcher.sendFeedback('start');
 
-    return Api.post('/feedback', {}, {
-      id: id,
+    return Api.post('feedback', {}, {
+      id: diaryMgr.id,
       msg: msg,
     })
       .then(() => {
+        Dispatcher.alertUser('Feedback sent!');
+
         Dispatcher.sendFeedback('result');
       })
       .catch((err) => {

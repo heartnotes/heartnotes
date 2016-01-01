@@ -18,10 +18,12 @@ var Component = React.createClass({
   render: function() { 
     let { diaryMgr } = this.props.data.diary;
 
+    let { msg } = this.state;
+
     let buttonAttrs = {
       defaultProgressMsg: 'Sending...',
       progessVarKey: this.props.data.app.sendingFeedback,
-      disabled: !_.get(this.state.msg, 'length')
+      disabled: !_.get(msg, 'length'),
       onClick: this._send,
     };
 
@@ -29,6 +31,7 @@ var Component = React.createClass({
       <Layout tab="help" {...this.props}>
         <h2>Give us feedback</h2> 
         <textarea 
+          value={msg}
           onChange={this._onChange} 
           rows="10" 
           placeholder="Tell us what you like or don't like..." />
@@ -42,15 +45,27 @@ var Component = React.createClass({
 
     this.setState({
       msg: msg,
-    })
+    });
   },
 
 
   _send: function() {
-    if (this.state.msg) {
-      this.props.actions.sendFeedback(this.state.msg);
+    let msg = this.state.msg;
+
+    if (_.get(msg, 'length')) {
+      this.props.actions.sendFeedback(msg)
+        .then(() => {
+          if (!this.isMounted()) {
+            return;
+          }
+
+          this.setState({
+            msg: '',
+          });
+        });
     }
-  }
+  },
+
 });
 
 
