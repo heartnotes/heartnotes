@@ -1,5 +1,4 @@
 var _ = require('lodash'),
-  $ = require('jquery'),
   React = require('react');
 
 
@@ -7,7 +6,8 @@ var Button = require('../../components/button'),
   ProgressButton = require('../../components/progressButton'),
   IconButton = require("../../components/iconButton"),
   Popup = require("../../components/popup"),
-  PasswordInput = require('../../components/passwordInput');
+  PasswordInput = require('../../components/passwordInput'),
+  EmailInput = require('../../components/emailInput');
 
 
 import { connectRedux } from '../../helpers/decorators';
@@ -44,12 +44,10 @@ var Component = React.createClass({
         <div className="open-existing">
           <form onSubmit={this._openDiary}>
             <div className="field row">
-              <input type="text"
-                ref="id"
-                onInput={this._setId} 
-                value={id} 
-                placeholder="Email address"
-                tabIndex='1' />
+              <EmailInput 
+                email={id}
+                onChange={this._setId} 
+                tabIndex={1} />
             </div>
             <div className="field row">
               <PasswordInput 
@@ -105,11 +103,9 @@ var Component = React.createClass({
   },
 
 
-  _setId: function(e) {
-    let id = $(e.currentTarget).val();
-
+  _setId: function(email) {
     this.setState({
-      id: id,
+      id: email,
     });
   },
 

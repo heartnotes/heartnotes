@@ -22,7 +22,11 @@ var Component = React.createClass({
 
     var primaryLinks = items.map(function(item) {
       return (
-        <IconButton icon={item.icon} onClick={this._goRoute(item)} tooltip={item.desc} />
+        <IconButton 
+          key={item.icon}
+          icon={item.icon} 
+          onClick={this._goRoute(item)} 
+          tooltip={item.desc} />
       );
     }, this);
 

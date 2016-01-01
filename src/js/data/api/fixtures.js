@@ -14,6 +14,15 @@ var users = {
       "version": "1.3.0"
     },
   },
+  "test2@test.com": {
+    "key": "4753d4ea5cae556628a72bdcde29761a72c46937c02dfa212475cb23eb7e9bad",
+    "meta": {
+      "bundle": "eyJpdiI6IkJBZTY4dVZsVW40ZWJ5ZXM1eDI1cUE9PSIsInYiOjEsIml0ZXIiOjEwMDAsImtzIjoyNTYsInRzIjoxMjgsIm1vZGUiOiJnY20iLCJhZGF0YSI6IiIsImNpcGhlciI6ImFlcyIsImN0IjoiR05JV1oxQmZ1ZmI0SHJ4OW03eHl3b3J6SkdqOEo2NkprSWxJRzJqdktJS09PdDU3c1NBUHZ1bEpMZ0NDWTRrd3pZYUJoTElUR05HQzdYQTVtOWYzUTBHWlJHcW05T3RjcEV5dzJPeENjRDVFNVJSSytPV05yc3RtUy9hTjdxZ2lMZFBPOCtpQnZnPT0ifQ==",
+      "salt": "041626fefc9f944f05aa84c771cd707049909422a1cdd94336d318d3d79de23d",
+      "iterations": 46440,
+      "version": "2.0.0"
+    }
+  },
   'badkey@test.com': {
     key: 'hahaha',
     meta: {
@@ -50,6 +59,14 @@ Api.addFixturePost('signUp', (query, body) => {
     meta: body.meta,
   };
 });
+
+
+Api.addFixturePost('sync', (query, body) => {
+  Logger.debug('SYNC');
+
+  return {};
+});
+
 
 
 Api.addFixturePost('updatePassword', (query, body) => {

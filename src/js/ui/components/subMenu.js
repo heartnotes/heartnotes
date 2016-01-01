@@ -23,7 +23,11 @@ var Component = React.createClass({
 
     var buttons = items.map(function(item) {
       return (
-        <IconButton icon={item.icon} onClick={item.action} tooltip={item.desc} />
+        <IconButton 
+          key={item.icon}
+          icon={item.icon} 
+          onClick={item.action} 
+          tooltip={item.desc} />
       );
     }, this);
 

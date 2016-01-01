@@ -12,12 +12,37 @@ export default class Decrypter {
   }
 
 
-  decrypt (encryptedEntries, options = {}) {
+  decryptEntriesLoadedFromStorage (encryptedEntries, options = {}) {
     if (!this._auth.originalMeta.version) {
       return this._decryptOldFormat(encryptedEntries, options);
     } else {
-      return this._decryptNewFormat(encryptedEntries, options);
+      return this._decryptNewFormat(encryptedEntries, options);        
     }
+  }
+
+
+  decrypt (encryptedEntries, options) {
+    _.defaults(options, {
+      onEach: function() {}
+    });
+
+    var entries = {};
+
+    return _.reduce(encryptedEntries, (prevPromise, entryEnc, id) => {
+      return prevPromise.then(() => {
+        return Crypto.decrypt(this._auth.encryptionKey, entryEnc)
+          .then((entry) => {
+            entry.id = id;
+            entries[id] = entry;
+
+            return entry;
+          })
+          .then(options.onEach);
+      });
+    }, Q.resolve())
+      .then(() => {
+        return entries;
+      });
   }
 
 
@@ -89,23 +114,15 @@ export default class Decrypter {
 
     Dispatcher.decryptEntries('progress', 'Decrypting entries');
 
-    var entries = {};
-
     let total = _.keys(encryptedEntries).length;
     let done = 0;
 
-    return _.reduce(encryptedEntries, (prevPromise, entryEnc, id) => {
-      return prevPromise.then(() => {
-        return Crypto.decrypt(this._auth.encryptionKey, entryEnc)
-          .then((entry) => {
-            entry.id = id;
-            entries[id] = entry;
-
-            Dispatcher.decryptEntries('progress', `Decrypting...(${++done}/${total})`);
-          });
-      });
-    }, Q.resolve())
-      .then(() => {
+    return this.decrypt(encryptedEntries, {
+      onEach: (entry) => {
+        Dispatcher.decryptEntries('progress', `Decrypting...(${++done}/${total})`);
+      }
+    })
+      .then((entries) => {
         return {
           encryptedEntries: encryptedEntries,
           entries: entries,

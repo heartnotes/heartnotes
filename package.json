@@ -61,6 +61,7 @@
     "redux-thunk": "~1.0.0",
     "run-sequence": "~1.1.0",
     "rupture": "~0.6.1",
+    "semver": "^5.1.0",
     "shelljs": "~0.5.1",
     "sjcl": "~1.0.3",
     "url-parse": "^1.0.5",

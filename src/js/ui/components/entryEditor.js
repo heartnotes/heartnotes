@@ -81,7 +81,7 @@ var Component = React.createClass({
 
 
   componentWillUnmount: function() {
-    if (this.editor) {
+    if (this.editor && this.editor.filter) {
       this._changeHandler.cancel();
 
       this.editor.destroy();
@@ -115,7 +115,7 @@ var Component = React.createClass({
     //   console.log(this.editor.document.$.charset);
     // });
 
-    // save content every second
+    // save content only every second
     this._changeHandler = _.debounce(() => {
       let entry = this._getActiveEntry();
 
@@ -156,8 +156,13 @@ var Component = React.createClass({
   },
 
 
-  componentDidUpdate: function() {
-    this._setBody();
+  componentDidUpdate: function(oldProps) {
+    var newId = this.props.entryId || -1,
+      oldId = this.props.entryId || -1;
+
+    if (newId !== oldId) {
+      this._setBody();
+    }
   },
 
 

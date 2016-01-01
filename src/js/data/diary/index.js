@@ -7,16 +7,18 @@ import moment from 'moment';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
+import Api from '../api/index';
 import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/ExportedEntries';
 import * as DateUtils from '../../utils/date';
 import Decryptor from './decryptor';
-
+import Sync from './sync';
 
 
 /**
@@ -31,7 +33,7 @@ export default class Diary {
     this._encryptedEntries = {};
     this._entries = {};
 
-    this.logger = Logger.create(`diary[${this._id}]`);
+    this.logger = Logger.create(`diary-${this._id}`);
 
     this.decryptor = new Decryptor(this.logger, auth);
   }
@@ -71,11 +73,10 @@ export default class Diary {
       .then((encryptedEntries) => {
         this._encryptedEntries = encryptedEntries || {};
 
-        return this.decryptor.decrypt(this._encryptedEntries);
+        return this.decryptor.decryptEntriesLoadedFromStorage(this._encryptedEntries);
       })
       .then((result) => {
         this.logger.debug('loaded entries');
-        this.logger.debug(result);
 
         this._encryptedEntries = result.encryptedEntries;
         this._entries = result.entries;
@@ -85,6 +86,7 @@ export default class Diary {
       .then(() => {
         Dispatcher.loadEntries('result');
 
+        this._startSync();
         this._rebuildSearchIndex();
       })
       .catch((err) => {
@@ -349,7 +351,7 @@ export default class Diary {
 
             let done = 0;
 
-            return decryptor.decrypt(raw.entries, {
+            return decryptor.decryptEntriesLoadedFromStorage(raw.entries, {
               reEncryptOptions: {
                 setUpdatedTo: Date.now(),
                 onEach: (encryptedEntry) => {
@@ -502,6 +504,16 @@ export default class Diary {
     return Search.remove({
       id: id,
     });
+  }
+
+
+  _startSync () {
+    if (this._sync) {
+      return;
+    }
+
+    this._sync = new Sync(this);
+    this._sync.start();
   }
 
 }
