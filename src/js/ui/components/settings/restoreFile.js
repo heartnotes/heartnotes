@@ -65,12 +65,33 @@ var Component = React.createClass({
       <div className="restore-file">
         <h2>Restore</h2>
         <ProgressButton {...btnAttrs}>Restore from backup</ProgressButton>
+        {this._buildRestoreFromOldButton()}
       </div>
+    );
+  },
+
+
+  _buildRestoreFromOldButton: function() {
+    let { diary } = this.props.data;
+    let { diaryMgr } = diary;
+
+    let btnAttrs = {
+      defaultProgressMsg: 'Restoring from old diary...',
+      checkVar: diary.restoringBackup,
+      onClick: this._restoreFromOldVersionDiary,
+    };
+
+    return (
+      <ProgressButton {...btnAttrs}>Restore from v1.x diary</ProgressButton>
     );
   },
 
   _restoreBackup: function() {
     this.props.actions.restoreBackup();
+  },
+
+  _restoreFromOldVersionDiary: function() {
+    
   },
 
 });
