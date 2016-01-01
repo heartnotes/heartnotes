@@ -3,9 +3,8 @@ var _ = require('lodash'),
 
 var moment = require('moment');
 
-var Button = require('../button'),
-  ExportDataProgressPopup = require('../exportDataProgressPopup');
-
+var ProgressButton = require('../progressButton');
+  
 
 import { connectRedux } from '../../helpers/decorators';
 
@@ -13,16 +12,15 @@ import { connectRedux } from '../../helpers/decorators';
 var Component = React.createClass({
   render: function() { 
     var exportDataButtonAttrs = {
+      defaultProgressMsg: 'Exporting data...',
+      checkVar: this.props.data.diary.exporting,
       onClick: this._export,
-      animActive: !!this.props.data.diary.exporting.inProgress,
     };
 
     return (
       <div className="exportData">
         <h2>Export my data</h2>
-        <ExportDataProgressPopup {...this.props}>
-          <Button {...exportDataButtonAttrs}>Export to file</Button>
-        </ExportDataProgressPopup>
+        <ProgressButton {...exportDataButtonAttrs}>Export to file</ProgressButton>
       </div>
     );
   },

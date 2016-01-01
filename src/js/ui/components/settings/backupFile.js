@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
 
-import Button from '../button';
+import ProgressButton from '../progressButton';
 import DateFormat from '../date';
 import { connectRedux } from '../../helpers/decorators';
-import MakeBackupProgressPopup from './makeBackupProgressPopup';
 
 
 var Component = React.createClass({
@@ -19,8 +18,9 @@ var Component = React.createClass({
     ) 
 
     let btnAttrs = {
+      defaultProgressMsg: 'Making backup...',
+      checkVar: diary.makingBackup,
       onClick: this._makeBackup,
-      animActive: !!_.get(diary, 'makingBackup.inProgress'),
     };
 
     return (
@@ -30,9 +30,7 @@ var Component = React.createClass({
           <label>Last backup:</label>
           {lastBackupTime}
         </p>
-        <MakeBackupProgressPopup {...this.props}>
-          <Button {...btnAttrs}>Backup to file</Button>
-        </MakeBackupProgressPopup>
+        <ProgressButton {...btnAttrs}>Backup to file</ProgressButton>
       </div>
     );
   },

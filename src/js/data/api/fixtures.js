@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { instance as Api } from './index';
 
+var Logger = require('../../utils/logger').create('ApiFixtures');
+
 
 var users = {
   'ok@test.com': {
@@ -55,6 +57,11 @@ Api.addFixturePost('updatePassword', (query, body) => {
     key: body.key,
     meta: body.meta,
   };
+});
+
+
+Api.addFixturePost('feedback', (query, body) => {
+  Logger.debug('FEEDBACK RECIEVED', body);
 });
 
 

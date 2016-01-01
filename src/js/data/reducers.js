@@ -31,6 +31,26 @@ exports.app = function(state = InitialState.app(), action) {
         newVersionAvailable: semver.gt(release.tag_name, state.version),
       });
 
+    case Actions.FEEDBACK_START:
+      return _.extend({}, state, {
+        sendingFeedback: AsyncState.start(),
+      });
+
+    case Actions.FEEDBACK_RESULT:
+      return _.extend({}, state, {
+        sendingFeedback: AsyncState.result(action.payload),
+      });
+      
+    case Actions.FEEDBACK_ERROR:
+      return _.extend({}, state, {
+        sendingFeedback: AsyncState.error(action.payload),
+      });
+
+    case Actions.FEEDBACK_RESET:
+      return _.extend({}, state, {
+        sendingFeedback: AsyncState.reset(action.payload),
+      });
+
     default:
       return state;
   }

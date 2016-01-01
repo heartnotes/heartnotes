@@ -5,6 +5,7 @@ exports.app = function() {
   return {
     version: version,
     checkingForUpdate: {},
+    sendingFeedback: {},
     newVersionAvailable: false,
   }
 };
@@ -39,7 +40,6 @@ exports.diary = function() {
     searching: {},
     makingBackup: {},
     restoringBackup: {},
-    saveEntriesRequested: 0,
   };
 };
 

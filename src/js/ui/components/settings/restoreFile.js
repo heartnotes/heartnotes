@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
 
-import Button from '../button';
+import ProgressButton from '../progressButton';
 import Overlay from '../overlay';
 import { connectRedux } from '../../helpers/decorators';
-import RestoreBackupProgressPopup from './restoreBackupProgressPopup';
 
 
 // var RestoreOverlay = React.createClass({
@@ -57,15 +56,15 @@ var Component = React.createClass({
     let { diaryMgr } = diary;
 
     let btnAttrs = {
+      defaultProgressMsg: 'Restoring backup...',
+      checkVar: diary.restoringBackup,
       onClick: this._restoreBackup,
     };
 
     return (
       <div className="restore-file">
         <h2>Restore</h2>
-        <RestoreBackupProgressPopup {...this.props}>
-          <Button {...btnAttrs}>Restore from backup</Button>
-        </RestoreBackupProgressPopup>
+        <ProgressButton {...btnAttrs}>Restore from backup</ProgressButton>
       </div>
     );
   },

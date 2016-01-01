@@ -13,9 +13,9 @@ import Layout from './ui/layout';
 import EntriesView from './ui/pages/entries';
 import NewEntry from './ui/pages/newEntry';
 import AccountSettingsView from './ui/pages/settings/account';
-import ChangePasswordView from './ui/pages/settings/changePassword';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import ExportDataView from './ui/pages/settings/exportData';
+import HelpView from './ui/pages/settings/help';
 
 // API fixtures
 //if (Detect.inDevMode()) {
@@ -50,9 +50,9 @@ const Routes = (
     <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
     <Route name="newEntry" path="/newEntry" component={NewEntry} />
     <Route name="account" path="/settings" component={AccountSettingsView} />
-    <Route name="changePassword" path="/settings/changePassword" component={ChangePasswordView} />
     <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route name="exportData" path="/settings/exportData" component={ExportDataView} />
+    <Route name="help" path="/settings/help" component={HelpView} />
     <Route path="*" component={EntriesView}/>
   </Route>
 );

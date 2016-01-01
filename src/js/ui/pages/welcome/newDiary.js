@@ -3,9 +3,9 @@ import _ from 'lodash';
 import React from 'react';
 
 var Button = require('../../components/button'),
+  ProgressButton = require('../../components/progressButton'),
   EmailInput = require('../../components/emailInput'),
   NewPasswordInput = require('../../components/newPasswordInput'),
-  CreateDiaryProgressPopup = require('../../components/createDiaryProgressPopup'),
   UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
 
 import { connectRedux } from '../../helpers/decorators';
@@ -27,8 +27,9 @@ var Component = React.createClass({
 
   render: function() { 
     var buttonAttrs = {
+      defaultProgressMsg: 'Creating diary...',
+      checkVar: this.props.data.diary.creating,
       onClick: this._savePassword,
-      animActive: !!this.props.data.diary.creating.inProgress,
     };
 
     if (!_.get(this.state.password, 'length') || !_.get(this.state.id, 'length')) {
@@ -50,9 +51,7 @@ var Component = React.createClass({
               tabIndex={2} />
           </div>
           <div className="action row">
-            <CreateDiaryProgressPopup {...this.props}>
-              <Button {...buttonAttrs}>Create diary</Button>
-            </CreateDiaryProgressPopup>
+            <ProgressButton {...buttonAttrs}>Create diary</ProgressButton>
           </div>
         </form>
         <UserShouldRememberPasswordDialog ref="rememberDialog" />

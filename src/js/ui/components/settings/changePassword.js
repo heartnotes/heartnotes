@@ -3,8 +3,7 @@ var _ = require('lodash'),
 
 var moment = require('moment');
 
-var Button = require('../button'),
-  ChangePasswordProgressPopup = require('../changePasswordProgressPopup'),
+var ProgressButton = require('../progressButton'),
   PasswordInput = require('../passwordInput'),
   NewPasswordInput = require('../newPasswordInput'),
   UserShouldRememberPasswordDialog = require('../userShouldRememberPasswordDialog');
@@ -24,8 +23,9 @@ var Component = React.createClass({
 
   render: function() { 
     var changePasswordButtonAttrs = {
+      defaultProgressMsg: 'Saving new password...',
+      checkVar: this.props.data.diary.changingPassword,
       onClick: this._saveNewPassword,
-      animActive: !!this.props.data.diary.changingPassword.inProgress,
     };
 
     if (!_.get(this.state.oldPassword, 'length') || !_.get(this.state.newPassword, 'length')) {
@@ -33,8 +33,7 @@ var Component = React.createClass({
     }
 
     return (
-      <div className="changePassword">
-        
+      <div className="change-password">
         <h2>Change password</h2>
         <form onSubmit={this._changePassword}>
           <div className="field row">
@@ -54,9 +53,7 @@ var Component = React.createClass({
               tabIndex={2} />
           </div>
           <div className="action row">
-            <ChangePasswordProgressPopup {...this.props}>
-              <Button {...changePasswordButtonAttrs}>Save new password</Button>
-            </ChangePasswordProgressPopup>
+            <ProgressButton {...changePasswordButtonAttrs}>Save new password</ProgressButton>
           </div>
         </form>
         <UserShouldRememberPasswordDialog ref="rememberDialog" />

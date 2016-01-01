@@ -4,10 +4,10 @@ var _ = require('lodash'),
 
 
 var Button = require('../../components/button'),
+  ProgressButton = require('../../components/progressButton'),
   IconButton = require("../../components/iconButton"),
   Popup = require("../../components/popup"),
-  PasswordInput = require('../../components/passwordInput'),
-  OpenDiaryProgressPopup = require('../../components/openDiaryProgressPopup');
+  PasswordInput = require('../../components/passwordInput');
 
 
 import { connectRedux } from '../../helpers/decorators';
@@ -33,8 +33,9 @@ var Component = React.createClass({
     let id = this._getUsername();
 
     let buttonAttrs = {
+      defaultProgressMsg: 'Logging in...',
+      checkVar: loggingIn,
       onClick: this._openDiary,
-      animActive: !!loggingIn.inProgress,
       disabled: !_.get(this.state.password, 'length') || !_.get(id, 'length'),
     };
 
@@ -58,9 +59,7 @@ var Component = React.createClass({
                 tabIndex={1} />
             </div>
             <div className="action row">
-              <OpenDiaryProgressPopup {...this.props}>
-                <Button {...buttonAttrs}>Login</Button>
-              </OpenDiaryProgressPopup>
+              <ProgressButton {...buttonAttrs}>Login</ProgressButton>
             </div>
           </form>
         </div>

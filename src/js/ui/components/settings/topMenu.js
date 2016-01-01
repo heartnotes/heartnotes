@@ -12,11 +12,6 @@ const ITEMS = [
     desc: 'Account',
   },
   {
-    id: 'changePassword',
-    route: '/settings/changePassword',
-    desc: 'Password',
-  },
-  {
     id: 'backupRestore',
     route: '/settings/backupRestore',
     desc: 'Backup / Restore',
@@ -25,6 +20,11 @@ const ITEMS = [
     id: 'exportData',
     route: '/settings/exportData',
     desc: 'Export',
+  },
+  {
+    id: 'help',
+    route: '/settings/help',
+    desc: 'Help',
   },
 ];
 

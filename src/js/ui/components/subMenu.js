@@ -17,7 +17,7 @@ var Component = React.createClass({
       {
         icon: 'eject',
         action: this._closeDiary,
-        desc: 'Close diary',
+        desc: 'Logout',
       },
     ];
 

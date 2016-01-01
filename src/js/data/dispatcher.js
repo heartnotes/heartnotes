@@ -349,6 +349,23 @@ export class Dispatcher {
 
 
 
+  sendFeedback (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.FEEDBACK_START, data);
+      case 'result':
+        return this._do(Actions.FEEDBACK_RESULT, data);
+      case 'error':
+        this._do(Actions.FEEDBACK_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.FEEDBACK_RESET);          
+        });
+    }
+  }
+
+
+
   enterPassword (state, data) {
     this.createPassword(state, data);
   }

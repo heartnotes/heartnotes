@@ -9,6 +9,7 @@ import { instance as Storage } from './storage/index';
 import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
 import { instance as Dispatcher } from './dispatcher';
+import { instance as Api } from './api';
 import Diary from './diary/index';
 
 
@@ -222,11 +223,26 @@ export function restoreBackup() {
 
 
 
-export function disableBackups() {
-  return function(dispatch, getState) {
-    let diaryMgr = getState().diary.diaryMgr;
 
-    return diaryMgr.disableBackups();
+
+export function sendFeedback(id, msg) {
+  return function(dispatch, getState) {
+    Dispatcher.sendFeedback('start');
+
+    return Api.post('/feedback', {}, {
+      id: id,
+      msg: msg,
+    })
+      .then(() => {
+        Dispatcher.sendFeedback('result');
+      })
+      .catch((err) => {
+        Logger.error(err);
+
+        Dispatcher.sendFeedback('error', err);
+
+        throw err;
+      });
   }
 }
 
