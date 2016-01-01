@@ -2,50 +2,94 @@ import _ from 'lodash';
 import React from 'react';
 
 import ProgressButton from '../progressButton';
+import Button from '../button';
 import Overlay from '../overlay';
 import { connectRedux } from '../../helpers/decorators';
+import Loading from '../../components/loading';
+import PasswordInput from '../../components/passwordInput';
 
 
-// var RestoreOverlay = React.createClass({
-//   getInitialState: function() {
-//     return {
-//       filePath: null,
-//     }
-//   },
+var RestoreOverlay = React.createClass({
+  getInitialState: function() {
+    return {
+      filePath: null,
+      password: null,
+    }
+  },
 
-//   render: function() {
-//     let cancelBtn = null;
-
-//     cancelBtn = (
-//       <Button onClick={this.hide}>Cancel</Button>
-//     );
+  render: function() {
+    let buttonAttrs = {
+      defaultProgressMsg: 'Restoring from old diary...',
+      checkVar: this.props.checkVar,
+      onClick: this._restore,
+      disabled: !_.get(this.state.password, 'length')
+    };
     
-//     return (
-//       <Overlay ref="overlay">
-//         <div className="restore-backup-dialog">
-//           <div className="buttons">
-//             <MakeBackupProgressPopup {...this.props}>
-//               <Button>Begin</Button>
-//             </MakeBackupProgressPopup>
-            
-//           </div>
-//         </div>
-//       </Overlay>
-//     );
-//   },
+    let message = "Restore from old diary";
 
-//   show: function(filePath) {
-//     this.setState({
-//       filePath: filePath
-//     });
+    if (this.props.checkVar.progressMsg) {
+      message = (
+        <p className="progress-message">
+          <Loading text={this.props.checkVar.progressMsg} />
+        </p>
+      );
+    }
 
-//     this.refs.overlay.show();
-//   },
+    let passwordInput = (
+      <PasswordInput 
+        placeholder="Password"
+        password={this.state.password} 
+        onChange={this._setPassword} 
+        tabIndex={1} />
+    );
 
-//   hide: function() {
-//     this.refs.overlay.hide();
-//   },
-// });
+    return (
+      <Overlay ref="overlay" onClose={this.hide}>
+        <div className="restore-backup-dialog">
+          <h2>{message}</h2>
+          <form onSubmit={this._createNew}>
+            <div className="input-fields row">
+              {passwordInput}
+            </div>
+            <div className="action row">
+              <ProgressButton {...buttonAttrs}>Begin import</ProgressButton>
+            </div>
+          </form>
+        </div>
+      </Overlay>
+    );
+  },
+
+  show: function(filePath) {
+    this.setState({
+      filePath: filePath
+    });
+
+    this.refs.overlay.show();
+  },
+
+  hide: function(e) {
+    if (e) {
+      e.preventDefault();
+    }
+
+    this.refs.overlay.hide();
+  },
+
+  _setPassword: function(password) {
+    this.setState({
+      password: password,
+    });
+  },
+
+  _restore: function() {
+    return this.props.restoreHandler(this.state.filePath, this.state.password)
+      .then(() => {
+        this.hide();
+      });
+  }
+
+});
 
 
 
@@ -76,13 +120,17 @@ var Component = React.createClass({
     let { diaryMgr } = diary;
 
     let btnAttrs = {
-      defaultProgressMsg: 'Restoring from old diary...',
-      checkVar: diary.restoringBackup,
-      onClick: this._restoreFromOldVersionDiary,
+      onClick: this._selectOldDiary,
     };
 
     return (
-      <ProgressButton {...btnAttrs}>Restore from v1.x diary</ProgressButton>
+      <div>
+        <RestoreOverlay 
+          ref="overlay" 
+          checkVar={this.props.data.diary.restoringFromOldDiary} 
+          restoreHandler={this._restoreFromOldDiary} />
+        <Button {...btnAttrs}>Restore from v1.x diary</Button>
+      </div>
     );
   },
 
@@ -90,14 +138,25 @@ var Component = React.createClass({
     this.props.actions.restoreBackup();
   },
 
-  _restoreFromOldVersionDiary: function() {
-    
+  _selectOldDiary: function() {
+    this.props.actions.selectOldDiaryFile()
+      .then((filePath) => {
+        if (filePath) {
+          this.refs.overlay.show(filePath);
+        }
+      });
   },
+
+  _restoreFromOldDiary: function(filePath, password) {
+    return this.props.actions.restoreFromOldDiaryFile(filePath, password);
+  }
 
 });
 
 
 module.exports = connectRedux([
   'restoreBackup',
+  'restoreFromOldDiaryFile',
+  'selectOldDiaryFile'
 ])(Component);
 

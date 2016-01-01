@@ -43,7 +43,7 @@ export default class Auth {
 
         this._originalMeta = meta;
 
-        return this._enterPassword(password);
+        return this.enterPassword(password);
       })
       .then(() => {
         this._id = username;
@@ -231,7 +231,7 @@ export default class Auth {
   /** 
    * @return {Promise}
    */
-  _enterPassword(password) {
+  enterPassword(password) {
     Dispatcher.enterPassword('start');
 
     let meta = this._originalMeta;

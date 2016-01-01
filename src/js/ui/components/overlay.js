@@ -2,15 +2,19 @@ var React = require('react'),
   moment = require('moment'),
   Classnames = require('classnames');
 
+import IconButton from './iconButton';
+
 
 module.exports = React.createClass({
   propTypes: {
     onClick : React.PropTypes.func,
+    onClose: React.PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {
       onClick: null,
+      onClose: null,
     };
   },
 
@@ -26,8 +30,21 @@ module.exports = React.createClass({
       shown: this.state.show
     });
 
+    let closeButton = null;
+
+    if (this.props.onClose) {
+      closeButton = (
+        <IconButton 
+          className="close-overlay" 
+          icon='close' 
+          onClick={this.props.onClose} 
+          tooltip="Cancel" />
+      );
+    }
+
     return (
       <div className={classes} onClick={this._clicked}>
+        {closeButton}
         {this.props.children}
       </div>
     );

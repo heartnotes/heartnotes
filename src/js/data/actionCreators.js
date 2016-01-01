@@ -223,6 +223,25 @@ export function restoreBackup() {
 
 
 
+export function selectOldDiaryFile() {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
+
+    return diaryMgr.selectOldDiaryFile();
+  }
+}
+
+
+
+export function restoreFromOldDiaryFile(filePath, password) {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
+
+    return diaryMgr.restoreFromOldDiaryFile(filePath, password);
+  }
+}
+
+
 
 
 export function sendFeedback(msg) {

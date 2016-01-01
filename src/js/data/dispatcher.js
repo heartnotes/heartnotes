@@ -349,6 +349,25 @@ export class Dispatcher {
 
 
 
+  restoreFromOldDiary (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.RESTORE_FROM_OLD_START, data);
+      case 'progress':
+        return this._do(Actions.RESTORE_FROM_OLD_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.RESTORE_FROM_OLD_RESULT, data);
+      case 'error':
+        this._do(Actions.RESTORE_FROM_OLD_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.RESTORE_FROM_OLD_RESET);          
+        });
+    }
+  }
+
+
+
   sendFeedback (state, data) {
     switch (state) {
       case 'start':

@@ -290,7 +290,9 @@ export default class Diary {
             let total = _.values(entries).length,
               done = 0;
 
-            return this.decryptor.encrypt(entries, {
+            this._entries = entries;
+
+            return this.decryptor.encrypt(this._entries, {
               setUpdatedTo: Date.now(),
               onEach: (encryptedEntry) => {
                 Dispatcher.restore('progress', `Restoring...(${++done}/${total})`);
@@ -315,6 +317,65 @@ export default class Diary {
         this.logger.error(err);
 
         Dispatcher.restore('error', err);
+
+        throw err;
+      });
+  }
+
+
+  selectOldDiaryFile () {
+    return Storage.backup.selectExistingBackupFile();
+  }
+
+
+  restoreFromOldDiaryFile (filePath, password) {
+    Dispatcher.restoreFromOldDiary('start');
+
+    // load
+    return Storage.backup.loadBackup(filePath)
+      .then((raw) => {
+        let auth = new Auth(raw.meta);
+
+        let decryptor = new Decryptor(
+          this.logger.create('restore_from_old_diary'), 
+          auth
+        );
+
+        Dispatcher.restoreFromOldDiary('progress', 'Checking password...');
+
+        return auth.enterPassword(password)
+          .then(() => {
+            Dispatcher.restoreFromOldDiary('progress', 'Decrypting...');
+
+            let done = 0;
+
+            return decryptor.decrypt(raw.entries, {
+              reEncryptOptions: {
+                setUpdatedTo: Date.now(),
+                onEach: (encryptedEntry) => {
+                  Dispatcher.restoreFromOldDiary('progress', `Restoring...${++done}`);
+
+                  return encryptedEntry; 
+                },
+              },
+            });
+          })
+          .then((data) => {
+            this._entries = data.entries;
+            this._encryptedEntries = data.encryptedEntries;
+
+            return this._saveEncryptedEntries();
+          })
+          .then(() => {
+            Dispatcher.alertUser('Restore successful');
+
+            Dispatcher.restoreFromOldDiary('result');
+          });
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.restoreFromOldDiary('error', err);
 
         throw err;
       });

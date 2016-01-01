@@ -12,11 +12,11 @@ export default class Decrypter {
   }
 
 
-  decrypt (encryptedEntries) {
-    if (!this._auth.meta.version) {
-      return this._decryptOldFormat(encryptedEntries);
+  decrypt (encryptedEntries, options = {}) {
+    if (!this._auth.originalMeta.version) {
+      return this._decryptOldFormat(encryptedEntries, options);
     } else {
-      return this._decryptNewFormat(encryptedEntries);
+      return this._decryptNewFormat(encryptedEntries, options);
     }
   }
 
@@ -28,49 +28,49 @@ export default class Decrypter {
     });
 
     return Q.props(_.mapValues(entries, (entry) => {
+      entry.up = options.setUpdatedTo || entry.up;
+
       return Crypto.encrypt(this._auth.encryptionKey, {
         body: entry.body,
         ts: entry.ts,
-        up: options.setUpdatedTo || entry.up,
+        up: entry.up,
       })
         .then(options.onEach);
     }));
   }
 
 
-  _decryptOldFormat (encryptedEntries) {
+  _decryptOldFormat (encryptedEntries, options = {}) {
     this.logger.debug("decrypt OLD format");
 
     Dispatcher.decryptEntries('start');
 
     Dispatcher.decryptEntries('progress', 'Decrypting entries');
 
-    var entries = {};
-
     return Crypto.decrypt(
       this._auth.encryptionKey, encryptedEntries
     )
       .then((entries) => {
-        entries = entries;
-
         let done = 0,
           total = _.keys(entries).length;
 
-        return this.encrypt(entries, {
+        let encryptOptions = _.extend({
           onEach: (encryptedEntry) => {
-            Dispatcher.decryptEntries('progress', `Upgrading diary...(${++done}/${total})`);
+            Dispatcher.decryptEntries('progress', `Upgrading entry...(${++done}/${total})`);
 
             return encryptedEntry; 
           }
-        });
-      })
-      .then((newlyEncryptedEntries) => {
-        Dispatcher.decryptEntries('result');
+        }, options.reEncryptOptions);
 
-        return {
-          encryptedEntries: newlyEncryptedEntries,
-          entries: entries,
-        };
+        return this.encrypt(entries, encryptOptions)
+          .then((newlyEncryptedEntries) => {
+            Dispatcher.decryptEntries('result');
+
+            return {
+              encryptedEntries: newlyEncryptedEntries,
+              entries: entries,
+            };
+          });
       })
       .catch((err) => {
         this.logger.error(err);
@@ -82,7 +82,7 @@ export default class Decrypter {
   }
 
 
-  _decryptNewFormat (encryptedEntries) {
+  _decryptNewFormat (encryptedEntries, options = {}) {
     this.logger.debug("decrypt NEW format");
 
     Dispatcher.decryptEntries('start');

@@ -127,6 +127,31 @@ exports.diary = function(state = InitialState.diary(), action) {
       });
 
 
+    case Actions.RESTORE_FROM_OLD_START:
+      return _.extend({}, state, {
+        restoringFromOldDiary: AsyncState.start(),
+      });
+
+    case Actions.RESTORE_FROM_OLD_PROGRESS:
+      return _.extend({}, state, {
+        restoringFromOldDiary: AsyncState.progress(action.payload),
+      });
+
+    case Actions.RESTORE_FROM_OLD_RESULT:
+      return _.extend({}, state, {
+        restoringFromOldDiary: AsyncState.result(action.payload),
+      });
+
+    case Actions.RESTORE_FROM_OLD_ERROR:
+      return _.extend({}, state, {
+        restoringFromOldDiary: AsyncState.error(action.payload),
+      });
+
+    case Actions.RESTORE_FROM_OLD_RESET:
+      return _.extend({}, state, {
+        restoringFromOldDiary: AsyncState.reset(),
+      });
+      
 
     case Actions.CLOSE_DIARY:
       return _.extend({}, state, {

@@ -40,6 +40,7 @@ exports.diary = function() {
     searching: {},
     makingBackup: {},
     restoringBackup: {},
+    restoringFromOldDiary: {},
   };
 };
 
