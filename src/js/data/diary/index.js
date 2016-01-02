@@ -105,23 +105,10 @@ export default class Diary {
     Dispatcher.updateEntry('start');
 
     let entry = this.getEntryById(id);
-    if (!entry) {
-      entry = this.getEntryByDate(ts);
-    }
 
     return Q.try(() => {
       if (!entry) {
-        ts = DateUtils.getNormalizedTimestamp(ts || Date.now());
-
-        this.logger.debug('create entry', ts);
-
-        return Crypto.hash(ts, Math.random() * 100000)
-          .then((newId) => {
-            return {
-              id: newId,
-              ts: ts,
-            };
-          });
+        return this.getOrCreateEntryForDate(ts);
       } else {
         return entry;
       }
@@ -245,7 +232,7 @@ export default class Diary {
           .then(() => {
             Dispatcher.alertUser('Backup successful');
 
-            this._settings.backup.lastTime = Date.now();
+            _.set(this._settings, 'backup.lastTime', Date.now());
 
             return this._saveSettings();
           });
@@ -409,10 +396,38 @@ export default class Diary {
   }
 
 
-  getEntryForNow () {
-    this.logger.debug('get today\'s entry');
-    
-    return this.getEntryByDate(new Date());
+  /**
+   * @return {Promise}
+   */
+  getOrCreateEntryForDate (ts) {
+    this.logger.debug('get or create entry for date', ts || 'now');
+
+    ts = ts || Date.now();
+
+    return Q.try(() => {
+      var entry = this.getEntryByDate(ts);
+
+      if (entry) {
+        return entry;
+      }
+
+      ts = DateUtils.getNormalizedTimestamp(ts);
+
+      this.logger.debug('create entry', ts);
+
+      return Crypto.hash(ts, Math.random() * 100000)
+        .then((newId) => {
+          return {
+            id: newId,
+            ts: ts,
+          };
+        })
+        .then((entry) => {
+          this._entries[entry.id] = entry;
+
+          return entry;
+        });
+    });
   }
 
 

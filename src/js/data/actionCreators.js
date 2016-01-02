@@ -114,6 +114,14 @@ export function loadEntries() {
 }
 
 
+export function createEntryForNow() {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
+
+    return diaryMgr.getOrCreateEntryForDate(Date.now());
+  };
+}
+
 
 
 export function updateEntry(id, ts, content) {

@@ -158,7 +158,7 @@ var Component = React.createClass({
 
   componentDidUpdate: function(oldProps) {
     var newId = this.props.entryId || -1,
-      oldId = this.props.entryId || -1;
+      oldId = oldProps.entryId || -1;
 
     if (newId !== oldId) {
       this._setBody();
@@ -180,11 +180,7 @@ var Component = React.createClass({
         };
       }
     } else {
-      entry = diaryMgr.getEntryById(this.props.entryId);
-
-      if (!entry) {
-        entry = diaryMgr.getEntryForNow() || {};
-      }
+      entry = diaryMgr.getEntryById(this.props.entryId) || {};
     }
 
     return entry;

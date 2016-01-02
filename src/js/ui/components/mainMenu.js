@@ -14,7 +14,7 @@ var Component = React.createClass({
         desc: 'Add entry',
       },
       {
-        icon: 'th-list',
+        icon: 'search',
         route: '/entries',
         desc: 'View timeline',
       },

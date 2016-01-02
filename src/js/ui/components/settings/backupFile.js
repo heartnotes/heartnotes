@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import moment from 'moment';
 
 import ProgressButton from '../progressButton';
 import DateFormat from '../date';
@@ -11,7 +12,9 @@ var Component = React.createClass({
     let { diary } = this.props.data;
     let { diaryMgr } = diary;
 
-    let lastBackupTime = (diaryMgr.backupLastTime) ? (
+    let lastBackupTime = moment(diaryMgr.backupLastTime);
+
+    lastBackupTime = (lastBackupTime.valueOf()) ? (
       <DateFormat date={diaryMgr.backupLastTime} format="MMMM DD, YYYY - HH:mm:ss" />
     ) : (
       <span>Never</span>

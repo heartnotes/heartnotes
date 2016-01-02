@@ -3,30 +3,55 @@ var _ = require('lodash'),
 
 var moment = require('moment');
 
-var Timeline = require('../components/timeline'),
-  EntryEditor = require('../components/entryEditor');
+var EntryEditor = require('../components/entryEditor');
 
+import Loading from '../components/loading';
 import { connectRedux } from '../helpers/decorators';
 
 
 
 
 var Component = React.createClass({
-  render: function() { 
-    let diaryMgr = this.props.data.diary.diaryMgr;
+  getInitialState: function() {
+    return {
+      entryId: null,
+    }
+  },
 
-    let loaded = !!diaryMgr.entries,
-      todayEntry = diaryMgr.getEntryForNow(),
-      todayEntryId = _.get(todayEntry, 'id');
+  render: function() { 
+    let { entryId } = this.state;
+
+    let content = (
+      <Loading />
+    );
+
+    if (entryId) {
+      content = (
+        <EntryEditor entryId={this.state.entryId} />
+      );      
+    }
 
     return (
-      <div className="newEntry">
-        <EntryEditor entryId={todayEntryId} entryDataReady={loaded} />
-      </div>
+      <div className="newEntry">{content}</div>
     );
   },
+
+  componentDidMount: function() {
+    this.props.actions.createEntryForNow()
+      .then((entry) => {
+        if (this.isMounted()) {
+          this.setState({
+            entryId: entry.id,
+          });
+        }
+      });
+  }
 });
 
 
 
-module.exports = connectRedux()(Component);
+module.exports = connectRedux([
+  'createEntryForNow'
+])(Component);
+
+
