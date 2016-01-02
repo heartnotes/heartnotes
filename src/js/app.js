@@ -11,7 +11,7 @@ import Detet from './utils/detect';
 import Store from './data/store';
 import Layout from './ui/layout';
 import EntriesView from './ui/pages/entries';
-import NewEntry from './ui/pages/newEntry';
+import NewEntryView from './ui/pages/newEntry';
 import AccountSettingsView from './ui/pages/settings/account';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import HelpView from './ui/pages/settings/help';
@@ -47,7 +47,7 @@ const Routes = (
     <IndexRoute component={EntriesView} />
     <Route name="entries" path="/entries" component={EntriesView} />
     <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
-    <Route name="newEntry" path="/newEntry" component={NewEntry} />
+    <Route name="newEntry" path="/newEntry" component={NewEntryView} />
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route name="help" path="/settings/help" component={HelpView} />

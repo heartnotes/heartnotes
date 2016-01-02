@@ -3,6 +3,7 @@ import React from 'react';
 
 import { connectRedux, routing } from './helpers/decorators';
 import MainMenu from './components/mainMenu';
+import BackgroundTasksMenu from './components/backgroundTasksMenu';
 import SubMenu from './components/subMenu';
 import WelcomeView from './pages/welcome/index';
 import UserAlert from './components/userAlert';
@@ -26,7 +27,6 @@ var Component = React.createClass({
         <div id="content-wrapper">
           {content}
         </div>
-        <FooterBar />
       </div>
     );    
   },
@@ -39,6 +39,7 @@ var Component = React.createClass({
     return (
       <section id="welcome-content">
         <WelcomeView {...this.props} />
+        <FooterBar />
       </section>
     );
   },
@@ -48,6 +49,7 @@ var Component = React.createClass({
       <div>
         <section id="sidebar">
           <Logo withText={false} onClick={this._onLogoClick} />
+          <BackgroundTasksMenu {...this.props} />
           <MainMenu {...this.props} />
           <SubMenu {...this.props} />
         </section>

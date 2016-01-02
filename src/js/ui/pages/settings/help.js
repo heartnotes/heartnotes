@@ -36,6 +36,8 @@ var Component = React.createClass({
           rows="10" 
           placeholder="Tell us what you like or don't like..." />
         <ProgressButton {...buttonAttrs}>Send</ProgressButton>
+        <hr />
+        <p>Get more help at <a href="https://heartnot.es" target="_blank">heartnot.es</a>.</p>
       </Layout>
     );
   },

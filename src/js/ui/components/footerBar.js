@@ -18,7 +18,7 @@ class Component extends React.Component {
 
     if (app.newVersionAvailable) {
       newVersionMsg = (
-        <a href="#" onClick={this._goToHomepage}>update</a>
+        <a href="#" onClick={this._goToHomepage}>new version available!</a>
       );
     } else if (app.checkingForUpdate.inProgress) {
       newVersionMsg = (
@@ -31,8 +31,8 @@ class Component extends React.Component {
         <div className="footer-content">
           <div className="meta">
             <span className="version">
-              v{this.props.data.app.version}
               <span className="new-version">{newVersionMsg}</span>
+              v{this.props.data.app.version}
             </span>
           </div>
         </div>
