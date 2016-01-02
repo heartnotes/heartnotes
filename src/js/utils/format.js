@@ -2,7 +2,7 @@
 
 exports.htmlToStr = function(html) {
   var div = document.createElement('DIV');
-  div.innerHTML = html;
+  div.innerHTML = (html || '');
   return div.innerText;
 };
 

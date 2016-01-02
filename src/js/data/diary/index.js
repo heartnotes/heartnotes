@@ -438,7 +438,16 @@ export default class Diary {
 
 
   get entries () {
-    return this._entries;
+    // filter out empty entries
+    let entries = {};
+
+    _.each(this._entries, (e, id) => {
+      if (_.get(e, 'body.length')) {
+        entries[id] = e;
+      }
+    });
+
+    return entries;
   }
 
 
