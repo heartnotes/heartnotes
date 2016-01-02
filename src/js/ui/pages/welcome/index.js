@@ -22,39 +22,16 @@ var Comonent = React.createClass({
   },
 
   render: function() { 
-    let newVersionMsg = null;
-
-    if (this.props.data.app.newVersionAvailable) {
-      newVersionMsg = (
-        <a href="#" onClick={this._goToHomepage}>New version available!</a>
-      );
-    } else if (this.props.data.app.checkingForUpdate.inProgress) {
-      newVersionMsg = (
-        <Loading />
-      );
-    }
-
     return (
       <div className="welcomeView">
         <Logo/>
         <div className="step-container">
           {this._buildSteps()}
         </div>
-        <footer>
-          <span className="new-version">{newVersionMsg}</span>
-          <span className="version">v{this.props.data.app.version}</span>
-          <span className="homepage-link">
-            <a href="#" onClick={this._goToHomepage}>About</a>
-          </span>
-        </footer>
       </div>
     );
   },
 
-
-  _goToHomepage: function() {
-    require("shell").openExternal("http://heartnot.es");
-  },
 
 
   _buildSteps () {

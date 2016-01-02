@@ -7,6 +7,7 @@ import SubMenu from './components/subMenu';
 import WelcomeView from './pages/welcome/index';
 import UserAlert from './components/userAlert';
 import Logo from './components/logo';
+import FooterBar from './components/footerBar';
 
 
 var Component = React.createClass({
@@ -22,7 +23,10 @@ var Component = React.createClass({
     return (
       <div id="layout">
         <UserAlert {...this.props.data.alert} />
-        {content}
+        <div id="content-wrapper">
+          {content}
+        </div>
+        <FooterBar />
       </div>
     );    
   },
