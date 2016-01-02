@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Timer } from 'clockmaker';
 
 import { instance as Dispatcher } from '../dispatcher';
-import { instance as Api } from '../api/index';
+import { UnreachableError, instance as Api } from '../api/index';
 
 
 export default class Sync {
@@ -42,8 +42,6 @@ export default class Sync {
       return cb();
     }
 
-    // TODO: check that server is accessible
-
     this.logger.info('Started');
 
     const syncStartTime = Date.now();
@@ -63,9 +61,12 @@ export default class Sync {
 
     this.logger.debug('Contacting server...');
 
-    Api.post('sync', {}, {
-      entries: entriesToSend,
-    })
+    Api.isServerReachable()
+      .then(() => {
+        return Api.post('sync', {}, {
+          entries: entriesToSend,
+        })        
+      })
       .then((serverEncryptedEntries) => {
         this.logger.debug('Got data...');
 
@@ -95,7 +96,11 @@ export default class Sync {
         this.logger.info(`Ended (took ${syncTimeTaken} seconds`);
       })
       .catch((err) => {
-        this.logger.error(err.stack);
+        if (err instanceof UnreachableError) {
+          this.logger.warn('Server unreachable, skipping');
+        } else {
+          this.logger.error(err.stack);
+        }
       })
       .finally(cb);
   }

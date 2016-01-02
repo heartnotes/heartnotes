@@ -12,6 +12,17 @@ import * as Detect from '../../utils/detect';
 const LIVE_SERVER = 'https://heartnot.es:443/api';
 
 
+export class UnreachableError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+    this.message = message; 
+    Error.captureStackTrace(this, this.constructor.name);
+  }
+}
+
+
+
 export class Api {
   constructor (options) {
     this.logger = Logger.create(`api`);
@@ -46,12 +57,24 @@ export class Api {
   }
 
   isServerReachable () {
-    return new Q(function(resolve, reject) {
+    return new Q((resolve, reject) => {
       let url = urlParser(this.options.baseUrl);
 
-      isReachable(url, function(err, online) {
-        resolve(!!online);
-      });
+      try {
+        isReachable(url, (err, online) => {
+          if (err) {
+            return reject(new UnreachableError('Server unreachable'));
+          }
+
+          if (!online) {
+            return reject(new UnreachableError('Server unreachable'));
+          }
+
+          resolve(!!online);
+        });
+      } catch (err) {
+        return reject(new UnreachableError('Server unreachable'));
+      }
     });
   }
 
