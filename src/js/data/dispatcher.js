@@ -291,10 +291,13 @@ export class Dispatcher {
   buildSearchIndex (state, data) {
     switch (state) {
       case 'start':
+        this._startBg('rebuildSearch', 'Rebuilding search index...');
         return this._do(Actions.BUILD_SEARCH_INDEX_START, data);
       case 'result':
+        this._stopBg('rebuildSearch');
         return this._do(Actions.BUILD_SEARCH_INDEX_RESULT, data);
       case 'error':
+        this._stopBg('rebuildSearch');
         this._do(Actions.BUILD_SEARCH_INDEX_ERROR, data);
     }
   }
@@ -396,6 +399,29 @@ export class Dispatcher {
   }
 
 
+
+  _startBg(taskId, desc) {
+    this._do(Actions.BACKGROUND_TASK_START, {
+      id: taskId,
+      desc: desc,
+    });
+  }
+
+
+  _updateBg(taskId, newDesc) {
+    this._do(Actions.BACKGROUND_TASK_PROGRESS, {
+      id: taskId,
+      desc: desc,
+    });
+  }
+
+
+  _stopBg(taskId) {
+    this._do(Actions.BACKGROUND_TASK_STOP, {
+      id: taskId,
+      desc: desc,
+    });
+  }
 
 
   _do (actionId, data) {

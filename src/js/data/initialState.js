@@ -4,6 +4,7 @@ import { version } from '../../../package.json';
 exports.app = function() {
   return {
     version: version,
+    backgroundTasks: {},
     checkingForUpdate: {},
     sendingFeedback: {},
     newVersionAvailable: false,

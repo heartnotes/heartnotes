@@ -12,6 +12,30 @@ var LocalStorage = Storage.local;
 
 exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
+    case Actions.BACKGROUND_TASK_START:
+    case Actions.BACKGROUND_TASK_PROGRESS:
+      let task = action.payload;
+
+      state.backgroundTasks[task.id] = task;
+
+      return _.extend({}, state, {
+        backgroundTasks: state.backgroundTasks,
+      });
+
+    case Actions.BACKGROUND_TASK_STOP:
+      let task = action.payload;
+
+      delete state.backgroundTasks[task.id];
+      
+      return _.extend({}, state, {
+        backgroundTasks: state.backgroundTasks,
+      });
+
+    case Actions.CHECK_FOR_UPDATES_ERROR:
+      return _.extend({}, state, {
+        checkingForUpdate: AsyncState.error(action.payload),
+      });
+
     case Actions.CHECK_FOR_UPDATES_START:
       return _.extend({}, state, {
         checkingForUpdate: AsyncState.start(),
