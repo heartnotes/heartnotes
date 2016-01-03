@@ -42,6 +42,8 @@ export default class Sync {
       return cb();
     }
 
+    Dispatcher.sync('start');
+
     this.logger.info('Started');
 
     const syncStartTime = Date.now();
@@ -63,12 +65,16 @@ export default class Sync {
 
     Api.isServerReachable()
       .then(() => {
+        Dispatcher.sync('progress', 'Sending data...');
+
         return Api.post('sync', {}, {
           entries: entriesToSend,
         })        
       })
       .then((serverEncryptedEntries) => {
         this.logger.debug('Got data...');
+
+        Dispatcher.sync('progress', 'Receiving data...');
 
         return this.diary.decryptor.decrypt(serverEncryptedEntries)
           .then((serverDecryptedEntries) => {
@@ -79,6 +85,8 @@ export default class Sync {
           });
       })
       .then(() => {
+        Dispatcher.sync('progress', 'Saving data...');
+
         this.logger.debug('Saving entries locally...');
 
         return this.diary._saveEncryptedEntries();
@@ -102,7 +110,11 @@ export default class Sync {
           this.logger.error(err.stack);
         }
       })
-      .finally(cb);
+      .finally(() => {
+        Dispatcher.sync('result');
+
+        cb();
+      });
   }
 
 }

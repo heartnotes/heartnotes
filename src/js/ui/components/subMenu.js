@@ -10,7 +10,7 @@ var Component = React.createClass({
   render: function() {
     var items = [
       {
-        icon: 'gear',
+        icon: 'wrench',
         action: this._showSettings,
         desc: 'Settings',
       },

@@ -315,6 +315,18 @@ export class Dispatcher {
   }
 
 
+  sync (state, data) {
+    switch (state) {
+      case 'start':
+        return this._startBg('sync', 'Synchronizing with server...');
+      case 'progress':
+        return this._updateBg('sync', data);
+      case 'result':
+        return this._stopBg('sync');
+    }
+  }
+
+
 
   backup (state, data) {
     switch (state) {
@@ -404,14 +416,16 @@ export class Dispatcher {
     this._do(Actions.BACKGROUND_TASK_START, {
       id: taskId,
       desc: desc,
+      msg: 'In progres...',
     });
   }
 
 
-  _updateBg(taskId, newDesc) {
+  _updateBg(taskId, msg) {
     this._do(Actions.BACKGROUND_TASK_PROGRESS, {
       id: taskId,
       desc: desc,
+      msg: msg,
     });
   }
 
@@ -419,7 +433,6 @@ export class Dispatcher {
   _stopBg(taskId) {
     this._do(Actions.BACKGROUND_TASK_STOP, {
       id: taskId,
-      desc: desc,
     });
   }
 

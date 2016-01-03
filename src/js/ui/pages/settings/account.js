@@ -3,6 +3,7 @@ import React from 'react';
 import Layout from './layout';
 import TopMenu from '../../components/settings/topMenu';
 import ChangePassword from '../../components/settings/changePassword';
+import Membership from '../../components/settings/membership';
 import { connectRedux } from '../../helpers/decorators';
 
 
@@ -12,10 +13,7 @@ var Component = React.createClass({
 
     return (
       <Layout tab="account" {...this.props}>
-        <div className="email-address">
-          <h2>Email address</h2>
-          <p>{diaryMgr.id}</p>
-        </div>
+        <Membership />
         <hr />
         <ChangePassword {...this.props} />
       </Layout>

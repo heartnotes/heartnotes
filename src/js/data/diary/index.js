@@ -458,6 +458,11 @@ export default class Diary {
   }
 
 
+  get auth () {
+    return this._auth;
+  }
+
+
   _loadEncryptedEntries () {
     return Storage.local.loadEntries(this._id) || {};
   }

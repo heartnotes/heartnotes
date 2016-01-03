@@ -13,6 +13,7 @@ module.exports = React.createClass({
     name : React.PropTypes.string,
     spin: React.PropTypes.bool,
     tooltip : React.PropTypes.object,
+    className: React.PropTypes.string,
   },
 
   getDefaultProps: function() {
@@ -20,6 +21,7 @@ module.exports = React.createClass({
       name : '',
       spin: false,
       tooltip : null,
+      className: '',
     };
   },
 
@@ -39,7 +41,7 @@ module.exports = React.createClass({
     classes[`fa-${this.props.name}`] = true;
 
     var icon = (
-      <i ref="icon" className={Classnames(classes)} />
+      <i ref="icon" className={`${Classnames(classes)} ${this.props.className}`} />
     );
 
     if (this.props.tooltip) {

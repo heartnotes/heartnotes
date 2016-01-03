@@ -48,8 +48,10 @@ var Component = React.createClass({
     return (
       <div>
         <section id="sidebar">
-          <Logo withText={false} onClick={this._onLogoClick} />
-          <BackgroundTasksMenu {...this.props} />
+          <div>
+            <Logo withText={false} onClick={this._onLogoClick} />
+            <BackgroundTasksMenu {...this.props} />
+          </div>
           <MainMenu {...this.props} />
           <SubMenu {...this.props} />
         </section>

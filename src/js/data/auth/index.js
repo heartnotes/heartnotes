@@ -2,8 +2,9 @@
 
 import Q from 'bluebird';
 import _ from 'lodash';
-import Logger from '../../utils/logger';
+import moment from 'moment';
 
+import Logger from '../../utils/logger';
 import Detect from '../../utils/detect';
 import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
@@ -181,6 +182,19 @@ export default class Auth {
     return !!this._authenticatedWithServer;
   }
 
+  get subscriptionActive() {
+    return moment(this.subscriptionExpiry).valueOf() > Date.now();
+  }
+
+  get subscriptionType() {
+    return _.get(this._accountData, 'subscription.type');
+  }
+
+  get subscriptionExpiry() {
+    let expiry = _.get(this._accountData, 'subscription.expires', 0);
+
+    return moment(expiry).toDate();
+  }
 
   /** 
    * @return {Promise}
@@ -306,7 +320,8 @@ export default class Auth {
       username: username,
       key: this.authKey,
     })
-      .then(() => {
+      .then((accountData) => {
+        this._accountData = accountData;
         this._authenticatedWithServer = true;
 
         Dispatcher.authWithServer('result');
