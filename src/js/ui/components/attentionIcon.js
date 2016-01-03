@@ -6,12 +6,23 @@ import Icon from './icon';
 
 
 module.exports = React.createClass({
+  propTypes: {
+    tooltip : React.PropTypes.object,
+  },
+
+  getDefaultProps: function() {
+    return {
+      tooltip : null,
+    };
+  },
+
+
   render: function() {
     return (
       <Icon 
         className="attention-icon"
         name="info-circle" 
-        tooltip="One or more items require your attention" />
+        {...this.props} />
     );
   },
 });
