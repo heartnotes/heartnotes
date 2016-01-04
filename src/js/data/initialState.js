@@ -5,6 +5,7 @@ exports.app = function() {
   return {
     version: version,
     backgroundTasks: {},
+    fetchingPricing: {},
     checkingForUpdate: {},
     sendingFeedback: {},
     newVersionAvailable: false,

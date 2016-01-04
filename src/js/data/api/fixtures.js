@@ -104,3 +104,14 @@ Api.addFixturePost('feedback', (query, body) => {
 });
 
 
+Api.addFixtureGet('pricing', (query, body) => {
+  return [{
+    title: '1-year subscription',
+    desc: 'Ensure your entries are backed up to the Heartnotes cloud and synchronized across all your devices.',
+    price: 1.00,
+    currency: 'USD',
+  }];
+});
+
+
+

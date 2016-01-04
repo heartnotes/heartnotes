@@ -11,7 +11,7 @@ module.exports = React.createClass({
     onClick: React.PropTypes.func,
     tooltip: React.PropTypes.string,
     className: React.PropTypes.string,
-    superElem: React.PropTypes.object,
+    attention: React.PropTypes.object,
   },
 
   getDefaultProps: function() {
@@ -19,7 +19,7 @@ module.exports = React.createClass({
       onClick: null,
       tooltip: null,
       className: null,
-      superElem: null,
+      attention: null,
     };
   },
 
@@ -33,23 +33,32 @@ module.exports = React.createClass({
       classes[this.props.className] = true;
     }
 
-    let { superElem } = this.props;
-    if (superElem) {
-      superElem = (
-        <span className="super">{superElem}</span>
+    let { attention } = this.props;
+    if (attention) {
+      attention = (
+        <span className="attention">{attention}</span>
       );
     }
 
     return (
       <button 
         className={Classnames(classes)} 
-        onClick={this.props.onClick} 
+        onClick={this._onClick} 
         title={this.props.tooltip}>
-          {superElem}
+          {attention}
           <Icon name={this.props.icon} />
       </button>
     );
   },
+
+
+  _onClick: function(e) {
+    e.preventDefault();
+
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+  }
 
 });
 

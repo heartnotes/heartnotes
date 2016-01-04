@@ -32,7 +32,7 @@ module.exports = React.createClass({
         <input type={inputType}
           ref="input"
           onInput={this._onChange} 
-          value={this.props.password} 
+          value={this.props.email} 
           placeholder={this.props.placeholder}
           tabIndex={'' + this.props.tabIndex} />
       </div>

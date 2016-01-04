@@ -17,7 +17,7 @@ var Component = React.createClass({
         icon: 'wrench',
         action: this._showSettings,
         desc: 'Settings',
-        superElem: attentionIcon,
+        attention: attentionIcon,
       },
       {
         icon: 'eject',
@@ -30,7 +30,7 @@ var Component = React.createClass({
     var buttons = items.map(function(item) {
       return (
         <IconButton 
-          superElem={item.superElem}
+          attention={item.attention}
           key={item.icon}
           icon={item.icon} 
           onClick={item.action} 

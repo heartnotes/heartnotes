@@ -8,13 +8,15 @@ import IconButton from './iconButton';
 module.exports = React.createClass({
   propTypes: {
     onClick : React.PropTypes.func,
-    onClose: React.PropTypes.func,
+    onCancel: React.PropTypes.func,
+    showCancelButton: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       onClick: null,
-      onClose: null,
+      onCancel: null,
+      showCancelButton: false,
     };
   },
 
@@ -32,12 +34,12 @@ module.exports = React.createClass({
 
     let closeButton = null;
 
-    if (this.props.onClose) {
+    if (this.props.showCancelButton) {
       closeButton = (
         <IconButton 
           className="close-overlay" 
           icon='close' 
-          onClick={this.props.onClose} 
+          onClick={this._onCancel} 
           tooltip="Cancel" />
       );
     }
@@ -73,6 +75,14 @@ module.exports = React.createClass({
       this.setState({
         show: false,
       });
+    }
+  },
+
+  _onCancel: function() {
+    this.hide();
+    
+    if (this.props.onCancel) {
+      this.props.onCancel();
     }
   },
 

@@ -44,7 +44,7 @@ var RestoreOverlay = React.createClass({
     );
 
     return (
-      <Overlay ref="overlay" onClose={this.hide}>
+      <Overlay ref="overlay" showCancelButton={true} onCancel={this.hide}>
         <div className="restore-backup-dialog">
           <h2>{message}</h2>
           <form onSubmit={this._createNew}>
@@ -68,13 +68,6 @@ var RestoreOverlay = React.createClass({
     this.refs.overlay.show();
   },
 
-  hide: function(e) {
-    if (e) {
-      e.preventDefault();
-    }
-
-    this.refs.overlay.hide();
-  },
 
   _setPassword: function(password) {
     this.setState({

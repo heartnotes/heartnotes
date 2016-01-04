@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import React from 'react';
 import Classnames from 'classnames';
 
 import { routing } from '../../helpers/decorators';
 import Button from '../button';
+import AttentionIcon from '../attentionIcon';
 
 
 const ITEMS = [
@@ -10,6 +12,11 @@ const ITEMS = [
     id: 'account',
     route: '/settings',
     desc: 'Account',
+    attention: function() {
+      let subActive = !!_.get(this.props.data, 'diaryMgr.auth.subscriptionActive');
+
+      return (!subActive) ? <AttentionIcon /> : null;
+    },
   },
   {
     id: 'backupRestore',
@@ -31,16 +38,26 @@ var Tab = React.createClass({
     item: React.PropTypes.object.isRequired,
     onSelect: React.PropTypes.func.isRequired,
     active: React.PropTypes.bool,
+    attention: React.PropTypes.object,
   },
 
   render: function() {
     let classes = {
       'menu-tab': true,
       active: !!this.props.active,
+      attention: null,
     };
+
+    let attention = null;
+    if (this.props.attention) {
+      attention = (
+        <div className="attention">{this.props.attention}</div>
+      );
+    }
 
     return (
       <div className={Classnames(classes)} onClick={this._onClick}>
+        {attention}
         {this.props.item.desc}
       </div>
     );
@@ -60,11 +77,18 @@ var Component = React.createClass({
 
   render: function() {
     var primaryLinks = ITEMS.map((item) => {
+      let attention = null;
+
+      if (item.attention) {
+        attention = item.attention.call(this);
+      }
+
       return (
         <Tab 
           key={item.id}
           item={item} 
           active={item.id === this.props.tab} 
+          attention={attention}
           onSelect={this._onSelect} />
       );
     });

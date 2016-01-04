@@ -36,7 +36,7 @@ module.exports = React.createClass({
           onClick={this._togglePicker}
           icon="calendar" 
           tooltip={this.props.tooltip}/>
-        <Overlay ref="overlay">
+        <Overlay ref="overlay" showCancelButton={true}>
           <DateTime
             value={this.state.date}
             dateFormat="MMMM Do, YYYY"

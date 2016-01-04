@@ -75,6 +75,26 @@ exports.app = function(state = InitialState.app(), action) {
         sendingFeedback: AsyncState.reset(action.payload),
       });
 
+    case Actions.FETCH_PRICING_START:
+      return _.extend({}, state, {
+        fetchingPricing: AsyncState.start(),
+      });
+
+    case Actions.FETCH_PRICING_RESULT:
+      return _.extend({}, state, {
+        fetchingPricing: AsyncState.result(action.payload),
+      });
+      
+    case Actions.FETCH_PRICING_ERROR:
+      return _.extend({}, state, {
+        fetchingPricing: AsyncState.error(action.payload),
+      });
+
+    case Actions.FETCH_PRICING_RESET:
+      return _.extend({}, state, {
+        fetchingPricing: AsyncState.reset(action.payload),
+      });    
+
     default:
       return state;
   }

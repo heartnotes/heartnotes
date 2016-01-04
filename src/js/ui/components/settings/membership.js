@@ -1,10 +1,33 @@
 var _ = require('lodash'),
+  Q = require('bluebird'),
   React = require('react');
 
 import { connectRedux } from '../../helpers/decorators';
 import DateFormat from '../date';
 import Button from '../button';
 import AttentionIcon from '../attentionIcon';
+import Overlay from '../overlay';
+import ProgressButton from '../progressButton';
+
+
+var RenewalOverlay = React.createClass({
+  render: function() {
+    let { pricing } = this.props;
+
+    return (
+      <Overlay ref="overlay" showCancelButton={true}>
+        <h2>Setup subscription</h2>
+      </Overlay>
+    );
+  },
+
+  show: function() {
+    this.refs.overlay.show();
+  },
+
+});
+
+
 
 
 var Component = React.createClass({
@@ -29,12 +52,16 @@ var Component = React.createClass({
       subscriptionExpiryPrefix = 'expired';
 
       renewButton = (
-        <Button 
+        <ProgressButton 
+          checkVar={this.props.data.app.fetchingPricing}
+          defaultProgressMsg="Fetching pricing..."
           onClick={this._showRenewalScreen}>
             Renew subscription
-        </Button>
+        </ProgressButton>
       );
     }
+
+    let pricing = _.get(this.props.data, 'app.fetchingPricing.result');
 
     return (
       <div className="membership">
@@ -46,18 +73,23 @@ var Component = React.createClass({
           </span>
         </div>
         {renewButton}
+        <RenewalOverlay ref="renewal" pricing={pricing} />
       </div>
     );
   },
 
-
   _showRenewalScreen: function() {
-
-  }
+    this.props.actions.getPricing()
+      .then(() => {
+        this.refs.renewal.show();
+      });
+  },
 
 });
 
 
-module.exports = connectRedux()(Component);
+module.exports = connectRedux([
+  'getPricing'
+])(Component);
 
 

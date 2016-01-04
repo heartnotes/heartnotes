@@ -280,3 +280,26 @@ export function sendFeedback(msg) {
 
 
 
+export function getPricing() {
+  return function(dispatch, getState) {
+    Dispatcher.fetchPricing('start');
+
+    return Api.get('pricing')
+      .then((data) => {
+        Dispatcher.fetchPricing('result', data);
+
+        return data;
+      })
+      .catch((err) => {
+        Logger.error(err);
+
+        Dispatcher.fetchPricing('error', err);
+
+        throw err;
+      });
+  }
+}
+
+
+
+
