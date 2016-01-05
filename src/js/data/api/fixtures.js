@@ -107,8 +107,11 @@ Api.addFixturePost('feedback', (query, body) => {
 Api.addFixtureGet('pricing', (query, body) => {
   return [{
     title: '1-year subscription',
-    desc: 'Ensure your entries are backed up to the Heartnotes cloud and synchronized across all your devices.',
-    price: 1.00,
+    features: [
+      'Your data is automatically backed up to the cloud.',
+      'Access your diary from any device.',
+    ],
+    price: 4.99,
     currency: 'USD',
   }];
 });

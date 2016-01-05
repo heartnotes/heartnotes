@@ -6,9 +6,12 @@ exports.app = function() {
     version: version,
     backgroundTasks: {},
     fetchingPricing: {},
+    paying: {},
     checkingForUpdate: {},
     sendingFeedback: {},
     newVersionAvailable: false,
+    loadingScript: {},
+    scripts: {},
   }
 };
 

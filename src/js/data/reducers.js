@@ -55,6 +55,24 @@ exports.app = function(state = InitialState.app(), action) {
         newVersionAvailable: semver.gt(release.tag_name, state.version),
       });
 
+
+    case Actions.LOAD_SCRIPT_START:
+      delete state.scripts[action.payload.id];
+
+      return _.extend({}, state, {
+        scripts: _.extend({}, state.scripts),
+      });
+
+    case Actions.LOAD_SCRIPT_RESULT:
+    case Actions.LOAD_SCRIPT_ERROR:
+      let newScript = {};
+      newScript[action.payload.id] = action.payload;
+
+      return _.extend({}, state, {
+        scripts: _.extend(state.scripts, newScript),
+      });
+
+
     case Actions.FEEDBACK_START:
       return _.extend({}, state, {
         sendingFeedback: AsyncState.start(),
@@ -94,6 +112,32 @@ exports.app = function(state = InitialState.app(), action) {
       return _.extend({}, state, {
         fetchingPricing: AsyncState.reset(action.payload),
       });    
+
+    case Actions.PAY_START:
+      return _.extend({}, state, {
+        paying: AsyncState.start(),
+      });
+
+    case Actions.PAY_PROGRESS:
+      return _.extend({}, state, {
+        paying: AsyncState.progress(action.payload),
+      });
+
+    case Actions.PAY_RESULT:
+      return _.extend({}, state, {
+        paying: AsyncState.result(action.payload),
+      });
+      
+    case Actions.PAY_ERROR:
+      return _.extend({}, state, {
+        paying: AsyncState.error(action.payload),
+      });
+
+    case Actions.PAY_RESET:
+      return _.extend({}, state, {
+        paying: AsyncState.reset(action.payload),
+      });
+
 
     default:
       return state;

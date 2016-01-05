@@ -1,6 +1,8 @@
 var React = require('react'),
   Classnames = require('classnames');
 
+import $ from 'jquery';
+
 
 var Icon = require('./icon');
 
@@ -54,6 +56,7 @@ module.exports = React.createClass({
 
   _onClick: function(e) {
     e.preventDefault();
+    $(e.currentTarget).blur();
 
     if (this.props.onClick) {
       this.props.onClick();

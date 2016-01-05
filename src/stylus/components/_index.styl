@@ -50,9 +50,11 @@
     color $gray-dark
     border-color $gray-dark
     position absolute
-    top 5px
-    right 5px
-    padding 3px 6px    
+    top 15px
+    right 12px
+    padding 4px 8px 
+    &:hover
+      color $black   
     
 
 .ask-user-dialog
@@ -336,6 +338,18 @@ $progressStyles
     opacity 0
   
   
+.error-message
+  display block
+  margin 1rem auto
+  background-color $red-light
+  color $black
+  border-radius 10px
+  padding 0.5em
+  font-size 1.2rem
+  font-style normal
+  line-height 1.5em
+  max-width 20em
+
 
 .action-progress
   position relative

@@ -39,6 +39,22 @@ export class Dispatcher {
   }
 
 
+
+
+  loadScript (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.LOAD_SCRIPT_START, data);
+      case 'result':
+        return this._do(Actions.LOAD_SCRIPT_RESULT, data);
+      case 'error':
+        return this._do(Actions.LOAD_SCRIPT_ERROR, data);
+    }
+  }
+
+
+
+
   checkForUpdates (state, data) {
     switch (state) {
       case 'start':
@@ -394,6 +410,24 @@ export class Dispatcher {
 
         return Q.delay(2000).then(() => {
           this._do(Actions.RESTORE_FROM_OLD_RESET);          
+        });
+    }
+  }
+
+
+  pay (state, data) {
+    switch (state) {
+      case 'start':
+        return this._do(Actions.PAY_START, data);
+      case 'progress':
+        return this._do(Actions.PAY_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.PAY_RESULT, data);
+      case 'error':
+        return this._do(Actions.PAY_ERROR, data);
+
+        return Q.delay(2000).then(() => {
+          this._do(Actions.PAY_RESET);          
         });
     }
   }

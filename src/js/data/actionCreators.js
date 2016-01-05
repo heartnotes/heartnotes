@@ -3,6 +3,7 @@ import Q from 'bluebird';
 import $ from 'jquery';
 import moment from 'moment';
 import React from 'react';
+import { Timer } from 'clockmaker';
 
 import Actions from './actions';
 import { instance as Storage } from './storage/index';
@@ -300,6 +301,95 @@ export function getPricing() {
   }
 }
 
+
+
+export function pay(pricing, cardDetails) {
+  return function(dispatch, getState) {
+    Dispatcher.pay('start');
+
+    let Stripe = getState().app.scripts.stripe.object;
+
+    Stripe.setPublishableKey('pk_test_ZCe4rNB0c3SQCmOwfIm8LNTa');
+
+    Dispatcher.pay('progress', 'Charging card...');
+
+    Stripe.card.createToken({
+      number: cardDetails.cardNumber,
+      exp_month: cardDetails.expMonth,
+      exp_year: cardDetails.expYear,
+    }, (status, response) => {
+      if (response.error) {
+        Logger.error(response.error);
+
+        let err = new Error('Unable to charge your card');
+
+        Dispatcher.pay('error', err);
+
+        throw err;
+      } else {
+        Dispatcher.pay('progress', 'Verifying payment...');
+
+        // response contains id and card, which contains additional card details
+        let token = response.id;
+
+        Api.post('/verifyPayment', {}, {
+          token: token
+        })
+          .then(() => {
+            Dispatcher.pay('result', data);
+          })
+          .catch((err) => {
+            Logger.error(response.error);
+
+            Dispatcher.pay('error', err);
+
+            throw err;
+          });
+      }
+    });
+  }
+}
+
+
+
+
+export function loadScript(id, url, check) {
+  return function(dispatch, getState) {
+    Dispatcher.loadScript('start', {
+      id: id,
+      url: url,
+    });
+
+    let script = document.createElement('script');
+    script.async = false;
+    script.src = url;
+    document.head.appendChild(script);
+
+    Timer((timer) => {
+      // stop once loaded
+      if (window[check.global]) {
+        timer.stop();
+
+        Dispatcher.loadScript('result', {
+          id: id,
+          object: window[check.global],
+        });
+      }
+      // stop after 30 seconds
+      else if (30 < timer.getNumTicks()) {
+        timer.stop();
+
+        Dispatcher.loadScript('error', {
+          id: id,
+          error: new Error('Timed out'),
+        });
+      }
+    }, 1000, {
+      repeat: true,
+    })
+      .start();
+  }
+}
 
 
 

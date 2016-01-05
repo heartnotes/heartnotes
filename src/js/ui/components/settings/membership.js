@@ -6,26 +6,12 @@ import { connectRedux } from '../../helpers/decorators';
 import DateFormat from '../date';
 import Button from '../button';
 import AttentionIcon from '../attentionIcon';
-import Overlay from '../overlay';
+import RenewalOverlay from './renewal/overlay';
 import ProgressButton from '../progressButton';
+import Loading from '../loading';
 
 
-var RenewalOverlay = React.createClass({
-  render: function() {
-    let { pricing } = this.props;
 
-    return (
-      <Overlay ref="overlay" showCancelButton={true}>
-        <h2>Setup subscription</h2>
-      </Overlay>
-    );
-  },
-
-  show: function() {
-    this.refs.overlay.show();
-  },
-
-});
 
 
 
@@ -61,8 +47,6 @@ var Component = React.createClass({
       );
     }
 
-    let pricing = _.get(this.props.data, 'app.fetchingPricing.result');
-
     return (
       <div className="membership">
         <h2>{title}</h2>
@@ -73,7 +57,9 @@ var Component = React.createClass({
           </span>
         </div>
         {renewButton}
-        <RenewalOverlay ref="renewal" pricing={pricing} />
+        <RenewalOverlay 
+          ref="renewal" 
+          {...this.props} />
       </div>
     );
   },
@@ -89,7 +75,8 @@ var Component = React.createClass({
 
 
 module.exports = connectRedux([
-  'getPricing'
+  'getPricing',
+  'loadScript'
 ])(Component);
 
 
