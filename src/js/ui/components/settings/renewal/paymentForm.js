@@ -1,4 +1,7 @@
+import _ from 'lodash';
 import React from 'react';
+import moment from 'moment';
+import SelectBox from 'react-select-box';
 
 import { connectRedux } from '../../../helpers/decorators';
 import ProgressButton from '../../progressButton';
@@ -28,26 +31,63 @@ var Component = React.createClass({
         || !_.get(this.state.expYear, 'length'),
     };
 
+    // months
+    let monthOptions = [],
+      currentMonth = moment('2015-01-01');
+
+    _.times(12, () => {
+      let month = currentMonth.format('MM'),
+        monthLarge = currentMonth.format('MMM');
+
+      monthOptions.push(
+        <option key={month} value={month}>{monthLarge}</option>
+      );
+
+      currentMonth = currentMonth.add(1, 'months');
+    });
+
+    // years
+    let yearOptions = [],
+      currentYear = moment('2015-01-01');
+
+    _.times(12, () => {
+      let year = currentYear.format('YYYY');
+
+      yearOptions.push(
+        <option key={year} value={year}>{year}</option>
+      );
+
+      currentYear = currentYear.add(1, 'years');
+    });
+
     return (
       <form className="payment-form">
         <div className="field row">
           <input 
+            type="text"
             value={this.state.cardNumber} 
-            placeholder="Card number" 
+            onChange={this._setCardNumber}
+            placeholder="Credit card number" 
             tabIndex={1} />
         </div>
         <div className="field row">
-          <input 
-            value={this.state.expMonth} 
-            placeholder="Expiry month" 
-            tabIndex={2} />
-          <input 
-            value={this.state.expYear} 
-            placeholder="Expiry year" 
-            tabIndex={3} />
+          <SelectBox 
+            label="Exp. month"
+            className='exp-month'
+            onChange={this._setExpMonth}
+            value={this.state.expMonth}>
+              {monthOptions}
+          </SelectBox>
+          <SelectBox 
+            label="Exp. year"
+            className='exp-year'
+            onChange={this._setExpYear}
+            value={this.state.expYear}>
+              {yearOptions}
+          </SelectBox>
         </div>
         <div className="action row">
-          <ProgressButton {...buttonAttrs}>Login</ProgressButton>
+          <ProgressButton {...buttonAttrs}>Pay</ProgressButton>
         </div>
       </form>
     );

@@ -46,7 +46,8 @@ export class Dispatcher {
       case 'start':
         return this._do(Actions.LOAD_SCRIPT_START, data);
       case 'result':
-        return this._do(Actions.LOAD_SCRIPT_RESULT, data);
+        this._do(Actions.LOAD_SCRIPT_RESULT, data);
+        return ;
       case 'error':
         return this._do(Actions.LOAD_SCRIPT_ERROR, data);
     }

@@ -365,29 +365,29 @@ export function loadScript(id, url, check) {
     script.src = url;
     document.head.appendChild(script);
 
-    Timer((timer) => {
-      // stop once loaded
-      if (window[check.global]) {
-        timer.stop();
+    let _doTimer;
 
-        Dispatcher.loadScript('result', {
-          id: id,
-          object: window[check.global],
-        });
-      }
-      // stop after 30 seconds
-      else if (30 < timer.getNumTicks()) {
-        timer.stop();
-
-        Dispatcher.loadScript('error', {
-          id: id,
-          error: new Error('Timed out'),
-        });
-      }
-    }, 1000, {
-      repeat: true,
-    })
-      .start();
+    (_doTimer = () => {
+      setTimeout(() => {
+        // stop once loaded
+        if (window[check.global]) {
+          Dispatcher.loadScript('result', {
+            id: id,
+            object: window[check.global],
+          });
+        }
+        // stop after 30 seconds
+        else if (15 < timer.getNumTicks()) {
+          Dispatcher.loadScript('error', {
+            id: id,
+            error: new Error('Timed out'),
+          });
+        }
+        else {
+          _doTimer();
+        }
+      }, 2000);
+    })();
   }
 }
 

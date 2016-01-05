@@ -69,7 +69,7 @@ exports.app = function(state = InitialState.app(), action) {
       newScript[action.payload.id] = action.payload;
 
       return _.extend({}, state, {
-        scripts: _.extend(state.scripts, newScript),
+        scripts: _.extend({}, state.scripts, newScript),
       });
 
 
