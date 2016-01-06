@@ -1,7 +1,7 @@
 import React from 'react';
-import shell from 'shell';
 
 import IconButton from './iconButton';
+import ExternalLink from './externalLink';
 import Loading from './loading';
 import { connectRedux, routing } from '../helpers/decorators';
 
@@ -16,9 +16,9 @@ class Component extends React.Component {
 
     let newVersionMsg = null;
 
-    if (app.newVersionAvailable) {
+    if (!app.newVersionAvailable) {
       newVersionMsg = (
-        <a href="#" onClick={this._goToHomepage}>new version available!</a>
+        <ExternalLink href="https://heartnot.es">new version available!</ExternalLink>
       );
     } else if (app.checkingForUpdate.inProgress) {
       newVersionMsg = (
@@ -40,10 +40,6 @@ class Component extends React.Component {
     );
   }
 
-
-  _goToHomepage () {
-    shell.openExternal("http://heartnot.es");
-  }
 
 }
 

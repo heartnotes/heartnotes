@@ -5,67 +5,37 @@ var Logo = require('../../components/logo'),
   Loading = require('../../components/loading');
 
 import { connectRedux } from '../../helpers/decorators';
+import StepSlider from '../../components/stepSlider';
 
 
-var steps = {
-  start: require('./start'),
-  newDiary: require('./newDiary'),
-  loadDiary: require('./loadDiary'),
-};
+const STEPS = [
+  {
+    id: 'start',
+    Component: require("./start"),
+  },
+  {
+    id: 'newDiary',
+    Component: require("./newDiary"),
+  },
+  {
+    id: 'loadDiary',
+    Component: require("./loadDiary"),
+  },
+];
 
 
 var Comonent = React.createClass({
-  getInitialState: function() {
-    return {
-      step: 'start',
-    }
-  },
-
   render: function() { 
     return (
       <div className="welcomeView">
         <Logo/>
-        <div className="step-container">
-          {this._buildSteps()}
-        </div>
+        <StepSlider
+          steps={STEPS}
+          defaultStep="start" />
       </div>
     );
   },
 
-
-
-  _buildSteps () {
-    var activeStepDone = false;
-
-    return _.map(['start', 'newDiary', 'loadDiary'], function(stepId) {
-      var Step = steps[stepId];
-
-      var isActive = (this.state.step === stepId);
-      activeStepDone = activeStepDone || isActive;
-
-      var hiddenDirection = (activeStepDone ? 'right' : 'left');
-
-      var attrs = {
-        className: 'step-holder ' + (isActive ? 'active' : `hidden ${hiddenDirection}`),
-        key: `step-${stepId}`,
-      };
-
-      var stepElem = (
-        <Step showStep={this._showStep} isActive={isActive}/>
-      );
-
-      return (
-        <div {...attrs}>{stepElem}</div>
-      );
-    }, this);
-  },
-
-
-  _showStep: function(name) {
-    this.setState({
-      step: name
-    });
-  },
 });
 
 

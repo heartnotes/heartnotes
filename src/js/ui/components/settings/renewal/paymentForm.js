@@ -6,12 +6,12 @@ import SelectBox from 'react-select-box';
 
 import { connectRedux } from '../../../helpers/decorators';
 import ProgressButton from '../../progressButton';
+import ExternalLink from '../../externalLink';
 
 
 var Component = React.createClass({
   propTypes: {
     pricing: React.PropTypes.object.isRequired,
-    onSuccess: React.PropTypes.func.isRequired,
   },
 
   getInitialState: function() {
@@ -102,7 +102,9 @@ var Component = React.createClass({
         <div className="action row">
           <ProgressButton {...buttonAttrs}>Pay</ProgressButton>
         </div>
-        <div className="powered-by-stripe">Powered by Stripe</div>
+        <div className="powered-by-stripe">
+          Powered by <ExternalLink href="https://stripe.com">Stripe</ExternalLink>
+        </div>
       </form>
     );
   },
@@ -143,7 +145,11 @@ var Component = React.createClass({
 
     this.props.actions.pay(this.props.pricing, this.state)
       .then(() => {
-        this.props.onSuccess();
+        if (!this.isMounted()) {
+          return;
+        }
+
+        this.props.showStep('thanks');
       });
   },
 

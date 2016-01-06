@@ -54,7 +54,7 @@
         text-align center
         font-size 2rem
         .pricing-item
-          margin-top 30px
+          margin 30px 0
           .title
             font-size 150%
             font-weight 700
@@ -68,7 +68,6 @@
             color $white
             margin-top 30px
         .payment-form
-          margin-top 20px
           .card-number
             width 100%
           .row:nth-child(2)
@@ -87,6 +86,11 @@
             color $gray-darker
             font-size 0.8rem
             font-style italic
+            a
+              @extend $blendLink
+        .payment-thanks
+          p
+            margin 20px 0
             
             
 

@@ -4,10 +4,25 @@ var _ = require('lodash'),
 
 import Overlay from '../../overlay';
 import ProgressButton from '../../progressButton';
+import Button from '../../button';
 import Currency from '../../currency';
 import Loading from '../../loading';
 import ErrorMessage from '../../errorMessage';
+import StepSlider from '../../stepSlider';
 import PaymentForm from './paymentForm';
+import ThankYou from './thankYou';
+
+
+const STEPS = [
+  {
+    id: 'payment',
+    Component: PaymentForm,
+  },
+  {
+    id: 'thanks',
+    Component: ThankYou,
+  },
+];
 
 
 
@@ -15,43 +30,27 @@ module.exports = React.createClass({
   render: function() {
     let pricing = _.get(this.props.data, 'app.fetchingPricing.result');
 
-    let pricingItem = _.get(pricing, '0'),
-      pricingItemRendered = null,
-      paymentForm = <Loading />;
+    let pricingItem = _.get(pricing, '0');
 
-    if (pricingItem) {
-      let features = _.map(pricingItem.features, (d, idx) => {
-        return (
-          <li key={idx}>{d}</li>
-        )
-      });
+    let pricingItemRendered = this._renderPricingItem(pricingItem);
 
-      pricingItemRendered = (
-        <div className="pricing-item">
-          <div className="title">{pricingItem.title}</div>
-          <div className="features">
-            <ul>
-              {features}
-            </ul>
-          </div>
-          <div className="price">
-            <Currency value={pricingItem.price} currencyCode={pricingItem.currency} />
-          </div>
-        </div>
-      );
-    }
+    let paymentProcess = <Loading />;
 
     let stripeInterface = this._getStripeInterface(),
       stripeLoadError = this._getStripeLoadError();
 
     if (stripeInterface) {
-      paymentForm = (
-        <PaymentForm 
-          onSuccess={this._hide}
-          pricing={pricingItem} />
+      paymentProcess = (
+        <StepSlider
+          defaultStep="payment"
+          steps={STEPS}
+          pricing={pricingItem}
+          onComplete={this._hide} />
       );
     } else if (stripeLoadError) {
-      paymentForm = <ErrorMessage error={stripeLoadError} />;
+      paymentProcess = (
+        <ErrorMessage error={stripeLoadError} />
+      );
     }
 
     return (
@@ -61,11 +60,37 @@ module.exports = React.createClass({
             By supporting us you enable us to make a better app for you :)
           </p>
           {pricingItemRendered}
-          <div className="payment-form">
-            {paymentForm}
-          </div>
+          {paymentProcess}
         </div>
       </Overlay>
+    );
+  },
+
+
+
+  _renderPricingItem: function(pricingItem) {
+    if (!pricingItem) {
+      return null;
+    }
+
+    let features = _.map(pricingItem.features, (d, idx) => {
+      return (
+        <li key={idx}>{d}</li>
+      )
+    });
+
+    return (
+      <div className="pricing-item">
+        <div className="title">{pricingItem.title}</div>
+        <div className="features">
+          <ul>
+            {features}
+          </ul>
+        </div>
+        <div className="price">
+          <Currency value={pricingItem.price} currencyCode={pricingItem.currency} />
+        </div>
+      </div>
     );
   },
 
@@ -76,6 +101,7 @@ module.exports = React.createClass({
   _getStripeLoadError() {
     return _.get(this.props.data, 'app.scripts.stripe.error');
   },
+
 
   _hide: function() {
     this.refs.overlay.hide();

@@ -6,6 +6,7 @@ import Layout from './layout';
 import TopMenu from '../../components/settings/topMenu';
 import { connectRedux } from '../../helpers/decorators';
 import ProgressButton from '../../components/progressButton';
+import ExternalLink from '../../components/externalLink';
 
 
 var Component = React.createClass({
@@ -37,7 +38,7 @@ var Component = React.createClass({
           placeholder="Tell us what you like or don't like..." />
         <ProgressButton {...buttonAttrs}>Send</ProgressButton>
         <hr />
-        <p>Get more help at <a href="https://heartnot.es" target="_blank">heartnot.es</a>.</p>
+        <p>Get more help at <ExternalLink href="https://heartnot.es">heartnot.es</ExternalLink>.</p>
       </Layout>
     );
   },
