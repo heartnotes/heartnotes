@@ -53,7 +53,7 @@
     "react-ladda": "~4.0.0",
     "react-redux": "~2.1.2",
     "react-router": "~1.0.2",
-    "react-select-box": "~3.0.1",
+    "react-select-box": "heartnotes/react-select-box",
     "reactify": "~1.1.1",
     "redux": "~3.0.0",
     "redux-logger": "~2.0.1",

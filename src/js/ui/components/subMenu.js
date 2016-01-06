@@ -9,8 +9,9 @@ import { connectRedux, routing } from '../helpers/decorators';
 
 var Component = React.createClass({
   render: function() {
-    let subActive = !!_.get(this.props.data, 'diaryMgr.auth.subscriptionActive');
-    let attentionIcon = !subActive ? <AttentionIcon /> : null;
+    let { diaryMgr } = this.props.data.diary;
+
+    let attentionIcon = !diaryMgr.auth.subscriptionActive ? <AttentionIcon /> : null;
 
     var items = [
       {

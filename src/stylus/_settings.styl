@@ -68,7 +68,26 @@
             color $white
             margin-top 30px
         .payment-form
-          margin-top 40px
+          margin-top 20px
+          .card-number
+            width 100%
+          .row:nth-child(2)
+            display flex
+            flex-flow row no-wrap
+            justify-content space-between
+            align-items center
+            font-size 0.5em
+            > label
+              display inline-block
+              margin 0 0.2em
+            > input.cvc
+              font-size 1em
+              max-width 3em
+          .powered-by-stripe
+            color $gray-darker
+            font-size 0.8rem
+            font-style italic
+            
             
 
       .change-password

@@ -6,6 +6,8 @@ import Logger from '../utils/logger';
 
 import { Actions, buildAction } from './actions';
 
+const DEFAULT_ERROR_RESET_TIMEOUT = 3000;
+
 
 export class Dispatcher {
 
@@ -16,6 +18,10 @@ export class Dispatcher {
   setup (dispatchFunction, getStateFunction) {
     this._dispatch = dispatchFunction;
     this._getState = getStateFunction;
+  }
+
+  getState () {
+    return this._getState();
   }
 
 
@@ -30,7 +36,7 @@ export class Dispatcher {
       msg: msg,
     });
 
-    return Q.delay(2000).then(() => {
+    return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
       this._do(Actions.USER_ALERT, {
         msg: null,
         type: null,
@@ -78,7 +84,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.FETCH_PRICING_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.FETCH_PRICING_RESET);          
         });
     }
@@ -95,7 +101,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.CHOOSE_DIARY_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.CHOOSE_DIARY_RESET);          
         });
     }
@@ -112,7 +118,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.CREATE_DIARY_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.CREATE_DIARY_RESET);          
         });
     }
@@ -130,7 +136,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.LOGIN_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.LOGIN_RESET);          
         });
     }
@@ -146,7 +152,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.SIGN_UP_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.SIGN_UP_RESET);          
         });
     }
@@ -162,7 +168,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.AUTH_WITH_SERVER_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.AUTH_WITH_SERVER_RESET);          
         });
     }
@@ -179,7 +185,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.OPEN_DIARY_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.OPEN_DIARY_RESET);          
         });
     }
@@ -196,7 +202,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.UPDATE_ENTRY_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.UPDATE_ENTRY_RESET);          
         });
     }
@@ -213,7 +219,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.DELETE_ENTRY_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.DELETE_ENTRY_RESET);          
         });
     }
@@ -260,7 +266,7 @@ export class Dispatcher {
       case 'error':
         return this._do(Actions.DECRYPT_ENTRIES_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.DECRYPT_ENTRIES_RESET);          
         });
     }
@@ -297,7 +303,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.CHANGE_PASSWORD_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.CHANGE_PASSWORD_RESET);          
         });
     }
@@ -314,7 +320,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.EXPORT_DATA_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.EXPORT_DATA_RESET);          
         });
     }
@@ -371,7 +377,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.BACKUP_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.BACKUP_RESET);          
         });
     }
@@ -390,7 +396,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.RESTORE_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.RESTORE_RESET);          
         });
     }
@@ -409,7 +415,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.RESTORE_FROM_OLD_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.RESTORE_FROM_OLD_RESET);          
         });
     }
@@ -427,7 +433,7 @@ export class Dispatcher {
       case 'error':
         return this._do(Actions.PAY_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.PAY_RESET);          
         });
     }
@@ -444,7 +450,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.FEEDBACK_ERROR, data);
 
-        return Q.delay(2000).then(() => {
+        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
           this._do(Actions.FEEDBACK_RESET);          
         });
     }

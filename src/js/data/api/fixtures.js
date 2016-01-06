@@ -11,7 +11,7 @@ var users = {
     "key": "2d97759123110bbacfdb5cce21bbe508cdea860afc49c7b554b1b981a612c05c",
     "account": {
       subscription: {
-        expiry: moment('2025-03-01').toDate(),
+        expires: moment('2025-03-01').toDate(),
         type: 'Free Trial',
       },
     },
@@ -26,8 +26,8 @@ var users = {
     "key": "4753d4ea5cae556628a72bdcde29761a72c46937c02dfa212475cb23eb7e9bad",
     "account": {
       subscription: {
-        expiry: moment('2025-04-02').toDate(),
-        type: 'Yearly subscription',
+        expires: moment('2015-03-01').toDate(),
+        type: 'Free Trial',
       },
     },
     "meta": {
@@ -41,7 +41,7 @@ var users = {
     key: 'hahaha',
     "account": {
       subscription: {
-        expiry: moment('2015-04-06').toDate(),
+        expires: moment('2015-04-06').toDate(),
         type: 'Yearly subscription',
       },
     },
@@ -61,6 +61,9 @@ var _throw = function(msg) {
 }
 
 
+var currentUser = null;
+
+
 Api.addFixtureGet('meta', (query, body) => {
   return _.get(users[query.username], 'meta');
 });
@@ -71,15 +74,19 @@ Api.addFixturePost('login', (query, body) => {
     _throw('Password incorrect');
   }
 
+  currentUser = body.username;
+
   return users[body.username].account;
 });
 
 
 Api.addFixturePost('signUp', (query, body) => {
-  users[body.username] = {
+  currentUser = body.username;
+
+  users[body.username] = _.extend({}, users[body.username], {
     key: body.key,
     meta: body.meta,
-  };
+  });
 });
 
 
@@ -92,10 +99,10 @@ Api.addFixturePost('sync', (query, body) => {
 
 
 Api.addFixturePost('updatePassword', (query, body) => {
-  users[body.username] = {
+  users[body.username] = _.extend({}, users[body.username], {
     key: body.key,
     meta: body.meta,
-  };
+  });
 });
 
 
@@ -115,6 +122,17 @@ Api.addFixtureGet('pricing', (query, body) => {
     currency: 'USD',
   }];
 });
+
+
+Api.addFixturePost('verifyPayment', (query, body) => {
+  users[currentUser].account.subscription = {
+    type: body.pricing.title,
+    expires: moment().add(1, 'years').toDate(),
+  };
+
+  return users[currentUser].account;
+});
+
 
 
 

@@ -305,48 +305,9 @@ export function getPricing() {
 
 export function pay(pricing, cardDetails) {
   return function(dispatch, getState) {
-    Dispatcher.pay('start');
+    let diaryMgr = getState().diary.diaryMgr;
 
-    let Stripe = getState().app.scripts.stripe.object;
-
-    Stripe.setPublishableKey('pk_test_ZCe4rNB0c3SQCmOwfIm8LNTa');
-
-    Dispatcher.pay('progress', 'Charging card...');
-
-    Stripe.card.createToken({
-      number: cardDetails.cardNumber,
-      exp_month: cardDetails.expMonth,
-      exp_year: cardDetails.expYear,
-    }, (status, response) => {
-      if (response.error) {
-        Logger.error(response.error);
-
-        let err = new Error('Unable to charge your card');
-
-        Dispatcher.pay('error', err);
-
-        throw err;
-      } else {
-        Dispatcher.pay('progress', 'Verifying payment...');
-
-        // response contains id and card, which contains additional card details
-        let token = response.id;
-
-        Api.post('/verifyPayment', {}, {
-          token: token
-        })
-          .then(() => {
-            Dispatcher.pay('result', data);
-          })
-          .catch((err) => {
-            Logger.error(response.error);
-
-            Dispatcher.pay('error', err);
-
-            throw err;
-          });
-      }
-    });
+    return diaryMgr.auth.buySubscription(pricing, cardDetails);
   }
 }
 

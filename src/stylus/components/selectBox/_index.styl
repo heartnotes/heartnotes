@@ -1,19 +1,18 @@
-$boxColor = $gray-darker
-$boxColorLight = $gray-dark
-$boxTextColor = $white
+$boxColor = $gray-light
+$boxColorLight = $white
+$boxTextColor = $black
 $boxTextColorLight = $gray-dark
 
 .react-select-box-container {
+  @extends $bigDarkInput
+  font-family $body-font
+  padding 0.2em 0
   position: relative;
-  width: 240px;
   display: inline-block;
-  background-color: $boxColor;
-  border-radius: 4px;
   text-align: left;  
 }
 
 .react-select-box {
-  padding: 15px 0;
   display: inline-block;
   cursor: pointer;
   border: none;
@@ -27,22 +26,24 @@ $boxTextColorLight = $gray-dark
 }
 
 .react-select-box:before {
+  display none
   content: ' ';
   z-index: 1;
   position: absolute;
   height: 20px;
   top: 15px;
   right: 34px;
-  border-left: 1px solid $boxColorLight;
+  border-left: 1px solid $boxTextColorLight;
 }
 
 .react-select-box:after {
+  display none
   content: ' ';
   position: absolute;
   z-index: 1;
   top: 23px;
   right: 13px;
-  border-top: 6px solid $boxColorLight;
+  border-top: 6px solid $boxTextColorLight;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
 }
@@ -54,7 +55,7 @@ $boxTextColorLight = $gray-dark
 }
 
 .react-select-box-label {
-  padding: 0 10px;
+  padding: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -63,7 +64,7 @@ $boxTextColorLight = $gray-dark
 
 .react-select-box-empty .react-select-box-label {
   color: $boxTextColorLight;
-  font-style: italic;
+  font-weight: 100;
 }
 
 .react-select-box-click-outside-layer {
@@ -76,6 +77,7 @@ $boxTextColorLight = $gray-dark
 }
 
 .react-select-box-clear {
+  display: none;
   position: absolute;
   top: 15px;
   right: 0;
@@ -154,7 +156,8 @@ $boxTextColorLight = $gray-dark
 }
 
 .react-select-box-option-selected {
-  color: #CBD2D7;
+  color: $boxColor;
+  background-color: $boxTextColor;
 }
 
 .react-select-box-multi .react-select-box-option {

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
 import moment from 'moment';
@@ -10,14 +11,15 @@ import ProgressButton from '../../progressButton';
 var Component = React.createClass({
   propTypes: {
     pricing: React.PropTypes.object.isRequired,
+    onSuccess: React.PropTypes.func.isRequired,
   },
 
   getInitialState: function() {
     return {
-      inProgress: false,
       cardNumber: null,
       expMonth: null,
       expYear: null,
+      cvc: null,
     };
   },
 
@@ -28,7 +30,8 @@ var Component = React.createClass({
       onClick: this._onSubmit,
       disabled: !_.get(this.state.cardNumber, 'length') 
         || !_.get(this.state.expMonth, 'length')
-        || !_.get(this.state.expYear, 'length'),
+        || !_.get(this.state.expYear, 'length')
+        || !_.get(this.state.cvc, 'length'),
     };
 
     // months
@@ -65,34 +68,70 @@ var Component = React.createClass({
         <div className="field row">
           <input 
             type="text"
+            className="card-number"
             value={this.state.cardNumber} 
             onChange={this._setCardNumber}
             placeholder="Credit card number" 
             tabIndex={1} />
         </div>
         <div className="field row">
+          <label>Expires:</label>
           <SelectBox 
-            label="Exp. month"
+            label="Month"
             className='exp-month'
             onChange={this._setExpMonth}
             value={this.state.expMonth}>
               {monthOptions}
           </SelectBox>
           <SelectBox 
-            label="Exp. year"
+            label="Year"
             className='exp-year'
             onChange={this._setExpYear}
             value={this.state.expYear}>
               {yearOptions}
           </SelectBox>
+          <label><abbr title="Card Verification Code">CVC</abbr>:</label>
+          <input 
+            type="text"
+            className="cvc"
+            value={this.state.cvc} 
+            onChange={this._setCvc}
+            placeholder="CVC" 
+            tabIndex={2} />
         </div>
         <div className="action row">
           <ProgressButton {...buttonAttrs}>Pay</ProgressButton>
         </div>
+        <div className="powered-by-stripe">Powered by Stripe</div>
       </form>
     );
   },
 
+
+  _setCvc: function(e) {
+    this.setState({
+      cvc: $(e.currentTarget).val(),
+    });
+  },
+
+
+  _setCardNumber: function(e) {
+    this.setState({
+      cardNumber: $(e.currentTarget).val(),
+    });
+  },
+
+  _setExpMonth: function(val) {
+    this.setState({
+      expMonth: val,
+    });
+  },
+
+  _setExpYear: function(val) {
+    this.setState({
+      expYear: val,
+    });
+  },
 
   _stripe() {
     return _.get(this.props.data, 'app.scripts.stripe');
@@ -102,15 +141,9 @@ var Component = React.createClass({
   _onSubmit: function() {
     let Stripe = this._stripe();
 
-    this.props.actions.pay(pricing, token)
-      .catch((err) => {
-        if (!this.isMounted()) {
-          return;
-        }
-
-        this.setState({
-          error: err,
-        });
+    this.props.actions.pay(this.props.pricing, this.state)
+      .then(() => {
+        this.props.onSuccess();
       });
   },
 
@@ -118,6 +151,6 @@ var Component = React.createClass({
 
 
 module.exports = connectRedux([
-  'verifyPayment'
+  'pay'
 ])(Component);
 

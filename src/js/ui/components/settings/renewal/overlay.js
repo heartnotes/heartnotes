@@ -45,7 +45,11 @@ module.exports = React.createClass({
       stripeLoadError = this._getStripeLoadError();
 
     if (stripeInterface) {
-      paymentForm = <PaymentForm pricing={pricingItem} />;
+      paymentForm = (
+        <PaymentForm 
+          onSuccess={this._hide}
+          pricing={pricingItem} />
+      );
     } else if (stripeLoadError) {
       paymentForm = <ErrorMessage error={stripeLoadError} />;
     }
@@ -71,6 +75,10 @@ module.exports = React.createClass({
 
   _getStripeLoadError() {
     return _.get(this.props.data, 'app.scripts.stripe.error');
+  },
+
+  _hide: function() {
+    this.refs.overlay.hide();
   },
 
   show: function() {

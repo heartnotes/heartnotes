@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import Classnames from 'classnames';
 
-import { routing } from '../../helpers/decorators';
+import { connectRedux, routing } from '../../helpers/decorators';
 import Button from '../button';
 import AttentionIcon from '../attentionIcon';
 
@@ -13,9 +13,9 @@ const ITEMS = [
     route: '/settings',
     desc: 'Account',
     attention: function() {
-      let subActive = !!_.get(this.props.data, 'diaryMgr.auth.subscriptionActive');
+      let { diaryMgr } = this.props.data.diary;
 
-      return (!subActive) ? <AttentionIcon /> : null;
+      return (!diaryMgr.auth.subscriptionActive) ? <AttentionIcon /> : null;
     },
   },
   {
@@ -109,5 +109,5 @@ var Component = React.createClass({
 });
 
 
-module.exports = routing()(Component);
+module.exports = connectRedux()(routing()(Component));
 

@@ -26,6 +26,62 @@ export default class Auth {
   }
 
 
+  buySubscription(pricing, cardDetails) {
+    return new Q((resolve, reject) => {
+      Dispatcher.pay('start');
+
+      let Stripe = Dispatcher.getState().app.scripts.stripe.object;
+
+      Stripe.setPublishableKey('pk_test_ZCe4rNB0c3SQCmOwfIm8LNTa');
+
+      Dispatcher.pay('progress', 'Charging card...');
+
+      Stripe.card.createToken({
+        number: cardDetails.cardNumber,
+        exp_month: cardDetails.expMonth,
+        exp_year: cardDetails.expYear,
+        cvc: cardDetails.cvc,
+      }, (status, response) => {
+        if (response.error) {
+          Logger.error(response.error);
+
+          let err = new Error('Unable to charge your card. Please check the details.');
+
+          Dispatcher.pay('error', err);
+
+          return reject(err);
+        } else {
+          Dispatcher.pay('progress', 'Verifying payment...');
+
+          // response contains id and card, which contains additional card details
+          let token = response.id;
+
+          Api.post('verifyPayment', {}, {
+            pricing: pricing,
+            token: token
+          })
+            .then((userAccount) => {
+              this._accountData = userAccount;
+
+              Dispatcher.pay('result', userAccount);
+              Dispatcher.alertUser('Subscription successful!');
+
+              resolve();
+            })
+            .catch((err) => {
+              Logger.error(response.error);
+
+              Dispatcher.pay('error', err);
+
+              return reject(err);
+            });
+        }
+      });
+    });
+  }
+
+
+
   /** 
    * @return {Promise}
    */
