@@ -41,6 +41,7 @@ var Component = React.createClass({
         <ProgressButton 
           checkVar={this.props.data.app.fetchingPricing}
           defaultProgressMsg="Fetching pricing..."
+          progressProps={{centered: false}}
           onClick={this._showRenewalScreen}>
             Renew subscription
         </ProgressButton>

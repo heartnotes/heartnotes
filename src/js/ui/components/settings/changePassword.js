@@ -24,6 +24,9 @@ var Component = React.createClass({
   render: function() { 
     var changePasswordButtonAttrs = {
       defaultProgressMsg: 'Saving new password...',
+      progressProps: {
+        centered: false
+      },
       checkVar: this.props.data.diary.changingPassword,
       onClick: this._saveNewPassword,
     };
@@ -50,7 +53,7 @@ var Component = React.createClass({
               confirmPlaceholder="Confirm new password"
               onChange={this._setNewPassword} 
               requiredStrength={0} 
-              tabIndex={2} />
+              tabIndex={1} />
           </div>
           <div className="action row">
             <ProgressButton {...changePasswordButtonAttrs}>Save new password</ProgressButton>

@@ -9,11 +9,13 @@ module.exports = React.createClass({
   propTypes: {
     checkVar: React.PropTypes.object.isRequired,
     defaultProgressMsg: React.PropTypes.string,
+    progressProps: React.PropTypes.object,
   },
 
   getDefaultProps: function() {
     return {
       defaultProgressMsg: 'Processing...',
+      progressMsgProps: {},
     };
   },
 
@@ -40,8 +42,10 @@ module.exports = React.createClass({
       );
     }
 
+    let progressProps = _.omit(this.props.progressProps, 'msg');
+
     return (
-      <ActionProgress msg={msg}>
+      <ActionProgress msg={msg} {...progressProps}>
         <Button {...buttonAttrs}>{this.props.children}</Button>
       </ActionProgress>
     );

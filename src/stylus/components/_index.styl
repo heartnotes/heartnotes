@@ -355,7 +355,7 @@ $progressStyles
   position relative
   .msg
     display block
-    margin 1rem auto
+    margin 1rem 0
     color $red-light
     font-size 1.2rem
     font-style normal
@@ -363,6 +363,8 @@ $progressStyles
     width 20rem
     transition all 0.2s linear
     max-height 0
+    &.centered
+      margin 1rem auto
     &.shown
       max-height 10000px
       padding 1em

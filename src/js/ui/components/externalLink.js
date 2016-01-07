@@ -1,6 +1,7 @@
 import React from 'react';
 import shell from 'shell';
 
+import Detect from '../../utils/detect';
 
 
 module.exports = React.createClass({
@@ -9,15 +10,29 @@ module.exports = React.createClass({
   },
 
   render: function() {
+    let attrs = {};
+
+    if (Detect.isElectronApp()) {
+      attrs = {
+        onClick: this._openLinkElectron,
+        href:"#",
+      };
+    } else {
+      attrs = {
+        href:this.props.href,
+        target: '_blank',
+      };
+    }
+
     return (
-      <a className="external-link" onClick={this._openLink} href="#">
+      <a className="external-link" {...attrs}>
         {this.props.children}
       </a>
     );
   },
 
 
-  _openLink: function(e) {
+  _openLinkElectron: function(e) {
     e.preventDefault();
 
     shell.openExternal(this.props.href);

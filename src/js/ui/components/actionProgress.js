@@ -9,11 +9,13 @@ var React = require('react');
 module.exports = React.createClass({
   propTypes: {
     msg : React.PropTypes.object,
+    centered: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       msg: null,
+      centered: true,
     };
   },
 
@@ -21,6 +23,7 @@ module.exports = React.createClass({
   render: function() {   
     let classes = Classnames('msg', {
       shown: !!this.props.msg,
+      centered: !!this.props.centered,
     });
 
     return (
