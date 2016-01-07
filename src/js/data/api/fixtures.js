@@ -6,6 +6,9 @@ import { instance as Api } from './index';
 var Logger = require('../../utils/logger').create('ApiFixtures');
 
 
+Logger.info('Applying API fixtures...');
+
+
 var users = {
   'ok@test.com': {
     "key": "2d97759123110bbacfdb5cce21bbe508cdea860afc49c7b554b1b981a612c05c",

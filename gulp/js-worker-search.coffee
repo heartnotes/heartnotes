@@ -1,5 +1,6 @@
 browserify = require 'browserify'
 
+replace = require 'gulp-replace'
 path = require 'path'
 concat = require 'gulp-concat'
 source = require 'vinyl-source-stream2'
@@ -18,6 +19,7 @@ module.exports = (paths, options = {}) ->
       .on 'error', (err) ->
         gutil.log(err.stack)
       .pipe source('search-webworker-addon.js')
+      .pipe replace('__BUILD_TYPE__', options.buildType)
       .pipe gulpIf(options.minifiedBuild, uglify())
       .pipe concat('worker-search.js')
       .pipe gulp.dest(paths.build.js)

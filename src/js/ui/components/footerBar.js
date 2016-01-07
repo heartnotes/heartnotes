@@ -16,7 +16,7 @@ class Component extends React.Component {
 
     let newVersionMsg = null;
 
-    if (!app.newVersionAvailable) {
+    if (app.newVersionAvailable) {
       newVersionMsg = (
         <ExternalLink href="https://heartnot.es">new version available!</ExternalLink>
       );

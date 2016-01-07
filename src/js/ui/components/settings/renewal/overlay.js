@@ -57,7 +57,7 @@ module.exports = React.createClass({
       <Overlay ref="overlay" showCancelButton={true}>
         <div className="renew-subscription-dialog">
           <p className="intro">
-            By supporting us you enable us to make a better app for you :)
+            Help us make Heartnotes better for you :)
           </p>
           {pricingItemRendered}
           {paymentProcess}

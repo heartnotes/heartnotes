@@ -23,6 +23,11 @@ module.exports = React.createClass({
     };
   },
 
+  getInitialState: function() {
+    return {
+      email: this.props.email,
+    };
+  },
 
   render: function() {
     var inputType = 'text';
@@ -32,7 +37,7 @@ module.exports = React.createClass({
         <input type={inputType}
           ref="input"
           onInput={this._onChange} 
-          value={this.props.email} 
+          value={this.state.email || ''} 
           placeholder={this.props.placeholder}
           tabIndex={'' + this.props.tabIndex} />
       </div>
@@ -42,6 +47,10 @@ module.exports = React.createClass({
 
   _onChange: function(e) {
     var email = $(e.currentTarget).val();
+
+    this.setState({
+      email: email,
+    });
 
     if (this.props.onChange) {
       this.props.onChange(validator.isEmail(email) ? email : null);

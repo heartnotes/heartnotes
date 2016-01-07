@@ -61,7 +61,7 @@ $ npm install -g electron-prebuilt@0.34.3
 $ npm install
 ```
 
-Run dev server (http://localhost:3000):
+Run dev server and Electron app (http://localhost:3000):
 
 ```bash
 $ gulp

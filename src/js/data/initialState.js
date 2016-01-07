@@ -27,6 +27,8 @@ exports.alert = function() {
 exports.diary = function() {
   return {
     name: null,
+    backupsEnabled: false,
+    exportsEnabled: false,
     derivedKeys: null,
     entries: null,
     creating: {},

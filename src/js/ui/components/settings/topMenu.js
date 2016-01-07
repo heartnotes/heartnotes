@@ -22,6 +22,9 @@ const ITEMS = [
     id: 'backupRestore',
     route: '/settings/backupRestore',
     desc: 'Backup / Export',
+    showIf: function() {
+      return !!_.get(this.props.data, 'diary.backupsEnabled');
+    },
   },
   {
     id: 'help',
@@ -76,14 +79,22 @@ var Component = React.createClass({
   },
 
   render: function() {
-    var primaryLinks = ITEMS.map((item) => {
+    var primaryLinks = [];
+
+    ITEMS.forEach((item) => {
       let attention = null;
+
+      if (item.showIf) {
+        if (!item.showIf.call(this)) {
+          return;
+        }
+      }
 
       if (item.attention) {
         attention = item.attention.call(this);
       }
 
-      return (
+      primaryLinks.push(
         <Tab 
           key={item.id}
           item={item} 

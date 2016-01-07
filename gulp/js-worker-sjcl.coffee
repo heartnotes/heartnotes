@@ -1,4 +1,5 @@
 gulp = require 'gulp'
+replace = require 'gulp-replace'
 gulpIf = require 'gulp-if'
 path = require 'path'
 concat = require 'gulp-concat'
@@ -15,6 +16,7 @@ module.exports = (paths, options = {}) ->
         "#{paths.src.lib}/sjcl/sjcl-webworker-addons.js"
       ]
         .pipe concat('worker-sjcl.js')
+        .pipe replace('__BUILD_TYPE__', options.buildType)
         .pipe gulpIf(options.minifiedBuild, uglify())
         .pipe gulp.dest(paths.build.js)
 

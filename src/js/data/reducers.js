@@ -166,6 +166,8 @@ exports.diary = function(state = InitialState.diary(), action) {
     case Actions.INIT:
       return _.extend({}, state, {
         lastAccessedDiary: LocalStorage.getLastAccessed(),
+        backupsEnabled: !!(Storage.backup),
+        exportsEnabled: !!(Storage.export),
       });
 
     case Actions.BACKUP_START:

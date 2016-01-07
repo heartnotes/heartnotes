@@ -1,5 +1,6 @@
 gulp = require 'gulp'
 gulpIf = require 'gulp-if'
+replace = require 'gulp-replace'
 path = require 'path'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
@@ -12,6 +13,7 @@ module.exports = (paths, options = {}) ->
       path.join(paths.src.lib, 'electron', 'windowGlobals.js')
     ]
       .pipe concat('vendor.js')
+      .pipe replace('__BUILD_TYPE__', options.buildType)
       .pipe gulpIf(options.minifiedBuild, uglify())
       .pipe gulp.dest(paths.build.js)
 

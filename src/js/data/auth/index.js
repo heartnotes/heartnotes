@@ -32,7 +32,11 @@ export default class Auth {
 
       let Stripe = Dispatcher.getState().app.scripts.stripe.object;
 
-      Stripe.setPublishableKey('pk_test_ZCe4rNB0c3SQCmOwfIm8LNTa');
+      Stripe.setPublishableKey(
+        Detect.inDevMode() 
+          ? 'pk_test_ZCe4rNB0c3SQCmOwfIm8LNTa'
+          : 'pk_live_APU9yltbkZwZcIRoK2XI9Yjd'
+      );
 
       Dispatcher.pay('progress', 'Charging card...');
 

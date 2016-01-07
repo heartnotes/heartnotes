@@ -5,9 +5,8 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { Provider } from 'react-redux';
 
-
 import Logger from './utils/logger';
-import Detet from './utils/detect';
+import Detect from './utils/detect';
 import Store from './data/store';
 import Layout from './ui/layout';
 import EntriesView from './ui/pages/entries';
@@ -17,9 +16,9 @@ import BackupRestoreView from './ui/pages/settings/backupRestore';
 import HelpView from './ui/pages/settings/help';
 
 // API fixtures
-//if (Detect.inDevMode()) {
+if (Detect.inDevMode()) {  
   require('./data/api/fixtures');
-//}
+}
 
 
 

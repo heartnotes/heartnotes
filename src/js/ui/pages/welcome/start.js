@@ -72,7 +72,7 @@ var Component = React.createClass({
   _getUsername: function() {
     let { lastAccessedDiary } = this.props.data.diary;
 
-    return (0 < _.get(this.state.id, 'length') ? this.state.id : lastAccessedDiary) || '';
+    return ((null !== this.state.id) ? this.state.id : lastAccessedDiary) || '';
   },
 
 

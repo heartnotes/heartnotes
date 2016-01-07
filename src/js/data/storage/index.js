@@ -14,6 +14,7 @@ import Diary from '../diary/index';
 const LAST_ACCESSED_DIARY_KEY = 'last_accessed';
 
 
+
 export class StorageManager {
 
   constructor() {
@@ -41,91 +42,6 @@ export class StorageManager {
   get export () {
     return this._exporter;
   }
-
-
-
-  /**
-   * @return {Promise}
-   */
-  createNewDiary (data) {
-    this.logger.info('create new');
-
-    return this.storage.createNewDiary(data)
-      .then((diaryName) => {
-        if (!diaryName) {
-          throw new Error('Please choose a location to save the file in.');
-        }
-
-        return this.loadDiary(diaryName);
-      });
-  }
-
-
-  /**
-   * @return {Promise}
-   */
-  loadDiary (diaryName) {
-    return this._loadDiary(diaryName)
-      .then((data) => {
-        return new Diary(diaryName, data);
-      });
-  }
-
-
-  /**
-   * @return {Promise}
-   */
-  saveDiary (diaryName, data) {
-    this.logger.info('save diary', diaryName);
-
-    return this.storage.saveDiary(diaryName, data);
-  }
-
-
-  selectDiary() {
-    return this.storage.selectDiary();
-  }
-
-
-
-  exportToFile (content) {
-   this.logger.info('export to file', content.length);
-
-   return this.fileStorage.exportToFile(content);
-  }
-
-
-  getLastAccessedDiaryDetails () {
-    return this.browserStorage.get(LAST_ACCESSED_DIARY_KEY);
-  }
-
-
-  _setLastAccessedDiaryDetails (diaryName) {
-    this.browserStorage.set(LAST_ACCESSED_DIARY_KEY, {
-      name: diaryName,
-      when: moment.valueOf(),
-    });
-  }
-
-
-  _loadDiary(diaryName) {
-    this.logger.debug('load diary', diaryName);
-
-    return this.storage.loadDiary(diaryName)
-      .then((data) => {
-        this._setLastAccessedDiaryDetails(diaryName);
-
-        return data;
-      })
-      .catch((err) => {
-        this.logger.error(err);
-
-        err = new Error('There was an error loading the diary.');
-
-        throw err;
-      })
-  }
-
 
 }
 

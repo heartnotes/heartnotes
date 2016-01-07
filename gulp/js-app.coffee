@@ -1,4 +1,5 @@
 browserify = require 'browserify'
+replace = require 'gulp-replace'
 
 concat = require 'gulp-concat'
 source = require 'vinyl-source-stream2'
@@ -17,6 +18,7 @@ module.exports = (paths, options = {}) ->
       .on 'error', (err) ->
         gutil.log(err.stack)
       .pipe source('app.js')
+      .pipe replace('__BUILD_TYPE__', options.buildType)
       .pipe gulpIf(options.minifiedBuild, uglify({
         # for now don't mangle because it screws up use of sjcl inside webworker methods
         mangle: false
