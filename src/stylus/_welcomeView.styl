@@ -93,6 +93,15 @@ footer.welcome-footer-bar
         a
           @extend $normalLink
           text-transform lowercase
+          
+    span.home
+      &:before
+        display inline-block
+        content "|"
+        color $gray-darker
+        padding 0 0.5em
+      a
+        color $white
 
     // span.version
     //   a

@@ -70,10 +70,22 @@ exports.app = function(state = InitialState.app(), action) {
     case Actions.CHECK_FOR_UPDATES_RESULT:
       let release = action.payload;
 
-      return _.extend({}, state, {
+      let newState = _.extend({}, state, {
         checkingForUpdate: AsyncState.result(release),
         newVersionAvailable: semver.gt(release.tag_name, state.version),
+        downloadLinks: {
+          osx: `https://github.com/heartnotes/heartnotes/releases/download/${release.tag_name}/Heartnotes.app.zip`,
+        }
       });
+
+      switch (navigator.platform) {
+        case 'MacIntel':
+        default:
+          newState.downloadLink = newState.downloadLinks.osx;
+          break;
+      }
+
+      return newState;
 
 
     case Actions.LOAD_SCRIPT_START:

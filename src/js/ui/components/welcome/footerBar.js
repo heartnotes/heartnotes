@@ -1,6 +1,6 @@
 import React from 'react';
 
-import IconButton from '../iconButton';
+import Icon from '../icon';
 import ExternalLink from '../externalLink';
 import Loading from '../loading';
 import { connectRedux, routing } from '../../helpers/decorators';
@@ -19,7 +19,7 @@ class Component extends React.Component {
 
     if (app.newVersionAvailable) {
       newVersionMsg = (
-        <ExternalLink href="https://heartnot.es">new version available!</ExternalLink>
+        <ExternalLink href={app.downloadLink}>new version available!</ExternalLink>
       );
     } else if (app.checkingForUpdate.inProgress) {
       newVersionMsg = (
@@ -34,6 +34,9 @@ class Component extends React.Component {
             <span className="new-version">{newVersionMsg}</span>
             v{this.props.data.app.version}
           </span>
+          <span className="home">
+            <ExternalLink href="https://heartnot.es"><Icon name="home" /></ExternalLink>
+          </span>          
         </div>
       </Footer>
     );
