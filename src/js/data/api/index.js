@@ -9,6 +9,7 @@ import Logger from '../../utils/logger';
 import * as Detect from '../../utils/detect';
 
 
+const DEV_SERVER = 'http://127.0.0.1:3000/api';
 const LIVE_SERVER = 'https://heartnot.es:443/api';
 
 
@@ -28,7 +29,7 @@ export class Api {
     this.logger = Logger.create(`api`);
 
     this.options = _.extend({
-      baseUrl: LIVE_SERVER,
+      baseUrl: Detect.inDevMode() ? DEV_SERVER : LIVE_SERVER,
       globalQueryParams: {},
       timeout: 5000,
     }, options);

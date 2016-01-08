@@ -13,10 +13,30 @@ var LocalStorage = Storage.local;
 exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
     case Actions.BACKGROUND_TASK_START:
-    case Actions.BACKGROUND_TASK_PROGRESS:
       let task = action.payload;
 
       state.backgroundTasks[task.id] = task;
+      state.backgroundTasks[task.id].inProgress = true;
+
+      return _.extend({}, state, {
+        backgroundTasks: state.backgroundTasks,
+      });
+
+    case Actions.BACKGROUND_TASK_PROGRESS:
+      let task = action.payload;
+
+      state.backgroundTasks[task.id].msg = task.msg;
+
+      return _.extend({}, state, {
+        backgroundTasks: state.backgroundTasks,
+      });
+
+    case Actions.BACKGROUND_TASK_ERROR:
+      let task = action.payload;
+
+      state.backgroundTasks[task.id].msg = task.msg;
+      state.backgroundTasks[task.id].inProgress = false;
+      state.backgroundTasks[task.id].error = true;
 
       return _.extend({}, state, {
         backgroundTasks: state.backgroundTasks,
@@ -136,6 +156,11 @@ exports.app = function(state = InitialState.app(), action) {
     case Actions.PAY_RESET:
       return _.extend({}, state, {
         paying: AsyncState.reset(action.payload),
+      });
+
+    case Actions.ACCOUNT_DATA_UPDATED:
+      return _.extend({}, state, {
+        accountData: action.payload,
       });
 
 

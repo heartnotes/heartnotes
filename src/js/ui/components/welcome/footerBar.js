@@ -1,9 +1,10 @@
 import React from 'react';
 
-import IconButton from './iconButton';
-import ExternalLink from './externalLink';
-import Loading from './loading';
-import { connectRedux, routing } from '../helpers/decorators';
+import IconButton from '../iconButton';
+import ExternalLink from '../externalLink';
+import Loading from '../loading';
+import { connectRedux, routing } from '../../helpers/decorators';
+import Footer from '../footer';
 
 
 class Component extends React.Component {
@@ -27,16 +28,14 @@ class Component extends React.Component {
     }
 
     return (
-      <footer id="footer-bar">
-        <div className="footer-content">
-          <div className="meta">
-            <span className="version">
-              <span className="new-version">{newVersionMsg}</span>
-              v{this.props.data.app.version}
-            </span>
-          </div>
+      <Footer className="welcome-footer-bar">
+        <div className="meta">
+          <span className="version">
+            <span className="new-version">{newVersionMsg}</span>
+            v{this.props.data.app.version}
+          </span>
         </div>
-      </footer>
+      </Footer>
     );
   }
 

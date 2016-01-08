@@ -3,12 +3,13 @@ import React from 'react';
 
 import { connectRedux, routing } from './helpers/decorators';
 import MainMenu from './components/mainMenu';
-import BackgroundTasksMenu from './components/backgroundTasksMenu';
+import BackgroundTasksIndicator from './components/backgroundTasksIndicator';
 import SubMenu from './components/subMenu';
 import WelcomeView from './pages/welcome/index';
 import UserAlert from './components/userAlert';
 import Logo from './components/logo';
-import FooterBar from './components/footerBar';
+import WelcomeFooterBar from './components/welcome/footerBar';
+import ErrorMessageFooterBar from './components/errorMessageFooter';
 
 
 var Component = React.createClass({
@@ -39,7 +40,7 @@ var Component = React.createClass({
     return (
       <section id="welcome-content">
         <WelcomeView {...this.props} />
-        <FooterBar />
+        <WelcomeFooterBar />
       </section>
     );
   },
@@ -50,7 +51,7 @@ var Component = React.createClass({
         <section id="sidebar">
           <div>
             <Logo withText={false} onClick={this._onLogoClick} />
-            <BackgroundTasksMenu {...this.props} />
+            <BackgroundTasksIndicator {...this.props} />
           </div>
           <MainMenu {...this.props} />
           <SubMenu {...this.props} />
@@ -58,6 +59,7 @@ var Component = React.createClass({
         <section id="content">
           {this.props.children}
         </section>
+        <ErrorMessageFooterBar />
       </div>
     );
   },

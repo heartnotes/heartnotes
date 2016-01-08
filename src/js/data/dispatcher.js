@@ -175,6 +175,10 @@ export class Dispatcher {
   }
 
 
+  accountDataUpdated(data) {
+    return this._do(Actions.ACCOUNT_DATA_UPDATED, data); 
+  }
+
 
   openDiary (state, data) {
     switch (state) {
@@ -358,10 +362,12 @@ export class Dispatcher {
   sync (state, data) {
     switch (state) {
       case 'start':
-        return this._startBg('sync', 'Synchronizing with server...');
+        return this._startBg('sync', 'Synchronizing with server');
       case 'progress':
         return this._updateBg('sync', data);
-      case 'result':
+      case 'error':
+        return this._errorBg('sync', data);
+      case 'stop':
         return this._stopBg('sync');
     }
   }
@@ -474,7 +480,7 @@ export class Dispatcher {
     this._do(Actions.BACKGROUND_TASK_START, {
       id: taskId,
       desc: desc,
-      msg: 'In progres...',
+      msg: 'In progress...',
     });
   }
 
@@ -482,7 +488,14 @@ export class Dispatcher {
   _updateBg(taskId, msg) {
     this._do(Actions.BACKGROUND_TASK_PROGRESS, {
       id: taskId,
-      desc: desc,
+      msg: msg,
+    });
+  }
+
+
+  _errorBg(taskId, msg) {
+    this._do(Actions.BACKGROUND_TASK_ERROR, {
+      id: taskId,
       msg: msg,
     });
   }

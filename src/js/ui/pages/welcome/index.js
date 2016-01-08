@@ -24,7 +24,7 @@ const STEPS = [
 ];
 
 
-var Comonent = React.createClass({
+var Component = React.createClass({
   render: function() { 
     return (
       <div className="welcomeView">
@@ -40,7 +40,7 @@ var Comonent = React.createClass({
 
 
 
-module.exports = connectRedux()(Comonent);
+module.exports = connectRedux()(Component);
 
 
 

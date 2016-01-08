@@ -12,14 +12,16 @@ var Component = React.createClass({
 
     let { backgroundTasks } = app;
 
-    let tasks = _.values(backgroundTasks);
+    let inProgressTasks = _.filter(backgroundTasks, (task) => {
+      return !!task.inProgress;
+    });
 
     let content = null;
 
-    if (tasks.length) {
+    if (inProgressTasks.length) {
       content = (
         <Loading />
-      )
+      );
     }
 
     return (

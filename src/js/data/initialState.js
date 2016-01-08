@@ -12,6 +12,7 @@ exports.app = function() {
     newVersionAvailable: false,
     loadingScript: {},
     scripts: {},
+    accountData: {},
   }
 };
 

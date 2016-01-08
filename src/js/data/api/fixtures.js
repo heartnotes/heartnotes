@@ -138,4 +138,9 @@ Api.addFixturePost('verifyPayment', (query, body) => {
 
 
 
+Api.addFixturePost('sync', (query, body) => {
+  return {};
+});
+
+
 

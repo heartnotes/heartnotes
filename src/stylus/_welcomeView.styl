@@ -80,7 +80,27 @@
           margin-left 10px
         
         
-        
+
+footer.welcome-footer-bar
+  .meta
+    position absolute
+    top 1px
+    right 10px
+    
+    span.version
+      span.new-version
+        margin 0 0.5em 0 0
+        a
+          @extend $normalLink
+          text-transform lowercase
+
+    // span.version
+    //   a
+    //     text-transform uppercase
+    //     color $gray-dark
+    //     border none
+    //     &:hover
+    //       color $white        
 
 
 
@@ -90,4 +110,4 @@
 
 
 
-        
+      

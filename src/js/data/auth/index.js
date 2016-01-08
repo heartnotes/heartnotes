@@ -64,10 +64,10 @@ export default class Auth {
             pricing: pricing,
             token: token
           })
-            .then((userAccount) => {
-              this._accountData = userAccount;
+            .then((accountData) => {
+              this.updateAccountData(accountData);
 
-              Dispatcher.pay('result', userAccount);
+              Dispatcher.pay('result', accountData);
               Dispatcher.alertUser('Subscription successful!');
 
               resolve();
@@ -381,10 +381,9 @@ export default class Auth {
       key: this.authKey,
     })
       .then((accountData) => {
-        this._accountData = accountData;
-        this._authenticatedWithServer = true;
+        this.updateAccountData(accountData);
 
-        Dispatcher.authWithServer('result');
+        Dispatcher.authWithServer('result', accountData);
       })
       .catch((err) => {
         this.logger.error(err);
@@ -393,6 +392,14 @@ export default class Auth {
 
         throw err;
       });
+  }
+
+
+  updateAccountData (accountData) {
+    this._accountData = accountData;
+    this._authenticatedWithServer = true;
+
+    Dispatcher.accountDataUpdated(accountData);
   }
 
 

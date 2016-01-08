@@ -3,6 +3,7 @@ import Q from 'bluebird';
 import moment from 'moment';
 import { Timer } from 'clockmaker';
 
+import * as Detect from '../../utils/detect';
 import { instance as Dispatcher } from '../dispatcher';
 import { UnreachableError, instance as Api } from '../api/index';
 
@@ -13,7 +14,7 @@ export default class Sync {
     this.diary = diary;
 
     _.defaults(options, {
-      delayMs: 30000
+      delayMs: 15000
     });
 
     this._timer = Timer(this._onTick, options.delayMs, {
@@ -76,13 +77,15 @@ export default class Sync {
 
         Dispatcher.sync('progress', 'Receiving data...');
 
-        return this.diary.decryptor.decrypt(serverEncryptedEntries)
-          .then((serverDecryptedEntries) => {
-            _.each(serverDecryptedEntries, (e, id) => {
-              this.diary._entries[id] = e;
-              this.diary._encryptedEntries[id] = serverEncryptedEntries[id];
+        if (!_.isEmpty(serverEncryptedEntries)) {
+          return this.diary.decryptor.decrypt(serverEncryptedEntries)
+            .then((serverDecryptedEntries) => {
+              _.each(serverDecryptedEntries, (e, id) => {
+                this.diary._entries[id] = e;
+                this.diary._encryptedEntries[id] = serverEncryptedEntries[id];
+              });
             });
-          });
+        }
       })
       .then(() => {
         Dispatcher.sync('progress', 'Saving data...');
@@ -102,17 +105,32 @@ export default class Sync {
         const syncTimeTaken = (Date.now() - syncStartTime) / 1000.0;
 
         this.logger.info(`Ended (took ${syncTimeTaken} seconds`);
+
+        Dispatcher.sync('stop');
       })
       .catch((err) => {
         if (err instanceof UnreachableError) {
           this.logger.warn('Server unreachable, skipping');
+
+          // /* if in dev mode then let's not always fail */
+          // if (Detect.inDevMode()) {
+          //   if (0.5 > Math.random()) {
+          //     return;
+          //   }
+          // }
+
+          Dispatcher.sync('error', 'Server unreachable, network connection may be down.');
         } else {
           this.logger.error(err.stack);
+          
+          // perhaps membership requires renewal, in which case 
+          // let's update the account data
+          if (_.get(err.details.accountData)) {
+            this.diary.auth.updateAccountData(err.details.accountData);
+          }
         }
       })
       .finally(() => {
-        Dispatcher.sync('result');
-
         cb();
       });
   }
