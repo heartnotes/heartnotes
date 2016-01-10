@@ -55,8 +55,10 @@ module.exports = React.createClass({
 
 
   _onClick: function(e) {
-    e.preventDefault();
-    $(e.currentTarget).blur();
+    if (e) {
+      e.preventDefault();
+      $(e.currentTarget).blur();
+    }
 
     if (this.props.onClick) {
       this.props.onClick();

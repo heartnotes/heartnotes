@@ -51,10 +51,10 @@ export function init() {
 
 
 export function closeDiary() {
-  return function(dispatch) {
+  return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;
 
-    return diaryMgr.destroy()
+    diaryMgr.destroy()
       .then(() => {
         Dispatcher.closeDiary();
       });

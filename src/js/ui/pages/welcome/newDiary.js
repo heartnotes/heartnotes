@@ -84,7 +84,9 @@ var Component = React.createClass({
   },
 
 
-  _createNew: function() {
+  _createNew: function(e) {
+    e.preventDefault();
+    
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
         this.props.actions.createDiary(this.state.id, this.state.password)

@@ -41,7 +41,9 @@ export default class Diary {
 
 
   destroy () {
-    this._stopSync();
+    return Q.try(() => {
+      this._stopSync();
+    });
   }
 
 
