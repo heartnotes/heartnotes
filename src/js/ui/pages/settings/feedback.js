@@ -23,13 +23,16 @@ var Component = React.createClass({
 
     let buttonAttrs = {
       defaultProgressMsg: 'Sending...',
-      progessVarKey: this.props.data.app.sendingFeedback,
+      progressProps: {
+        centered: false
+      },
+      checkVar: this.props.data.app.sendingFeedback,
       disabled: !_.get(msg, 'length'),
       onClick: this._send,
     };
 
     return (
-      <Layout tab="help" {...this.props}>
+      <Layout tab="feedback" {...this.props}>
         <h2>Give us feedback</h2> 
         <textarea 
           value={msg}
@@ -37,8 +40,6 @@ var Component = React.createClass({
           rows="10" 
           placeholder="Tell us what you like or don't like..." />
         <ProgressButton {...buttonAttrs}>Send</ProgressButton>
-        <hr />
-        <p>Get more help at <ExternalLink href="https://heartnot.es">heartnot.es</ExternalLink>.</p>
       </Layout>
     );
   },

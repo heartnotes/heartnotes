@@ -275,7 +275,13 @@ export default class Diary {
         return Storage.backup.loadBackup(path)
           .then((raw) => {
             let { data } = raw;
-            return Crypto.decrypt(this._auth.encryptionKey, data);
+            
+            return Crypto.decrypt(this._auth.encryptionKey, data)
+              .catch((err) => {
+                this.logger.error(err);
+
+                throw new Error("Backup file is corrupted or in an unrecognized format");
+              });
           })
           .then((data) => {
             let { id, entries } = data;

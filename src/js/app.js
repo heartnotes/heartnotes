@@ -13,7 +13,7 @@ import EntriesView from './ui/pages/entries';
 import NewEntryView from './ui/pages/newEntry';
 import AccountSettingsView from './ui/pages/settings/account';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
-import HelpView from './ui/pages/settings/help';
+import FeedbackView from './ui/pages/settings/feedback';
 
 // API fixtures
 if (Detect.inDevMode()) {  
@@ -49,7 +49,7 @@ const Routes = (
     <Route name="newEntry" path="/newEntry" component={NewEntryView} />
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
-    <Route name="help" path="/settings/help" component={HelpView} />
+    <Route name="feedback" path="/feedback" component={FeedbackView} />
     <Route path="*" component={EntriesView}/>
   </Route>
 );

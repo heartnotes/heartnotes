@@ -22,6 +22,9 @@ var Component = React.createClass({
 
     let btnAttrs = {
       defaultProgressMsg: 'Making backup...',
+      progressProps: {
+        centered: false
+      },
       checkVar: diary.makingBackup,
       onClick: this._makeBackup,
     };

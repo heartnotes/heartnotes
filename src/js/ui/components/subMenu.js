@@ -21,6 +21,11 @@ var Component = React.createClass({
         attention: attentionIcon,
       },
       {
+        icon: 'comment',
+        action: this._giveFeedback,
+        desc: 'Feedback',
+      },
+      {
         icon: 'eject',
         action: this._closeDiary,
         desc: 'Logout',
@@ -49,6 +54,11 @@ var Component = React.createClass({
 
   _closeDiary: function() {
     this.props.actions.closeDiary();
+  },
+
+
+  _giveFeedback: function() {
+    this.props.history.navigate('/feedback');
   },
 
 

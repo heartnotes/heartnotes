@@ -27,9 +27,9 @@ const ITEMS = [
     },
   },
   {
-    id: 'help',
-    route: '/settings/help',
-    desc: 'Help',
+    id: 'feedback',
+    route: '/feedback',
+    desc: 'Feedback',
   },
 ];
 

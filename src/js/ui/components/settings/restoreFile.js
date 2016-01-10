@@ -20,6 +20,9 @@ var RestoreOverlay = React.createClass({
   render: function() {
     let buttonAttrs = {
       defaultProgressMsg: 'Restoring from old diary...',
+      progressProps: {
+        centered: false
+      },
       checkVar: this.props.checkVar,
       onClick: this._restore,
       disabled: !_.get(this.state.password, 'length')
@@ -94,6 +97,9 @@ var Component = React.createClass({
 
     let btnAttrs = {
       defaultProgressMsg: 'Restoring backup...',
+      progressProps: {
+        centered: false
+      },
       checkVar: diary.restoringBackup,
       onClick: this._restoreBackup,
     };

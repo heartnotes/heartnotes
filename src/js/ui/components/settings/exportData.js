@@ -13,6 +13,9 @@ var Component = React.createClass({
   render: function() { 
     var exportDataButtonAttrs = {
       defaultProgressMsg: 'Exporting data...',
+      progressProps: {
+        centered: false
+      },
       checkVar: this.props.data.diary.exporting,
       onClick: this._export,
     };

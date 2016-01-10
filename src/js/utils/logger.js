@@ -1,7 +1,8 @@
 import Logger from 'logarama';
+import Detect from './detect';
 
 var logger = module.exports = new Logger(null, {
-  minLevel: 'debug'
+  minLevel: Detect.inDevMode() ? 'debug' : 'info'
 });
 
 // guarded setting (we might be inside a webworker)
