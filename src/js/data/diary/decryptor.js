@@ -49,6 +49,7 @@ export default class Decrypter {
 
   encrypt (entries, options = {}) {
     _.defaults(options, {
+      auth: this._auth,
       onEach: (encryptedEntry => encryptedEntry),
       setUpdatedTo: null,
     });
@@ -56,7 +57,7 @@ export default class Decrypter {
     return Q.props(_.mapValues(entries, (entry) => {
       entry.up = options.setUpdatedTo || entry.up;
 
-      return Crypto.encrypt(this._auth.encryptionKey, {
+      return Crypto.encrypt(options.auth.encryptionKey, {
         body: entry.body,
         ts: entry.ts,
         up: entry.up,

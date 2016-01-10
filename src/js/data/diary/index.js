@@ -349,6 +349,7 @@ export default class Diary {
             return decryptor.decryptEntriesLoadedFromStorage(raw.entries, {
               shouldReEncrypt: true,
               reEncryptOptions: {
+                auth: this._auth,
                 setUpdatedTo: Date.now(),
                 onEach: (encryptedEntry) => {
                   Dispatcher.restoreFromOldDiary('progress', `Restoring...${++done}`);
