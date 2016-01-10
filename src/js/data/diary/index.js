@@ -275,7 +275,7 @@ export default class Diary {
         return Storage.backup.loadBackup(path)
           .then((raw) => {
             let { data } = raw;
-            
+
             return Crypto.decrypt(this._auth.encryptionKey, data)
               .catch((err) => {
                 this.logger.error(err);
@@ -315,6 +315,8 @@ export default class Diary {
       })
       .then(() => {
         Dispatcher.restore('result');
+
+        this._rebuildSearchIndex();
       })
       .catch((err) => {
         this.logger.error(err);
@@ -375,6 +377,8 @@ export default class Diary {
             Dispatcher.alertUser('Restore successful');
 
             Dispatcher.restoreFromOldDiary('result');
+
+            this._rebuildSearchIndex();
           });
       })
       .catch((err) => {
