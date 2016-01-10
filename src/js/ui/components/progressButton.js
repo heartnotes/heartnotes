@@ -15,7 +15,7 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       defaultProgressMsg: 'Processing...',
-      progressMsgProps: {},
+      progressProps: {},
     };
   },
 

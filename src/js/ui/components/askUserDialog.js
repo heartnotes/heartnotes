@@ -9,11 +9,13 @@ module.exports = React.createClass({
   propTypes: {
     msg : React.PropTypes.string.isRequired,
     buttons : React.PropTypes.array,
+    allowDialogCancel: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
     return {
       buttons: ['OK'],
+      allowDialogCancel: false,
     };
   },
 
@@ -26,7 +28,7 @@ module.exports = React.createClass({
     });
 
     return (
-      <Overlay ref="overlay">
+      <Overlay ref="overlay" showCancelButton={this.props.allowDialogCancel}>
         <div className="ask-user-dialog">
           <div className="msg">{this.props.msg}</div>
           <div className="buttons">{buttons}</div>

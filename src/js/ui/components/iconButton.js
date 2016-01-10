@@ -46,7 +46,8 @@ module.exports = React.createClass({
       <button 
         className={Classnames(classes)} 
         onClick={this._onClick} 
-        title={this.props.tooltip}>
+        title={this.props.tooltip}
+        type="button">
           {attention}
           <Icon name={this.props.icon} />
       </button>

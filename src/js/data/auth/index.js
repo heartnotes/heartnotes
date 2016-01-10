@@ -141,8 +141,10 @@ export default class Auth {
           meta: this.meta,
         });
       })
-      .then(() => {        
-        Dispatcher.signUp('result');
+      .then((accountData) => {
+        this._accountData = accountData;
+        
+        Dispatcher.signUp('result', accountData);
       })
       .catch((err) => {
         this.logger.error(err);

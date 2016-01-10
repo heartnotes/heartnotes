@@ -10,6 +10,7 @@ module.exports = React.createClass({
       <AskUserDialog
         ref="dialog"
         msg="Please remember your password. You cannot recover it once forgotten!"
+        allowDialogCancel={true}
         buttons={["Ok"]} />
     );
   },

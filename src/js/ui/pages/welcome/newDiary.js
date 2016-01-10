@@ -29,7 +29,7 @@ var Component = React.createClass({
     var buttonAttrs = {
       defaultProgressMsg: 'Creating diary...',
       checkVar: this.props.data.diary.creating,
-      onClick: this._savePassword,
+      onClick: this._createNew,
     };
 
     if (!_.get(this.state.password, 'length') || !_.get(this.state.id, 'length')) {
@@ -86,7 +86,7 @@ var Component = React.createClass({
 
   _createNew: function(e) {
     e.preventDefault();
-    
+
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
         this.props.actions.createDiary(this.state.id, this.state.password)

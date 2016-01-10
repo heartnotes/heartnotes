@@ -89,7 +89,15 @@ Api.addFixturePost('signUp', (query, body) => {
   users[body.username] = _.extend({}, users[body.username], {
     key: body.key,
     meta: body.meta,
+    account: {
+      subscription: {
+        expires: moment('2015-03-01').toDate(),
+        type: 'Free Trial',
+      },
+    },
   });
+
+  return users[body.username].account;
 });
 
 
