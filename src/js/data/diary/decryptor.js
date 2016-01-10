@@ -3,6 +3,7 @@ import Q from 'bluebird';
 
 import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
+import * as StringUtils from '../../utils/string';
 
 
 export default class Decrypter {
@@ -79,6 +80,14 @@ export default class Decrypter {
         let done = 0,
           total = _.keys(entries).length;
 
+        let finalEntries = {};
+
+        _.each(entries, (e) => {
+          e.id = StringUtils.generateEntryId(e.ts);
+
+          finalEntries[e.id] = e;
+        });
+
         let encryptOptions = _.extend({
           onEach: (encryptedEntry) => {
             Dispatcher.decryptEntries('progress', `Upgrading entry...(${++done}/${total})`);
@@ -87,13 +96,13 @@ export default class Decrypter {
           }
         }, options.reEncryptOptions);
 
-        return this.encrypt(entries, encryptOptions)
+        return this.encrypt(finalEntries, encryptOptions)
           .then((newlyEncryptedEntries) => {
             Dispatcher.decryptEntries('result');
 
             return {
               encryptedEntries: newlyEncryptedEntries,
-              entries: entries,
+              entries: finalEntries,
             };
           });
       })
@@ -123,10 +132,20 @@ export default class Decrypter {
       }
     })
       .then((entries) => {
-        return {
-          encryptedEntries: encryptedEntries,
-          entries: entries,
-        };
+        if (options.shouldReEncrypt) {
+          return this.encrypt(entries, encryptOptions)
+            .then((finalEncryptedEntries) => {
+              return {
+                encryptedEntries: finalEncryptedEntries,
+                entries: entries,
+              }
+            });
+        } else {
+          return {
+            encryptedEntries: encryptedEntries,
+            entries: entries,
+          };
+        }
       })
       .catch((err) => {
         this.logger.error(err);

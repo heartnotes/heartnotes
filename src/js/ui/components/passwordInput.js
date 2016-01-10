@@ -80,9 +80,7 @@ module.exports = React.createClass({
   },  
 
 
-  _toggleTyping: function(e) {
-    e.preventDefault();
-
+  _toggleTyping: function() {
     this.setState({
       showTyping: !this.state.showTyping
     });

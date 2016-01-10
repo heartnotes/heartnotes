@@ -25,7 +25,7 @@ var Component = React.createClass({
       subscriptionExpiry = diaryMgr.auth.subscriptionExpiry;
 
     let renewButton = null,
-      title = 'Subscription',
+      title = 'Cloud subscription',
       subscriptionExpiryPrefix = 'until';
 
     if (!subscriptionActive) {

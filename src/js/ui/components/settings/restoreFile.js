@@ -78,7 +78,7 @@ var RestoreOverlay = React.createClass({
   _restore: function() {
     return this.props.restoreHandler(this.state.filePath, this.state.password)
       .then(() => {
-        this.hide();
+        this.refs.overlay.hide();
       });
   }
 

@@ -52,7 +52,12 @@ export function init() {
 
 export function closeDiary() {
   return function(dispatch) {
-    Dispatcher.closeDiary();
+    let diaryMgr = getState().diary.diaryMgr;
+
+    return diaryMgr.destroy()
+      .then(() => {
+        Dispatcher.closeDiary();
+      });
   }
 }
 

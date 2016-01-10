@@ -17,6 +17,7 @@ import Api from '../api/index';
 import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/ExportedEntries';
 import * as DateUtils from '../../utils/date';
+import * as StringUtils from '../../utils/string';
 import Decryptor from './decryptor';
 import Sync from './sync';
 
@@ -36,6 +37,11 @@ export default class Diary {
     this.logger = Logger.create(`diary-${this._id}`);
 
     this.decryptor = new Decryptor(this.logger, auth);
+  }
+
+
+  destroy () {
+    this._stopSync();
   }
 
 
@@ -339,6 +345,7 @@ export default class Diary {
             let done = 0;
 
             return decryptor.decryptEntriesLoadedFromStorage(raw.entries, {
+              shouldReEncrypt: true,
               reEncryptOptions: {
                 setUpdatedTo: Date.now(),
                 onEach: (encryptedEntry) => {
@@ -415,18 +422,14 @@ export default class Diary {
 
       this.logger.debug('create entry', ts);
 
-      return Crypto.hash(ts, Math.random() * 100000)
-        .then((newId) => {
-          return {
-            id: newId,
-            ts: ts,
-          };
-        })
-        .then((entry) => {
-          this._entries[entry.id] = entry;
+      entry = {
+        id: StringUtils.generateEntryId(ts),
+        ts: ts,        
+      };
 
-          return entry;
-        });
+      this._entries[entry.id] = entry;
+
+      return entry;
     });
   }
 
@@ -544,6 +547,13 @@ export default class Diary {
     this._sync = new Sync(this);
     this._sync.start();
   }
+
+  _stopSync () {
+    if (this._sync) {
+      this._sync.stop();
+    }
+  }
+
 
 }
 
