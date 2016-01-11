@@ -117,10 +117,6 @@ Api.addFixturePost('updatePassword', (query, body) => {
 });
 
 
-Api.addFixturePost('feedback', (query, body) => {
-  Logger.debug('FEEDBACK RECIEVED', body);
-});
-
 
 Api.addFixtureGet('pricing', (query, body) => {
   return [{

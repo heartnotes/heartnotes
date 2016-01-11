@@ -9,7 +9,7 @@ import Logger from '../../utils/logger';
 import * as Detect from '../../utils/detect';
 
 
-const DEV_SERVER = 'http://127.0.0.1:3000/api';
+const DEV_SERVER = 'http://127.0.0.1:3010/api';
 const LIVE_SERVER = 'https://heartnot.es:443/api';
 
 
@@ -29,7 +29,7 @@ export class Api {
     this.logger = Logger.create(`api`);
 
     this.options = _.extend({
-      baseUrl: Detect.inDevMode() ? DEV_SERVER : LIVE_SERVER,
+      baseUrl: null,
       globalQueryParams: {},
       timeout: 5000,
     }, options);
@@ -106,22 +106,14 @@ export class Api {
 
     return initPromise
       .then(() => {
-        if (this.areFixturesEnabled()) {
+        let httpMethodLowercase = httpMethod.toLowerCase();
+
+        let fixture = _.get(this._fixtures[httpMethodLowercase], remoteMethodName);
+
+        if (Detect.inDevMode() && fixture) {
           this.logger.debug('Fixture call');
 
-          if (!Detect.inDevMode()) {
-            this.logger.warn('Fixtures enabled in non-dev mode! Needs fixing');
-          }
-
-          let httpMethodLowercase = httpMethod.toLowerCase();
-
-          let handler = _.get(this._fixtures[httpMethodLowercase], remoteMethodName);
-
-          if (!handler) {
-            throw new Error(`Fixture handler not found for ${httpMethod} ${remoteMethodName}`);
-          }
-
-          return this._fixtures[httpMethodLowercase][remoteMethodName].call(this, queryParams, body);
+          return fixture.call(this, queryParams, body);
         } else {
           this.logger.debug('Server call');
 
@@ -176,6 +168,13 @@ export class Api {
 
 
 
-exports.instance = new Api();
+exports.instance = new Api({
+  baseUrl: Detect.inDevMode() ? DEV_SERVER : LIVE_SERVER,
+  globalQueryParams: {
+    format: 'json',
+  },
+});
+
+
 
 
