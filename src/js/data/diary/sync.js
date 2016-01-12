@@ -42,8 +42,14 @@ export default class Sync {
 
       const syncStartTime = Date.now();
 
-      // last sync time
-      let lastSyncTime = _.get(this.diary._settings, 'lastSyncTime', 0);
+      /*
+      Last sync time:
+
+      We subtract delay*1.5 to ensure that we absolutely grab all updates.
+       */
+      let lastSyncTime = parseInt(
+        _.get(this.diary._settings, 'lastSyncTime', 0) - (1.5 * this._delay)
+      );
 
       this.logger.debug('Last timestamp: ' + moment(lastSyncTime).toString());
 
@@ -51,21 +57,24 @@ export default class Sync {
 
       let entryUpdateTs = _.each(this.diary._entries, (e, id) => {
         if (e.up > lastSyncTime) {
-          entriesToSend[id] = this.diary._encryptedEntries[id];
+          entriesToSend[id] = {
+            up: e.up,
+            data: this.diary._encryptedEntries[id],
+          };
         }
       });
 
       this.logger.debug('Contacting server...');
 
-      Api.isServerReachable()
-        .then(() => {
-          Dispatcher.sync('progress', 'Sending data...');
+      Dispatcher.sync('progress', 'Sending data...');
 
-          return Api.post('sync', {}, {
-            entries: entriesToSend,
-          })        
-        })
-        .then((serverEncryptedEntries) => {
+      Api.post('sync', {}, {
+        lastSyncTime: lastSyncTime,
+        entries: entriesToSend,
+      })        
+        .then((res) => {
+          let serverEncryptedEntries = _.get(res, 'entries', {});
+
           this.logger.debug('Got data...');
 
           Dispatcher.sync('progress', 'Receiving data...');
@@ -102,24 +111,15 @@ export default class Sync {
           Dispatcher.sync('stop');
         })
         .catch((err) => {
-          if (err instanceof UnreachableError) {
-            this.logger.warn('Server unreachable, skipping');
+          this.logger.error(err.stack);
 
-            // /* if in dev mode then let's not always fail */
-            // if (Detect.inDevMode()) {
-            //   if (0.5 > Math.random()) {
-            //     return;
-            //   }
-            // }
-
-            Dispatcher.sync('error', 'Server unreachable, network connection may be down.');
+          // perhaps membership requires renewal, in which case 
+          // let's update the account data
+          if (_.get(err, 'details.accountData')) {
+            this.diary.auth.updateAccountData(err.details.accountData);
           } else {
-            this.logger.error(err.stack);
-            
-            // perhaps membership requires renewal, in which case 
-            // let's update the account data
-            if (_.get(err.details.accountData)) {
-              this.diary.auth.updateAccountData(err.details.accountData);
+            if (0 === err.statusCode) {
+              Dispatcher.sync('error', 'Sync error, network connection may be down.');
             }
           }
         })

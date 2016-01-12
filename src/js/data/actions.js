@@ -43,6 +43,11 @@ const actionTypes = [
   'LOGIN_ERROR',
   'LOGIN_RESET',
 
+  'LOGOUT_START',
+  'LOGOUT_RESULT',
+  'LOGOUT_ERROR',
+  
+
   'ACCOUNT_DATA_UPDATED',
 
   'SIGN_UP_START',

@@ -140,7 +140,11 @@ var Component = React.createClass({
     var oldIsReady = !!this.props.data.entries,
       newIsReady = !!newProps.data.entries;
 
-    return (newId !== oldId || oldDate !== newDate || (newIsReady && !oldIsReady));
+    return (
+      newId !== oldId || 
+      oldDate !== newDate || 
+      (newIsReady && !oldIsReady)
+    );
   },
 
 
@@ -150,7 +154,7 @@ var Component = React.createClass({
 
     if (newId !== oldId) {
       this.setState({
-        changedToDate: null
+        changedToDate: null,
       });
     }
   },

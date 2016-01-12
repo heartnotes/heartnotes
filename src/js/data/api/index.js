@@ -2,8 +2,6 @@ import $ from 'jquery';
 import _ from 'lodash';
 import Q from 'bluebird';
 import qs from 'query-string';
-import isReachable from 'is-reachable';
-import urlParser from 'url-parse';
 
 import Logger from '../../utils/logger';
 import * as Detect from '../../utils/detect';
@@ -57,27 +55,25 @@ export class Api {
     return !!this._fixturesEnabled;
   }
 
-  isServerReachable () {
-    return new Q((resolve, reject) => {
-      let url = urlParser(this.options.baseUrl);
+  // isServerReachable () {
+  //   return new Q((resolve, reject) => {
+  //     try {
+  //       isReachable(this.options.baseUrl, (err, online) => {
+  //         if (err) {
+  //           return reject(new UnreachableError('Server unreachable'));
+  //         }
 
-      try {
-        isReachable(url, (err, online) => {
-          if (err) {
-            return reject(new UnreachableError('Server unreachable'));
-          }
+  //         if (!online) {
+  //           return reject(new UnreachableError('Server unreachable'));
+  //         }
 
-          if (!online) {
-            return reject(new UnreachableError('Server unreachable'));
-          }
-
-          resolve(!!online);
-        });
-      } catch (err) {
-        return reject(new UnreachableError('Server unreachable'));
-      }
-    });
-  }
+  //         resolve(!!online);
+  //       });
+  //     } catch (err) {
+  //       return reject(new UnreachableError('Server unreachable'));
+  //     }
+  //   });
+  // }
 
   get (remoteMethodName, queryParams = {}, options = {}) {
     return this._request('GET', remoteMethodName, queryParams, {}, options);
@@ -124,6 +120,9 @@ export class Api {
             timeout: options.timeout,
             method: httpMethod,
             data: body,
+            xhrFields: {
+              withCredentials: true,
+            },
           }));
         }
       })
@@ -158,6 +157,8 @@ export class Api {
 
           err = new Error(errMsg);
         }
+
+        err.statusCode = response.status;
 
         throw err;
       });

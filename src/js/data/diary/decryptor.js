@@ -22,7 +22,7 @@ export default class Decrypter {
   }
 
 
-  decrypt (encryptedEntries, options) {
+  decrypt (encryptedEntries, options = {}) {
     _.defaults(options, {
       onEach: function() {}
     });

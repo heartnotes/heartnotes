@@ -14,7 +14,7 @@ var users = {
     "key": "2d97759123110bbacfdb5cce21bbe508cdea860afc49c7b554b1b981a612c05c",
     "account": {
       subscription: {
-        expires: moment('2025-03-01').toDate(),
+        expires: moment('2025-03-01').valueOf(),
         type: 'Free Trial',
       },
     },
@@ -29,7 +29,7 @@ var users = {
     "key": "4753d4ea5cae556628a72bdcde29761a72c46937c02dfa212475cb23eb7e9bad",
     "account": {
       subscription: {
-        expires: moment('2015-03-01').toDate(),
+        expires: moment('2015-03-01').valueOf(),
         type: 'Free Trial',
       },
     },
@@ -44,7 +44,7 @@ var users = {
     key: 'hahaha',
     "account": {
       subscription: {
-        expires: moment('2015-04-06').toDate(),
+        expires: moment('2015-04-06').valueOf(),
         type: 'Yearly subscription',
       },
     },
@@ -68,7 +68,9 @@ var currentUser = null;
 
 
 Api.addFixtureGet('meta', (query, body) => {
-  return _.get(users[query.username], 'meta');
+  return { 
+    meta: _.get(users[query.username], 'meta')
+  };
 });
 
 
@@ -79,11 +81,13 @@ Api.addFixturePost('login', (query, body) => {
 
   currentUser = body.username;
 
-  return users[body.username].account;
+  return { 
+    account: users[body.username].account,
+  }:
 });
 
 
-Api.addFixturePost('signUp', (query, body) => {
+Api.addFixturePost('signup', (query, body) => {
   currentUser = body.username;
 
   users[body.username] = _.extend({}, users[body.username], {
@@ -97,7 +101,9 @@ Api.addFixturePost('signUp', (query, body) => {
     },
   });
 
-  return users[body.username].account;
+  return { 
+    account: users[body.username].account,
+  }:
 });
 
 
@@ -116,6 +122,10 @@ Api.addFixturePost('updatePassword', (query, body) => {
   });
 });
 
+
+Api.addFixturePost('feedback', (query, body) => {
+  Logger.debug('FEEDBACK RECIEVED', body);
+});
 
 
 Api.addFixtureGet('pricing', (query, body) => {
@@ -137,7 +147,9 @@ Api.addFixturePost('verifyPayment', (query, body) => {
     expires: moment().add(1, 'years').toDate(),
   };
 
-  return users[currentUser].account;
+  return { 
+    account: users[currentUser].account,
+  }:
 });
 
 

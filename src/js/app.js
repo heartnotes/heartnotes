@@ -17,7 +17,7 @@ import FeedbackView from './ui/pages/settings/feedback';
 
 // API fixtures
 if (Detect.inDevMode()) {  
-  require('./data/api/fixtures');
+  // require('./data/api/fixtures');
 }
 
 

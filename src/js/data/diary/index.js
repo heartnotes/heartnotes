@@ -43,7 +43,10 @@ export default class Diary {
   destroy () {
     return Q.try(() => {
       this._stopSync();
-    });
+    })
+      .then(() => {
+        return this._auth.logout();
+      });
   }
 
 

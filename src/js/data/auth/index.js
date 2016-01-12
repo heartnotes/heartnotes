@@ -64,7 +64,9 @@ export default class Auth {
             pricing: pricing,
             token: token
           })
-            .then((accountData) => {
+            .then((res) => {
+              let accountData = res.account;
+
               this.updateAccountData(accountData);
 
               Dispatcher.pay('result', accountData);
@@ -95,7 +97,9 @@ export default class Auth {
     return Api.get('meta', {
       username: username,
     })
-      .then((meta) => {
+      .then((res) => {
+        let { meta }  = res;
+
         this.logger.debug('Got meta', meta);
 
         if (!_.get(meta, 'salt')) {
@@ -128,6 +132,27 @@ export default class Auth {
   /** 
    * @return {Promise}
    */
+  logout () {
+    Dispatcher.logout('start');
+
+    return Api.get('logout')
+      .then((res) => {
+        Dispatcher.logout('result');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.logout('error', err);
+
+        throw err;
+      });
+  }
+
+
+
+  /** 
+   * @return {Promise}
+   */
   signUp (username, password) {
     Dispatcher.signUp('start');
 
@@ -135,14 +160,16 @@ export default class Auth {
       .then(() => {
         this._id = username;
 
-        return Api.post('signUp', {}, {
+        return Api.post('signup', {}, {
           username: username,
           key: this.authKey,
           meta: this.meta,
         });
       })
-      .then((accountData) => {
-        this._accountData = accountData;
+      .then((res) => {
+        let accountData = res.account;
+
+        this.updateAccountData(accountData);
         
         Dispatcher.signUp('result', accountData);
       })
@@ -382,7 +409,9 @@ export default class Auth {
       username: username,
       key: this.authKey,
     })
-      .then((accountData) => {
+      .then((res) => {
+        let accountData = res.account;
+
         this.updateAccountData(accountData);
 
         Dispatcher.authWithServer('result', accountData);
