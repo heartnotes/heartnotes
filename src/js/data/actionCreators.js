@@ -292,9 +292,11 @@ export function getPricing() {
 
     return Api.get('pricing')
       .then((data) => {
-        Dispatcher.fetchPricing('result', data);
+        let pricingOptions = data.options;
 
-        return data;
+        Dispatcher.fetchPricing('result', pricingOptions);
+
+        return pricingOptions;
       })
       .catch((err) => {
         Logger.error(err);

@@ -11,16 +11,19 @@ export default class Sync {
   constructor (diary, options = {}) {
     this.logger = diary.logger.create('sync');
     this.diary = diary;
-    this._delay = options.delayMs || 15000;
+    this._delay = options.delayMs || 10000;
     this._onTick = _.bind(this._onTick, this);
+    this._started = false;
   }
 
 
   start () {
+    this._started = true;
     this._onTick();
   }
 
   stop () {
+    this._started = false;
     window.clearTimeout(this._tickTimeout);
   }
 
@@ -30,6 +33,11 @@ export default class Sync {
 
   _onTick () {
     try {
+      if (!this._started) {
+        this.logger.info('Sync stopped. Skipping.')        
+        return;
+      }
+
       if (!this.diary._auth.authenticatedWithServer) {
         this.logger.info('Not logged-in. Skipping.')
 
