@@ -143,7 +143,7 @@ Api.addFixtureGet('pricing', (query, body) => {
 
 Api.addFixturePost('verifyPayment', (query, body) => {
   users[currentUser].account.subscription = {
-    type: body.pricing.title,
+    type: body.pricing,
     expires: moment().add(1, 'years').toDate(),
   };
 

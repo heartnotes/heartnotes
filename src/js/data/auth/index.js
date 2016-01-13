@@ -61,7 +61,7 @@ export default class Auth {
           let token = response.id;
 
           Api.post('verifyPayment', {}, {
-            pricing: pricing,
+            pricing: pricing.title,
             token: token
           })
             .then((res) => {
