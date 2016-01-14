@@ -47,6 +47,7 @@
     "pickadate": "~3.5.6",
     "pikaday": "git://github.com/dbushell/Pikaday.git#8e22c27454c0345306d4a4a2c0aa8b1cde97e120",
     "pouchdb": "~3.6.0",
+    "qs": "^4.0.0",
     "query-string": "~3.0.0",
     "react": "~0.14.3",
     "react-datetime": "~2.0.1",
