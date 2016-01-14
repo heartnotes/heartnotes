@@ -7,7 +7,8 @@
   "license": "GPL3",
   "main": "electronApp.js",
   "scripts": {
-    "release": "gulp release --minified"
+    "postinstall": "gulp assets --minified",
+    "release": "gulp release --minified",
   },
   "dependencies": {
     "babelify": "~6.1.2",

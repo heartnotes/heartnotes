@@ -77,7 +77,7 @@ _NOTE: Add `--minified` on the command-line to enable JS and CSS minification du
 $ npm run release
 ```
 
-You will find the `Heartnotes.app` OS X executable in `build-electron/relese/...`
+You will find the `Heartnotes.app` OS X executable in `build-electron/release/...`
 
 
 ## Release checklist
