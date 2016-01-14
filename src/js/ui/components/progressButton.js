@@ -30,6 +30,7 @@ module.exports = React.createClass({
       );
 
       buttonAttrs.animActive = true;
+      buttonAttrs.disabled = true;
     } else {
       buttonAttrs.animActive = false;      
     }

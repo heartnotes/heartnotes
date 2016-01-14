@@ -6,18 +6,43 @@ import Logger from '../utils/logger';
 
 import { Actions, buildAction } from './actions';
 
-const DEFAULT_ERROR_RESET_TIMEOUT = 3000;
+const DEFAULT_TIMEOUT_DELAY = 3000;
 
 
 export class Dispatcher {
 
   constructor() {
     this.logger = Logger.create('dispatch');
+
+    this._timeout = {};
   }
 
   setup (dispatchFunction, getStateFunction) {
     this._dispatch = dispatchFunction;
     this._getState = getStateFunction;
+  }
+
+  _clearTimeout (id) {
+    delete this._timeout[id];
+  }
+
+  _setTimeout (id, delay, func) {
+    if (!func) {
+      func = delay;
+      delay = DEFAULT_TIMEOUT_DELAY;
+    }
+
+    let timeoutId = Math.random();
+
+    this._timeout[id] = timeoutId;
+
+    Q.delay(delay).then(() => {
+      if (this._timeout[id] !== timeoutId) {
+        return;
+      }
+
+      func();
+    });
   }
 
   getState () {
@@ -31,16 +56,18 @@ export class Dispatcher {
 
 
   alertUser (msg, type = 'info') {
+    this._clearTimeout('alertUser');
+
     this._do(Actions.USER_ALERT, {
       type: type,
       msg: msg,
     });
 
-    return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+    return this._setTimeout('alertUser', () => {
       this._do(Actions.USER_ALERT, {
         msg: null,
         type: null,
-      });      
+      });              
     });
   }
 
@@ -76,6 +103,8 @@ export class Dispatcher {
 
 
   fetchPricing (state, data) {
+    clearTimeout('fetchPricing');
+
     switch (state) {
       case 'start':
         return this._do(Actions.FETCH_PRICING_START, data);
@@ -84,7 +113,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.FETCH_PRICING_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('fetchPricing', () => {
           this._do(Actions.FETCH_PRICING_RESET);          
         });
     }
@@ -93,6 +122,8 @@ export class Dispatcher {
 
 
   chooseDiary (state, data) {
+    this._clearTimeout('chooseDiary');
+
     switch (state) {
       case 'start':
         return this._do(Actions.CHOOSE_DIARY_START, data);
@@ -101,7 +132,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.CHOOSE_DIARY_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('chooseDiary', () => {
           this._do(Actions.CHOOSE_DIARY_RESET);          
         });
     }
@@ -110,6 +141,8 @@ export class Dispatcher {
 
 
   createDiary (state, data) {
+    this._clearTimeout('createDiary');
+
     switch (state) {
       case 'start':
         return this._do(Actions.CREATE_DIARY_START, data);
@@ -118,7 +151,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.CREATE_DIARY_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('createDiary', () => {
           this._do(Actions.CREATE_DIARY_RESET);          
         });
     }
@@ -128,6 +161,8 @@ export class Dispatcher {
 
 
   login (state, data) {
+    this._clearTimeout('login');
+
     switch (state) {
       case 'start':
         return this._do(Actions.LOGIN_START, data);
@@ -136,7 +171,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.LOGIN_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('login', () => {
           this._do(Actions.LOGIN_RESET);          
         });
     }
@@ -158,6 +193,8 @@ export class Dispatcher {
 
 
   signUp (state, data) {
+    this._clearTimeout('signUp');
+
     switch (state) {
       case 'start':
         return this._do(Actions.SIGN_UP_START, data);
@@ -166,7 +203,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.SIGN_UP_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('signUp', () => {
           this._do(Actions.SIGN_UP_RESET);          
         });
     }
@@ -174,6 +211,8 @@ export class Dispatcher {
 
 
   authWithServer (state, data) {
+    this._clearTimeout('authWithServer');
+
     switch (state) {
       case 'start':
         return this._do(Actions.AUTH_WITH_SERVER_START, data);
@@ -182,7 +221,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.AUTH_WITH_SERVER_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('authWithServer', () => {
           this._do(Actions.AUTH_WITH_SERVER_RESET);          
         });
     }
@@ -195,6 +234,8 @@ export class Dispatcher {
 
 
   openDiary (state, data) {
+    this._clearTimeout('openDiary');
+
     switch (state) {
       case 'start':
         return this._do(Actions.OPEN_DIARY_START, data);
@@ -203,7 +244,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.OPEN_DIARY_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('openDiary', () => {
           this._do(Actions.OPEN_DIARY_RESET);          
         });
     }
@@ -212,6 +253,8 @@ export class Dispatcher {
 
 
   updateEntry (state, data) {
+    this._clearTimeout('updateEntry');
+
     switch (state) {
       case 'start':
         return this._do(Actions.UPDATE_ENTRY_START, data);
@@ -220,7 +263,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.UPDATE_ENTRY_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('updateEntry', () => {
           this._do(Actions.UPDATE_ENTRY_RESET);          
         });
     }
@@ -229,6 +272,8 @@ export class Dispatcher {
 
 
   deleteEntry (state, data) {
+    this._clearTimeout('deleteEntry');
+
     switch (state) {
       case 'start':
         return this._do(Actions.DELETE_ENTRY_START, data);
@@ -237,7 +282,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.DELETE_ENTRY_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('deleteEntry', () => {
           this._do(Actions.DELETE_ENTRY_RESET);          
         });
     }
@@ -274,6 +319,8 @@ export class Dispatcher {
 
 
   decryptEntries (state, data) {
+    this._clearTimeout('decryptEntries');
+
     switch (state) {
       case 'start':
         return this._do(Actions.DECRYPT_ENTRIES_START, data);
@@ -284,7 +331,7 @@ export class Dispatcher {
       case 'error':
         return this._do(Actions.DECRYPT_ENTRIES_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('decryptEntries', () => {
           this._do(Actions.DECRYPT_ENTRIES_RESET);          
         });
     }
@@ -313,6 +360,8 @@ export class Dispatcher {
 
 
   changePassword (state, data) {
+    this._clearTimeout('changePassword');
+
     switch (state) {
       case 'start':
         return this._do(Actions.CHANGE_PASSWORD_START, data);
@@ -321,7 +370,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.CHANGE_PASSWORD_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('changePassword', () => {
           this._do(Actions.CHANGE_PASSWORD_RESET);          
         });
     }
@@ -330,6 +379,8 @@ export class Dispatcher {
 
 
   exportToFile (state, data) {
+    this._clearTimeout('exportToFile');
+
     switch (state) {
       case 'start':
         return this._do(Actions.EXPORT_DATA_START, data);
@@ -338,7 +389,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.EXPORT_DATA_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('exportToFile', () => {
           this._do(Actions.EXPORT_DATA_RESET);          
         });
     }
@@ -389,6 +440,8 @@ export class Dispatcher {
 
 
   backup (state, data) {
+    this._clearTimeout('backup');
+
     switch (state) {
       case 'start':
         return this._do(Actions.BACKUP_START, data);
@@ -397,7 +450,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.BACKUP_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('backup', () => {
           this._do(Actions.BACKUP_RESET);          
         });
     }
@@ -406,6 +459,8 @@ export class Dispatcher {
 
 
   restore (state, data) {
+    this._clearTimeout('restore');
+
     switch (state) {
       case 'start':
         return this._do(Actions.RESTORE_START, data);
@@ -416,7 +471,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.RESTORE_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('restore', () => {
           this._do(Actions.RESTORE_RESET);          
         });
     }
@@ -425,6 +480,8 @@ export class Dispatcher {
 
 
   restoreFromOldDiary (state, data) {
+    this._clearTimeout('restoreFromOldDiary');
+
     switch (state) {
       case 'start':
         return this._do(Actions.RESTORE_FROM_OLD_START, data);
@@ -435,7 +492,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.RESTORE_FROM_OLD_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('restoreFromOldDiary', () => {
           this._do(Actions.RESTORE_FROM_OLD_RESET);          
         });
     }
@@ -443,6 +500,8 @@ export class Dispatcher {
 
 
   pay (state, data) {
+    this._clearTimeout('pay');
+
     switch (state) {
       case 'start':
         return this._do(Actions.PAY_START, data);
@@ -453,7 +512,7 @@ export class Dispatcher {
       case 'error':
         return this._do(Actions.PAY_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('pay', () => {
           this._do(Actions.PAY_RESET);          
         });
     }
@@ -462,6 +521,8 @@ export class Dispatcher {
 
 
   sendFeedback (state, data) {
+    this._clearTimeout('sendFeedback');
+
     switch (state) {
       case 'start':
         return this._do(Actions.FEEDBACK_START, data);
@@ -470,7 +531,7 @@ export class Dispatcher {
       case 'error':
         this._do(Actions.FEEDBACK_ERROR, data);
 
-        return Q.delay(DEFAULT_ERROR_RESET_TIMEOUT).then(() => {
+        return this._setTimeout('sendFeedback', () => {
           this._do(Actions.FEEDBACK_RESET);          
         });
     }
