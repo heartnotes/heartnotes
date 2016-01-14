@@ -7,8 +7,6 @@ import Logger from '../../utils/logger';
 import * as Detect from '../../utils/detect';
 
 
-const DEV_SERVER = 'http://127.0.0.1:3010/api';
-const LIVE_SERVER = 'https://heartnot.es:443/api';
 
 
 export class UnreachableError extends Error {
@@ -170,7 +168,7 @@ export class Api {
 
 
 exports.instance = new Api({
-  baseUrl: Detect.inDevMode() ? DEV_SERVER : LIVE_SERVER,
+  baseUrl: Detect.serverHost() + '/api',
   globalQueryParams: {
     format: 'json',
   },

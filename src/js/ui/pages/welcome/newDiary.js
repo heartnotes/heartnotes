@@ -3,12 +3,17 @@ import _ from 'lodash';
 import React from 'react';
 
 var Button = require('../../components/button'),
+  ExternalLink = require('../../components/externalLink'),
   ProgressButton = require('../../components/progressButton'),
   EmailInput = require('../../components/emailInput'),
   NewPasswordInput = require('../../components/newPasswordInput'),
   UserShouldRememberPasswordDialog = require('../../components/userShouldRememberPasswordDialog');
 
 import { connectRedux } from '../../helpers/decorators';
+import * as Detect from '../../../utils/detect';
+
+
+const TERMS_URL = Detect.serverHost() + '/terms-and-conditions';
 
 
 
@@ -32,7 +37,10 @@ var Component = React.createClass({
       onClick: this._createNew,
     };
 
-    if (!_.get(this.state.password, 'length') || !_.get(this.state.id, 'length')) {
+    if (  !this.state.terms || 
+          !_.get(this.state.password, 'length') || 
+          !_.get(this.state.id, 'length')
+        ) {
       buttonAttrs.disabled = true;
     }
 
@@ -49,6 +57,12 @@ var Component = React.createClass({
               onChange={this._setPassword} 
               requiredStrength={0}
               tabIndex={2} />
+          </div>
+          <div className="row">
+            <input 
+              type="checkbox"
+              onChange={this._toggleTerms} />
+                I agree to the <ExternalLink href={TERMS_URL}>terms and conditions</ExternalLink>.
           </div>
           <div className="action row">
             <ProgressButton {...buttonAttrs}>Create diary</ProgressButton>
@@ -83,6 +97,13 @@ var Component = React.createClass({
     });
   },
 
+  _toggleTerms: function(e) {
+    let checked = $(e.currentTarget).is(':checked');
+
+    this.setState({
+      terms: !!checked,
+    });
+  },
 
   _createNew: function(e) {
     e.preventDefault();
