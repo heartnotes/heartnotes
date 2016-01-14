@@ -131,6 +131,8 @@ var Component = React.createClass({
 
 
   shouldComponentUpdate: function(newProps, newState) {
+    let { diaryMgr } = this.props.data.diary;
+
     var newId = newProps.entryId || -1,
       oldId = this.props.entryId || -1;
 
@@ -140,7 +142,10 @@ var Component = React.createClass({
     var oldIsReady = !!this.props.data.entries,
       newIsReady = !!newProps.data.entries;
 
+    let updatedViaSync = diaryMgr.didEntryGetUpdatedInLastSync(oldId);
+
     return (
+      updatedViaSync || 
       newId !== oldId || 
       oldDate !== newDate || 
       (newIsReady && !oldIsReady)
@@ -161,11 +166,19 @@ var Component = React.createClass({
 
 
   componentDidUpdate: function(oldProps) {
+    let { diaryMgr } = this.props.data.diary;
+
     var newId = this.props.entryId || -1,
       oldId = oldProps.entryId || -1;
 
-    if (newId !== oldId) {
+    let updatedViaSync = diaryMgr.didEntryGetUpdatedInLastSync(newId);
+
+    if (updatedViaSync || newId !== oldId) {
       this._setBody();
+
+      if (updatedViaSync) {
+        diaryMgr.removeEntryLastSyncUpdatedIndicator(newId);
+      }
     }
   },
 

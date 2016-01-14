@@ -419,6 +419,16 @@ export default class Diary {
   }
 
 
+  didEntryGetUpdatedInLastSync (id) {
+    return this._sync.didEntryGetUpdatedInLastSync(id);
+  }
+
+
+  removeEntryLastSyncUpdatedIndicator (id) {
+    return this._sync.removeEntryLastSyncUpdatedIndicator(id);
+  }
+
+
   /**
    * @return {Promise}
    */

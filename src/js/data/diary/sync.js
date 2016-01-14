@@ -14,6 +14,7 @@ export default class Sync {
     this._delay = options.delayMs || 10000;
     this._onTick = _.bind(this._onTick, this);
     this._started = false;
+    this._updatedFromSync = {};
   }
 
 
@@ -25,6 +26,16 @@ export default class Sync {
   stop () {
     this._started = false;
     window.clearTimeout(this._tickTimeout);
+  }
+
+
+  didEntryGetUpdatedInLastSync (entryId) {
+    return !!this._updatedFromSync[entryId];
+  }
+
+
+  removeEntryLastSyncUpdatedIndicator (entryId) {
+    delete this._updatedFromSync[entryId];
   }
 
   _setupNextTick () {
@@ -72,7 +83,7 @@ export default class Sync {
         }
       });
 
-      this.logger.debug('Contacting server...');
+      this._updatedFromSync = {};
 
       Dispatcher.sync('progress', 'Sending data...');
 
@@ -91,8 +102,12 @@ export default class Sync {
             return this.diary.decryptor.decrypt(serverEncryptedEntries)
               .then((serverDecryptedEntries) => {
                 _.each(serverDecryptedEntries, (e, id) => {
-                  this.diary._entries[id] = e;
-                  this.diary._encryptedEntries[id] = serverEncryptedEntries[id];
+                  // check to make sure we haven't got a newer entry
+                  if (_.get(this.diary._entries, `${id}.up`, 0) < e.up) {
+                    this._updatedFromSync[id] = true;
+                    this.diary._entries[id] = e;
+                    this.diary._encryptedEntries[id] = serverEncryptedEntries[id];
+                  }
                 });
               });
           }
