@@ -15,7 +15,7 @@ import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
 import Api from '../api/index';
 import Auth from '../auth/index';
-import ExportedEntries from '../../ui/components/ExportedEntries';
+import ExportedEntries from '../../ui/components/exportedEntries';
 import * as DateUtils from '../../utils/date';
 import * as StringUtils from '../../utils/string';
 import Decryptor from './decryptor';
