@@ -7,7 +7,7 @@
   "license": "GPL3",
   "main": "electronApp.js",
   "scripts": {
-    "postinstall": "gulp assets --minified",
+    "postinstall": "node_modules/.bin/gulp assets --minified",
     "release": "gulp release --minified"
   },
   "dependencies": {
@@ -57,7 +57,7 @@
     "react-select-box": "heartnotes/react-select-box",
     "reactify": "~1.1.1",
     "redux": "~3.0.0",
-    "redux-logger": "~2.0.1",
+    "redux-logger": "^2.0.5",
     "redux-router": "~1.0.0-beta5",
     "redux-thunk": "~1.0.0",
     "run-sequence": "~1.1.0",
