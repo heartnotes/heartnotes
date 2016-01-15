@@ -1,22 +1,23 @@
 # Heartnotes
 
-Personal diary app - cross-platform, offline, encrypted.
+**Personal diary app** (web and desktop) which uses client-side 
+encryption and zero-knowledge authentication.
+
+[Try it at https://web.heartnot.es](https://web.heartnot.es).
+
+Get it from [https://heartnot.es](https://heartnot.es).
 
 Features:
 
-* OS X desktop app _(Windows + Linux coming soon)_
-* Completely offline, password is not stored anywhere
-* Rock-solid encryption (AES-256-GCM)
-* Auto-save diary as you type
-* Timeline view for easy access to past entries
-* Search using lunr.js
-* Export diary to readable HTML file at any time
-
-Fetch the latest release from [http://heartnot.es](http://heartnot.es).
+* 256-bit AES encryption done client-side for maximum security
+* Auto-save-as-you-type, with cloud sync running the background
+* Full-text search using [lunr.js](http://lunrjs.com/)
+* Backup/restore and export to local file at any time.
+* Continue editing even if connection goes down.
 
 ## Technology
 
-Built using React.js + Redux + Electron.js.
+Main ingredients: React.js, Redux, Electron.js.
 
 ### Encryption details
 
@@ -28,8 +29,9 @@ We first derive a "master" key from the user's password as follows:
 
 * Use Fortuna PRNG with multiple event inputs (mouse, keyboard, accelerometer etc) to generate a salt.
 * Use salt and password as inputs to PBKDF2-SHA512 to generate a 512-bit key. _(The number of iterations of PBKDF2 is set such that generation takes 1 second on the user's machine- on a Macbook Air 2012 this easily results in >10000 iterations._
-* Store the input salt and PBKDF2 iteration count in the user's diary file.
+* Store the input salt and PBKDF2 iteration count in the user's account online.
 * Set the first 256 bits of the key as the MASTER key.
+* Set the second 256 bits of the key as the authentication key (i.e. to login to server).
 
 Now let's generate the encryption key:
 
@@ -38,16 +40,16 @@ Now let's generate the encryption key:
 * Use salt and hash as inputs to PBKDF2-SHA512 to generate a 512-bit key. _(The number of iterations of PBKDF2 is set such that generation takes 1 second on the user's machine- on a Macbook Air 2012 this easily results in >10000 iterations._
 * Set the first 256 bits of the key as the ENCRYPTION key.
 
-Notes:
-
-* We use the ENCRYPTION key to encrypt the actual entry data. 
-* We encrypt the ENCRYPTION key using the MASTER key (AES-256-GCM, random IV) and save it as a bundle in the user's diary file.
-* The ENCRYPTION key is currently never changed. 
-
 The next time the user enters the right password, we:
 
 * Use the stored salt and iteration count to regenerate the right MASTER key. 
 * We use this to decrypt the bundle containing the ENCRYPTION key.
+
+**Notes:**
+
+* We use the ENCRYPTION key to encrypt the actual entry data (AES-256-GCM, random IV).  
+* We encrypt the ENCRYPTION key using the MASTER key (AES-256-GCM, random IV) and save it as a bundle in the user's diary file.
+* The ENCRYPTION key is currently never changed. Changing the user password simply changes the master key. This allows password change without having to re-encrypt everything.
 
 
 ## Development
@@ -61,7 +63,7 @@ $ npm install -g electron-prebuilt@0.34.3
 $ npm install
 ```
 
-Run dev server and Electron app (http://localhost:3000):
+Run web version (http://localhost:3000) and Electron desktop app:
 
 ```bash
 $ gulp
