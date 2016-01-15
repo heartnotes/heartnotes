@@ -34,7 +34,7 @@ exports.serverHost = function() {
   if (exports.inDevMode()) {
     return 'http://127.0.0.1:3010';
   } else {
-    return 'https://heartnot.es:443';    
+    return 'https://heartnot.es';    
   }
 };
 
