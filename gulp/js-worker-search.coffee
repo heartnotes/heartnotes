@@ -20,7 +20,9 @@ module.exports = (paths, options = {}) ->
         gutil.log(err.stack)
       .pipe source('search-webworker-addon.js')
       .pipe replace('__BUILD_TYPE__', options.buildType)
-      .pipe gulpIf(options.minifiedBuild, uglify())
+      .pipe gulpIf(options.minifiedBuild, uglify(
+        mangle: false
+      ))
       .pipe concat('worker-search.js')
       .pipe gulp.dest(paths.build.js)
 
