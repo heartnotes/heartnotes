@@ -70,14 +70,20 @@ $ gulp
 _NOTE: Add `--minified` on the command-line to enable JS and CSS minification during build._
 
 
-
 ## Production build
 
 ```bash
 $ npm run release
 ```
 
-You will find the `Heartnotes.app` OS X executable in `build-electron/release/...`
+You will find the `Heartnotes.app` OS X executable in `build-electron/release/...`. 
+Built web assets (minfied, production config) will be in `build/`. 
+
+To do a web-only release (i.e. only the stuff in `build/`) run:
+
+```bash
+$ npm run release_web
+```
 
 
 ## Release checklist

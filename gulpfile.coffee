@@ -8,7 +8,15 @@ args = require('yargs').argv
 
 options = 
   minifiedBuild: !!args.minified
+  productionBuild: !!args.production
   dontExitOnError: false
+
+if options.productionBuild
+  options.buildType = 'PRODUCTION'
+  console.log 'PRODUCTION build'
+else
+  options.buildType = 'DEVELOPMENT'
+  console.log 'DEVELOPMENT build'
 
 
 if options.minifiedBuild
