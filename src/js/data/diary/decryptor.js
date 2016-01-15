@@ -134,6 +134,8 @@ export default class Decrypter {
     })
       .then((entries) => {
         if (options.shouldReEncrypt) {
+          let encryptOptions = options.reEncryptOptions || {};
+
           return this.encrypt(entries, encryptOptions)
             .then((finalEncryptedEntries) => {
               return {
