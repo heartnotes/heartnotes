@@ -63,11 +63,9 @@ export default class Sync {
 
       /*
       Last sync time:
-
-      We subtract delay*1.5 to ensure that we absolutely grab all updates.
        */
       let lastSyncTime = parseInt(
-        _.get(this.diary._settings, 'lastSyncTime', 0) - (1.5 * this._delay)
+        _.get(this.diary._settings, 'lastSyncTime', 0)
       );
 
       this.logger.debug('Last timestamp: ' + moment(lastSyncTime).toString());
