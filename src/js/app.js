@@ -50,7 +50,7 @@ const Routes = (
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route name="feedback" path="/feedback" component={FeedbackView} />
-    <Route path="*" component={EntriesView}/>
+    <Route path="*" component={NewEntryView}/>
   </Route>
 );
 
