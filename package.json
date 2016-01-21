@@ -7,8 +7,8 @@
   "license": "GPL3",
   "main": "electronApp.js",
   "scripts": {
-    "postinstall": "node_modules/.bin/gulp assets --minified --production",
-    "release_web": "gulp assets --minified --production",
+    "postinstall": "gulp assets --minified --production",
+    "release_web": "gulp assets_web --minified --production",
     "release": "gulp release --minified --production"
   },
   "dependencies": {
@@ -71,7 +71,8 @@
     "validator": "^4.4.0",
     "vinyl-source-stream2": "~0.1.1",
     "watchify": "~3.2.1",
-    "yargs": "~3.9.1"
+    "yargs": "~3.9.1",
+    "gulp-gzip": "~1.2.0"
   },
   "browserify": {
     "transform": [
