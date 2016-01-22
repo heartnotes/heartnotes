@@ -1,16 +1,15 @@
-var _ = require('lodash'),
-  moment = require('moment'),
-  React = require('react');
+import _ from 'lodash';
+import moment from 'moment';
+import React from 'react';
 
-
-var DateString = require('./date'),
-  DateTimePicker = require('./dateTimePicker'),
-  IconButton = require('./iconButton'),
-  AskUserDialog = require('./askUserDialog');
-
-
+import DateString from './date';
+import DateTimePicker from './dateTimePicker';
+import IconButton from './iconButton';
+import AskUserDialog from './askUserDialog';
 import { connectRedux, routing } from '../helpers/decorators';
 import * as DateUtils from '../../utils/date';
+import * as StringUtils from '../../utils/string';
+import AlloyEditor from 'alloyeditor';
 
 
 
@@ -73,7 +72,10 @@ var Component = React.createClass({
           {deleteButton}
         </div>
         <div className="editor">
-          <div ref="editorBody" className="body">{body}</div>
+          <div className="body" data-placeholder="Type here..." 
+            id={this._elementId}>
+              {body}
+          </div>
         </div>
       </div>
     );
@@ -81,51 +83,81 @@ var Component = React.createClass({
 
 
   componentWillUnmount: function() {
-    if (this.editor && this.editor.filter) {
-      this._changeHandler.cancel();
-
-      this.editor.destroy();
+    if (this._editor) {
+      this._editor.destroy();
     }
   },
 
-  componentDidMount: function() {
-    var textNode = this.refs.editorBody;
+  componentWillMount: function() {
+    this._elementId = 'editor' + StringUtils.random(10);
+  },
 
-    this.editor = CKEDITOR.replace(textNode, {
-      extraPlugins: 'maxheight',
-      removePlugins: 'autogrow,floating-tools',
-      enterMode: CKEDITOR.ENTER_BR,
-      autoGrow_onStartup: true,
-      startupFocus: true,
-      placeholder: 'Type here...',
-      removeButtons: 'Cut,Copy,Paste,Anchor,Subscript,Superscript',
-      toolbarGroups: [
-        { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-        { name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-        { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-        { name: 'links' },
-      ],
+  componentDidMount: function() {
+    this._editor = AlloyEditor.editable(this._elementId, {
+      toolbars: {
+        styles: {
+          selections: [
+            {
+              name: 'text',
+              buttons: [
+                {
+                  name: 'styles',
+                  cfg: {
+                    styles: [
+                      {
+                        name: 'Heading 1',
+                        style: { element: 'h1' }
+                      },
+                      {
+                        name: 'Heading 2',
+                        style: { element: 'h2' }
+                      },
+                      {
+                        name: 'Small',
+                        style: { element: 'small' }
+                      },
+                      {
+                        name: 'Code',
+                        style: { element: 'code' }
+                      }
+                    ],
+                  }
+                },
+                'bold', 'italic', 'underline', 
+                'strike', 'ul', 'ol', 'quote', 'removeFormat'
+              ],
+              test: AlloyEditor.SelectionTest.text,
+            },
+            {
+              name: 'link',
+              buttons: ['linkEdit'],
+              test: AlloyEditor.SelectionTest.link,
+            },
+          ]
+        },
+        // add: {
+        //   buttons: ['hline']
+        // },
+      }
     });
 
     // https://github.com/heartnotes/heartnotes/issues/3
     // this.editor.on('instanceReady', () => {
-    //   console.log(this.editor.document.$.inputEncoding);
-    //   console.log(this.editor.document.$.characterSet);
-    //   console.log(this.editor.document.$.charset);
+    //   console.log(this._editor.nativeEditor.document.$.inputEncoding);
+    //   console.log(this._editor.nativeEditor.document.$.characterSet);
+    //   console.log(this._editor.nativeEditor.document.$.charset);
     // });
 
     // save content only every second
-    this._changeHandler = _.debounce(() => {
+    this._editor._editor.on('change', _.debounce(() => {
       let entry = this._getActiveEntry();
 
       this.props.actions.updateEntry(
-        entry.id, entry.ts, this.editor.getData()
+        entry.id, entry.ts, this._editor._editor.getData()
       );
-    }, 500);
+    }, 500));
 
-    this.editor.on('change', this._changeHandler);
-
+    // set initial content
     this._setBody();
   },
 
@@ -209,7 +241,7 @@ var Component = React.createClass({
   _setBody: function() {
     let entry = this._getActiveEntry();
 
-    this.editor.setData(entry.body || '', {
+    this._editor._editor.setData(entry.body || '', {
       noSnapshot: true
     });
   },

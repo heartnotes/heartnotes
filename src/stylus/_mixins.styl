@@ -96,3 +96,78 @@ $blendLink
   border-bottom 1px solid inherit
   
 
+$entryContentStyles
+  font-family $body-font
+  font-weight 400
+  font-style normal
+  font-size 1rem
+  line-height 1.6em
+  color $gray-darker
+  
+  h1
+    font-size 300%
+    color $black
+    margin 1em 0
+  h2
+    font-size 150%
+    color $gray-darker
+    margin 1em 0
+  blockquote
+    display block
+    background $gray-light
+    margin 1em
+    padding 1em 0.4em
+    color $gray-dark
+    border-radius 5px
+    quotes "\201C""\201D""\2018""\2019"
+    &:before
+      color $gray
+      content open-quote
+      font-size 4em
+      line-height 0.1em
+      margin-right 0.25em
+      vertical-align -0.4em
+    p
+      display inline
+  strong
+    font-weight 700
+    color $black
+  small
+    font-size 50%
+  code
+    font-family $code-font
+    background-color $gray-light
+  em
+    font-style italic
+  s
+    text-decoration line-through
+  u
+    text-decoration underline
+  ul
+    list-style-type disc
+    list-style-position inside
+    margin 1em 0
+    li
+      padding-left 1em
+    ul
+      list-style-type circle
+      list-style-position inside
+      margin-left 15px
+    ol
+      list-style-type lower-latin
+      list-style-position inside
+      margin-left 15px
+  ol
+    list-style-type decimal
+    list-style-position inside
+    margin 1em 0
+    li
+      padding-left 1em
+    ul
+      list-style-type circle
+      list-style-position inside
+      margin-left 15px
+    ol
+      list-style-type lower-latin
+      list-style-position inside
+      margin-left 15px

@@ -38,14 +38,13 @@ paths =
     jade: path.join(__dirname, 'src', 'jade')
     fonts: path.join(__dirname, 'src', 'fonts')
     lib: path.join(__dirname, 'src', 'lib')
-    ckeditor: path.join(__dirname, 'src', 'lib', 'ckeditor')
   build: 
     root: path.join(__dirname, 'build') 
     html: path.join(__dirname, 'build') 
     css: path.join(__dirname, 'build', 'css') 
     img: path.join(__dirname, 'build', 'img') 
     js: path.join(__dirname, 'build', 'js') 
-    ckeditor: path.join(__dirname, 'build', 'ckeditor') 
+    alloyeditor: path.join(__dirname, 'build', 'alloyeditor') 
     fonts: path.join(__dirname, 'build', 'fonts') 
     electron: path.join(__dirname, 'build-electron')
   files: {}
