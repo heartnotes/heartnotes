@@ -117,14 +117,18 @@ var Component = React.createClass({
                         style: { element: 'small' }
                       },
                       {
+                        name: 'Strikethrough',
+                        style: { element: 's' }
+                      },
+                      {
                         name: 'Code',
                         style: { element: 'code' }
-                      }
+                      },
                     ],
                   }
                 },
-                'bold', 'italic', 'underline', 
-                'strike', 'ul', 'ol', 'quote', 'removeFormat'
+                'bold', 'italic', 'underline', 'ul', 'ol', 
+                'quote','hline', 'removeFormat'
               ],
               test: AlloyEditor.SelectionTest.text,
             },
