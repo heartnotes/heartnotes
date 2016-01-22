@@ -11,9 +11,11 @@ export class SearchIndex {
     this.logger = Logger.create('search-index');
 
     this.worker = new WebWorker(function(action, cb) {
+      // to prevent uglifyJS from minifying our var we access it through global
+      let { searchWorker } = this;
 
-      self.searchWorker[action.method]
-        .apply(self.searchWorker, action.params || [])
+      searchWorker[action.method]
+        .apply(searchWorker, action.params || [])
         .then(function(result) { 
           cb(null, result); 
         })

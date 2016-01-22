@@ -56,6 +56,9 @@ export class Crypto {
     this.logger.debug('hash', inputs);
 
     var worker = this._constructWorker('hash', function(data, cb) {
+      // to prevent uglifyJS from minifying our var we access it through global
+      let { sjcl } = this;
+
       try {
         cb(null, 
           sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(data.str))
@@ -93,11 +96,9 @@ export class Crypto {
   deriveNewKey (password) {
     this.logger.debug('derive new key', password);
 
-    var self = this;
-
-    return self.csrng.getRandomBytes()
-      .then(function deriveKey(salt) {
-        return self.deriveKey(password, {
+    return this.csrng.getRandomBytes()
+      .then((salt) => {
+        return this.deriveKey(password, {
           salt: sjcl.codec.hex.fromBits(salt),
           requiredStrengthMs: REQUIRED_STRENGTH_MS
         });
@@ -133,6 +134,9 @@ export class Crypto {
     this.logger.debug('derive key', password, algorithmParams);
 
     var worker = this._constructWorker('deriveKey', function(data, cb) {
+      // to prevent uglifyJS from minifying our var we access it through global
+      let { sjcl } = this;
+
       try {
         var
           iterations = data.iterations || 10000,
@@ -200,7 +204,10 @@ export class Crypto {
       ));
     }
 
-    var worker = self._constructWorker('encrypt', function(data, cb) {
+    var worker = this._constructWorker('encrypt', function(data, cb) {
+      // to prevent uglifyJS from minifying our var we access it through global
+      let { sjcl } = this;
+
       try {
         var r = sjcl.encrypt_b64(
           data.password, 
@@ -248,7 +255,10 @@ export class Crypto {
       ));
     }
 
-    var worker = self._constructWorker('decrypt', function(data, cb) {
+    var worker = this._constructWorker('decrypt', function(data, cb) {
+      // to prevent uglifyJS from minifying our var we access it through global
+      let { sjcl } = this;
+
       try {
         var r = sjcl.decrypt_b64(
           data.password, 

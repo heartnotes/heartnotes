@@ -20,8 +20,7 @@ module.exports = (paths, options = {}) ->
       .pipe source('app.js')
       .pipe replace('__BUILD_TYPE__', options.buildType)
       .pipe gulpIf(options.minifiedBuild, uglify({
-        # for now don't mangle because it screws up use of sjcl inside webworker methods
-        mangle: false
+        mangle: true
         # output:
         #   beautify: true
       }))
