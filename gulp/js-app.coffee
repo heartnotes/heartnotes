@@ -22,6 +22,8 @@ module.exports = (paths, options = {}) ->
       .pipe gulpIf(options.minifiedBuild, uglify({
         # for now don't mangle because it screws up use of sjcl inside webworker methods
         mangle: false
+        # output:
+        #   beautify: true
       }))
       .pipe gulp.dest(paths.build.js)
 

@@ -21,7 +21,9 @@ module.exports = (paths, options = {}) ->
       .pipe source('search-webworker-addon.js')
       .pipe replace('__BUILD_TYPE__', options.buildType)
       .pipe gulpIf(options.minifiedBuild, uglify(
-        mangle: false
+        mangle: true
+        # output:
+        #   beautify: true
       ))
       .pipe concat('worker-search.js')
       .pipe gulp.dest(paths.build.js)

@@ -20,9 +20,9 @@ else
 
 
 if options.minifiedBuild
-  console.log 'MINIFIED build'
+  console.log 'MINIFIED assets'
 else
-  console.log 'Non-minified build'
+  console.log 'Non-minified assets'
 
 
 # paths

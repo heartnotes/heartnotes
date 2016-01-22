@@ -15,7 +15,9 @@ module.exports = (paths, options = {}) ->
       .pipe concat('vendor.js')
       .pipe replace('__BUILD_TYPE__', options.buildType)
       .pipe gulpIf(options.minifiedBuild, uglify(
-        mangle: false
+        mangle: true
+        # output:
+        #   beautify: true
       ))
       .pipe gulp.dest(paths.build.js)
 
