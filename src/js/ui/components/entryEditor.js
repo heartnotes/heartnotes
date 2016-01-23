@@ -73,9 +73,7 @@ var Component = React.createClass({
         </div>
         <div className="editor">
           <div className="body" data-placeholder="Type here..." 
-            id={this._elementId}>
-              {body}
-          </div>
+            id={this._elementId} dangerouslySetInnerHTML={{__html: body}} />
         </div>
       </div>
     );
@@ -128,7 +126,7 @@ var Component = React.createClass({
                   }
                 },
                 'bold', 'italic', 'underline', 'ul', 'ol', 
-                'quote','hline', 'removeFormat'
+                'link', 'quote', 'hline', 'removeFormat'
               ],
               test: AlloyEditor.SelectionTest.text,
             },
@@ -136,6 +134,12 @@ var Component = React.createClass({
               name: 'link',
               buttons: ['linkEdit'],
               test: AlloyEditor.SelectionTest.link,
+            },
+            {
+              name: 'image',
+              buttons: ['imageLeft', 'imageCenter', 'imageRight'],
+              setPosition: AlloyEditor.SelectionSetPosition.image,
+              test: AlloyEditor.SelectionTest.image
             },
           ]
         },

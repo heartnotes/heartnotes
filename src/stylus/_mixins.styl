@@ -103,7 +103,8 @@ $entryContentStyles
   font-size 1rem
   line-height 1.6em
   color $gray-darker
-  
+  p
+    margin 1em 0
   h1
     font-size 300%
     color $black
@@ -129,9 +130,18 @@ $entryContentStyles
       vertical-align -0.4em
     p
       display inline
+  a, a:visited
+    cursor pointer
+    text-decoration none
+    border-bottom 1px solid $entry-link-color
+    color $entry-link-color
+    background-color transparent
+    &:hover, &:active
+      background-color $entry-link-color
+      color $entry-link-color-inverse
   strong
     font-weight 700
-    color $black
+    color inherit
   small
     font-size 50%
   code
