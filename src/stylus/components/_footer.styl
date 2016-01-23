@@ -1,12 +1,15 @@
 footer
   position fixed
   bottom 0
-  left 0
+  right 0
   height 1rem
   width 100%
   background-color $black
   color $white
   font-size 0.7rem
+  
+  +below($width-xxs)
+    position relative
 
   .footer-content
     position relative

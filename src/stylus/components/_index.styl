@@ -10,6 +10,8 @@
   display block
   text-align center
   font-size 80px
+  +below($width-xs)
+    font-size 60px
   span
     display inline-block
     color $gray-light
@@ -22,6 +24,9 @@
       transition all 1s
       &:hover
         transform rotateY(180deg) scale(1.1) 
+      +below($width-xs)
+        width 80px
+        height 128px
 
 
 
