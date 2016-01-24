@@ -49,9 +49,18 @@ $mainViewTransitionTime = 0.4s
     &.closed
       span:before
         content $fa-var-chevron-right
-        
-    +below($width-xs)
-      display none
+
+
+  .emptyEditor
+    background-color $gray-light
+    height 100%    
+    color $gray
+    font-family $body-font
+    font-style italic
+    padding 1em
+    transition width $mainViewTransitionTime
+    // +below($width-xs)
+    //   display none
 
 
   .entryEditor
@@ -63,7 +72,7 @@ $mainViewTransitionTime = 0.4s
     .timeline
       width 30%
       opacity 1
-    .entryEditor
+    .emptyEditor, .entryEditor
       width 70%
     .toggle-timeline
       left 32%
@@ -72,8 +81,26 @@ $mainViewTransitionTime = 0.4s
     .timeline
       width 0
       opacity 0
-    .entryEditor
+    .no-entry, .entryEditor
       width 100%
     .toggle-timeline
       left 2%
+      
+
+  +below($width-xs)
+    .toggle-timeline
+      display none
+    &.split
+      .timeline
+        width 100%
+        opacity 1
+      .entryEditor, .emptyEditor
+        width 0
+      &.entrySelected
+        .timeline, .emptyEditor
+          width 0
+          opacity 0
+        .entryEditor
+          width 100%
+
 

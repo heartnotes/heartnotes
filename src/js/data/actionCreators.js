@@ -29,8 +29,11 @@ export function init() {
     Dispatcher.setup(dispatch, getState);
 
     Dispatcher.initApp();
-
     Dispatcher.checkForUpdates('start');
+
+    window.onresize = function() {
+      Dispatcher.screenChanged(ScreenUtils.getScreenDetails());
+    };
 
     return Q.cast($.ajax({
       cache: false,

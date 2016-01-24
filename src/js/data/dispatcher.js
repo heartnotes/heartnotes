@@ -54,6 +54,10 @@ export class Dispatcher {
     this._do(Actions.INIT);
   }
 
+  screenChanged (details) {
+    this._do(Actions.SCREEN_UPDATED, details);
+  }
+
 
   alertUser (msg, type = 'info') {
     this._clearTimeout('alertUser');

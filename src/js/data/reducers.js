@@ -12,6 +12,11 @@ var LocalStorage = Storage.local;
 
 exports.app = function(state = InitialState.app(), action) {
   switch (action.type) {
+    case Actions.SCREEN_UPDATED:
+      return _.extend({}, state, {
+        screen: action.payload
+      });
+
     case Actions.BACKGROUND_TASK_START:
       let task = action.payload;
 

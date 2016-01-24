@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import Classnames from 'classnames';
 
 import Timeline from '../components/timeline';
 import Icon from '../components/icon';
@@ -29,8 +30,25 @@ var Component = React.createClass({
 
     let entryId = _.get(this.props.data, 'router.params.entryId');
 
+    let entryEditor = !entryId ? (
+      <div className="emptyEditor">
+        Please select an entry from the timeline.
+      </div>
+    ) : (
+      <EntryEditor 
+        entryId={entryId}
+        canDelete={true} 
+        {...this.props} />
+    );
+
+    let classes = {
+      'entriesView': true,
+      'entrySelected': !!entryId,
+    };
+    classes[this.state.layout] = true;
+
     return (
-      <div className={"entriesView " + this.state.layout}>
+      <div className={Classnames(classes)}>
         <div>
           <Timeline 
             entries={entries}
@@ -42,10 +60,7 @@ var Component = React.createClass({
             closeClass="toggle-timeline closed"
             initiallyOpen={true}
             onChange={this._onToggleTimeline} />
-          <EntryEditor 
-            entryId={entryId}
-            canDelete={true} 
-            {...this.props} />
+          {entryEditor}
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 const actionTypes = [
   'INIT',
   'USER_ALERT',
+  'SCREEN_UPDATED',
 
   'BACKGROUND_TASK_START',
   'BACKGROUND_TASK_PROGRESS',
