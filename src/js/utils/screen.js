@@ -43,7 +43,7 @@ export function getScreenDetails() {
     widthThresholds: widths,
     pixelDensity: pixelDensity,
     isRetina: isRetina,
-    isExtraSmallScreen: (0 <= _.indexOf(
+    isExtraSmall: (0 <= _.indexOf(
       ['$width-xs', 'width-xxs'], 
       widthLabel
     ))

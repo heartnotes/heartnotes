@@ -2,12 +2,9 @@ import _ from 'lodash';
 import React from 'react';
 
 import { connectRedux, routing } from './helpers/decorators';
-import MainMenu from './components/mainMenu';
-import BackgroundTasksIndicator from './components/backgroundTasksIndicator';
-import SubMenu from './components/subMenu';
+import MenuBar from './components/menuBar/index';
 import WelcomeView from './pages/welcome/index';
 import UserAlert from './components/userAlert';
-import Logo from './components/logo';
 import WelcomeFooterBar from './components/welcome/footerBar';
 import ErrorMessageFooterBar from './components/errorMessageFooter';
 
@@ -48,14 +45,7 @@ var Component = React.createClass({
   _buildDefault: function() {
     return (
       <div>
-        <section id="sidebar">
-          <div>
-            <Logo withText={false} onClick={this._onLogoClick} />
-            <BackgroundTasksIndicator {...this.props} />
-          </div>
-          <MainMenu {...this.props} />
-          <SubMenu {...this.props} />
-        </section>
+        <MenuBar />
         <section id="content">
           {this.props.children}
         </section>

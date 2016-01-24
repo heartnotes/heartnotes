@@ -1,13 +1,23 @@
 import _ from 'lodash';
-var React = require('react');
+import React from 'react';
 
-var IconButton = require('./iconButton');
-
+import IconButton from './iconButton';
+import Dropdown from '/dropdown';
 import AttentionIcon from './attentionIcon';
 import { connectRedux, routing } from '../helpers/decorators';
 
 
 var Component = React.createClass({
+  propTypes: {
+    dropdown: React.PropTypes.bool,
+  },
+
+  getDefaultProps: function() {
+    return {
+      dropdown: false,
+    };
+  },
+
   render: function() {
     let { diaryMgr } = this.props.data.diary;
 
@@ -43,6 +53,12 @@ var Component = React.createClass({
           tooltip={item.desc} />
       );
     }, this);
+
+    if (this.props.dropdown) {
+      buttons = (
+        <Dropdown>{buttons}</Dropdown>
+      );
+    }
 
     return (
       <div className="sub-menu">

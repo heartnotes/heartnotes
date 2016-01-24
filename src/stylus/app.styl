@@ -65,7 +65,7 @@ abbr
 
 
 
-#sidebar
+#menubar
   background-color $black
   position fixed
   top 0
@@ -82,6 +82,22 @@ abbr
       width 40px
       height 64px
       
+  +below($width-xs)
+    width 100%
+    height 50px
+    flex-direction row
+    .logo
+      line-height 40px
+      margin 5px 0 0 5px
+      span
+        margin 0
+        width 25px
+        height 40px
+        
+    .main-menu
+      button
+        padding 6px 9px
+      
 
 #content
   position absolute
@@ -89,6 +105,10 @@ abbr
   width 92%
   top 0
   height 100%
+  +below($width-xs)
+    width 100%
+    left 0
+    top 50px
 
 #welcome-content
   height 100%
