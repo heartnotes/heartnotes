@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 
 import IconButton from './iconButton';
-import Dropdown from '/dropdown';
+import IconLink from './iconLink';
+import Dropdown from './dropdown';
 import AttentionIcon from './attentionIcon';
 import { connectRedux, routing } from '../helpers/decorators';
 
@@ -43,21 +44,32 @@ var Component = React.createClass({
     ];
 
 
-    var buttons = items.map(function(item) {
-      return (
-        <IconButton 
-          attention={item.attention}
-          key={item.icon}
-          icon={item.icon} 
-          onClick={item.action} 
-          tooltip={item.desc} />
-      );
-    }, this);
+    let buttons = null;
 
     if (this.props.dropdown) {
-      buttons = (
-        <Dropdown>{buttons}</Dropdown>
-      );
+      buttons = items.map((item) => {
+        return (
+          <IconLink 
+            attention={item.attention}
+            key={item.icon}
+            icon={item.icon} 
+            onClick={item.action} 
+            text={item.desc} />
+        );
+      });
+
+      buttons = <Dropdown>{buttons}</Dropdown>;
+    } else {
+      buttons = items.map((item) => {
+        return (
+          <IconButton 
+            attention={item.attention}
+            key={item.icon}
+            icon={item.icon} 
+            onClick={item.action} 
+            tooltip={item.desc} />
+        );
+      });
     }
 
     return (

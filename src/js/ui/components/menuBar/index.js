@@ -1,27 +1,33 @@
+import _ from 'lodash';
 import React from 'react';
 
 import BackgroundTasksIndicator from '../backgroundTasksIndicator';
 import MainMenu from '../mainMenu';
 import SubMenu from '../subMenu';
 import Logo from '../logo';
-import { connectRedux } from '../../helpers/decorators';
+import { connectRedux, routing } from '../../helpers/decorators';
 
 
-var Component = React.createClass({
+module.exports = React.createClass({
   render: function() {
+    const isExtraSmallScreen = 
+      !!_.get(this.props.data, 'app.screen.isExtraSmall', false);
+
     return (
-      <section id="menubar">
-        <div>
+      <div id="menubar">
+        <div className="logo-container">
           <Logo withText={false} onClick={this._onLogoClick} />
           <BackgroundTasksIndicator {...this.props} />
         </div>
         <MainMenu {...this.props} />
-        <SubMenu {...this.props} dropdown={true} />
-      </section>
+        <SubMenu {...this.props} dropdown={isExtraSmallScreen} />
+      </div>
     );
+  },
+
+  _onLogoClick: function() {
+    this.props.history.navigate('/entries');
   },
 
 });
 
-
-module.exports = connectRedux()(Component);

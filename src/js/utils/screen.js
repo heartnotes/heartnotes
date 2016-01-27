@@ -16,7 +16,7 @@ export function getScreenDetails() {
   }
 
   if (typeof window != "undefined") {
-    widthPixels = window.widthPixels;
+    widthPixels = window.innerWidth;
     pixelDensity = window.devicePixelRatio;
   } else {
     widthPixels = 1200;
@@ -44,7 +44,7 @@ export function getScreenDetails() {
     pixelDensity: pixelDensity,
     isRetina: isRetina,
     isExtraSmall: (0 <= _.indexOf(
-      ['$width-xs', 'width-xxs'], 
+      ['$width-xs', '$width-xxs'], 
       widthLabel
     ))
   };

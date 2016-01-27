@@ -1,4 +1,4 @@
-$menu
+$menu-desktop
   display flex
   flex-direction column
   justify-content space-around
@@ -14,22 +14,96 @@ $menu
       border-color $white
       background-color $black
       color $white
+      
+$menuBarMobileHeight = 50px
 
-#sidebar
+
+$menu-mobile
+  display block
+  position absolute
+  button
+    padding 4px 9px
+    height $menuBarMobileHeight - 20px
+    margin 10px 0 10px 10px
+
+
+
+
+
+
+#menubar
+  background-color $black
+  position fixed
+  top 0
+  left 0
+  width 8%
+  height 100%
+
+  display flex
+  flex-direction column
+  justify-content space-between
+  
+  +below($width-xs)
+    width 100%
+    height $menuBarMobileHeight
+    flex-direction row
+    z-index 2
+
   .background-tasks
     margin-top 1.5em
     height 40px
     color $gray-darker
     text-align center
     font-size 1rem
+    +below($width-xs)
+      margin 0 0 0 10px
+      height $menuBarMobileHeight
+      vertical-align middle
     
   .main-menu
-    @extend $menu
-    height 180px
+    +above($width-xs)
+      @extend $menu-desktop
+      height 180px
+    +below($width-xs)
+      @extend $menu-mobile
+      right 50px
+      top 0px
         
   .sub-menu
-    @extend $menu
-    padding-bottom 30px
-    button
-      margin-top 20px
-      padding 4px 8px    
+    +above($width-xs)
+      @extend $menu-desktop
+      padding-bottom 30px
+      button
+        margin-top 20px
+        padding 4px 8px    
+    +below($width-xs)
+      @extend $menu-mobile
+      right 10px
+      top 0px
+      .dropdown-menu
+        .items
+          font-size 1.2rem
+          background-color $black
+          padding 0.5em
+          > a
+            display block
+            padding 0.5em
+
+  .logo-container
+    > div
+      display block
+      +below($width-xs)
+        display inline-block
+    .logo
+      +below($width-xs)
+        line-height 40px
+        margin 5px 0 0 5px
+      span
+        width 40px
+        height 64px
+        +below($width-xs)
+          margin 0
+          width 25px
+          height 40px
+
+

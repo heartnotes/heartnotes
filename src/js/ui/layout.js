@@ -35,28 +35,25 @@ var Component = React.createClass({
 
   _buildWelcome: function() {
     return (
-      <section id="welcome-content">
+      <div id="welcome-content">
         <WelcomeView {...this.props} />
         <WelcomeFooterBar />
-      </section>
+      </div>
     );
   },
 
   _buildDefault: function() {
     return (
       <div>
-        <MenuBar />
-        <section id="content">
+        <MenuBar {...this.props}/>
+        <div id="content">
           {this.props.children}
-        </section>
+        </div>
         <ErrorMessageFooterBar />
       </div>
     );
   },
 
-  _onLogoClick: function() {
-    this.props.history.navigate('/entries');
-  }
 
 });
 

@@ -75,16 +75,28 @@
       margin 0 1em
 
 
+$metaHeight = 2.5rem
+
 .entryEditor
+  position relative
   height 100%
   width 100%
   
   .meta
-    height 2.5rem
+    height $metaHeight
     text-align center
     font-size 2em
     font-weight 100
     color $gray-dark
+    border-bottom 1px solid $gray-light
+
+    +below($width-xs)
+      position fixed
+      top $menuBarMobileHeight
+      left 0
+      width 100%
+      background-color $white
+      z-index 1
     
     .separator
       padding 0 0.5em
@@ -117,8 +129,12 @@
         @extends $contentActionButton
     
   .editor
-    border-top 1px solid $gray-light
-    height calc(100% - 2.5rem)
+    height "calc(100% - %s)" % ($metaHeight)
+    
+    +below($width-xs)
+      position relative
+      top $metaHeight
+
     .body
       @extends $entryContentStyles
       padding 1em
@@ -381,6 +397,16 @@ $progressStyles
   color $error
 
 
+.icon-link
+  @extend $noLink
+  color $gray
+  i
+    margin-right 0.5em
+  &:hover
+  &:active
+    color $gray-light 
+
+
 
 
 
@@ -391,3 +417,4 @@ $progressStyles
 @import "./ladda/_buttons"
 @import "./pikaday/_index"
 @import "./selectBox/_index"
+@import "./_dropdown"

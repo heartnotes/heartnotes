@@ -11,6 +11,7 @@ import { instance as Search } from './search/index';
 import { instance as Crypto } from './crypto/index';
 import { instance as Dispatcher } from './dispatcher';
 import { instance as Api } from './api';
+import * as ScreenUtils from '../utils/screen';
 import Diary from './diary/index';
 
 
@@ -31,9 +32,9 @@ export function init() {
     Dispatcher.initApp();
     Dispatcher.checkForUpdates('start');
 
-    window.onresize = function() {
+    (window.onresize = function() {
       Dispatcher.screenChanged(ScreenUtils.getScreenDetails());
-    };
+    })();
 
     return Q.cast($.ajax({
       cache: false,
