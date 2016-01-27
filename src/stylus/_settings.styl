@@ -2,7 +2,7 @@
   background-color $gray-darkest
   width 100%
   min-height 100%
-  padding 40px
+  padding 30px
   text-align left
   
   .overlay
@@ -33,6 +33,8 @@
         font-size 1em
         margin 0 0 1em
         width 80%
+        +below($width-xs)
+          width 100%
 
     &.account
       .membership
