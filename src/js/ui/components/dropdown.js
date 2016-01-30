@@ -9,11 +9,13 @@ import IconButton from './iconButton';
 module.exports = React.createClass({
   propTypes: {
     align: React.PropTypes.string,
+    button: React.PropTypes.object,
   },
 
   getDefaultProps: function() {
     return {
       align: 'right',
+      button: null,
     };
   },
 
@@ -30,7 +32,11 @@ module.exports = React.createClass({
     };
 
     let children = React.Children.map(this.props.children, (child) => {
-      let onClick_orig = child.props.onClick;
+      if (!child) {
+        return child;
+      }
+
+      let onClick_orig = onClick;
 
       return React.cloneElement(child, {
         onClick: (e) => {
@@ -49,14 +55,19 @@ module.exports = React.createClass({
       });
     });
 
+    let btn = this.props.button || (
+      <IconButton 
+        icon="caret-down" 
+        tooltip="Toggle menu" />
+    );
+
+    btn = React.cloneElement(btn, {
+      onClick: this._toggleMenu
+    });
+
     return (
       <div className="dropdown-menu">
-        <div ref="btn" className="button">
-          <IconButton 
-            icon="caret-down" 
-            onClick={this._toggleMenu} 
-            tooltip="Toggle menu" />
-        </div>
+        <div ref="btn" className="button">{btn}</div>
         <div ref="items" className={Classnames(itemClasses)}>
           {children}
         </div>
@@ -72,16 +83,29 @@ module.exports = React.createClass({
     let $btn = $(this.refs.btn);
 
     let css = {
-      top: $btn.offset().top + $btn.outerHeight() + 5,
+      top: $btn.offset().top - $(window).scrollTop() + $btn.outerHeight() + 2,
     };
 
     if ('left' === this.props.align) {
       css.left = $btn.offset().left;
     } else {
-      css.right = $(window).width() - ($btn.offset().left + $btn.outerWidth());
+      css.right = $(window).width() - $(window).scrollLeft() 
+        - ($btn.offset().left + $btn.outerWidth());
     }
 
     $(this.refs.items).css(css);
+  },
+
+  show: function() {
+    this.setState({
+      open: true,
+    });
+  },
+
+  hide: function() {
+    this.setState({
+      open: false,
+    });
   },
 
   _toggleMenu: function() {

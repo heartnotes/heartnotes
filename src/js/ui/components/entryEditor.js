@@ -223,8 +223,18 @@ var Component = React.createClass({
     );
 
     if (isExtraSmallScreen) {
+      let dropdownButtons = [
+        (<IconLink
+          key="changeDate"
+          icon="calendar" 
+          text="Change date"
+          onClick={() => {
+            this.refs.dateTimePicker.show();
+          }} />),
+      ];
+
       if (this.props.canDelete) {
-        deleteButton = (
+        dropdownButtons.push(
           <IconLink 
             key="delete"
             icon="trash"
@@ -235,14 +245,13 @@ var Component = React.createClass({
 
       return (
         <div className="meta-buttons">
-          <Dropdown>
-            <DateTimePicker 
-              onSelect={this._onChangeDate} 
-              date={entryDate} 
-              tooltip="Change date and time" />
-            {deleteButton}
-          </Dropdown>
+          <Dropdown>{dropdownButtons}</Dropdown>
           {deleteDialog}
+          <DateTimePicker 
+            ref="dateTimePicker"
+            onSelect={this._onChangeDate} 
+            showButton={false}
+            date={entryDate} />
         </div>
       );
     } else {

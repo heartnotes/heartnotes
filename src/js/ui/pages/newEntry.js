@@ -3,8 +3,7 @@ var _ = require('lodash'),
 
 var moment = require('moment');
 
-var EntryEditor = require('../components/entryEditor');
-
+import EntryEditor from '../components/entryEditor';
 import Loading from '../components/loading';
 import { connectRedux } from '../helpers/decorators';
 

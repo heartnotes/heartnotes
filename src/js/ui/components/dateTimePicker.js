@@ -12,6 +12,8 @@ var Button = require('./button'),
 module.exports = React.createClass({
   propTypes: {
     onSelect : React.PropTypes.func.isRequired,
+    button: React.PropTypes.object,
+    showButton: React.PropTypes.bool,
     tooltip : React.PropTypes.string,
     date : React.PropTypes.object,
   },
@@ -19,6 +21,8 @@ module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       tooltip: 'Pick date',
+      button: null,
+      showButton: true,
       date: null,
     };
   },
@@ -30,12 +34,23 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    return (
-      <span className="date-time-picker">
+    let btn = null;
+
+    if (this.props.showButton) {
+      btn = this.props.button || (
         <IconButton 
-          onClick={this._togglePicker}
           icon="calendar" 
           tooltip={this.props.tooltip}/>
+      );
+
+      btn = React.cloneElement(btn, {
+        onClick: this._togglePicker
+      });
+    }
+
+    return (
+      <span className="date-time-picker">
+        {btn}
         <Overlay ref="overlay" showCancelButton={true}>
           <DateTime
             value={this.state.date}
@@ -52,17 +67,17 @@ module.exports = React.createClass({
 
   _togglePicker: function() {
     if (!this.refs.overlay.isShown()) {
-      this._show();
+      this.show();
     } else {
-      this._hide();
+      this.hide();
     }
   },
 
-  _show: function() {
+  show: function() {
     this.refs.overlay.show();
   },
 
-  _hide: function() {
+  hide: function() {
     this.refs.overlay.hide();
   },
 
@@ -73,7 +88,7 @@ module.exports = React.createClass({
   },
 
   _onDone: function() {
-    this._hide();
+    this.hide();
 
     let date = moment(this.state.date).toDate();
 
