@@ -2,9 +2,11 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 
+import Dropdown from './dropdown';
 import DateString from './date';
 import DateTimePicker from './dateTimePicker';
 import IconButton from './iconButton';
+import IconLink from './iconLink';
 import AskUserDialog from './askUserDialog';
 import { connectRedux, routing } from '../helpers/decorators';
 import * as DateUtils from '../../utils/date';
@@ -38,38 +40,20 @@ var Component = React.createClass({
     var entryDate = moment(entry.ts || Date.now()),
       body = entry.body || '';
 
-    var deleteButton = null;
-    if (this.props.canDelete) {
-      deleteButton = (
-        <span className="delete-button">
-          <IconButton
-            onClick={this._onDelete}
-            icon="trash" 
-            tooltip="Delete entry"/>
-          <AskUserDialog 
-            ref="confirmDelete"
-            msg="Are you sure you wish to delete this entry?"
-            buttons={["Yes", "No"]} />
-        </span>
-      );
-    }
-
     let dateFormat = (entryDate.year() !== moment().year()) 
       ? 'MMMM Do, YYYY'
       : 'MMMM Do';
 
     let timeFormat = 'h:mma';
 
+    let metaButtons = this._buildMetaButtons(entryDate);
+
     return (
       <div className="entryEditor">
         <div className="meta">
           <DateString className="day" format={dateFormat} date={entryDate} />
           <DateString className="time" format={timeFormat} date={entryDate} />
-          <DateTimePicker 
-            onSelect={this._onChangeDate} 
-            date={entryDate} 
-            tooltip="Change date and time" />
-          {deleteButton}
+          {metaButtons}
         </div>
         <div className="editor">
           <div className="body" data-placeholder="Type here..." 
@@ -221,6 +205,68 @@ var Component = React.createClass({
       if (updatedViaSync) {
         diaryMgr.removeEntryLastSyncUpdatedIndicator(newId);
       }
+    }
+  },
+
+
+  _buildMetaButtons: function(entryDate) {
+    const isExtraSmallScreen = 
+      !!_.get(this.props.data, 'app.screen.isExtraSmall', false);
+
+    let deleteButton = null;
+
+    let deleteDialog = (
+      <AskUserDialog 
+        ref="confirmDelete"
+        msg="Are you sure you wish to delete this entry?"
+        buttons={["Yes", "No"]} />
+    );
+
+    if (isExtraSmallScreen) {
+      if (this.props.canDelete) {
+        deleteButton = (
+          <IconLink 
+            key="delete"
+            icon="trash"
+            onClick={this._onDelete} 
+            text="Delete" />
+        );
+      }
+
+      return (
+        <div className="meta-buttons">
+          <Dropdown>
+            <DateTimePicker 
+              onSelect={this._onChangeDate} 
+              date={entryDate} 
+              tooltip="Change date and time" />
+            {deleteButton}
+          </Dropdown>
+          {deleteDialog}
+        </div>
+      );
+    } else {
+      if (this.props.canDelete) {
+        deleteButton = (
+          <span className="delete-button">
+            <IconButton
+              onClick={this._onDelete}
+              icon="trash" 
+              tooltip="Delete entry"/>
+            {deleteDialog}
+          </span>
+        );
+      }
+
+      return (
+        <div className="meta-buttons">
+          <DateTimePicker 
+            onSelect={this._onChangeDate} 
+            date={entryDate} 
+            tooltip="Change date and time" />
+          {deleteButton}
+        </div>
+      );
     }
   },
 
