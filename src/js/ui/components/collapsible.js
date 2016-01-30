@@ -12,8 +12,8 @@ module.exports = React.createClass({
 
   getDefaultProps: function() {
     return {
-      normalWidth: '100%',
-      normalHeight: '100%',
+      normalWidth: null,
+      normalHeight: null,
       expand: false,
     };
   },
@@ -21,11 +21,16 @@ module.exports = React.createClass({
   render: function() {
     var attrs = {
       className: 'collapsible',
-      style: {
-        width: this.props.normalWidth,
-        height: this.props.normalHeight,
-      }
+      style: {},
     };
+
+    if (this.props.normalWidth) {
+      attrs.style.width = this.props.normalWidth;
+    }
+
+    if (this.props.normalHeight) {
+      attrs.style.height = this.props.normalHeight;
+    }
 
     if (!this.props.expand) {
       attrs.className += ' collapsed';

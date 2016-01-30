@@ -25,8 +25,10 @@ var Component = React.createClass({
       subscriptionExpiry = diaryMgr.auth.subscriptionExpiry;
 
     let renewButton = null,
-      title = 'Cloud subscription ' + (subscriptionActive ? 'ACTIVE' : 'INACTIVE'),
-      subscriptionExpiryPrefix = 'until';
+      title = 'Cloud sync',
+      subscriptionExpiryPrefix = 'expires';
+
+    subscriptionType += ' - ' + (subscriptionActive ? 'ACTIVE' : 'INACTIVE');
 
     if (!subscriptionActive) {
       title = (
@@ -56,7 +58,8 @@ var Component = React.createClass({
         <h2>{title}</h2>
         <div className="subscription">
           <span>{subscriptionType}</span>
-          <span>
+          <span className="description">Your diary entries are backed up and synced.</span>
+          <span className="until">
             ({subscriptionExpiryPrefix} <DateFormat date={subscriptionExpiry} format="MMMM DD, YYYY" />)
           </span>
         </div>

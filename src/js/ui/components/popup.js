@@ -61,14 +61,34 @@ module.exports = React.createClass({
 
 
   _reposition: function() {
-    var targetPos = this.$target.position(),
-      parentOuterWidth = this.$target.parent().outerWidth(),
-      targetTop = targetPos.top;
+    let targetTop = this.$target.offset().top,
+      targetLeft = this.$target.offset().left;
+
+    let bodyWidth = this.$body.outerWidth();
+    let bodyHeight = this.$body.outerHeight();
 
     // position body
+    let top = targetTop + this.$target.height() + 2;
+    let left = targetLeft - (bodyWidth / 2);
+
+    let windowWidth = $(window).outerWidth();
+    let windowHeight = $(window).outerHeight();
+
+    if (10 > left) {
+      left = 10;
+    } else if (windowWidth - 10 < left + bodyWidth) {
+      left = windowWidth - 10 - bodyWidth;
+    }
+
+    if (10 > top) {
+      top = 10;
+    } else if (windowHeight - 10 < top + bodyHeight) {
+      top = targetTop - 2 - bodyHeight;
+    }
+
     this.$body.css({
-      top: (targetTop + this.$target.height() + 2) + 'px',
-      left: ((parentOuterWidth - this.$body.outerWidth()) / 2) + 'px',
+      top: top + 'px',
+      left: left + 'px',
     });
   },
 

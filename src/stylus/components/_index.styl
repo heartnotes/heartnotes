@@ -69,6 +69,10 @@
   line-height 1.2em
   padding 0 2em
   color $white
+  +below($width-xs)
+    top 60px
+    font-size 1.5rem
+    padding 0 0.2em
   .buttons
     margin-top 1em
     button
@@ -242,7 +246,7 @@ ul.entryList
     border-radius 5px
 
 $popupBody
-  position absolute
+  position fixed
   display block
   z-index 20
   transition opacity 0.1s linear
@@ -256,6 +260,8 @@ $popupBody
   line-height 1.5em
   width 20rem
   box-shadow 0px 0px 10px 1px $red-light
+  +below($width-xs)
+    width 15rem
   p
     margin-bottom 1em
   small
@@ -279,24 +285,41 @@ $popupBody
       margin-bottom 0.3em
   input
     display inline-block
-  .strength-meter
-    margin 0.5em 0 0
-    display flex
-    flex-direction row
-    justify-content center
-    align-items center
-    & > label
-      margin-right 1em
-      font-style italic
-      color $gray
-      font-size 1rem
-      i
-        margin-left 0.3em
-    & > .progress
-      width 8rem
-  .password-strength-hints
-    font-size 100%
-    line-height 1.5em
+  .collapsible
+    height 2rem
+    +below($width-xs)
+      height 3.5rem
+    .strength-meter
+      margin 0.5em 0 0
+      display flex
+      flex-direction row
+      justify-content center
+      align-items center
+      +below($width-xs)
+        display block
+      > label
+        margin-right 1em
+        font-style italic
+        color $gray
+        font-size 1rem
+        i
+          margin-left 0.3em
+        +below($width-xs)
+          margin-right 0
+      > .progress
+        width 8rem
+        +below($width-xs)
+          display block
+          margin 0.5em 0 0
+      &.centered  
+        > label
+          text-align center
+        > .progress
+            margin-left auto
+            margin-right auto
+    .password-strength-hints
+      font-size 100%
+      line-height 1.5em
     
 $progressStyles
   display inline-block
@@ -316,9 +339,10 @@ $progressStyles
   & > label
     @extend $progressStyles
     color $gray
-    right 3px
-    top 3px
+    width 100%
+    top 4px
     z-index 10
+    text-align center
 
 .collapsible
   transition all 0.3s linear
@@ -383,6 +407,8 @@ $progressStyles
     width 20rem
     transition all 0.2s linear
     max-height 0
+    +below($width-xs)
+      width 85%
     &.centered
       margin 1rem auto
     &.shown

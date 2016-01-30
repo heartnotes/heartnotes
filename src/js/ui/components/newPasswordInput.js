@@ -1,4 +1,5 @@
 var React = require('react');
+var Classnames = require('classnames');
 
 var PasswordInput = require('./passwordInput'),
   Collapsible = require('./collapsible'),
@@ -12,6 +13,7 @@ module.exports = React.createClass({
     requiredStrength: React.PropTypes.number,
     passwordPlaceholder: React.PropTypes.string,
     confirmPlaceholder: React.PropTypes.string,
+    centeredStrengthMeter: React.PropTypes.bool,
     tabIndex: React.PropTypes.number,
   },
 
@@ -22,6 +24,7 @@ module.exports = React.createClass({
       passwordPlaceholder: 'Password',
       confirmPlaceholder: 'Confirm password',
       tabIndex: 0,
+      centeredStrengthMeter: false,
     };
   },
 
@@ -46,7 +49,7 @@ module.exports = React.createClass({
             onChange={this._onChange}
             showToggleButton={true} 
             tabIndex={this.props.tabIndex} />
-          <Collapsible normalHeight="2rem" expand={showStrengthMeter}>
+          <Collapsible expand={showStrengthMeter}>
             {this._buildStrengthMeter()}
           </Collapsible>
         </div>
@@ -107,8 +110,13 @@ module.exports = React.createClass({
       </div>
     );
 
+    let classes = {
+      'strength-meter': true,
+      'centered': !!this.props.centeredStrengthMeter,
+    };
+
     return (
-      <div className="strength-meter">
+      <div className={Classnames(classes)}>
         <label>
           Password strength
           <Icon name="info-circle" tooltip={strengthTooltip} />

@@ -56,6 +56,7 @@ var Component = React.createClass({
             <NewPasswordInput 
               onChange={this._setPassword} 
               requiredStrength={0}
+              centeredStrengthMeter={true}
               tabIndex={2} />
           </div>
           <div className="row">

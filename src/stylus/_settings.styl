@@ -39,18 +39,22 @@
     &.account
       .membership
         h2
-          padding-bottom 30px
+          padding-bottom 20px
         .warning
           color $gray-dark
           margin 10px 0 20px
-        > div
+        .subscription
           font-size 1.2rem
           display block
           color $gray
           margin-bottom 1em
           > span
-            display inline-block
-            margin 0 0.5em 0 0
+            display block
+            margin 1em 0.5em 0 0
+            &.description
+              color $gray-dark
+              font-style italic
+              margin-top 0.2em
             
       .renew-subscription-dialog
         display inline-block
