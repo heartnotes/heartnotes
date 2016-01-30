@@ -61,8 +61,8 @@ module.exports = React.createClass({
 
 
   _reposition: function() {
-    let targetTop = this.$target.offset().top,
-      targetLeft = this.$target.offset().left;
+    let targetTop = this.$target.offset().top - $(window).scrollTop(),
+      targetLeft = this.$target.offset().left - $(window).scrollLeft();
 
     let bodyWidth = this.$body.outerWidth();
     let bodyHeight = this.$body.outerHeight();
