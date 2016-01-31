@@ -30,7 +30,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var inputType = 'text';
+    var inputType = 'email';
 
     return (
       <div className="email-input">
