@@ -75,29 +75,33 @@ var Component = React.createClass({
             tabIndex={1} />
         </div>
         <div className="field row">
-          <label>Expires:</label>
-          <SelectBox 
-            label="Month"
-            className='exp-month'
-            onChange={this._setExpMonth}
-            value={this.state.expMonth}>
-              {monthOptions}
-          </SelectBox>
-          <SelectBox 
-            label="Year"
-            className='exp-year'
-            onChange={this._setExpYear}
-            value={this.state.expYear}>
-              {yearOptions}
-          </SelectBox>
-          <label><abbr title="Card Verification Code">CVC</abbr>:</label>
-          <input 
-            type="text"
-            className="cvc"
-            value={this.state.cvc} 
-            onChange={this._setCvc}
-            placeholder="CVC" 
-            tabIndex={2} />
+          <div className="expires">
+            <label>Expires:</label>
+            <SelectBox 
+              label="Month"
+              className='exp-month'
+              onChange={this._setExpMonth}
+              value={this.state.expMonth}>
+                {monthOptions}
+            </SelectBox>
+            <SelectBox 
+              label="Year"
+              className='exp-year'
+              onChange={this._setExpYear}
+              value={this.state.expYear}>
+                {yearOptions}
+            </SelectBox>
+          </div>
+          <div className="cvc">
+            <label><abbr title="Card Verification Code">CVC</abbr>:</label>
+            <input 
+              type="text"
+              className="cvc"
+              value={this.state.cvc} 
+              onChange={this._setCvc}
+              placeholder="CVC" 
+              tabIndex={2} />
+          </div>
         </div>
         <div className="action row">
           <ProgressButton {...buttonAttrs}>Pay</ProgressButton>

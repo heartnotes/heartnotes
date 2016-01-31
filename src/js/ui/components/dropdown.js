@@ -32,11 +32,7 @@ module.exports = React.createClass({
     };
 
     let children = React.Children.map(this.props.children, (child) => {
-      if (!child) {
-        return child;
-      }
-
-      let onClick_orig = onClick;
+      let onClick_orig = child.props.onClick;
 
       return React.cloneElement(child, {
         onClick: (e) => {

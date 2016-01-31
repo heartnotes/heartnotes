@@ -1,6 +1,7 @@
-var _ = require('lodash'),
-  Q = require('bluebird'),
-  React = require('react');
+import _ from 'lodash';
+import Q from 'bluebird';
+import React from 'react';
+import Classnames from 'classnames';
 
 import { connectRedux } from '../../helpers/decorators';
 import DateFormat from '../date';
@@ -40,25 +41,31 @@ var Component = React.createClass({
       subscriptionExpiryPrefix = 'expired';
 
       renewButton = (
-        <div>
-          <p className="warning">Your diary entries are currently not being backed up or synced.</p>
-          <ProgressButton 
-            checkVar={this.props.data.app.fetchingPricing}
-            defaultProgressMsg="Fetching pricing..."
-            progressProps={{centered: false}}
-            onClick={this._showRenewalScreen}>
-              Renew subscription
-          </ProgressButton>
-        </div>
+        <ProgressButton 
+          checkVar={this.props.data.app.fetchingPricing}
+          defaultProgressMsg="Fetching pricing..."
+          progressProps={{centered: false}}
+          onClick={this._showRenewalScreen}>
+            Renew subscription
+        </ProgressButton>
       );
     }
+
+    let desc = subscriptionActive 
+      ? 'Your diary entries are backed up and synced.'
+      : 'Your diary entries are NOT currently backed up and synced.';
+
+    let descAttrs = {
+      description: true,
+      error: !subscriptionActive,
+    };
 
     return (
       <div className="membership">
         <h2>{title}</h2>
         <div className="subscription">
           <span>{subscriptionType}</span>
-          <span className="description">Your diary entries are backed up and synced.</span>
+          <span className={Classnames(descAttrs)}>{desc}</span>
           <span className="until">
             ({subscriptionExpiryPrefix} <DateFormat date={subscriptionExpiry} format="MMMM DD, YYYY" />)
           </span>

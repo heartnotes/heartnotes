@@ -55,6 +55,8 @@
               color $gray-dark
               font-style italic
               margin-top 0.2em
+              &.error
+                color $red-light
             
       .renew-subscription-dialog
         display inline-block
@@ -62,15 +64,26 @@
         width 70%
         text-align center
         font-size 2rem
+        +below($width-xs)
+          width 85%
+          overflow-y scroll
+          height 100%
+        .intro
+          +below($width-xs)
+            display none
         .pricing-item
           margin 30px 0
+          +below($width-xs)
+            margin-top 0
           .title
             font-size 150%
-            font-weight 700
+            font-weight 500
             color $white
           .features
             font-size 50%
             color $gray-dark
+            +below($width-xs)
+              display none
             li
               margin 15px 0
           .price
@@ -85,12 +98,16 @@
             justify-content space-between
             align-items center
             font-size 0.5em
-            > label
-              display inline-block
-              margin 0 0.2em
-            > input.cvc
-              font-size 1em
-              max-width 3em
+            +below($width-xs)
+              flex-flow column no-wrap
+            > div
+              margin 0 0.2em 1em
+              label, div
+                margin-right 0.2em
+              input
+                &.cvc
+                  font-size 1em
+                  max-width 3em
           .powered-by-stripe
             color $gray-darker
             font-size 0.8rem
