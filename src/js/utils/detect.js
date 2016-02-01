@@ -32,7 +32,7 @@ exports.inDevMode = function() {
 
 exports.serverHost = function() {
   if (exports.inDevMode()) {
-    return 'http://127.0.0.1:3010';
+    return 'http://' + location.host.split(':')[0] + ':3010';
   } else {
     return 'https://heartnot.es';    
   }

@@ -200,3 +200,11 @@ $entryContentStyles
       list-style-type lower-latin
       list-style-position inside
       margin-left 15px
+
+
+transitionAbove(_width, _prop, _dur, _mode = 'linear')
+  transition _prop _dur _mode
+  +below(_width)
+    transition none
+
+

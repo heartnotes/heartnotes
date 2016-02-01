@@ -1,4 +1,9 @@
 import React from 'react';
+
+// faster taps for mobile
+import injectTapEventPlugin from "react-tap-event-plugin";
+injectTapEventPlugin();
+
 import { IndexRoute, Route } from 'react-router';
 import { ReduxRouter } from 'redux-router';
 import ReactDOM from 'react-dom';

@@ -18,6 +18,11 @@ html
   font-size 16px
   background-color #fff
   color #000
+  
+body
+  /* disable pull-to-refresh in Chrome android */
+  overflow-y hidden
+
 
 h1, h2, h3
   font-weight 500
@@ -48,7 +53,10 @@ abbr
   cursor help
 
 
+
 // main grid
+
+
 
 #layout
   position relative
@@ -73,7 +81,9 @@ abbr
   +below($width-xs)
     width 100%
     left 0
-    top 50px
+    top $menuBarMobileHeight
+    height "calc(100% - %s)" % $menuBarMobileHeight
+    overflow-y scroll
 
 #welcome-content
   height 100%

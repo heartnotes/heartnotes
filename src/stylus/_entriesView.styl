@@ -16,10 +16,11 @@ $mainViewTransitionTime = 0.4s
   
   .timeline
     width 30%
-    height auto
-    overflow auto
+    height 100%
+    overflow-y scroll
     border-right 1px solid $gray
-    transition all $mainViewTransitionTime
+    transitionAbove $width-xs all $mainViewTransitionTime
+      
     
   .toggle-timeline
     position absolute
@@ -27,11 +28,11 @@ $mainViewTransitionTime = 0.4s
     border none
     background-color $white
     color $gray
-    transition left $mainViewTransitionTime
     padding 0
     font-size inherit
     font-family inherit
     transition color 0.3s linear
+    transitionAbove $width-xs left $mainViewTransitionTime
 
     &:hover
       color $black
@@ -58,14 +59,13 @@ $mainViewTransitionTime = 0.4s
     font-family $body-font
     font-style italic
     padding 1em
-    transition width $mainViewTransitionTime
-    // +below($width-xs)
-    //   display none
+    transitionAbove $width-xs width $mainViewTransitionTime
 
 
   .entryEditor
     height 100%
-    transition width $mainViewTransitionTime
+    transitionAbove $width-xs width $mainViewTransitionTime
+  
     
 
   &.split
