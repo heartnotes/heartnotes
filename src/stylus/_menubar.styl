@@ -1,4 +1,4 @@
-$menu-desktop
+menu-desktop()
   display flex
   flex-direction column
   justify-content space-around
@@ -17,7 +17,7 @@ $menu-desktop
       
 
 
-$menu-mobile
+menu-mobile()
   display block
   position absolute
   button
@@ -58,22 +58,22 @@ $menu-mobile
     
   .main-menu
     +above($width-xs)
-      @extend $menu-desktop
+      menu-desktop()
       height 180px
     +below($width-xs)
-      @extend $menu-mobile
+      menu-mobile()
       right 50px
       top 0px
         
   .sub-menu
     +above($width-xs)
-      @extend $menu-desktop
+      menu-desktop()
       padding-bottom 30px
       button
         margin-top 20px
         padding 4px 8px    
     +below($width-xs)
-      @extend $menu-mobile
+      menu-mobile()
       right 10px
       top 0px
       .dropdown-menu

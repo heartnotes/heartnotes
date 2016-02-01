@@ -38,7 +38,7 @@ module.exports = React.createClass({
       toggleElem = null;
 
     if (this.props.showToggleButton) {
-      var toggleIcon = 'bold',
+      var toggleIcon = 'font',
         toggleText = 'Show',
         toggleTooltip = 'Show typing';
 

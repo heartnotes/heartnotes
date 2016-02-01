@@ -12,6 +12,7 @@
     "release": "gulp release --minified --production"
   },
   "dependencies": {
+    "Base64": "^0.3.0",
     "alloyeditor": "liferay/alloy-editor#eb3ae414ff9c1c819892f2a3a0222dab8dedfcdd",
     "babelify": "~6.1.2",
     "bluebird": "~2.9.27",
@@ -52,7 +53,7 @@
     "pouchdb": "~3.6.0",
     "qs": "^4.0.0",
     "query-string": "~3.0.0",
-    "react": "~0.14.3",
+    "react": "^0.14.7",
     "react-datetime": "~2.0.1",
     "react-dom": "~0.14.3",
     "react-ladda": "~4.0.0",

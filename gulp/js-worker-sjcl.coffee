@@ -11,6 +11,7 @@ module.exports = (paths, options = {}) ->
   return ->
     build = () -> 
       gulp.src [
+        "#{paths.npm}/Base64/base64.js"        
         "#{paths.npm}/sjcl/sjcl.js"
         "#{paths.npm}/sjcl/core/sha512.js"
         "#{paths.src.lib}/sjcl/sjcl-webworker-addons.js"
