@@ -43,6 +43,7 @@ var RestoreOverlay = React.createClass({
         placeholder="Password"
         password={this.state.password} 
         onChange={this._setPassword} 
+        disabled={this.props.checkVar.inProgress}
         tabIndex={1} />
     );
 

@@ -143,6 +143,10 @@ export class Api {
         } else {
           let errMsg = response.responseText || response.statusText;
 
+          if (0 === response.status) {
+            errMsg = 'Could not connect to server';
+          }
+
           if (!errMsg) {
             errMsg = 'Sorry, an unexpected error occurred.';
 

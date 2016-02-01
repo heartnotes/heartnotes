@@ -13,6 +13,7 @@ module.exports = React.createClass({
     password : React.PropTypes.string,
     onChange : React.PropTypes.func,
     tabIndex: React.PropTypes.number,
+    disabled: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
@@ -22,6 +23,7 @@ module.exports = React.createClass({
       password: '',
       onChange : null,
       tabIndex: 0,
+      disabled: false,
     };
   },
 
@@ -64,6 +66,7 @@ module.exports = React.createClass({
           onChange={this._onChange} 
           value={this.props.password} 
           placeholder={this.props.placeholder}
+          disabled={this.props.disabled}
           tabIndex={'' + this.props.tabIndex} />
         {toggleElem}
       </div>

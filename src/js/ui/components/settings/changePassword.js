@@ -22,12 +22,14 @@ var Component = React.createClass({
   },
 
   render: function() { 
+    let { changingPassword } = this.props.data.diary;
+
     var changePasswordButtonAttrs = {
       defaultProgressMsg: 'Saving new password...',
       progressProps: {
         centered: false
       },
-      checkVar: this.props.data.diary.changingPassword,
+      checkVar: changingPassword,
       onClick: this._saveNewPassword,
     };
 
@@ -44,6 +46,7 @@ var Component = React.createClass({
               password={this.state.oldPassword} 
               placeholder="Current password"
               onChange={this._setOldPassword}
+              disabled={changingPassword.inProgress}
               tabIndex={1} />
           </div>
           <div className="input-fields row">
@@ -53,6 +56,7 @@ var Component = React.createClass({
               confirmPlaceholder="Confirm new password"
               onChange={this._setNewPassword} 
               requiredStrength={0} 
+              disabled={changingPassword.inProgress}
               tabIndex={1} />
           </div>
           <div className="action row">

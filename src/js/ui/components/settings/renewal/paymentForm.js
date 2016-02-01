@@ -24,9 +24,11 @@ var Component = React.createClass({
   },
 
   render() {
+    let { paying } = this.props.data.app;
+
     let buttonAttrs = {
       defaultProgressMsg: 'Verifying...',
-      checkVar: this.props.data.app.paying,
+      checkVar: paying,
       onClick: this._onSubmit,
       disabled: !_.get(this.state.cardNumber, 'length') 
         || !_.get(this.state.expMonth, 'length')
@@ -72,6 +74,7 @@ var Component = React.createClass({
             value={this.state.cardNumber} 
             onChange={this._setCardNumber}
             placeholder="Credit card number" 
+            disabled={paying.inProgress}
             tabIndex={1} />
         </div>
         <div className="field row">
@@ -81,6 +84,7 @@ var Component = React.createClass({
               label="Month"
               className='exp-month'
               onChange={this._setExpMonth}
+              disabled={paying.inProgress}
               value={this.state.expMonth}>
                 {monthOptions}
             </SelectBox>
@@ -88,6 +92,7 @@ var Component = React.createClass({
               label="Year"
               className='exp-year'
               onChange={this._setExpYear}
+              disabled={paying.inProgress}
               value={this.state.expYear}>
                 {yearOptions}
             </SelectBox>
@@ -100,6 +105,7 @@ var Component = React.createClass({
               value={this.state.cvc} 
               onChange={this._setCvc}
               placeholder="CVC" 
+              disabled={paying.inProgress}
               tabIndex={2} />
           </div>
         </div>

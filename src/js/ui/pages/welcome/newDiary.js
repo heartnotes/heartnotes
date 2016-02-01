@@ -31,9 +31,11 @@ var Component = React.createClass({
   },
 
   render: function() { 
+    let { creating } = this.props.data.diary;
+
     var buttonAttrs = {
       defaultProgressMsg: 'Creating diary...',
-      checkVar: this.props.data.diary.creating,
+      checkVar: creating,
       onClick: this._createNew,
     };
 
@@ -50,6 +52,7 @@ var Component = React.createClass({
           <div className="input-fields row">
             <EmailInput 
               onChange={this._setId} 
+              disabled={creating.inProgress}
               tabIndex={1} />
           </div>
           <div className="input-fields row">
@@ -57,6 +60,7 @@ var Component = React.createClass({
               onChange={this._setPassword} 
               requiredStrength={0}
               centeredStrengthMeter={true}
+              disabled={creating.inProgress}
               tabIndex={2} />
           </div>
           <div className="row">

@@ -47,14 +47,16 @@ var Component = React.createClass({
               <EmailInput 
                 email={id}
                 onChange={this._setId} 
-                tabIndex={1} />
+                tabIndex={1}
+                disabled={loggingIn.inProgress} />
             </div>
             <div className="field row">
               <PasswordInput 
                 placeholder="Password"
                 password={this.state.password} 
                 onChange={this._setPassword} 
-                tabIndex={1} />
+                tabIndex={1} 
+                disabled={loggingIn.inProgress} />
             </div>
             <div className="action row">
               <ProgressButton {...buttonAttrs}>Login</ProgressButton>

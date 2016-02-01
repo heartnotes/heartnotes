@@ -12,6 +12,7 @@ module.exports = React.createClass({
     email : React.PropTypes.string,
     onChange : React.PropTypes.func,
     tabIndex: React.PropTypes.number,
+    disabled: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
@@ -20,6 +21,7 @@ module.exports = React.createClass({
       email: '',
       onChange : null,
       tabIndex: 0,
+      disabled: false,
     };
   },
 
@@ -39,6 +41,7 @@ module.exports = React.createClass({
           onChange={this._onChange} 
           value={this.state.email || ''} 
           placeholder={this.props.placeholder}
+          disabled={this.props.disabled}
           tabIndex={'' + this.props.tabIndex} />
       </div>
     )

@@ -15,6 +15,7 @@ module.exports = React.createClass({
     confirmPlaceholder: React.PropTypes.string,
     centeredStrengthMeter: React.PropTypes.bool,
     tabIndex: React.PropTypes.number,
+    disabled: React.PropTypes.bool,
   },
 
   getDefaultProps: function() {
@@ -25,6 +26,7 @@ module.exports = React.createClass({
       confirmPlaceholder: 'Confirm password',
       tabIndex: 0,
       centeredStrengthMeter: false,
+      disabled: false,
     };
   },
 
@@ -48,6 +50,7 @@ module.exports = React.createClass({
             password={this.state.password} 
             onChange={this._onChange}
             showToggleButton={true} 
+            disabled={this.props.disabled}
             tabIndex={this.props.tabIndex} />
           <Collapsible expand={showStrengthMeter}>
             {this._buildStrengthMeter()}
@@ -58,6 +61,7 @@ module.exports = React.createClass({
             placeholder={this.props.confirmPlaceholder}
             password={this.state.passwordConfirm} 
             onChange={this._onConfirmChange} 
+            disabled={this.props.disabled}
             tabIndex={this.props.tabIndex + 1} />
         </div>
       </div>
