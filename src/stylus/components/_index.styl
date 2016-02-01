@@ -119,18 +119,18 @@ $metaHeight = 2.5rem
           padding 0 0.3em 0 0.4em
           color #ccc
           font-size 80%
-      
-    .date-time-picker
-      position relative
-      top -0.15em
-      left 0.3em
-      
-    .delete-button
+          
+    .meta-buttons
       position absolute
-      right 0.1em
+      right 0.2em
       top -0.1em
-      .icon-button
-        @extend $contentActionButton
+      .date-time-picker
+        display inline-block
+      .delete-button
+        display inline-block
+        margin-left 0.5em
+        .icon-button
+          @extend $contentActionButton
         
     .dropdown-menu
       position absolute
@@ -404,6 +404,7 @@ $progressStyles
     
   &.off
     opacity 0
+    pointer-events none
   
   
 .error-message
