@@ -8,20 +8,20 @@ import { connectRedux } from '../../helpers/decorators';
 import StepSlider from '../../components/stepSlider';
 
 
-const STEPS = [
-  {
-    id: 'start',
-    Component: require("./start"),
-  },
-  {
-    id: 'newDiary',
-    Component: require("./newDiary"),
-  },
-  {
-    id: 'loadDiary',
-    Component: require("./loadDiary"),
-  },
-];
+// const STEPS = [
+//   {
+//     id: 'start',
+//     Component: require("./start"),
+//   },
+//   {
+//     id: 'newDiary',
+//     Component: require("./newDiary"),
+//   },
+//   {
+//     id: 'loadDiary',
+//     Component: require("./loadDiary"),
+//   },
+// ];
 
 
 var Component = React.createClass({
@@ -29,15 +29,15 @@ var Component = React.createClass({
     return (
       <div className="welcomeView">
         <Logo/>
-        <StepSlider
-          steps={STEPS}
-          defaultStep="start" />
+        {this.props.children}
       </div>
     );
+        // <StepSlider
+        //   steps={STEPS}
+        //   defaultStep="start" />
   },
 
 });
-
 
 
 module.exports = connectRedux()(Component);

@@ -10,16 +10,12 @@ var Button = require('../../components/button'),
   EmailInput = require('../../components/emailInput');
 
 
-import { connectRedux } from '../../helpers/decorators';
+import Layout from './layout';
+import { connectRedux, routing } from '../../helpers/decorators';
 
 
 
 var Component = React.createClass({
-  propTypes: {
-    showStep: React.PropTypes.func.isRequired,
-    isActive: React.PropTypes.bool.isRequired,
-  },
-
   getInitialState: function() {
     return {
       id: null,
@@ -40,33 +36,35 @@ var Component = React.createClass({
     };
 
     return (
-      <div className="start step">
-        <div className="open-existing">
-          <form onSubmit={this._openDiary}>
-            <div className="field row">
-              <EmailInput 
-                email={id}
-                onChange={this._setId} 
-                tabIndex={1}
-                disabled={loggingIn.inProgress} />
-            </div>
-            <div className="field row">
-              <PasswordInput 
-                placeholder="Password"
-                password={this.state.password} 
-                onChange={this._setPassword} 
-                tabIndex={1} 
-                disabled={loggingIn.inProgress} />
-            </div>
-            <div className="action row">
-              <ProgressButton {...buttonAttrs}>Login</ProgressButton>
-            </div>
-          </form>
+      <Layout>
+        <div className="start step">
+          <div className="open-existing">
+            <form onSubmit={this._openDiary}>
+              <div className="field row">
+                <EmailInput 
+                  email={id}
+                  onChange={this._setId} 
+                  tabIndex={1}
+                  disabled={loggingIn.inProgress} />
+              </div>
+              <div className="field row">
+                <PasswordInput 
+                  placeholder="Password"
+                  password={this.state.password} 
+                  onChange={this._setPassword} 
+                  tabIndex={1} 
+                  disabled={loggingIn.inProgress} />
+              </div>
+              <div className="action row">
+                <ProgressButton {...buttonAttrs}>Login</ProgressButton>
+              </div>
+            </form>
+          </div>
+          <div className="create-new">
+            <Button onClick={this._createNew}>Create new diary</Button>
+          </div>
         </div>
-        <div className="create-new">
-          <Button onClick={this._createNew}>Create new diary</Button>
-        </div>
-      </div>
+      </Layout>
     );
   },
 
@@ -88,13 +86,13 @@ var Component = React.createClass({
       .then(() => {
         this.setState(this.getInitialState());
 
-        this.props.showStep('loadDiary');
+        this.props.history.navigate('/welcome/loadDiary');
       });
   },
 
 
   _createNew: function() {
-    this.props.showStep('newDiary');
+    this.props.history.navigate('/welcome/newDiary');
   },
 
 
@@ -120,7 +118,7 @@ var Component = React.createClass({
 module.exports = connectRedux([
   'chooseDiary',
   'openDiary'
-])(Component);
+])(routing()(Component));
 
 
 

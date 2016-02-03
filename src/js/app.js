@@ -20,6 +20,12 @@ import AccountSettingsView from './ui/pages/settings/account';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import FeedbackView from './ui/pages/settings/feedback';
 
+import WelcomeStart from './ui/pages/welcome/start';
+import WelcomeNewDiary from './ui/pages/welcome/newDiary';
+import WelcomeLoadDiary from './ui/pages/welcome/loadDiary';
+
+
+
 // API fixtures
 if (Detect.inDevMode()) {  
   // require('./data/api/fixtures');
@@ -55,6 +61,9 @@ const Routes = (
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
     <Route name="feedback" path="/feedback" component={FeedbackView} />
+    <Route name="welcomeStart" path="/welcome" component={WelcomeStart} />
+    <Route name="welcomeNewDiary" path="/welcome/newDiary" component={WelcomeNewDiary} />
+    <Route name="welcomeLoadDiary" path="/welcome/loadDiary" component={WelcomeLoadDiary} />
     <Route path="*" component={NewEntryView}/>
   </Route>
 );
