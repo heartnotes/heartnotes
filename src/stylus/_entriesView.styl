@@ -33,6 +33,7 @@ $mainViewTransitionTime = 0.4s
     font-family inherit
     transition color 0.3s linear
     transitionAbove $width-xs left $mainViewTransitionTime
+    z-index 2
 
     &:hover
       color $black
@@ -81,7 +82,7 @@ $mainViewTransitionTime = 0.4s
     .timeline
       width 0
       opacity 0
-    .no-entry, .entryEditor
+    .emptyEditor, .entryEditor
       width 100%
     .toggle-timeline
       left 2%
