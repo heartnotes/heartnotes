@@ -29,7 +29,7 @@ var Tab = React.createClass({
     return (
       <div className={Classnames(classes)} onClick={this._onClick}>
         {attention}
-        {this.props.data.desc}
+        <div className="text">{this.props.data.desc}</div>
       </div>
     );
   },

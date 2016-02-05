@@ -1,4 +1,4 @@
-.tab-menu
+$defaultTabMenu
   color $gray
   .tab
     position relative
@@ -18,4 +18,14 @@
       border-top 1px solid $gray 
       border-left 1px solid $gray 
       border-right 1px solid $gray 
+
+
       
+$verticalTabMenu
+  @extend $defaultTabMenu
+  transform rotate(90deg)
+  transform-origin left top 0
+  .tab
+    color $gray-dark
+    .attention
+      display none

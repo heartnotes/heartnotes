@@ -56,7 +56,7 @@ var Component = React.createClass({
           </form>
         </div>
         <div className="create-new">
-          <Button onClick={this._createNew}>Create new diary</Button>
+          <Button onClick={this._createNew}>Sign up</Button>
         </div>
       </div>
     );
@@ -84,10 +84,6 @@ var Component = React.createClass({
       });
   },
 
-
-  _createNew: function() {
-    this.props.router.push('/welcome/newDiary');
-  },
 
 
   _setPassword: function(p) {
