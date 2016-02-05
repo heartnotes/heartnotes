@@ -14,7 +14,7 @@ import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
 import Api from '../api/index';
-import Auth from '../auth/index';
+import { Cloud as AuthCloud, Local as AuthLocal } from '../auth/index';
 import ExportedEntries from '../../ui/components/exportedEntries';
 import * as DateUtils from '../../utils/date';
 import * as StringUtils from '../../utils/string';
@@ -606,8 +606,18 @@ Diary.createNew = function(id, password) {
 };
 
 
-Diary.open = function(id, password) {
-  let auth = new Auth();
+Diary.openCloud = function(id, password) {
+  let auth = new AuthCloud();
+
+  return auth.login(id, password)
+    .then(() => {
+      return Diary._new(id, auth);
+    });
+};
+
+
+Diary.openLocal = function(id, password) {
+  let auth = new AuthLocal();
 
   return auth.login(id, password)
     .then(() => {
