@@ -42,6 +42,7 @@ export function routing() {
       contextTypes: {
         router: React.PropTypes.object.isRequired,
         location: React.PropTypes.object.isRequired,
+        routeParams: React.PropTypes.object,
       },
 
       render: function() {

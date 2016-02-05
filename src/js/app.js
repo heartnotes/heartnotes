@@ -36,6 +36,7 @@ var App = connectRedux(['init'])(
     childContextTypes: {
       logger: React.PropTypes.object,
       router: React.PropTypes.object,
+      routeParams: React.PropTypes.object,
       location: React.PropTypes.object,
     },
 
@@ -43,6 +44,7 @@ var App = connectRedux(['init'])(
       return {
         logger: Logger,
         router: this.props.history,
+        routeParams: this.props.params,
         location: this.props.location,
       };
     },
@@ -69,15 +71,15 @@ const store = Store.create();
 const Routes = (
   <Route component={App}>
     <IndexRoute component={NewEntryView} />
-    <Route name="entries" path="/entries" component={EntriesView} />
     <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
+    <Route name="entries" path="/entries" component={EntriesView} />
     <Route name="newEntry" path="/newEntry" component={NewEntryView} />
-    <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="backupRestore" path="/settings/backupRestore" component={BackupRestoreView} />
+    <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="feedback" path="/feedback" component={FeedbackView} />
-    <Route name="welcomeStart" path="/welcome" component={WelcomeStart} />
-    <Route name="welcomeNewDiary" path="/welcome/newDiary" component={WelcomeNewDiary} />
     <Route name="welcomeLoadDiary" path="/welcome/loadDiary" component={WelcomeLoadDiary} />
+    <Route name="welcomeNewDiary" path="/welcome/newDiary" component={WelcomeNewDiary} />
+    <Route name="welcomeStart" path="/welcome" component={WelcomeStart} />
     <Route path="*" component={NewEntryView} />
   </Route>
 );
