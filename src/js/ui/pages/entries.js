@@ -28,7 +28,7 @@ var Component = React.createClass({
       });
     }
 
-    let entryId = _.get(this.props.data, 'router.params.entryId');
+    let entryId = _.get(this.props, 'routeParams.entryId');
 
     let entryEditor = !entryId ? (
       <div className="emptyEditor">

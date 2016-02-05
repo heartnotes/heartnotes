@@ -50,6 +50,10 @@ var Component = React.createClass({
 
 
   componentDidMount: function(oldProps) {
+    if (!_.get(this.props, 'data.diary.diaryMgr')) {
+      return this.props.router.push('/welcome');
+    }
+
     this.props.actions.loadEntries()
       .then(() => {
         this.props.router.push('/newEntry');
