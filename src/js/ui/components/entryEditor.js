@@ -322,7 +322,7 @@ var Component = React.createClass({
       if ('Yes' === choice) {
         this.props.actions.deleteEntry(this._getActiveEntry().id)
           .then(() => {
-            this.props.history.navigate('/entries');
+            this.props.router.push('/entries');
           });
       }
     });

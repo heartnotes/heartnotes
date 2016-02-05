@@ -1,7 +1,5 @@
 import _ from 'lodash';
 import React from 'react';
-import { History } from 'react-router';
-
 import { connect } from 'react-redux';
 
 import { BaseComponent } from './components';
@@ -41,17 +39,13 @@ export function connectRedux(actionCreators = []) {
 export function routing() {
   return function decorator(Component) {
     return React.createClass({
-      mixins: [History],
+      contextTypes: {
+        router: React.PropTypes.object.isRequired,
+        location: React.PropTypes.object.isRequired,
+      },
 
       render: function() {
-        let props = Object.assign({}, this.props);
-
-        props.history = this.history;
-
-        props.history.navigate = function(route, query) {
-          window.location = props.history.createHref(route, query);
-          // props.history.replaceState(null, props.history.createHref(route, query));
-        };
+        let props = _.extend({}, this.props, this.context);
 
         return (
           <Component {...props} />

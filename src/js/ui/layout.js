@@ -8,16 +8,21 @@ import Loading from './components/loading';
 import UserAlert from './components/userAlert';
 import WelcomeFooterBar from './components/welcome/footerBar';
 import ErrorMessageFooterBar from './components/errorMessageFooter';
+import WelcomeSplashPage from './pages/welcome/splash';
 
 
 var Component = React.createClass({
+  propTypes: {
+    children: React.PropTypes.element.isRequired,
+  },
+
   render: function() {    
     var content = null;
 
-    if (this._diaryOpened()) {
-      content = this._buildDefaultView();
-    } else {
+    if (this._viewingWelcomeScreen() || !this._isDiaryOpen()) {
       content = this._buildWelcomeView();
+    } else {
+      content = this._buildDefaultView();
     }
 
     return (
@@ -30,41 +35,39 @@ var Component = React.createClass({
     );    
   },
 
+
   componentDidMount: function() {
-    this.props.actions.init();
-
-    this._showWelcomeScreen();
+    this._checkIfLoggedIn();
   },
 
-  componentDidUpdate: function() {
-    this._showWelcomeScreen();
+
+  componentDidUpdate: function () {
+    this._checkIfLoggedIn();
   },
 
-  _showWelcomeScreen: function() {
-    if (!this._diaryOpened() && !this._viewingWelcomeScreen()) {
-      this.props.history.navigate('/welcome');
+
+  _checkIfLoggedIn: function() {
+    if (!this._isDiaryOpen() && !this._viewingWelcomeScreen()) {
+      this.props.router.push('/welcome');
     }
   },
 
-  _diaryOpened: function() {
-    return !!_.get(this.props.data, 'diary.loadingEntries.success');
+
+  _isDiaryOpen: function() {
+    return !!_.get(this.props, 'data.diary.loadingEntries.success');
   },
 
 
   _viewingWelcomeScreen: function() {
-    return 0 <= _.get(this.props.data, 'router.location.pathname').indexOf('/welcome');
+    return 0 <= _.get(this.props, 'location.pathname', '').indexOf('/welcome');
   },
 
 
   _buildWelcomeView: function() {
-    let content = (!this._viewingWelcomeScreen())
-      ? (
-          <div id="splash">
-            <Logo />
-            <Loading />
-          </div>
-        )
-      : (this.props.children);
+    let content = 
+      this._viewingWelcomeScreen() 
+        ? this.props.children 
+        : <WelcomeSplashPage />
 
     return (
       <div id="welcome-content">

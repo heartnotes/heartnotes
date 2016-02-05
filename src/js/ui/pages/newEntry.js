@@ -36,14 +36,16 @@ var Component = React.createClass({
   },
 
   componentDidMount: function() {
-    this.props.actions.createEntryForNow()
-      .then((entry) => {
-        if (this.isMounted()) {
-          this.setState({
-            entryId: entry.id,
-          });
-        }
-      });
+    if (this.props.data.diary.diaryMgr) {
+      this.props.actions.createEntryForNow()
+        .then((entry) => {
+          if (this.isMounted()) {
+            this.setState({
+              entryId: entry.id,
+            });
+          }
+        });
+    }
   }
 });
 

@@ -4,16 +4,11 @@ import React from 'react';
 import Icon from '../../components/icon';
 import Button from '../../components/button';
 import Loading from '../../components/loading';
-
-import { connectRedux } from '../../helpers/decorators';
+import Layout from './layout';
+import { connectRedux, routing } from '../../helpers/decorators';
 
 
 var Component = React.createClass({
-  propTypes: {
-    showStep: React.PropTypes.func.isRequired,
-    isActive: React.PropTypes.bool.isRequired,
-  },
-
   render: function() { 
     let activity = this.props.data.diary.loadingEntries;
 
@@ -43,33 +38,28 @@ var Component = React.createClass({
     }
 
     return (
-      <div className="load-diary step">
-        <p>{progressMsg}</p>
-        <p className="progress-message">{progressMsg2}</p>
-        {loadingError}
-      </div>
+      <Layout>
+        <div className="load-diary">
+          <p>{progressMsg}</p>
+          <p className="progress-message">{progressMsg2}</p>
+          {loadingError}
+        </div>
+      </Layout>
     );
   },
 
 
-  componentDidUpdate: function(oldProps) {
-    if (!this.props.isActive) {
-      return;
-    }
-
-    // if just became active then kick-off entry loading
-    if (!oldProps.isActive) {
-      // wait for 'show step' animation to end
-      setTimeout(() => {
-        this.props.actions.loadEntries();
-      }, 1000);
-    }
+  componentDidMount: function(oldProps) {
+    this.props.actions.loadEntries()
+      .then(() => {
+        this.props.router.push('/newEntry');
+      });
   },
 
   _goBack: function() {
     this.props.actions.closeDiary();
-    
-    this.props.showStep('start');
+
+    this.props.router.push('/welcome');
   },
 
 });
@@ -79,5 +69,5 @@ var Component = React.createClass({
 module.exports = connectRedux([
   'closeDiary',
   'loadEntries',
-])(Component);
+])(routing()(Component));
 

@@ -114,7 +114,7 @@ var Component = React.createClass({
 
 
   _onSelect: function(item) {
-    this.props.history.navigate(item.route);
+    this.props.router.push(item.route);
   },
 
 });

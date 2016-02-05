@@ -9,8 +9,20 @@
   .logo
     margin 0 auto 2rem
     
-  .step
-    &.start
+  .content
+    text-align center
+    
+    > div
+      display inline-block
+      
+    .splash
+      .loading
+        display block
+        text-align center
+        margin-top 50px
+        font-size 2rem
+      
+    .start
       font-size 1.5rem
 
       .open-existing
@@ -43,7 +55,7 @@
           display block
           
 
-    &.new-diary
+    .new-diary
       p
         font-size 2rem
         &.info1
@@ -61,7 +73,7 @@
       & > button
         margin-top 20px
         
-    &.load-diary
+    .load-diary
       font-size 2rem
       
       p

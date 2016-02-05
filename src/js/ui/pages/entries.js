@@ -68,7 +68,7 @@ var Component = React.createClass({
 
 
   _onSelect: function(entryId) {
-    this.props.history.navigate(`/entries/${entryId}`);
+    this.props.router.push(`/entries/${entryId}`);
   },
 
 

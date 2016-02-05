@@ -95,4 +95,4 @@ for tf in taskFiles
 
 
 # default task
-gulp.task 'default', ['dev']
+gulp.task 'default', ['dev-server']

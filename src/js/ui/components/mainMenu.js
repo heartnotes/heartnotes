@@ -41,7 +41,7 @@ var Component = React.createClass({
 
   _goRoute: function(item) {
     return () => {
-      this.props.history.navigate(item.route);
+      this.props.router.push(item.route);
     };
   },
 

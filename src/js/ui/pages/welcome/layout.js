@@ -1,40 +1,26 @@
-var _ = require('lodash');
-var React = require('react');
+import _ from 'lodash';
+import React from 'react';
 
-var Logo = require('../../components/logo'),
-  Loading = require('../../components/loading');
-
+import Loading from '../../components/loading';
+import Logo from '../../components/logo';
 import { connectRedux } from '../../helpers/decorators';
-import StepSlider from '../../components/stepSlider';
 
-
-// const STEPS = [
-//   {
-//     id: 'start',
-//     Component: require("./start"),
-//   },
-//   {
-//     id: 'newDiary',
-//     Component: require("./newDiary"),
-//   },
-//   {
-//     id: 'loadDiary',
-//     Component: require("./loadDiary"),
-//   },
-// ];
 
 
 var Component = React.createClass({
+  propTypes: {
+    children: React.PropTypes.element.isRequired,
+  },
+
   render: function() { 
     return (
       <div className="welcomeView">
         <Logo/>
-        {this.props.children}
+        <div className="content">
+          {this.props.children}
+        </div>
       </div>
     );
-        // <StepSlider
-        //   steps={STEPS}
-        //   defaultStep="start" />
   },
 
 });

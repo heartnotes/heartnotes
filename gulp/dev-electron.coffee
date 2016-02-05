@@ -5,7 +5,7 @@ shell = require 'shelljs'
 
 module.exports = (paths, options = {}) ->
   {
-    deps: ['electron-build-dev']
+    deps: ['dev-assets', 'electron-build-dev']
     task: (cb) ->
       shell.exec "DEV_MODE=true electron --debug=51234 #{paths.build.html}", (code, output) ->
         console.log output

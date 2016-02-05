@@ -1,11 +1,11 @@
+import _ from 'lodash';
 import React from 'react';
 
 // faster taps for mobile
 import injectTapEventPlugin from "react-tap-event-plugin";
 injectTapEventPlugin();
 
-import { IndexRoute, Route } from 'react-router';
-import { ReduxRouter } from 'redux-router';
+import { Router, IndexRoute, Route, hashHistory } from 'react-router';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { Provider } from 'react-redux';
@@ -19,11 +19,10 @@ import NewEntryView from './ui/pages/newEntry';
 import AccountSettingsView from './ui/pages/settings/account';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import FeedbackView from './ui/pages/settings/feedback';
-
 import WelcomeStart from './ui/pages/welcome/start';
 import WelcomeNewDiary from './ui/pages/welcome/newDiary';
 import WelcomeLoadDiary from './ui/pages/welcome/loadDiary';
-
+import { connectRedux } from './ui/helpers/decorators';
 
 
 // API fixtures
@@ -32,29 +31,44 @@ if (Detect.inDevMode()) {
 }
 
 
+var App = connectRedux(['init'])(
+  React.createClass({
+    childContextTypes: {
+      logger: React.PropTypes.object,
+      router: React.PropTypes.object,
+      location: React.PropTypes.object,
+    },
 
-class App extends React.Component {
-  constructor () {
-    super();
+    getChildContext: function() {
+      return {
+        logger: Logger,
+        router: this.props.history,
+        location: this.props.location,
+      };
+    },
 
-    this.state = {
-      logger: Logger,
-    };
-  }
+    render: function () {
+      return (
+        <Layout {...this.props}>
+          {this.props.children}
+        </Layout>
+      );
+    },
 
-  render () {
-    return (
-      <Layout {...this.props} {...this.state}>
-        {this.props.children}
-      </Layout>
-    );
-  }
-}
+    componentDidMount: function () {
+      this.props.actions.init();
+    },
+  })
+);
+
+
+const store = Store.create();
+
 
 
 const Routes = (
   <Route component={App}>
-    <IndexRoute component={EntriesView} />
+    <IndexRoute component={NewEntryView} />
     <Route name="entries" path="/entries" component={EntriesView} />
     <Route name="singleEntry" path="/entries/:entryId" component={EntriesView} />
     <Route name="newEntry" path="/newEntry" component={NewEntryView} />
@@ -64,24 +78,23 @@ const Routes = (
     <Route name="welcomeStart" path="/welcome" component={WelcomeStart} />
     <Route name="welcomeNewDiary" path="/welcome/newDiary" component={WelcomeNewDiary} />
     <Route name="welcomeLoadDiary" path="/welcome/loadDiary" component={WelcomeLoadDiary} />
-    <Route path="*" component={NewEntryView}/>
+    <Route path="*" component={NewEntryView} />
   </Route>
 );
-
-
-const store = Store.create(Routes);
-
 
 
 class RootComponent extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <ReduxRouter>{Routes}</ReduxRouter>
+        <Router history={hashHistory}>
+          {Routes}
+        </Router>
       </Provider>
     );
   }
 }
+
 
 
 ReactDOM.render(

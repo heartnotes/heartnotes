@@ -86,12 +86,12 @@ var Component = React.createClass({
 
 
   _giveFeedback: function() {
-    this.props.history.navigate('/feedback');
+    this.props.router.push('/feedback');
   },
 
 
   _showSettings: function() {
-    this.props.history.navigate('/settings');
+    this.props.router.push('/settings');
   },
 });
 

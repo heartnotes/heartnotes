@@ -5,7 +5,6 @@ import BackgroundTasksIndicator from '../backgroundTasksIndicator';
 import MainMenu from '../mainMenu';
 import SubMenu from '../subMenu';
 import Logo from '../logo';
-import { connectRedux, routing } from '../../helpers/decorators';
 
 
 module.exports = React.createClass({
@@ -26,8 +25,7 @@ module.exports = React.createClass({
   },
 
   _onLogoClick: function() {
-    this.props.history.navigate('/entries');
+    this.props.router.push(item.route);
   },
 
 });
-

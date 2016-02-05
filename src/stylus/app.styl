@@ -78,12 +78,12 @@ abbr
   width 92%
   top 0
   height 100%
+  overflow-y scroll
   +below($width-xs)
     width 100%
     left 0
     top $menuBarMobileHeight
     height "calc(100% - %s)" % $menuBarMobileHeight
-    overflow-y scroll
 
 #welcome-content
   height 100%
@@ -98,7 +98,6 @@ abbr
 
 @import 'components/_index'
 @import '_menubar'
-@import '_splash'
 @import '_welcomeView'
 @import '_entriesView'
 @import '_newEntry'

@@ -37,7 +37,7 @@ var Component = React.createClass({
 
     return (
       <Layout>
-        <div className="start step">
+        <div className="start">
           <div className="open-existing">
             <form onSubmit={this._openDiary}>
               <div className="field row">
@@ -86,13 +86,13 @@ var Component = React.createClass({
       .then(() => {
         this.setState(this.getInitialState());
 
-        this.props.history.navigate('/welcome/loadDiary');
+        this.props.router.push('/welcome/loadDiary');
       });
   },
 
 
   _createNew: function() {
-    this.props.history.navigate('/welcome/newDiary');
+    this.props.router.push('/welcome/newDiary');
   },
 
 

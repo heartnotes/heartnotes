@@ -3,7 +3,8 @@ server = require 'gulp-server-livereload'
 
 
 module.exports = (paths, options = {}) ->
-  return ->
+  deps: ['dev-assets']
+  task: ->
     gulp.src paths.build.html
       .pipe server({
         host: '0.0.0.0'
