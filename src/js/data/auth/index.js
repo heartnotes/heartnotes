@@ -14,7 +14,7 @@ import Diary from '../diary/index';
 import { Actions } from '../actions';
 
 
-var LocalStorage = Storage.local;
+
 
 
 /**
@@ -305,7 +305,14 @@ export default class Auth {
    */
   _saveCredentials(data) {
     if (this.isLocalType) {
-      return LocalStorage.saveCredentials(data.username, data);
+      return Storage.local.saveCredentials(data.username, data)
+        .then(() => {
+          return {
+            account: {
+              type: this._type,
+            }
+          };
+        });
     } else if (this.isCloudType()) {
       return Api.post('signup', {}, data);
     }
@@ -318,6 +325,8 @@ export default class Auth {
   _createPassword(password) {
     Dispatcher.createPassword('start');
 
+    Dispatcher.createPassword('progress', 'Deriving key');
+
     return Crypto.deriveNewKey(password) 
       .then((derivedKeyData) => {
         let masterKey = derivedKeyData.key1,
@@ -326,11 +335,15 @@ export default class Auth {
         // hash the password
         return Crypto.hash(password, Math.random() * 100000)
           .then((hash) => {
+            Dispatcher.createPassword('progress', 'Generating encryption key');
+
             // now genereate encryption key
             return Crypto.deriveNewKey(hash);
           })
           .then((encryptionKeyData) => {
             let encryptionKey = encryptionKeyData.key1;
+
+            Dispatcher.createPassword('progress', 'Saving encryption key');
 
             // now encrypt the encryption key with master key
             return this._generateEncKeyBundle(masterKey, encryptionKey)
@@ -455,6 +468,8 @@ export default class Auth {
 
   updateAccountData (accountData) {
     this._accountData = accountData;
+    this._accountData.type = this._type;
+
     this._authenticatedWithServer = this.isCloudType ? true : false;
 
     Dispatcher.accountDataUpdated(accountData);

@@ -43,7 +43,7 @@ var Component = React.createClass({
 
     return (
       <Layout>
-        <div className="new-diary">
+        <div className="new-cloud-diary">
           <form onSubmit={this._createNew}>
             <div className="input-fields row">
               <EmailInput 

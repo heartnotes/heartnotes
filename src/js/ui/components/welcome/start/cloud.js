@@ -68,7 +68,7 @@ var Component = React.createClass({
 
     let { id, type } = (lastAccessedDiary || {});
 
-    return ((null !== this.state.id) ? (
+    return (null !== this.state.id) ? (
       this.state.id
     ) : (
       'cloud' === type ? id : ''

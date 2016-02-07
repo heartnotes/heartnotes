@@ -20,7 +20,8 @@ import AccountSettingsView from './ui/pages/settings/account';
 import BackupRestoreView from './ui/pages/settings/backupRestore';
 import FeedbackView from './ui/pages/settings/feedback';
 import WelcomeStart from './ui/pages/welcome/start';
-import WelcomeNewDiary from './ui/pages/welcome/newDiary';
+import WelcomeNewCloudDiary from './ui/pages/welcome/newCloudDiary';
+import WelcomeNewLocalDiary from './ui/pages/welcome/newLocalDiary';
 import WelcomeLoadDiary from './ui/pages/welcome/loadDiary';
 import { connectRedux } from './ui/helpers/decorators';
 
@@ -78,7 +79,8 @@ const Routes = (
     <Route name="account" path="/settings" component={AccountSettingsView} />
     <Route name="feedback" path="/feedback" component={FeedbackView} />
     <Route name="welcomeLoadDiary" path="/welcome/loadDiary" component={WelcomeLoadDiary} />
-    <Route name="welcomeNewDiary" path="/welcome/newDiary" component={WelcomeNewDiary} />
+    <Route name="welcomeNewCloudDiary" path="/welcome/newCloudDiary" component={WelcomeNewCloudDiary} />
+    <Route name="welcomeNewLocalDiary" path="/welcome/newLocalDiary" component={WelcomeNewLocalDiary} />
     <Route name="welcomeStart" path="/welcome" component={WelcomeStart} />
     <Route path="*" component={NewEntryView} />
   </Route>

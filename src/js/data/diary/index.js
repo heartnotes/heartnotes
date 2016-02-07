@@ -570,6 +570,10 @@ export default class Diary {
       return;
     }
 
+    if ('cloud' !== this._auth.type) {
+      return;
+    }
+
     this._sync = new Sync(this);
     this._sync.start();
   }

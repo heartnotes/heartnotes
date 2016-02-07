@@ -16,7 +16,7 @@ var Component = React.createClass({
       <Loading text="Loading diary" />
     );
     
-    let progressMsg2 = _.get(this.props.data.diary.decryptEntries, 'progressMsg');
+    let progressMsg2 = _.get(this.props, 'data.diary.decryptEntries.progressMsg');
 
     let loadingError = null;
     if (activity.error) {

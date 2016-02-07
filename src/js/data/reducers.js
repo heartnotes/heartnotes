@@ -504,6 +504,11 @@ exports.diary = function(state = InitialState.diary(), action) {
         derivedKeys: null,
       });
 
+    case Actions.DERIVE_KEYS_PROGRESS:
+      return _.extend({}, state, {
+        derivingKeys: AsyncState.progress(action.payload),
+      });
+
     case Actions.DERIVE_KEYS_RESULT:
       return _.extend({}, state, {
         derivingKeys: AsyncState.result(action.payload),

@@ -4,6 +4,10 @@ import _ from 'lodash';
 
 const POSSIBLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+
+exports.DEFAULT_PASSWORD = 'password';
+
+
 exports.random = function(len) {
 
   var text = "";

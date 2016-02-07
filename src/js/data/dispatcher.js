@@ -355,6 +355,8 @@ export class Dispatcher {
     switch (state) {
       case 'start':
         return this._do(Actions.DERIVE_KEYS_START, data);
+      case 'progress':
+        return this._do(Actions.DERIVE_KEYS_PROGRESS, data);
       case 'result':
         return this._do(Actions.DERIVE_KEYS_RESULT, data);
       case 'error':

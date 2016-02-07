@@ -76,12 +76,7 @@ var Component = React.createClass({
 
 
   _createNew: function() {
-    this.props.actions.createDiary('local', null, 
-      StringUtils.generateLocalDiaryId()
-    )
-      .then(() => {
-        this.props.router.push('/welcome/loadDiary');
-      });
+    this.props.router.push('/welcome/newLocalDiary');
   },
 
 
@@ -97,7 +92,6 @@ var Component = React.createClass({
 
 module.exports = connectRedux([
   'openDiary',
-  'createDiary',
 ])(routing()(Component));
 
 

@@ -39,7 +39,7 @@ var Component = React.createClass({
 
 
   _getActiveTab: function() {
-    let lastAccessedDiaryType = _.get(this.props.data, 'diary.lastAccessedDiaryType');
+    let lastAccessedDiaryType = _.get(this.props.data, 'diary.lastAccessedDiary.type');
 
     let queryTab = _.get(this.props, 'location.query.mode', null);
 

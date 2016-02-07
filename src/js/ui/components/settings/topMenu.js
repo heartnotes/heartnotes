@@ -5,7 +5,7 @@ import Classnames from 'classnames';
 import { connectRedux, routing } from '../../helpers/decorators';
 import Button from '../button';
 import AttentionIcon from '../attentionIcon';
-import Tabmenu from '../tabMenu';
+import TabMenu from '../tabMenu';
 
 
 
