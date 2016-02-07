@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 
 import Layout from './layout';
-import StartLocal from '../../ponents/welcome/start/local';
+import StartLocal from '../../components/welcome/start/local';
 import StartCloud from '../../components/welcome/start/cloud';
 import { connectRedux, routing } from '../../helpers/decorators';
 import IconLink from '../../components/iconLink';

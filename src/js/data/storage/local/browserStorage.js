@@ -19,9 +19,17 @@ export default class BrowserStorage {
 
   saveSettings (diaryId, settings) {
     this.set('last accessed', diaryId);
-a
+
     return Q.resolve(this.set(`${diaryId} settings`, settings));
   }
+
+
+  saveCredentials (diaryId, data) {
+    this.set('last accessed', diaryId);
+
+    return Q.resolve(this.set(`${diaryId} credentials`, data));
+  }
+
 
   loadEntries (diaryId) {
     this.set('last accessed', diaryId);

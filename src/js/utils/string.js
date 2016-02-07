@@ -31,7 +31,7 @@ exports.generateEntryId = function(ts) {
 
 
 exports.extractDiaryType = function(diaryId) {
-  return (0 === diaryId.indexOf('__LOCAL__') ? 'local' : 'cloud';
+  return (0 === diaryId.indexOf('__LOCAL__')) ? 'local' : 'cloud';
 };
 
 

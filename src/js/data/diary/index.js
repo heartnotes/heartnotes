@@ -14,7 +14,7 @@ import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
 import Api from '../api/index';
-import { Cloud as AuthCloud, Local as AuthLocal } from '../auth/index';
+import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/exportedEntries';
 import * as DateUtils from '../../utils/date';
 import * as StringUtils from '../../utils/string';
@@ -342,7 +342,7 @@ export default class Diary {
     // load
     return Storage.backup.loadBackup(filePath)
       .then((raw) => {
-        let auth = new Auth(raw.meta);
+        let auth = new Auth(this._auth.type, raw.meta);
 
         let decryptor = new Decryptor(
           this.logger.create('restore_from_old_diary'), 
@@ -595,15 +595,10 @@ Diary._new = function(id, auth) {
 }
 
 
-var _createAuth = function(type) {
-  let AuthClass = 'local' === type ? AuthLocal : AuthCloud;
-
-  return new AuthClass();
-};
 
 
 Diary.createNew = function(type, id, password) {
-  let auth = _createAuth(type);
+  let auth = new Auth(type);
 
   return auth.signUp(id, password)
     .then(() => {
@@ -614,7 +609,7 @@ Diary.createNew = function(type, id, password) {
 
 
 Diary.open = function(type, id, password) {
-  let auth = _createAuth(type);
+  let auth = new Auth(type);
 
   return auth.login(id, password)
     .then(() => {

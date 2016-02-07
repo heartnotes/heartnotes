@@ -97,7 +97,7 @@ var Component = React.createClass({
 
 module.exports = connectRedux([
   'openDiary',
-  'creatediary',
+  'createDiary',
 ])(routing()(Component));
 
 
