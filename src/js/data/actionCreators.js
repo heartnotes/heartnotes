@@ -87,13 +87,34 @@ export function openDiary(username, password) {
 
 
 
-export function createDiary(id, password) {
+
+export function openDiary(type, username, password) {
+  return function(dispatch) {
+    Dispatcher.openDiary('start');
+
+    return Diary.open(type, username, password)
+      .then((diaryMgr) =>  {
+        Dispatcher.openDiary('result', diaryMgr);
+      })
+      .catch((err) => {
+        Logger.error(err);
+
+        Dispatcher.openDiary('error', err);
+
+        throw err;
+      });
+  }
+}
+
+
+
+export function createDiary(type, id, password) {
   return function(dispatch) {
     Dispatcher.createDiary('start', {
       id: id
     });
 
-    return Diary.createNew(id, password)
+    return Diary.createNew(type, id, password)
       .then((diaryMgr) => {
         if (!diaryMgr) {
           throw new Error('Sorry, there was an unexpected error.');

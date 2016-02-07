@@ -8,12 +8,12 @@ import Popup from "../../popup";
 import PasswordInput from '../../passwordInput';
 import EmailInput from '../../emailInput';
 import { connectRedux, routing } from '../../../helpers/decorators';
+import * as StringUtils from '../../../../utils/string';
 
 
 var Component = React.createClass({
   getInitialState: function() {
     return {
-      id: null,
       password: null,
     };
   },
@@ -21,26 +21,21 @@ var Component = React.createClass({
   render: function() { 
     let { loggingIn } = this.props.data.diary;
 
-    let id = this._getUsername();
+    let loginForm = null;
 
-    let buttonAttrs = {
-      defaultProgressMsg: 'Logging in...',
-      checkVar: loggingIn,
-      onClick: this._openDiary,
-      disabled: !_.get(this.state.password, 'length') || !_.get(id, 'length'),
-    };
+    let haveExistingDiary = !!this.props.data.diary.localDiaryId;
 
-    return (
-      <div className="start-local">
+    if (haveExistingDiary) {
+      let buttonAttrs = {
+        defaultProgressMsg: 'Opening...',
+        checkVar: loggingIn,
+        onClick: this._openDiary,
+        disabled: !_.get(this.state.password, 'length') || !_.get(id, 'length'),
+      };
+
+      loginForm = (
         <div className="open-existing">
           <form onSubmit={this._openDiary}>
-            <div className="field row">
-              <EmailInput 
-                email={id}
-                onChange={this._setId} 
-                tabIndex={1}
-                disabled={loggingIn.inProgress} />
-            </div>
             <div className="field row">
               <PasswordInput 
                 placeholder="Password"
@@ -50,10 +45,16 @@ var Component = React.createClass({
                 disabled={loggingIn.inProgress} />
             </div>
             <div className="action row">
-              <ProgressButton {...buttonAttrs}>Login</ProgressButton>
+              <ProgressButton {...buttonAttrs}>Open</ProgressButton>
             </div>
           </form>
         </div>
+      );
+    }
+
+    return (
+      <div className="start-local">
+        {loginForm}
         <div className="create-new">
           <Button onClick={this._createNew}>Create new diary</Button>
         </div>
@@ -62,20 +63,10 @@ var Component = React.createClass({
   },
 
 
-  _getUsername: function() {
-    let { lastAccessedDiary } = this.props.data.diary;
-
-    return ((null !== this.state.id) ? this.state.id : lastAccessedDiary) || '';
-  },
-
-
   _openDiary: function(e) {
     e.preventDefault();
 
-    this.props.actions.openDiary(
-      this._getUsername(),
-      this.state.password
-    )
+    this.props.actions.openDiary('local', null, this.state.password)
       .then(() => {
         this.setState(this.getInitialState());
 
@@ -85,7 +76,12 @@ var Component = React.createClass({
 
 
   _createNew: function() {
-    this.props.router.push('/welcome/newDiary');
+    this.props.actions.createDiary('local', null, 
+      StringUtils.generateLocalDiaryId()
+    )
+      .then(() => {
+        this.props.router.push('/welcome/loadDiary');
+      });
   },
 
 
@@ -96,19 +92,12 @@ var Component = React.createClass({
   },
 
 
-  _setId: function(email) {
-    this.setState({
-      id: email,
-    });
-  },
-
-
 });
 
 
 module.exports = connectRedux([
-  'chooseDiary',
-  'openDiary'
+  'openDiary',
+  'creatediary',
 ])(routing()(Component));
 
 

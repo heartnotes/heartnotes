@@ -66,7 +66,13 @@ var Component = React.createClass({
   _getUsername: function() {
     let { lastAccessedDiary } = this.props.data.diary;
 
-    return ((null !== this.state.id) ? this.state.id : lastAccessedDiary) || '';
+    let { id, type } = (lastAccessedDiary || {});
+
+    return ((null !== this.state.id) ? (
+      this.state.id
+    ) : (
+      'cloud' === type ? id : ''
+    );
   },
 
 

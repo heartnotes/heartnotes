@@ -12,14 +12,14 @@ export default class BrowserStorage {
   }
 
   loadSettings (diaryId) {
-    this.set('last accessed', diaryId);
+    this._setLastAccessed(diaryId);
 
     return Q.resolve(this.get(`${diaryId} settings`));
   }
 
   saveSettings (diaryId, settings) {
     this.set('last accessed', diaryId);
-
+a
     return Q.resolve(this.set(`${diaryId} settings`, settings));
   }
 
@@ -38,6 +38,11 @@ export default class BrowserStorage {
   getLastAccessed () {
     return this.get('last accessed');
   }
+
+  getLocalDiaryId () {
+    return this.get('local diary id');
+  }
+
 
   get (key) {
     try {
@@ -67,6 +72,20 @@ export default class BrowserStorage {
       return window.localStorage.setItem(key, value);
     } catch (err) {
       this.logger.error('set', key, err);      
+    }
+  }
+
+
+  _setLastAccessed (diaryId) {
+    let type = StringUtils.extractDiaryType(diaryId);
+
+    this.set('last accessed', {
+      id: diaryId,
+      type: type,
+    });
+
+    if ('local' === type) {
+      this.set('local diary id', diaryId);
     }
   }
 }

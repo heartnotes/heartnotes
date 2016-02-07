@@ -28,3 +28,20 @@ exports.generateEntryId = function(ts) {
 };
 
 
+
+
+exports.extractDiaryType = function(diaryId) {
+  return (0 === diaryId.indexOf('__LOCAL__') ? 'local' : 'cloud';
+};
+
+
+
+exports.generateLocalDiaryId = function() {
+  return '__LOCAL__' + exports.random(8);
+};
+
+
+
+
+
+

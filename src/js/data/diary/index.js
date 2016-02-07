@@ -595,9 +595,15 @@ Diary._new = function(id, auth) {
 }
 
 
+var _createAuth = function(type) {
+  let AuthClass = 'local' === type ? AuthLocal : AuthCloud;
 
-Diary.createNew = function(id, password) {
-  let auth = new Auth();
+  return new AuthClass();
+};
+
+
+Diary.createNew = function(type, id, password) {
+  let auth = _createAuth(type);
 
   return auth.signUp(id, password)
     .then(() => {
@@ -606,25 +612,15 @@ Diary.createNew = function(id, password) {
 };
 
 
-Diary.openCloud = function(id, password) {
-  let auth = new AuthCloud();
+
+Diary.open = function(type, id, password) {
+  let auth = _createAuth(type);
 
   return auth.login(id, password)
     .then(() => {
       return Diary._new(id, auth);
     });
 };
-
-
-Diary.openLocal = function(id, password) {
-  let auth = new AuthLocal();
-
-  return auth.login(id, password)
-    .then(() => {
-      return Diary._new(id, auth);
-    });
-};
-
 
 
 

@@ -60,10 +60,10 @@ var Component = React.createClass({
                 tabIndex={2} />
             </div>
             <div className="row">
-              <input 
-                type="checkbox"
-                onChange={this._toggleTerms} />
-                  I agree to the <ExternalLink href={TERMS_URL}>terms and conditions</ExternalLink>.
+              <input type="checkbox" onChange={this._toggleTerms} />
+              <span>
+                I agree to the <ExternalLink href={TERMS_URL}>terms and conditions</ExternalLink>.
+              </span>
             </div>
             <div className="action row">
               <ProgressButton {...buttonAttrs}>Create diary</ProgressButton>
@@ -108,7 +108,11 @@ var Component = React.createClass({
 
     this.refs.rememberDialog.ask((shouldProceed) => {
       if (shouldProceed) {
-        this.props.actions.createDiary(this.state.id, this.state.password)
+        this.props.actions.createDiary(
+          'cloud', 
+          this.state.id, 
+          this.state.password
+        )
           .then(() => {
             this.setState(this.getInitialState());
           });

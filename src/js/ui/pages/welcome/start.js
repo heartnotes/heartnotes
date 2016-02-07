@@ -2,29 +2,26 @@ import _ from 'lodash';
 import React from 'react';
 
 import Layout from './layout';
-import StartLocal from '../../components/welcome/start/local';
+import StartLocal from '../../ponents/welcome/start/local';
 import StartCloud from '../../components/welcome/start/cloud';
-import { routing } from '../../helpers/decorators';
+import { connectRedux, routing } from '../../helpers/decorators';
 import IconLink from '../../components/iconLink';
 
 
 var Component = React.createClass({
   render: function() { 
-    let activeTab = _.get(this.props, 'location.query.mode', null);
-    if (!_.contains(['local', 'cloud'], activeTab)) {
-      activeTab = 'local';
-    }
+    let activeTab = this._getActiveTab();
 
     let activeContent = 'local' === activeTab ? <StartLocal /> : <StartCloud />;
 
     let switchAnchor = 'local' === activeTab ? (
       <div>
-        Your diary will only be accessible in this browser.
+        Your diary will only be accessible in this browser on this device.
         <IconLink icon="refresh" text="Switch to cloud sync mode" onClick={this._show('cloud')} />
       </div>
     ) : (
       <div>
-        Your diary will be accessible from other devices.
+        Your diary will be accessible from other browsers and devices.
         <IconLink icon="refresh" text="Switch to local-only mode" onClick={this._show('local')} />
       </div>
     );
@@ -37,6 +34,24 @@ var Component = React.createClass({
         </div>
       </Layout>
     );
+
+  },
+
+
+  _getActiveTab: function() {
+    let lastAccessedDiaryType = _.get(this.props.data, 'diary.lastAccessedDiaryType');
+
+    let queryTab = _.get(this.props, 'location.query.mode', null);
+
+    if (!queryTab && lastAccessedDiaryType) {
+      return lastAccessedDiaryType;
+    }
+
+    if (!_.contains(['local', 'cloud'], queryTab)) {
+      queryTab = 'local';
+    }
+
+    return queryTab;
   },
 
 
@@ -44,12 +59,12 @@ var Component = React.createClass({
     return () => {
       this.props.router.push(`/welcome?mode=${mode}`);
     }
-  }
+  },
 
 });
 
 
-module.exports = routing()(Component);
+module.exports = connectRedux()(routing()(Component));
 
 
 
