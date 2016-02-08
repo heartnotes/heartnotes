@@ -93,6 +93,14 @@ var Component = React.createClass({
 
 
 
+  _createNew: function(e) {
+    e.preventDefault();
+
+    this.props.router.push('/welcome/newCloudDiary');
+  },
+
+
+
   _setPassword: function(p) {
     this.setState({
       password: p,

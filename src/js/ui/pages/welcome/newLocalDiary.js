@@ -13,7 +13,7 @@ var Component = React.createClass({
   render: function() { 
     let progressMsg = 
       _.get(this.props, 'data.diary.derivingKeys.progressMsg')
-        || 'Creating new diary...';
+        || 'Please wait...';
 
     return (
       <Layout>
@@ -21,20 +21,33 @@ var Component = React.createClass({
           <Loading text={progressMsg} />
         </div>
       </Layout>
-    )
+    );
   },
 
 
   componentDidMount: function() {
     setTimeout(() => {
-      this.props.actions.createDiary(
-        'local', 
-        StringUtils.generateLocalDiaryId(),
-        StringUtils.DEFAULT_PASSWORD
-      )
-        .then(() => {
-          this.props.router.push('/welcome/loadDiary');
-        });
+      let { localDiaryId } = this.props.data.diary;
+
+      let promise = null;
+
+      if (localDiaryId) {
+        promise = this.props.actions.openDiary(
+          'local',
+          localDiaryId,
+          StringUtils.DEFAULT_PASSWORD
+        );
+      } else {
+        promise = this.props.actions.createDiary(
+          'local', 
+          StringUtils.generateLocalDiaryId(),
+          StringUtils.DEFAULT_PASSWORD
+        );
+      }
+
+      promise.then(() => {
+        this.props.router.push('/welcome/loadDiary');
+      });
     }, 2000);
   },
 });
@@ -42,7 +55,8 @@ var Component = React.createClass({
 
 
 module.exports = connectRedux([
-  'createDiary'
+  'openDiary',
+  'createDiary',
 ])(routing()(Component));
 
 

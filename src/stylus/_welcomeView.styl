@@ -23,22 +23,27 @@
         font-size 2rem
       
     .start
-      font-size 1.5rem
+      font-size 0.8rem
 
+      strong
+        display block
+        font-size 140%
+        font-weight 700
+        margin-top 5px
+        
       .switch
-        font-size 1rem
+        font-size inherit
         margin 10px auto 30px
         width 80%
         line-height 1.2rem
         a
-          font-size 70%
           margin-top 5px
           display block
           color $red-light
 
       .open-existing
         display block
-        margin 0 0 2rem
+        margin 0 0 1.7rem
         padding 0
               
         > div
@@ -55,9 +60,8 @@
           margin -15px 0 0 10px
           
       .create-new
-        &:before
-          margin 1.5rem 0 2rem
-          display block
+        border-top 1px dashed $gray-darker
+        padding-top 1.5rem
           
 
     .new-local-diary
