@@ -5,116 +5,50 @@ var _ = require('lodash'),
 import Overlay from '../../overlay';
 import ProgressButton from '../../progressButton';
 import Button from '../../button';
-import Currency from '../../currency';
 import Loading from '../../loading';
 import ErrorMessage from '../../errorMessage';
-import StepSlider from '../../stepSlider';
-import PaymentForm from './paymentForm';
-import ThankYou from './thankYou';
+import SignUpForm from '../../welcome/signUpForm';
+import { connectRedux } from '../../../helpers/decorators'; 
 
 
-const STEPS = [
-  {
-    id: 'payment',
-    Component: PaymentForm,
-  },
-  {
-    id: 'thanks',
-    Component: ThankYou,
-  },
-];
+var Component = React.createClass({
 
-
-
-module.exports = React.createClass({
   render: function() {
-    let pricing = _.get(this.props.data, 'app.fetchingPricing.result');
-
-    let pricingItem = _.get(pricing, '0');
-
-    let pricingItemRendered = this._renderPricingItem(pricingItem);
-
-    let paymentProcess = <Loading />;
-
-    let stripeInterface = this._getStripeInterface(),
-      stripeLoadError = this._getStripeLoadError();
-
-    if (stripeInterface) {
-      paymentProcess = (
-        <StepSlider
-          defaultStep="payment"
-          steps={STEPS}
-          pricing={pricingItem}
-          onComplete={this._hide} />
-      );
-    } else if (stripeLoadError) {
-      paymentProcess = (
-        <ErrorMessage error={stripeLoadError} />
-      );
-    }
-
     return (
-      <Overlay ref="overlay" showCancelButton={true}>
-        <div className="renew-subscription-dialog">
+      <Overlay ref="overlay" showCancelButton={false}>
+        <div className="enable-cloud-sync">
           <p className="intro">
-            Help us make Heartnotes better for you :)
+            Enter your email address and choose a password to enable cloud sync.
           </p>
-          {pricingItemRendered}
-          {paymentProcess}
+          <SignUpForm
+            progressCheckVar={this.props.data.diary.enablingCloudSync}  
+            onCreate={this._enableSync} />
+          <Button size="xs" onClick={this._hide}>Cancel</Button>
         </div>
       </Overlay>
     );
   },
 
-
-
-  _renderPricingItem: function(pricingItem) {
-    if (!pricingItem) {
-      return null;
-    }
-
-    let features = _.map(pricingItem.features, (d, idx) => {
-      return (
-        <li key={idx}>{d}</li>
-      )
-    });
-
-    return (
-      <div className="pricing-item">
-        <div className="title">{pricingItem.title}</div>
-        <div className="features">
-          <ul>
-            {features}
-          </ul>
-        </div>
-        <div className="price">
-          <Currency value={pricingItem.price} currencyCode={pricingItem.currency} />
-        </div>
-      </div>
-    );
+  show: function() {
+    this.refs.overlay.show();
   },
-
-  _getStripeInterface() {
-    return _.get(this.props.data, 'app.scripts.stripe.object');
-  },
-
-  _getStripeLoadError() {
-    return _.get(this.props.data, 'app.scripts.stripe.error');
-  },
-
 
   _hide: function() {
     this.refs.overlay.hide();
   },
 
-  show: function() {
-    this.refs.overlay.show();
-
-    if (!this._getStripeInterface()) {
-      this.props.actions.loadScript('stripe', 'https://js.stripe.com/v2/', {
-        global: 'Stripe'
-      });
-    }
+  _enableSync: function(id, password) {
+    return this.props.actions.enableCloudSync(
+      id, 
+      password
+    );
   },
 
 });
+
+
+module.exports = connectRedux([
+  'enableCloudSync'
+])(Component);
+
+

@@ -7,10 +7,9 @@ import { connectRedux } from '../../../helpers/decorators';
 import DateFormat from '../../date';
 import Button from '../../button';
 import AttentionIcon from '../../attentionIcon';
-import ProgressButton from '../../progressButton';
 import Loading from '../../loading';
 import RenewalOverlay from './renewalOverlay';
-
+import FetchPricingButton from './fetchPricingButton';
 
 
 
@@ -37,13 +36,9 @@ var Component = React.createClass({
       subscriptionExpiryPrefix = 'expired';
 
       renewButton = (
-        <ProgressButton 
-          checkVar={this.props.data.app.fetchingPricing}
-          defaultProgressMsg="Fetching pricing..."
-          progressProps={{centered: false}}
-          onClick={this._showRenewalScreen}>
-            Renew subscription
-        </ProgressButton>
+        <FetchPricingButton onLoaded={this._showRenewalScreen}>
+          Renew subscription
+        </FetchPricingButton>
       );
     }
 
@@ -77,7 +72,6 @@ var Component = React.createClass({
 
 
 module.exports = connectRedux([
-  'getPricing',
   'loadScript'
 ])(Component);
 

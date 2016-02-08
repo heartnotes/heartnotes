@@ -385,6 +385,33 @@ exports.diary = function(state = InitialState.diary(), action) {
         creating: AsyncState.reset(),
       });
 
+
+    case Actions.ENABLE_CLOUD_SYNC_START:
+      return _.extend({}, state, {
+        enablingCloudSync: AsyncState.start(action.payload),
+      });
+
+    case Actions.ENABLE_CLOUD_SYNC_PROGRESS:
+      return _.extend({}, state, {
+        enablingCloudSync: AsyncState.progress(action.payload),
+      });
+
+    case Actions.ENABLE_CLOUD_SYNC_RESULT:
+      return _.extend({}, state, {
+        enablingCloudSync: AsyncState.result(action.payload),
+      });
+
+    case Actions.ENABLE_CLOUD_SYNC_ERROR:
+      return _.extend({}, state, {
+        enablingCloudSync: AsyncState.error(action.payload),
+      });
+
+    case Actions.ENABLE_CLOUD_SYNC_RESET:
+      return _.extend({}, state, {
+        enablingCloudSync: AsyncState.reset(action.payload),
+      });
+
+
     case Actions.LOAD_ENTRIES_START:
       return _.extend({}, state, {
         loadingEntries: AsyncState.start(),

@@ -160,6 +160,25 @@ export class Dispatcher {
   }
 
 
+  enableCloudSync (state, data) {
+    this._clearTimeout('enableCloudSync');
+
+    switch (state) {
+      case 'start':
+        return this._do(Actions.ENABLE_CLOUD_SYNC_START, data);
+      case 'progress':
+        return this._do(Actions.ENABLE_CLOUD_SYNC_PROGRESS, data);
+      case 'result':
+        return this._do(Actions.ENABLE_CLOUD_SYNC_RESULT, data);
+      case 'error':
+        this._do(Actions.ENABLE_CLOUD_SYNC_ERROR, data);
+
+        return this._setTimeout('enableCloudSync', () => {
+          this._do(Actions.ENABLE_CLOUD_SYNC_RESET);          
+        });
+    }
+  }
+
 
 
   login (state, data) {

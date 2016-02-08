@@ -220,13 +220,7 @@ ul.entryList
         font-style italic
         font-size 1.5rem
       
-      &:hover, &.selected
-        cursor pointer
-        background-color $gray-blue
-        color $white
-        .text
-          color $white
-        
+
       > .inner
         position relative
       
@@ -260,7 +254,13 @@ ul.entryList
               font-size 0.8rem
               margin-top 0.5em
 
-        
+      &:hover, &.selected
+        cursor pointer
+        background-color $gray-blue
+        color $white
+        .text
+          color $white
+                
 
 .password-input
   position relative
@@ -438,8 +438,6 @@ $progressStyles
 
 
 
-
-
 @import "./_stepSlider"
 @import "./_footer"
 @import "./_dateTimePicker"
@@ -449,5 +447,5 @@ $progressStyles
 @import "./_dropdown"
 @import "./_tabMenu"
 @import "./_userAlert"
-
+@import "./_signUpForm"
 

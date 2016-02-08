@@ -56,6 +56,9 @@ export default class BrowserStorage {
     return this.get('local diary id');
   }
 
+  removeLocalDiary () {
+    return this.set('local diary id', null);
+  }
 
   get (key) {
     try {

@@ -5,10 +5,8 @@ import Classnames from 'classnames';
 
 import { connectRedux } from '../../../helpers/decorators';
 import AttentionIcon from '../../attentionIcon';
-import Button from '../../button';
-import Loading from '../../loading';
 import EnableSyncOverlay from './enableSyncOverlay';
-
+import Button from '../../button';
 
 
 
@@ -16,7 +14,7 @@ var Component = React.createClass({
   render: function() { 
     let enableButton = (
       <Button onClick={this._showEnableScreen}>
-        Enable Cloud Sync
+        Enable cloud sync
       </Button>
     );
 
@@ -31,9 +29,14 @@ var Component = React.createClass({
         {enableButton}
         <EnableSyncOverlay 
           ref="enable" 
+          showCancelButton={false}
           {...this.props} />
       </div>
     );
+  },
+
+  _showEnableScreen: function() {
+    this.refs.enable.refs.wrappedInstance.show();
   },
 
 });

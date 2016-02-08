@@ -328,7 +328,7 @@ export default class Auth {
             }
           };
         });
-    } else if (this.isCloudType()) {
+    } else if (this.isCloudType) {
       return Api.post('signup', {}, data);
     }
   }

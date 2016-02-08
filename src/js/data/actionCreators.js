@@ -97,21 +97,11 @@ export function openDiary(type, username, password) {
 
 
 
-export function openDiary(type, username, password) {
-  return function(dispatch) {
-    Dispatcher.openDiary('start');
+export function enableCloudSync(id, password) {
+  return function(dispatch, getState) {
+    let diaryMgr = getState().diary.diaryMgr;
 
-    return Diary.open(type, username, password)
-      .then((diaryMgr) =>  {
-        Dispatcher.openDiary('result', diaryMgr);
-      })
-      .catch((err) => {
-        Logger.error(err);
-
-        Dispatcher.openDiary('error', err);
-
-        throw err;
-      });
+    return diaryMgr.enableCloudSync(id, password);
   }
 }
 

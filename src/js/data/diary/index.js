@@ -50,6 +50,61 @@ export default class Diary {
   }
 
 
+  enableCloudSync (id, password) {
+    Dispatcher.enableCloudSync('start');
+
+    let auth = new Auth('cloud');
+
+    return Q.try(() => {
+      if (!this.auth.isLocalType) {
+        throw new Error('Diary already linked to cloud account');
+      }
+    })
+      .then(() => {
+        Dispatcher.enableCloudSync('progress', 'Creating account');
+
+        return auth.signUp(id, password);
+      })
+      .then(() => {
+        Dispatcher.enableCloudSync('progress', 'Re-encrypting entries');
+
+        return Q.props(_.mapValues(this.entries, (entry) => {
+          return Crypto.encrypt(auth.encryptionKey, {
+            body: entry.body,
+            ts: entry.ts,
+            up: entry.up,
+          });
+        }));
+      })
+      .then((encryptedEntries) => {
+        this._id = id;
+        this._auth = auth;
+        this._encryptedEntries = encryptedEntries;
+
+        Dispatcher.enableCloudSync('progress', 'Saving diary');
+
+        return this._saveEncryptedEntries();
+      })
+      .then(() => {
+        // remove from local storage
+        Storage.local.removeLocalDiary(this._id);
+
+        // start sync
+        this._startSync();
+
+        Dispatcher.enableCloudSync('result');
+        Dispatcher.alertUser('Cloud sync enabled!');
+      })
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.enableCloudSync('error', err);
+
+        throw err;
+      });
+  }
+
+
   /**
    * Call this after construction to load settings.
    * 

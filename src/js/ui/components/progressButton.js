@@ -25,8 +25,14 @@ module.exports = React.createClass({
     let buttonAttrs = _.extend({}, this.props);
 
     if (_.get(this.props.checkVar, 'inProgress')) {
+      let _msg = _.get(this.props.checkVar, 'progressMsg');
+
+      if (!_.get((_msg || '').trim(), 'length')) {
+        _msg = this.props.defaultProgressMsg;
+      }
+
       msg = (
-        <div>{this.props.defaultProgressMsg}</div>
+        <div>{_msg}</div>
       );
 
       buttonAttrs.animActive = true;

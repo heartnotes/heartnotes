@@ -33,6 +33,7 @@ exports.diary = function() {
     derivedKeys: null,
     entries: null,
     creating: {},
+    enablingCloudSync: {},
     loggingIn: {},
     signingUp: {},
     opening: {},
