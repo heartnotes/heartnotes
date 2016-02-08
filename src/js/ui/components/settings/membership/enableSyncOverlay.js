@@ -13,7 +13,17 @@ import { connectRedux } from '../../../helpers/decorators';
 
 var Component = React.createClass({
 
+  getInitialState: function() {
+    return {
+      allowCancel: true,
+    };
+  },
+
   render: function() {
+    let cancelButton = this.state.allowCancel ? (
+      <Button size="xs" onClick={this._hide}>Cancel</Button>
+    ) : null;
+    
     return (
       <Overlay ref="overlay" showCancelButton={false}>
         <div className="enable-cloud-sync">
@@ -23,7 +33,7 @@ var Component = React.createClass({
           <SignUpForm
             progressCheckVar={this.props.data.diary.enablingCloudSync}  
             onCreate={this._enableSync} />
-          <Button size="xs" onClick={this._hide}>Cancel</Button>
+          {cancelButton}
         </div>
       </Overlay>
     );
@@ -38,10 +48,21 @@ var Component = React.createClass({
   },
 
   _enableSync: function(id, password) {
+    this.setState({
+      allowCancel: false,
+    });
+
     return this.props.actions.enableCloudSync(
       id, 
       password
-    );
+    )
+      .finally(() => {
+        if (this.isMounted()) {
+          this.setState({
+            allowCancel: true
+          });
+        }
+      });
   },
 
 });

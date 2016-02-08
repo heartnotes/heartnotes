@@ -163,9 +163,13 @@ export default class Auth {
   signUp (username, password) {
     Dispatcher.signUp('start');
 
+    Dispatcher.signUp('progress', 'Deriving key');
+
     return this._createPassword(password)
       .then(() => {
         this._id = username;
+
+        Dispatcher.signUp('progress', 'Saving credentials');
 
         return this._saveNewCredentials({
           username: username,

@@ -15,7 +15,7 @@ var Component = React.createClass({
       <Layout>
         <div className="new-cloud-diary">
           <SignUpForm onCreate={this._createNew}
-            progressCheckVar={this.props.data.diary.creating} />
+            progressCheckVar={this.props.data.diary.signingUp} />
           <Button size="xs" onClick={this._goBack}>Back</Button>
         </div>
       </Layout>

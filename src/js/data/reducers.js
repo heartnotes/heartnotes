@@ -319,6 +319,11 @@ exports.diary = function(state = InitialState.diary(), action) {
         signingUp: AsyncState.start(),
       });
 
+    case Actions.SIGN_UP_PROGRESS:
+      return _.extend({}, state, {
+        signingUp: AsyncState.progress(action.payload),
+      });
+
     case Actions.SIGN_UP_RESULT:
       return _.extend({}, state, {
         signingUp: AsyncState.result(action.payload),

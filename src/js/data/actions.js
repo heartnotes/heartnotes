@@ -52,6 +52,7 @@ const actionTypes = [
   'ACCOUNT_DATA_UPDATED',
 
   'SIGN_UP_START',
+  'SIGN_UP_PROGRESS',
   'SIGN_UP_RESULT',
   'SIGN_UP_ERROR',
   'SIGN_UP_RESET',

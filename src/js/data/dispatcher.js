@@ -219,6 +219,8 @@ export class Dispatcher {
     switch (state) {
       case 'start':
         return this._do(Actions.SIGN_UP_START, data);
+      case 'progress':
+        return this._do(Actions.SIGN_UP_PROGRESS, data);
       case 'result':
         return this._do(Actions.SIGN_UP_RESULT, data);
       case 'error':
