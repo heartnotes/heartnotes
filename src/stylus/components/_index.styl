@@ -383,32 +383,6 @@ $progressStyles
   @extend $button
       
 
-        
-
-.notification
-  position fixed
-  top 10px
-  right 10px
-  padding 10px
-  font-size 1rem
-  z-index 99999999
-  border-radius 10px
-  transition 0.5s
-  
-  &.info
-    background-color rgb(100, 100, 100, 0.7)
-    color $white
-  
-  &.error
-    background-color rgb(255, 0, 0, 0.7)
-    color $white
-
-  &.on
-    opacity 1
-    
-  &.off
-    opacity 0
-    pointer-events none
   
   
 .error-message
@@ -474,3 +448,6 @@ $progressStyles
 @import "./selectBox/_index"
 @import "./_dropdown"
 @import "./_tabMenu"
+@import "./_userAlert"
+
+

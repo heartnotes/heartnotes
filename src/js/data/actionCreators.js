@@ -54,6 +54,15 @@ export function init() {
 
 
 
+export function alertUser(msg, alertType = 'dialog') {
+  return function(dispatch, getState) {
+    Dispatcher.alertUser(msg, alertType);
+  }
+}
+
+
+
+
 export function closeDiary() {
   return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;

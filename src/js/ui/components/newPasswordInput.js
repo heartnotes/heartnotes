@@ -1,3 +1,4 @@
+import _ from 'lodash';
 var React = require('react');
 var Classnames = require('classnames');
 
@@ -40,7 +41,7 @@ module.exports = React.createClass({
 
 
   render: function() {
-    var showStrengthMeter = (this.state.password && !!this.state.password.length);
+    let showStrengthMeter = !!_.get(this.state.password, 'length');
 
     return (
       <div className="new-password-input">

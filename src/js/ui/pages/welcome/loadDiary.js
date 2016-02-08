@@ -56,6 +56,15 @@ var Component = React.createClass({
     this.props.actions.loadEntries()
       .then(() => {
         this.props.router.push('/newEntry');
+
+        if (this.props.data.diary.diaryMgr.auth.isLocalType) {
+          this.props.actions.alertUser(
+            'You are using the app in local-only mode, meaning your diary ' + 
+            'entries are stored locally within your browser. To enable cloud ' + 
+            'sync and backup goto the settings page.',
+            'dialog'
+          );
+        }
       });
   },
 
@@ -72,5 +81,6 @@ var Component = React.createClass({
 module.exports = connectRedux([
   'closeDiary',
   'loadEntries',
+  'alertUser',
 ])(routing()(Component));
 

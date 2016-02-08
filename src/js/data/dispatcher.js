@@ -59,7 +59,7 @@ export class Dispatcher {
   }
 
 
-  alertUser (msg, type = 'info') {
+  alertUser (msg, type = 'mini') {
     this._clearTimeout('alertUser');
 
     this._do(Actions.USER_ALERT, {
@@ -69,12 +69,10 @@ export class Dispatcher {
 
     return this._setTimeout('alertUser', () => {
       this._do(Actions.USER_ALERT, {
-        msg: null,
         type: null,
       });              
     });
   }
-
 
 
 
