@@ -23,12 +23,12 @@ var Component = React.createClass({
     let cancelButton = this.state.allowCancel ? (
       <Button size="xs" onClick={this._hide}>Cancel</Button>
     ) : null;
-    
+
     return (
       <Overlay ref="overlay" showCancelButton={false}>
         <div className="enable-cloud-sync">
           <p className="intro">
-            Enter your email address and choose a password to enable cloud sync.
+            You need an email address and password to enable cloud sync.
           </p>
           <SignUpForm
             progressCheckVar={this.props.data.diary.enablingCloudSync}  

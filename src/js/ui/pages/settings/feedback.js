@@ -1,10 +1,11 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
+import { Link } from 'react-router';
 
 import Layout from './layout';
 import TopMenu from '../../components/settings/topMenu';
-import { connectRedux } from '../../helpers/decorators';
+import { connectRedux, routing } from '../../helpers/decorators';
 import ProgressButton from '../../components/progressButton';
 import ExternalLink from '../../components/externalLink';
 
@@ -19,27 +20,43 @@ var Component = React.createClass({
   render: function() { 
     let { diaryMgr } = this.props.data.diary;
 
-    let { msg } = this.state;
+    let content = null;
 
-    let buttonAttrs = {
-      defaultProgressMsg: 'Sending...',
-      progressProps: {
-        centered: false
-      },
-      checkVar: this.props.data.app.sendingFeedback,
-      disabled: !_.get(msg, 'length'),
-      onClick: this._send,
-    };
+    if ( diaryMgr.auth.isLocalType ) {
+      content = (
+        <p>
+          Please <Link to="/settings">setup cloud sync</Link> if you wish to enable the feedback feature.
+        </p>
+      );
+    } else {
+      let { msg } = this.state;
+
+      let buttonAttrs = {
+        defaultProgressMsg: 'Sending...',
+        progressProps: {
+          centered: false
+        },
+        checkVar: this.props.data.app.sendingFeedback,
+        disabled: !_.get(msg, 'length'),
+        onClick: this._send,
+      };
+
+      content = (
+        <div>
+          <textarea 
+            value={msg}
+            onChange={this._onChange} 
+            rows="10" 
+            placeholder="Tell us what you like or don't like..." />
+          <ProgressButton {...buttonAttrs}>Send</ProgressButton>
+        </div>
+      );
+    }
 
     return (
       <Layout tab="feedback" {...this.props}>
         <h2>Give us feedback</h2> 
-        <textarea 
-          value={msg}
-          onChange={this._onChange} 
-          rows="10" 
-          placeholder="Tell us what you like or don't like..." />
-        <ProgressButton {...buttonAttrs}>Send</ProgressButton>
+        {content}
       </Layout>
     );
   },
@@ -76,5 +93,5 @@ var Component = React.createClass({
 
 module.exports = connectRedux([
   'sendFeedback'
-])(Component);
+])(routing()(Component));
 
