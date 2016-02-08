@@ -67,11 +67,11 @@ export function closeDiary() {
 
 
 
-export function openDiary(username, password) {
+export function openDiary(type, username, password) {
   return function(dispatch) {
     Dispatcher.openDiary('start');
 
-    return Diary.open(username, password)
+    return Diary.open(type, username, password)
       .then((diaryMgr) =>  {
         Dispatcher.openDiary('result', diaryMgr);
       })

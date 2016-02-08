@@ -101,7 +101,7 @@ export default class Auth {
   login (username, password) {
     Dispatcher.login('start');
 
-    return Api.get('meta', {
+    return this._loadMeta({
       username: username,
     })
       .then((res) => {
@@ -118,9 +118,9 @@ export default class Auth {
         return this.enterPassword(password);
       })
       .then(() => {
-        this._id = username;
+        this._id = username;  
 
-        return this._authWithServer(username);
+        return this._loadAccountData(username);
       })
       .then(() => {
         Dispatcher.login('result');
@@ -167,7 +167,7 @@ export default class Auth {
       .then(() => {
         this._id = username;
 
-        return this._saveCredentials({
+        return this._saveNewCredentials({
           username: username,
           key: this.authKey,
           meta: this.meta,
@@ -300,10 +300,25 @@ export default class Auth {
     return 'local' === this._type;
   }
 
+
   /**
    * @return {Promise}
    */
-  _saveCredentials(data) {
+  _loadMeta(data) {
+    if (this.isLocalType) {
+      return Storage.local.loadCredentials(data.username);
+    } else {
+      return Api.get('meta', {
+        username: data.username,
+      })
+    }
+  }
+
+
+  /**
+   * @return {Promise}
+   */
+  _saveNewCredentials(data) {
     if (this.isLocalType) {
       return Storage.local.saveCredentials(data.username, data)
         .then(() => {
@@ -463,6 +478,22 @@ export default class Auth {
 
         throw err;
       });
+  }
+
+
+  /**
+   * @return {Promise}
+   */
+  _loadAccountData (username) {
+    if (this.isLocalType) {
+      return Q.try(() => {
+        this.updateAccountData({
+          type: 'local',
+        });
+      });
+    } else {
+      return this._authWithServer(username);
+    }
   }
 
 

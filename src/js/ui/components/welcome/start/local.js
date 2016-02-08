@@ -30,7 +30,7 @@ var Component = React.createClass({
         defaultProgressMsg: 'Opening...',
         checkVar: loggingIn,
         onClick: this._openDiary,
-        disabled: !_.get(this.state.password, 'length') || !_.get(id, 'length'),
+        disabled: !_.get(this.state.password, 'length'),
       };
 
       loginForm = (
@@ -66,7 +66,11 @@ var Component = React.createClass({
   _openDiary: function(e) {
     e.preventDefault();
 
-    this.props.actions.openDiary('local', null, this.state.password)
+    this.props.actions.openDiary(
+      'local', 
+      this.props.data.diary.localDiaryId, 
+      this.state.password
+    )
       .then(() => {
         this.setState(this.getInitialState());
 

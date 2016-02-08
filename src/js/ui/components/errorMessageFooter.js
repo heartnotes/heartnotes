@@ -12,7 +12,7 @@ class Component extends React.Component {
 
     let footerItems = [];
 
-    if (!diaryMgr.auth.subscriptionActive) {
+    if (diaryMgr.auth.isCloudType && !diaryMgr.auth.subscriptionActive) {
       footerItems.push(
         <p key="sub">
           Subscription expired! Your diary entries will not be backed up or synced.

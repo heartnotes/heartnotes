@@ -570,7 +570,7 @@ export default class Diary {
       return;
     }
 
-    if ('cloud' !== this._auth.type) {
+    if (!this._auth.isCloudType) {
       return;
     }
 

@@ -80,6 +80,7 @@ var Component = React.createClass({
     e.preventDefault();
 
     this.props.actions.openDiary(
+      'cloud',
       this._getUsername(),
       this.state.password
     )
