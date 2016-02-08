@@ -9,34 +9,6 @@ import TabMenu from '../tabMenu';
 
 
 
-const ITEMS = [
-  {
-    id: 'account',
-    route: '/settings',
-    desc: 'Account',
-    attention: function() {
-      let { diaryMgr } = this.props.data.diary;
-
-      return (!diaryMgr.auth.subscriptionActive) ? <AttentionIcon /> : null;
-    },
-  },
-  {
-    id: 'backupRestore',
-    route: '/settings/backupRestore',
-    desc: 'Backup / Export',
-    showIf: function() {
-      return !!_.get(this.props.data, 'diary.backupsEnabled');
-    },
-  },
-  {
-    id: 'feedback',
-    route: '/feedback',
-    desc: 'Feedback',
-  },
-];
-
-
-
 
 var Component = React.createClass({
   propTypes: {
@@ -44,6 +16,34 @@ var Component = React.createClass({
   },
 
   render: function() {
+    const ITEMS = [
+      {
+        id: 'account',
+        route: '/settings',
+        desc: 'Account',
+        attention: () => {
+          let { diaryMgr } = this.props.data.diary;
+
+          return (!diaryMgr.auth.subscriptionActive) 
+            ? <AttentionIcon /> 
+            : null;
+        },
+      },
+      {
+        id: 'backupRestore',
+        route: '/settings/backupRestore',
+        desc: 'Backup / Export',
+        showIf: () => {
+          return !!_.get(this.props.data, 'diary.backupsEnabled');
+        },
+      },
+      {
+        id: 'feedback',
+        route: '/feedback',
+        desc: 'Feedback',
+      },
+    ];
+
     return (
       <TabMenu 
         className="settings-top-menu" 
@@ -60,5 +60,5 @@ var Component = React.createClass({
 });
 
 
-module.exports = connectRedux()(routing()(Component));
 
+module.exports = connectRedux()(routing()(Component));

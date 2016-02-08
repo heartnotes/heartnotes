@@ -8139,6 +8139,18 @@
         }
       }
     },
+    "history": {
+      "version": "1.17.0",
+      "from": "history@1.17.0",
+      "resolved": "https://registry.npmjs.org/history/-/history-1.17.0.tgz",
+      "dependencies": {
+        "deep-equal": {
+          "version": "1.0.1",
+          "from": "deep-equal@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/deep-equal/-/deep-equal-1.0.1.tgz"
+        }
+      }
+    },
     "invariant": {
       "version": "2.2.0",
       "from": "invariant@*",
@@ -9485,13 +9497,13 @@
       }
     },
     "react-router": {
-      "version": "2.0.0-rc5",
-      "from": "react-router@latest",
-      "resolved": "https://registry.npmjs.org/react-router/-/react-router-2.0.0-rc5.tgz",
+      "version": "2.0.0-rc6",
+      "from": "react-router@2.0.0-rc6",
+      "resolved": "https://registry.npmjs.org/react-router/-/react-router-2.0.0-rc6.tgz",
       "dependencies": {
         "history": {
           "version": "2.0.0",
-          "from": "history@>=2.0.0-rc1 <3.0.0",
+          "from": "history@>=2.0.0 <3.0.0",
           "resolved": "https://registry.npmjs.org/history/-/history-2.0.0.tgz",
           "dependencies": {
             "deep-equal": {

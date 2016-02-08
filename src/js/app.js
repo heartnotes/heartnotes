@@ -44,7 +44,6 @@ var App = connectRedux(['init'])(
     getChildContext: function() {
       return {
         logger: Logger,
-        router: this.props.history,
         routeParams: this.props.params,
         location: this.props.location,
       };
