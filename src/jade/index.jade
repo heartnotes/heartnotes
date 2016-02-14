@@ -14,6 +14,18 @@ html
 
   body
     main
+      #layout
+        #content-wrapper
+          #welcome-content
+            .welcomeView
+              .logo
+                span heart
+                span.img
+                span notes
+              .content
+                .splash
+                  span.loading
+                    i.icon-widget.fa.fa-spin.fa-cog
     // we include worker scripts here just so that electron packer includes them in release
     script(src="./js/worker-sjcl.js", type="text/javascript", defer, async)
     script(src="./js/worker-search.js", type="text/javascript", defer, async)
