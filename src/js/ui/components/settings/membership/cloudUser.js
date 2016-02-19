@@ -26,6 +26,8 @@ var Component = React.createClass({
 
     subscriptionType += ' - ' + (subscriptionActive ? 'ACTIVE' : 'INACTIVE');
 
+    let title = 'Cloud sync';
+
     if (!subscriptionActive) {
       title = (
         <span>
@@ -68,6 +70,11 @@ var Component = React.createClass({
     );
   },
 
+
+  _showRenewalScreen: function() {
+    this.refs.renewal.show();
+  },
+  
 });
 
 
