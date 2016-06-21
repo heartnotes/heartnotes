@@ -173,7 +173,7 @@ export default class Auth {
 
         return this._saveNewCredentials({
           username: username,
-          key: this.authKey,
+          password: this.authKey,
           meta: this.meta,
         });
       })
@@ -217,9 +217,9 @@ export default class Auth {
           .then((encKeyBundle) => {
             let newMeta = this._buildMeta(encKeyBundle, derivedKeyData);
 
-            return Api.post('updatePassword', {}, {
+            return Api.post('updatePasswordMeta', {}, {
               username: this._id,
-              key: authKey,
+              password: authKey,
               meta: newMeta,
             })
               .then(() => {
@@ -393,7 +393,7 @@ export default class Auth {
   /** 
    * @return {Promise}
    */
-  enterPassword(password) {
+  enterPassword (password) {
     Dispatcher.enterPassword('start');
 
     let meta = this._originalMeta;
@@ -466,7 +466,7 @@ export default class Auth {
 
     return Api.post('login', {}, {
       username: username,
-      key: this.authKey,
+      password: this.authKey,
     })
       .then((res) => {
         let accountData = res.account;

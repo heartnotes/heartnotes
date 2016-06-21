@@ -67,10 +67,7 @@ export function closeDiary() {
   return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;
 
-    diaryMgr.destroy()
-      .then(() => {
-        Dispatcher.closeDiary();
-      });
+    return diaryMgr.close();
   }
 }
 
@@ -78,19 +75,7 @@ export function closeDiary() {
 
 export function openDiary(type, username, password) {
   return function(dispatch) {
-    Dispatcher.openDiary('start');
-
     return Diary.open(type, username, password)
-      .then((diaryMgr) =>  {
-        Dispatcher.openDiary('result', diaryMgr);
-      })
-      .catch((err) => {
-        Logger.error(err);
-
-        Dispatcher.openDiary('error', err);
-
-        throw err;
-      });
   }
 }
 
@@ -109,27 +94,7 @@ export function enableCloudSync(id, password) {
 
 export function createDiary(type, id, password) {
   return function(dispatch) {
-    Dispatcher.createDiary('start', {
-      id: id
-    });
-
-    return Diary.createNew(type, id, password)
-      .then((diaryMgr) => {
-        if (!diaryMgr) {
-          throw new Error('Sorry, there was an unexpected error.');
-        }
-
-        Dispatcher.createDiary('result', diaryMgr);
-
-        Dispatcher.alertUser('Diary created!');
-      })
-      .catch((err) => {
-        Logger.error(err);
-
-        Dispatcher.createDiary('error', err);
-
-        throw err;
-      });
+    return Diary.createNew(type, id, password);
   };
 }
 
@@ -179,10 +144,7 @@ export function changePassword (oldPassword, newPassword) {
   return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;
 
-    return diaryMgr.changePassword(oldPassword, newPassword)
-      .then(() => {
-        Dispatcher.alertUser('Password changed!');
-      });
+    return diaryMgr.changePassword(oldPassword, newPassword);
   }
 }
 
@@ -192,10 +154,7 @@ export function exportData() {
   return function(dispatch, getState) {
     let diaryMgr = getState().diary.diaryMgr;
 
-    return diaryMgr.exportToFile()
-      .then(() => {
-        Dispatcher.alertUser('Diary exported!');
-      });
+    return diaryMgr.exportToFile();
   }
 }
 

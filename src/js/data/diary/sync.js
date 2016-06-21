@@ -49,7 +49,7 @@ export default class Sync {
         return;
       }
 
-      if (!this.diary._auth.authenticatedWithServer) {
+      if (!this.diary.auth.authenticatedWithServer) {
         this.logger.info('Not logged-in. Skipping.')
 
         return this._setupNextTick();
@@ -139,8 +139,15 @@ export default class Sync {
           if (_.get(err, 'details.accountData')) {
             this.diary.auth.updateAccountData(err.details.accountData);
           } else {
+            // network down
             if (0 === err.statusCode) {
               Dispatcher.sync('error', 'Sync error, network connection may be down.');
+            }
+            // logged-out
+            else if (403 === err.statusCode 
+              && 0 <= err.message.toLowerCase().indexOf('please login')) 
+            {
+              return this.diary.close();
             }
           }
         })

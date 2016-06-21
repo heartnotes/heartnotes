@@ -1,7 +1,6 @@
 "use strict";
 
 import _ from 'lodash';
-import Logger from '../../utils/logger';
 import Q from 'bluebird';
 import moment from 'moment';
 import React from 'react';
@@ -13,13 +12,15 @@ import { instance as Crypto } from '../crypto/index';
 import { instance as Search } from '../search/index';
 import { instance as Storage } from '../storage/index';
 import { instance as Dispatcher } from '../dispatcher';
-import Api from '../api/index';
 import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/exportedEntries';
 import * as DateUtils from '../../utils/date';
 import * as StringUtils from '../../utils/string';
 import Decryptor from './decryptor';
 import Sync from './sync';
+
+
+const Logger = require('../../utils/logger').create('Diary');
 
 
 /**
@@ -34,18 +35,21 @@ export default class Diary {
     this._encryptedEntries = {};
     this._entries = {};
 
-    this.logger = Logger.create(`diary-${this._id}`);
+    this.logger = Logger.create(this._id);
 
     this.decryptor = new Decryptor(this.logger, auth);
   }
 
 
-  destroy () {
+  close () {
     return Q.try(() => {
       this._stopSync();
     })
       .then(() => {
         return this._auth.logout();
+      })
+      .then(() => {
+        Dispatcher.closeDiary();
       });
   }
 
@@ -238,7 +242,10 @@ export default class Diary {
    * @return {Promise}
    */
   changePassword (oldPassword, newPassword) {
-    return this._auth.changePassword(oldPassword, newPassword);
+    return this._auth.changePassword(oldPassword, newPassword)
+      .then(() => {
+        Dispatcher.alertUser('Password changed!');
+      });
   }
 
 
@@ -262,6 +269,9 @@ export default class Diary {
         Dispatcher.exportToFile('result', {
           filePath: filePath
         });
+      })
+      .then(() => {
+        Dispatcher.alertUser('Diary exported!');
       })
       .catch(function(err) {
         this.logger.error(err);
@@ -657,22 +667,55 @@ Diary._new = function(id, auth) {
 
 
 Diary.createNew = function(type, id, password) {
+  Dispatcher.createDiary('start', {
+    id: id
+  });
+
   let auth = new Auth(type);
 
   return auth.signUp(id, password)
     .then(() => {
       return Diary._new(id, auth);
+    })
+    .then((diaryMgr) => {
+      if (!diaryMgr) {
+        throw new Error('Sorry, there was an unexpected error.');
+      }
+
+      Dispatcher.createDiary('result', diaryMgr);
+
+      Dispatcher.alertUser('Diary created!');
+    })
+    .catch((err) => {
+      Logger.error(err);
+
+      Dispatcher.createDiary('error', err);
+
+      throw err;
     });
+
 };
 
 
 
 Diary.open = function(type, id, password) {
+  Dispatcher.openDiary('start');
+
   let auth = new Auth(type);
 
   return auth.login(id, password)
     .then(() => {
       return Diary._new(id, auth);
+    })
+    .then((diaryMgr) =>  {
+      Dispatcher.openDiary('result', diaryMgr);
+    })
+    .catch((err) => {
+      Logger.error(err);
+
+      Dispatcher.openDiary('error', err);
+
+      throw err;
     });
 };
 

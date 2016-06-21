@@ -54,12 +54,12 @@ The next time the user enters the right password, we:
 
 ## Development
 
-**Node.js 0.12+ required.**
+**Node.js 4.4.5+ required.**
 
 Setup:
 
 ```bash
-$ npm install -g electron-prebuilt@0.34.3
+$ npm install -g electron-prebuilt@1.2.2
 $ npm install
 ```
 

@@ -26,8 +26,8 @@ import WelcomeLoadDiary from './ui/pages/welcome/loadDiary';
 import { connectRedux } from './ui/helpers/decorators';
 
 
-// API fixtures
-if (Detect.inDevMode()) {  
+// Dev mode initialization
+if (Detect.inDevMode()) { 
   // require('./data/api/fixtures');
 }
 

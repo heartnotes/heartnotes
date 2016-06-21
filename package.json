@@ -87,5 +87,8 @@
     "ipc": "global:ipc",
     "fs": "global:fs",
     "shell": "global:shell"
+  },
+  "devDependencies": {
+    "alloyeditor": "^1.2.2"
   }
 }

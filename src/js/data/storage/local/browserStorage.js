@@ -2,6 +2,7 @@
 
 import Q from 'bluebird';
 import StringUtils from '../../../utils/string';
+import Detect from '../../../utils/detect';
 
 
 

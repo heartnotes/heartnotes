@@ -111,29 +111,49 @@ export class Api {
         } else {
           this.logger.debug('Server call');
 
-          return Q.cast($.ajax({
-            url: `${this.options.baseUrl}/${remoteMethodName}` + (query.length ? `?${query}` : ''),
-            cache: false,
-            sync: false,
-            timeout: options.timeout,
-            method: httpMethod,
-            data: body,
-            xhrFields: {
-              withCredentials: true,
-            },
-          }));
+          let headers = {};
+
+          // add in auth token
+          if (this._authToken) {
+            headers['Authorization'] = `Bearer ${this._authToken}`;
+          }
+
+          return new Q((resolve, reject) => {
+            $.ajax({
+              url: `${this.options.baseUrl}/${remoteMethodName}` + (query.length ? `?${query}` : ''),
+              cache: false,
+              sync: false,
+              timeout: options.timeout,
+              method: httpMethod,
+              data: body,
+              headers: headers,
+              success: (data, textStatus, xhr) => {
+                // save auth token for next API call
+                let token = xhr.getResponseHeader('X-Authorization');
+
+                if (token && token.length && this._authToken !== token) {
+                  this._authToken = token;
+
+                  this.logger.debug(`New auth token: ${this._authToken}`);
+                }
+
+                resolve(data);
+              },
+              error: reject,
+            });            
+          });
         }
       })
-      .then((data) => {
+      .then((data, a, b) => {
         this.logger.info(`Got response from ${remoteMethodName}`);
         this.logger.debug(data);
 
         return data;
       })
-      .catch((response) => {
-        this.logger.error(`Got error from ${remoteMethodName}`, response);
+      .catch((xhr) => {
+        this.logger.error(`Got error from ${remoteMethodName}`, xhr.status);
 
-        var json = response.responseJSON, 
+        var json = xhr.responseJSON, 
           err;
 
         if (_.get(json, 'type')) {
@@ -141,16 +161,16 @@ export class Api {
           err.type = json.type;
           err.details = json.details;
         } else {
-          let errMsg = response.responseText || response.statusText;
+          let errMsg = xhr.responseText || xhr.statusText;
 
-          if (0 === response.status) {
+          if (0 === xhr.status) {
             errMsg = 'Could not connect to server';
           }
 
           if (!errMsg) {
             errMsg = 'Sorry, an unexpected error occurred.';
 
-            if ('timeout' === response.statusText) {
+            if ('timeout' === xhr.statusText) {
               errMsg = 'Sorry, the request timed out.';
             }
 
@@ -160,12 +180,11 @@ export class Api {
           err = new Error(errMsg);
         }
 
-        err.statusCode = response.status;
+        err.statusCode = xhr.status;
 
         throw err;
       });
   }
-
 
 }
 
