@@ -119,12 +119,12 @@ var Component = React.createClass({
               buttons: ['linkEdit'],
               test: AlloyEditor.SelectionTest.link,
             },
-            {
-              name: 'image',
-              buttons: ['imageLeft', 'imageCenter', 'imageRight'],
-              setPosition: AlloyEditor.SelectionSetPosition.image,
-              test: AlloyEditor.SelectionTest.image
-            },
+            // {
+            //   name: 'image',
+            //   buttons: ['imageLeft', 'imageCenter', 'imageRight'],
+            //   setPosition: AlloyEditor.SelectionSetPosition.image,
+            //   test: AlloyEditor.SelectionTest.image
+            // },
           ]
         },
         // add: {
@@ -139,9 +139,9 @@ var Component = React.createClass({
     //   console.log(this._editor.nativeEditor.document.$.characterSet);
     //   console.log(this._editor.nativeEditor.document.$.charset);
     // });
-
+    
     // save content only every second
-    this._editor._editor.on('change', _.debounce(() => {
+    this._editor.get('nativeEditor').on('change', _.debounce(() => {
       let entry = this._getActiveEntry();
 
       this.props.actions.updateEntry(
