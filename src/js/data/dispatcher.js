@@ -535,7 +535,7 @@ export class Dispatcher {
       case 'result':
         return this._do(Actions.PAY_RESULT, data);
       case 'error':
-        return this._do(Actions.PAY_ERROR, data);
+        this._do(Actions.PAY_ERROR, data);
 
         return this._setTimeout('pay', () => {
           this._do(Actions.PAY_RESET);          

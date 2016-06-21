@@ -47,7 +47,6 @@ export default class ElectronDiskBackup {
   }
 
 
-
   selectExistingBackupFile () {
     this.logger.debug('choose backup file');
 

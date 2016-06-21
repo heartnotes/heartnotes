@@ -3,6 +3,7 @@ import Q from 'bluebird';
 import moment from 'moment';
 
 import * as Detect from '../../utils/detect';
+import { instance as Crypto } from '../crypto/index';
 import { instance as Dispatcher } from '../dispatcher';
 import { UnreachableError, instance as Api } from '../api/index';
 
@@ -14,7 +15,6 @@ export default class Sync {
     this._delay = options.delayMs || 10000;
     this._onTick = _.bind(this._onTick, this);
     this._started = false;
-    this._updatedFromSync = {};
   }
 
 
@@ -28,15 +28,6 @@ export default class Sync {
     window.clearTimeout(this._tickTimeout);
   }
 
-
-  didEntryGetUpdatedInLastSync (entryId) {
-    return !!this._updatedFromSync[entryId];
-  }
-
-
-  removeEntryLastSyncUpdatedIndicator (entryId) {
-    delete this._updatedFromSync[entryId];
-  }
 
   _setupNextTick () {
     this._tickTimeout = window.setTimeout(this._onTick, this._delay);
@@ -64,31 +55,39 @@ export default class Sync {
       /*
       Last sync time:
        */
-      let lastSyncTime = parseInt(
+      const lastSyncTime = parseInt(
         _.get(this.diary._settings, 'lastSyncTime', 0)
       );
+
+      const thisSyncTime = moment().valueOf();
 
       this.logger.debug('Last timestamp: ' + moment(lastSyncTime).toString());
 
       let entriesToSend = {};
 
-      let entryUpdateTs = _.each(this.diary._entries, (e, id) => {
-        if (e.up > lastSyncTime) {
-          entriesToSend[id] = {
-            up: e.up,
-            data: this.diary._encryptedEntries[id],
-          };
-        }
-      });
+      Dispatcher.sync('progress', 'Encrypting data to send...');
 
-      this._updatedFromSync = {};
+      _.reduce(this.diary._entries, (p, e, id) => {
+        return p.then(() => {
+          if (e.lastUpdated > lastSyncTime) {
+            return Crypto.encrypt(this.diary.auth.encryptionKey, e)
+              .then((enc) => {
+                entriesToSend[id] = {
+                  lastUpdated: e.lastUpdated,
+                  data: enc,                
+                };
+              });
+          }
+        });
+      }, Q.resolve())
+        .then(() => {
+          Dispatcher.sync('progress', 'Sending data...');
 
-      Dispatcher.sync('progress', 'Sending data...');
-
-      Api.post('sync', {}, {
-        lastSyncTime: lastSyncTime,
-        entries: entriesToSend,
-      })        
+          return Api.post('sync', {}, {
+            lastSyncTime: lastSyncTime,
+            entries: entriesToSend,
+          });           
+        })
         .then((res) => {
           let serverEncryptedEntries = _.get(res, 'entries', {});
 
@@ -97,17 +96,21 @@ export default class Sync {
           Dispatcher.sync('progress', 'Receiving data...');
 
           if (!_.isEmpty(serverEncryptedEntries)) {
-            return this.diary.decryptor.decrypt(serverEncryptedEntries)
-              .then((serverDecryptedEntries) => {
-                _.each(serverDecryptedEntries, (e, id) => {
-                  // check to make sure we haven't got a newer entry
-                  if (_.get(this.diary._entries, `${id}.up`, 0) < e.up) {
-                    this._updatedFromSync[id] = true;
-                    this.diary._entries[id] = e;
-                    this.diary._encryptedEntries[id] = serverEncryptedEntries[id];
-                  }
-                });
+            return _.reduce(serverEncryptedEntries, (p, e, id) => {
+              let { data, lastUpdated } = e; 
+
+              return p.then(() => {
+                // only decrypt and overwrite if newer than local version of the entry
+                if (_.get(this.diary._entries, `${id}.lastUpdated`, 0) < lastUpdated) {
+                  return Crypto.decrypt(this.diary.auth.encryptionKey, data)
+                    .then((decEntry) => {
+                      decEntry.id = id;
+
+                      this.diary._entries[id] = decEntry;
+                    });
+                }                
               });
+            }, Q.resolve());
           }
         })
         .then(() => {
@@ -115,12 +118,12 @@ export default class Sync {
 
           this.logger.debug('Saving entries locally...');
 
-          return this.diary._saveEncryptedEntries();
+          return this.diary._saveEntriesToStorage(this.diary._entries);
         })
         .then(() => {
           this.logger.debug('Updating timestamp...');
 
-          this.diary._settings.lastSyncTime = Date.now();
+          this.diary._settings.lastSyncTime = thisSyncTime;
 
           return this.diary._saveSettings();
         })

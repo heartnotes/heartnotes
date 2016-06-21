@@ -16,7 +16,6 @@ import Auth from '../auth/index';
 import ExportedEntries from '../../ui/components/exportedEntries';
 import * as DateUtils from '../../utils/date';
 import * as StringUtils from '../../utils/string';
-import Decryptor from './decryptor';
 import Sync from './sync';
 
 
@@ -32,12 +31,9 @@ export default class Diary {
     this._id = id;
     this._auth = auth;
 
-    this._encryptedEntries = {};
     this._entries = {};
 
     this.logger = Logger.create(this._id);
-
-    this.decryptor = new Decryptor(this.logger, auth);
   }
 
 
@@ -73,21 +69,19 @@ export default class Diary {
         Dispatcher.enableCloudSync('progress', 'Re-encrypting entries');
 
         return Q.props(_.mapValues(this.entries, (entry) => {
-          return Crypto.encrypt(auth.encryptionKey, {
-            body: entry.body,
-            ts: entry.ts,
-            up: entry.up,
-          });
+          return Crypto.encrypt(
+            auth.encryptionKey, 
+            _.pick(entry, 'body', 'ts', 'lastUpdated')
+          );
         }));
       })
       .then((encryptedEntries) => {
         this._id = id;
         this._auth = auth;
-        this._encryptedEntries = encryptedEntries;
 
         Dispatcher.enableCloudSync('progress', 'Saving diary');
 
-        return this._saveEncryptedEntries();
+        return this._saveEntriesToStorage(this._entries);
       })
       .then(() => {
         // remove from local storage
@@ -139,24 +133,17 @@ export default class Diary {
 
     this._entries = {};
 
-    return this._loadEncryptedEntries()
-      .then((encryptedEntries) => {
-        this._encryptedEntries = encryptedEntries || {};
+    return this._loadEntriesFromStorage()
+      .then((decryptedEntries) => {
+          this.logger.debug('loaded entries');
 
-        return this.decryptor.decryptEntriesLoadedFromStorage(this._encryptedEntries);
-      })
-      .then((result) => {
-        this.logger.debug('loaded entries');
-
-        this._encryptedEntries = result.encryptedEntries;
-        this._entries = result.entries;
-
-        return this._saveEncryptedEntries();
+          this._entries = decryptedEntries;
+        
+          Dispatcher.loadEntries('result');
       })
       .then(() => {
-        Dispatcher.loadEntries('result');
-
         this._startSync();
+
         this._rebuildSearchIndex();
       })
       .catch((err) => {
@@ -174,28 +161,29 @@ export default class Diary {
   updateEntry (id, ts, content) {
     Dispatcher.updateEntry('start');
 
-    let entry = this.getEntryById(id);
+    let _entry = this.getEntryById(id);
 
     return Q.try(() => {
-      if (!entry) {
+      if (!_entry) {
         return this.getOrCreateEntryForDate(ts);
       } else {
-        return entry;
+        return _entry;
       }
     })
       .then((entry) => {
         this.logger.debug('update entry');
 
         entry.body = content;
-        entry.up = moment().valueOf();
+        entry.lastUpdated = moment().valueOf();
+
         this._entries[entry.id] = entry;
 
-        return this._saveEntry(entry);
-      })
-      .then((entry) => {
-        Dispatcher.updateEntry('result');
+        return this._saveEntriesToStorage(this._entries)
+          .then(() => {
+            Dispatcher.updateEntry('result');
 
-        return this._addToSearchIndex(entry);
+            return this._addToSearchIndex(entry);
+          });
       })
       .catch((err) => {
         this.logger.error(err);
@@ -219,9 +207,8 @@ export default class Diary {
     Dispatcher.deleteEntry('start');
 
     delete this._entries[id];
-    delete this._encryptedEntries[id];
 
-    return this._saveEncryptedEntries()
+    return this._saveEntriesToStorage(this._entries)
       .then(() => {
         Dispatcher.deleteEntry('result');
       })
@@ -363,19 +350,11 @@ export default class Diary {
 
             this._entries = entries;
 
-            return this.decryptor.encrypt(this._entries, {
-              setUpdatedTo: Date.now(),
-              onEach: (encryptedEntry) => {
-                Dispatcher.restore('progress', `Restoring...(${++done}/${total})`);
-
-                return encryptedEntry; 
-              }
+            _.each(this._entries, (e) => {
+              e.lastUpdated = Date.now();
             });
-          })
-          .then((encryptedEntries) => {
-            this._encryptedEntries = encryptedEntries;
 
-            return this._saveEncryptedEntries();
+            return this._saveEntriesToStorage(this._entries);
           })
           .then(() => {
             Dispatcher.alertUser('Restore successful');
@@ -390,69 +369,6 @@ export default class Diary {
         this.logger.error(err);
 
         Dispatcher.restore('error', err);
-
-        throw err;
-      });
-  }
-
-
-  selectOldDiaryFile () {
-    return Storage.backup.selectExistingBackupFile();
-  }
-
-
-  restoreFromOldDiaryFile (filePath, password) {
-    Dispatcher.restoreFromOldDiary('start');
-
-    // load
-    return Storage.backup.loadBackup(filePath)
-      .then((raw) => {
-        let auth = new Auth(this._auth.type, raw.meta);
-
-        let decryptor = new Decryptor(
-          this.logger.create('restore_from_old_diary'), 
-          auth
-        );
-
-        Dispatcher.restoreFromOldDiary('progress', 'Checking password...');
-
-        return auth.enterPassword(password)
-          .then(() => {
-            Dispatcher.restoreFromOldDiary('progress', 'Decrypting...');
-
-            let done = 0;
-
-            return decryptor.decryptEntriesLoadedFromStorage(raw.entries, {
-              shouldReEncrypt: true,
-              reEncryptOptions: {
-                auth: this._auth,
-                setUpdatedTo: Date.now(),
-                onEach: (encryptedEntry) => {
-                  Dispatcher.restoreFromOldDiary('progress', `Restoring...${++done}`);
-
-                  return encryptedEntry; 
-                },
-              },
-            });
-          })
-          .then((data) => {
-            this._entries = data.entries;
-            this._encryptedEntries = data.encryptedEntries;
-
-            return this._saveEncryptedEntries();
-          })
-          .then(() => {
-            Dispatcher.alertUser('Restore successful');
-
-            Dispatcher.restoreFromOldDiary('result');
-
-            this._rebuildSearchIndex();
-          });
-      })
-      .catch((err) => {
-        this.logger.error(err);
-
-        Dispatcher.restoreFromOldDiary('error', err);
 
         throw err;
       });
@@ -484,16 +400,6 @@ export default class Diary {
   }
 
 
-  didEntryGetUpdatedInLastSync (id) {
-    return this._sync.didEntryGetUpdatedInLastSync(id);
-  }
-
-
-  removeEntryLastSyncUpdatedIndicator (id) {
-    return this._sync.removeEntryLastSyncUpdatedIndicator(id);
-  }
-
-
   /**
    * @return {Promise}
    */
@@ -515,7 +421,8 @@ export default class Diary {
 
       entry = {
         id: StringUtils.generateEntryId(ts),
-        ts: ts,        
+        ts: ts,  
+        lastUpdated: moment().valueOf(),
       };
 
       this._entries[entry.id] = entry;
@@ -557,36 +464,43 @@ export default class Diary {
   }
 
 
-  _loadEncryptedEntries () {
-    return Storage.local.loadEntries(this._id) || {};
+  _loadEntriesFromStorage () {
+    Dispatcher.decryptEntries('start');
+
+    let enc = Storage.local.loadEntries(this._id) || '';
+
+    if (!enc.length) {
+      return Q.resolve({});
+    }
+
+    Dispatcher.decryptEntries('progress', 'Decrypting entries...');
+
+    return Crypto.decrypt(this._auth.encryptionKey, enc)
+      .catch((err) => {
+        this.logger.error(err);
+
+        Dispatcher.decryptEntries(
+          'error', 
+          new Error('There was an error decrypting stored diary entries.')
+        );
+
+        throw err;
+      }); 
   }
 
 
-  _saveEncryptedEntries () {
-    return Storage.local.saveEntries(this._id, this._encryptedEntries);
+  _saveEntriesToStorage (entries) {
+    return Crypto.encrypt(this._auth.encryptionKey, entries)
+      .then((enc) => {
+        return Storage.local.saveEntries(this._id, enc);
+      })
   }
+
+
 
 
   _saveSettings () {
     return Storage.local.saveSettings(this._id, this._settings);
-  }
-
-
-  /**
-   * @return {Promise}
-   */
-  _saveEntry (entry) {
-    this.logger.debug('save entry', entry.id);
-
-    return Crypto.encrypt(this._auth.encryptionKey, entry)
-      .then((encryptedEntry) => {
-        this._encryptedEntries[entry.id] = encryptedEntry;
-
-        return this._saveEncryptedEntries();
-      })
-      .then(() => {
-        return entry;
-      });
   }
 
 

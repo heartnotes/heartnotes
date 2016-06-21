@@ -166,11 +166,7 @@ var Component = React.createClass({
     var oldIsReady = !!this.props.data.entries,
       newIsReady = !!newProps.data.entries;
 
-    // Disable for now until we resolve https://github.com/heartnotes/heartnotes/issues/54
-    let updatedViaSync = false;//diaryMgr.didEntryGetUpdatedInLastSync(oldId);
-
     return (
-      updatedViaSync || 
       newId !== oldId || 
       oldDate !== newDate || 
       (newIsReady && !oldIsReady)
@@ -196,15 +192,8 @@ var Component = React.createClass({
     var newId = this.props.entryId || -1,
       oldId = oldProps.entryId || -1;
 
-    // Disable for now until we resolve https://github.com/heartnotes/heartnotes/issues/54
-    let updatedViaSync = false;//diaryMgr.didEntryGetUpdatedInLastSync(newId);
-
-    if (updatedViaSync || newId !== oldId) {
+    if (newId !== oldId) {
       this._setBody();
-
-      if (updatedViaSync) {
-        diaryMgr.removeEntryLastSyncUpdatedIndicator(newId);
-      }
     }
   },
 
