@@ -79,7 +79,7 @@ var Component = React.createClass({
             <ProgressButton {...buttonAttrs}>{this.props.createButtonText}</ProgressButton>
           </div>
         </form>
-        <UserShouldRememberPasswordDialog ref="rememberDialog" />
+        <UserShouldRememberPasswordDialog password={this.state.password} ref="rememberDialog" />
       </div>
     );
   },

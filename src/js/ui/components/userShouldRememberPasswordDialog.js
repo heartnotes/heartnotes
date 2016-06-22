@@ -5,6 +5,10 @@ var AskUserDialog = require('./askUserDialog');
 
 
 module.exports = React.createClass({
+  propType: {
+    password: React.PropTypes.string,
+  },
+
   render: function() {
     return (
       <AskUserDialog

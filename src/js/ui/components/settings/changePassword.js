@@ -63,7 +63,7 @@ var Component = React.createClass({
             <ProgressButton {...changePasswordButtonAttrs}>Save new password</ProgressButton>
           </div>
         </form>
-        <UserShouldRememberPasswordDialog ref="rememberDialog" />
+        <UserShouldRememberPasswordDialog password={this.state.newPassword} ref="rememberDialog" />
       </div>
     );
   },
