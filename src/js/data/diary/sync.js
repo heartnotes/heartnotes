@@ -67,13 +67,15 @@ export default class Sync {
 
       Dispatcher.sync('progress', 'Encrypting data to send...');
 
-      console.log(this.diary.filteredEntries);
-      _.reduce(this.diary.filteredEntries, (p, e, id) => {
+      _.reduce(this.diary.confirmedEntries, (p, e, id) => {
         return p.then(() => {
           if (e.lastUpdated > lastSyncTime) {
+            if (!id) {
+              alert(e);
+            }
             return Crypto.encrypt(this.diary.auth.encryptionKey, e)
               .then((enc) => {
-                entriesToSend[id] = {
+                entriesToSend[e.id] = {
                   lastUpdated: e.lastUpdated,
                   data: enc,                
                 };
@@ -104,7 +106,7 @@ export default class Sync {
 
               return p.then(() => {
                 // only decrypt and overwrite if newer than local version of the entry
-                if (_.get(this.diary.filteredEntries, `${id}.lastUpdated`, 0) < lastUpdated) {
+                if (_.get(this.diary.confirmedEntries, `${id}.lastUpdated`, 0) < lastUpdated) {
                   return Crypto.decrypt(this.diary.auth.encryptionKey, data)
                     .then((decEntry) => {
                       numEntriesUpdated++;
@@ -128,7 +130,7 @@ export default class Sync {
             this.logger.debug('Saving locally...');
 
             return Q.all([
-              this.diary._saveEntriesToStorage(this.diary.filteredEntries),
+              this.diary._saveEntriesToStorage(this.diary.confirmedEntries),
               this.diary._rebuildSearchIndex(),
             ]);
           }
