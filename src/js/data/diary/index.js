@@ -431,7 +431,7 @@ export default class Diary {
       this.logger.debug('create entry', ts);
 
       entry = {
-        id: StringUtils.generateEntryId(ts),
+        id: StringUtils.generateEntryId(),
         ts: ts,  
         lastUpdated: null,
       };
@@ -480,7 +480,7 @@ export default class Diary {
 
     return Storage.local.loadEntries(this._id)
       .then((enc) => {
-        if (!enc.length) {
+        if (!_.get(enc, 'length')) {
           return {};
         } else {
           Dispatcher.decryptEntries('progress', 'Decrypting entries...');
@@ -557,8 +557,6 @@ export default class Diary {
 
 
   _startSync () {
-    return;
-    
     if (this._sync) {
       return;
     }

@@ -1,3 +1,4 @@
+import uuid from 'node-uuid';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -27,8 +28,8 @@ exports.formatDiaryName = function(name) {
 
 
 
-exports.generateEntryId = function(ts) {
-  return moment(ts).valueOf() + '' + Math.random();
+exports.generateEntryId = function() {
+  return uuid.v4();
 };
 
 

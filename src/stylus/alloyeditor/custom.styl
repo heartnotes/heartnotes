@@ -1,0 +1,35 @@
+/**
+ Alloy Editor Moono theme customizations
+ */
+ 
+.ae-toolbars > .ae-toolbar-styles
+  z-index 3
+
+.ae-ui button:focus 
+  outline 0
+
+.ae-ui .ae-toolbar, .ae-ui [class^=ae-toolbar-]
+  background-color $black
+  border-radius 10px
+  
+
+.ae-ui .ae-toolbar .ae-button.ae-button-pressed, .ae-ui .ae-toolbar .ae-toolbar-element.ae-button-pressed, .ae-ui [class^=ae-toolbar-] .ae-button.ae-button-pressed, .ae-ui [class^=ae-toolbar-] .ae-toolbar-element.ae-button-pressed
+  background-color $gray-darker
+
+
+.ae-ui .ae-toolbar .ae-button:hover, .ae-ui .ae-toolbar .ae-toolbar-element:hover, .ae-ui [class^=ae-toolbar-] .ae-button:hover, .ae-ui [class^=ae-toolbar-] .ae-toolbar-element:hover
+.ae-ui .ae-toolbar .ae-button.ae-button-pressed:hover, .ae-ui .ae-toolbar .ae-toolbar-element.ae-button-pressed:hover, .ae-ui [class^=ae-toolbar-] .ae-button.ae-button-pressed:hover, .ae-ui [class^=ae-toolbar-] .ae-toolbar-element.ae-button-pressed:hover
+  color $red-light
+
+.ae-ui .ae-dropdown .ae-listbox .ae-toolbar-element:hover, .ae-ui [class^=ae-dropdown-] .ae-listbox .ae-toolbar-element:hover
+  background-color $gray-light
+  outline 1px solid $red-light
+  border-radius 0px
+  color $black
+  
+.ae-ui .ae-dropdown, .ae-ui [class^=ae-dropdown-]
+  background-color $white
+  border 1px solid $gray-darkest
+  border-radius 5px
+  box-shadow 0 2px 4px 0 $gray-darker
+  color $gray-darkest

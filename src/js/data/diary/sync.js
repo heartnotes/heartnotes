@@ -67,6 +67,7 @@ export default class Sync {
 
       Dispatcher.sync('progress', 'Encrypting data to send...');
 
+      console.log(this.diary.filteredEntries);
       _.reduce(this.diary.filteredEntries, (p, e, id) => {
         return p.then(() => {
           if (e.lastUpdated > lastSyncTime) {

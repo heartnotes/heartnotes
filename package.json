@@ -89,6 +89,7 @@
     "shell": "global:shell"
   },
   "devDependencies": {
-    "alloyeditor": "^1.2.2"
+    "alloyeditor": "^1.2.2",
+    "node-uuid": "^1.4.7"
   }
 }
