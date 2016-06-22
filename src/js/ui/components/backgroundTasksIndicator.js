@@ -25,9 +25,11 @@ var Component = React.createClass({
       if (!this._showTimer) {
         // show indicator after a short delay
         this._showTimer = setTimeout(() => {
-          this.setState({
-            show: true
-          });        
+          if (this.isMounted()) {
+            this.setState({
+              show: true
+            });                    
+          }
         }, 10000);        
       }
     }
