@@ -67,7 +67,7 @@ export default class Sync {
 
       Dispatcher.sync('progress', 'Encrypting data to send...');
 
-      _.reduce(this.diary._entries, (p, e, id) => {
+      _.reduce(this.diary.filteredEntries, (p, e, id) => {
         return p.then(() => {
           if (e.lastUpdated > lastSyncTime) {
             return Crypto.encrypt(this.diary.auth.encryptionKey, e)
@@ -95,37 +95,42 @@ export default class Sync {
 
           Dispatcher.sync('progress', 'Receiving data...');
 
+          let numEntriesUpdated = 0;
+
           if (!_.isEmpty(serverEncryptedEntries)) {
             return _.reduce(serverEncryptedEntries, (p, e, id) => {
               let { data, lastUpdated } = e; 
 
               return p.then(() => {
                 // only decrypt and overwrite if newer than local version of the entry
-                if (_.get(this.diary._entries, `${id}.lastUpdated`, 0) < lastUpdated) {
+                if (_.get(this.diary.filteredEntries, `${id}.lastUpdated`, 0) < lastUpdated) {
                   return Crypto.decrypt(this.diary.auth.encryptionKey, data)
                     .then((decEntry) => {
+                      numEntriesUpdated++;
+
                       decEntry.id = id;
 
-                      this.diary._entries[id] = decEntry;
+                      this.diary._setEntry(id, decEntry);
                     });
                 }                
               });
-            }, Q.resolve());
+            }, Q.resolve())
+              .then(() => {
+                return numEntriesUpdated;
+              });
           }
         })
-        .then(() => {
-          Dispatcher.sync('progress', 'Saving data...');
+        .then((numEntriesUpdated) => {
+          if (numEntriesUpdated) {
+            Dispatcher.sync('progress', 'Saving new data...');
 
-          this.logger.debug('Saving entries locally...');
+            this.logger.debug('Saving locally...');
 
-          return this.diary._saveEntriesToStorage(this.diary._entries);
-        })
-        .then(() => {
-          this.logger.debug('Updating timestamp...');
-
-          this.diary._settings.lastSyncTime = thisSyncTime;
-
-          return this.diary._saveSettings();
+            return Q.all([
+              this.diary._saveEntriesToStorage(this.diary.filteredEntries),
+              this.diary._rebuildSearchIndex(),
+            ]);
+          }
         })
         .then(() => {
           const syncTimeTaken = (Date.now() - syncStartTime) / 1000.0;
@@ -133,6 +138,13 @@ export default class Sync {
           this.logger.info(`Ended (took ${syncTimeTaken} seconds`);
 
           Dispatcher.sync('stop');
+        })
+        .then(() => {
+          this.logger.debug('Updating timestamp...');
+
+          this.diary._settings.lastSyncTime = thisSyncTime;
+
+          return this.diary._saveSettings();
         })
         .catch((err) => {
           this.logger.error(err.stack);

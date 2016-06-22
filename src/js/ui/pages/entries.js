@@ -20,7 +20,7 @@ var Component = React.createClass({
   render: function() { 
     let { diary } = this.props.data;
 
-    let entries = diary.diaryMgr.entries;
+    let entries = diary.diaryMgr.filteredEntries;
 
     if (_.get(diary.searching.result, 'length')) {
       entries = _.map(diary.searching.result, (result) => {

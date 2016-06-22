@@ -19,46 +19,34 @@ export default class BrowserStorage {
   }
 
   saveSettings (diaryId, settings) {
-    this.set('last accessed', diaryId);
+    this._setLastAccessed(diaryId);
 
     return Q.resolve(this.set(`${diaryId} settings`, settings));
   }
 
 
   loadCredentials (diaryId) {
-    this.set('last accessed', diaryId);
+    this._setLastAccessed(diaryId);
 
     return Q.resolve(this.get(`${diaryId} credentials`));
   }
 
   saveCredentials (diaryId, data) {
-    this.set('last accessed', diaryId);
+    this._setLastAccessed(diaryId);
 
     return Q.resolve(this.set(`${diaryId} credentials`, data));
   }
 
   loadEntries (diaryId) {
-    this.set('last accessed', diaryId);
+    this._setLastAccessed(diaryId);
 
     return Q.resolve(this.get(`${diaryId} entries`));
   }
 
   saveEntries (diaryId, entries) {
-    this.set('last accessed', diaryId);
+    this._setLastAccessed(diaryId);
 
     return Q.resolve(this.set(`${diaryId} entries`, entries));
-  }
-
-  getLastAccessed () {
-    return this.get('last accessed');
-  }
-
-  getLocalDiaryId () {
-    return this.get('local diary id');
-  }
-
-  removeLocalDiary () {
-    return this.set('local diary id', null);
   }
 
   get (key) {
@@ -92,6 +80,18 @@ export default class BrowserStorage {
     }
   }
 
+
+  getLastAccessed () {
+    return this.get('last accessed');
+  }
+
+  getLocalDiaryId () {
+    return this.get('local diary id');
+  }
+
+  removeLocalDiary () {
+    return Q.resolve(this.set('local diary id', null));
+  }
 
   _setLastAccessed (diaryId) {
     let type = StringUtils.extractDiaryType(diaryId);

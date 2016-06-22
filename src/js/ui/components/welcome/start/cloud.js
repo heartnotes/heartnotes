@@ -8,7 +8,7 @@ import Popup from "../../popup";
 import PasswordInput from '../../passwordInput';
 import EmailInput from '../../emailInput';
 import { connectRedux, routing } from '../../../helpers/decorators';
-
+import * as StringUtils from '../../../../utils/string';
 
 
 var Component = React.createClass({
@@ -66,7 +66,7 @@ var Component = React.createClass({
   _getUsername: function() {
     let { lastAccessedDiary } = this.props.data.diary;
 
-    let { id, type } = (lastAccessedDiary || {});
+    let { type, id } = (lastAccessedDiary || {});
 
     return (null !== this.state.id) ? (
       this.state.id

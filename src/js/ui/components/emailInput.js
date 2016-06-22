@@ -27,7 +27,7 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      email: this.props.email,
+      email: null,
     };
   },
 
@@ -39,7 +39,7 @@ module.exports = React.createClass({
         <input type={inputType}
           ref="input"
           onChange={this._onChange} 
-          value={this.state.email || ''} 
+          value={this.state.email || this.props.email} 
           placeholder={this.props.placeholder}
           disabled={this.props.disabled}
           tabIndex={'' + this.props.tabIndex} />

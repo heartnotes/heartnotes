@@ -314,7 +314,7 @@ export default class Auth {
     } else {
       return Api.get('meta', {
         username: data.username,
-      })
+      });
     }
   }
 

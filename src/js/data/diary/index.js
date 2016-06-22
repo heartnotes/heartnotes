@@ -18,8 +18,10 @@ import * as DateUtils from '../../utils/date';
 import * as StringUtils from '../../utils/string';
 import Sync from './sync';
 
-
 const Logger = require('../../utils/logger').create('Diary');
+
+
+
 
 
 /**
@@ -68,7 +70,7 @@ export default class Diary {
       .then(() => {
         Dispatcher.enableCloudSync('progress', 'Re-encrypting entries');
 
-        return Q.props(_.mapValues(this.entries, (entry) => {
+        return Q.props(_.mapValues(this.filteredEntries, (entry) => {
           return Crypto.encrypt(
             auth.encryptionKey, 
             _.pick(entry, 'body', 'ts', 'lastUpdated')
@@ -81,12 +83,13 @@ export default class Diary {
 
         Dispatcher.enableCloudSync('progress', 'Saving diary');
 
-        return this._saveEntriesToStorage(this._entries);
+        return this._saveEntriesToStorage(this.filteredEntries);
       })
       .then(() => {
         // remove from local storage
-        Storage.local.removeLocalDiary(this._id);
-
+        return Storage.local.removeLocalDiary(this.id);
+      })
+      .then(() => {
         // start sync
         this._startSync();
 
@@ -135,7 +138,7 @@ export default class Diary {
 
     return this._loadEntriesFromStorage()
       .then((decryptedEntries) => {
-          this.logger.debug('loaded entries');
+          this.logger.debug(`loaded ${_.size(decryptedEntries)} entries`);
 
           this._entries = decryptedEntries;
         
@@ -153,6 +156,14 @@ export default class Diary {
       });
   }
 
+
+  /**
+   * For use by sync mechanism.
+   * @package
+   */
+  _setEntry (id, entryObj) {
+    this._entries[id] = entryObj;
+  }
 
 
   /**
@@ -176,9 +187,9 @@ export default class Diary {
         entry.body = content;
         entry.lastUpdated = moment().valueOf();
 
-        this._entries[entry.id] = entry;
+        this._entries[id] = entry;
 
-        return this._saveEntriesToStorage(this._entries)
+        return this._saveEntriesToStorage(this.filteredEntries)
           .then(() => {
             Dispatcher.updateEntry('result');
 
@@ -208,7 +219,7 @@ export default class Diary {
 
     delete this._entries[id];
 
-    return this._saveEntriesToStorage(this._entries)
+    return this._saveEntriesToStorage(this.filteredEntries)
       .then(() => {
         Dispatcher.deleteEntry('result');
       })
@@ -243,7 +254,7 @@ export default class Diary {
     Dispatcher.exportToFile('start');
 
     let content = ReactDOMServer.renderToString(
-      <ExportedEntries entries={this.entries} />
+      <ExportedEntries entries={this.filteredEntries} />
     );
 
     return Storage.export.saveNewHtmlFile(content)
@@ -285,7 +296,7 @@ export default class Diary {
         // encrypt entries and id
         return Crypto.encrypt(this._auth.encryptionKey, {
           id: this._id,
-          entries: this._entries,
+          entries: this.filteredEntries,
         })
           .then((encryptedData) => {
             return Storage.backup.saveBackup(path, {
@@ -354,7 +365,7 @@ export default class Diary {
               e.lastUpdated = Date.now();
             });
 
-            return this._saveEntriesToStorage(this._entries);
+            return this._saveEntriesToStorage(this.filteredEntries);
           })
           .then(() => {
             Dispatcher.alertUser('Restore successful');
@@ -422,7 +433,7 @@ export default class Diary {
       entry = {
         id: StringUtils.generateEntryId(ts),
         ts: ts,  
-        lastUpdated: moment().valueOf(),
+        lastUpdated: null,
       };
 
       this._entries[entry.id] = entry;
@@ -438,12 +449,12 @@ export default class Diary {
   }
 
 
-  get entries () {
-    // filter out empty entries
+  get filteredEntries () {
+    // filter out entries which have never been set
     let entries = {};
 
     _.each(this._entries, (e, id) => {
-      if (_.get(e, 'body.length')) {
+      if (!!e.lastUpdated) {
         entries[id] = e;
       }
     });
@@ -467,15 +478,16 @@ export default class Diary {
   _loadEntriesFromStorage () {
     Dispatcher.decryptEntries('start');
 
-    let enc = Storage.local.loadEntries(this._id) || '';
+    return Storage.local.loadEntries(this._id)
+      .then((enc) => {
+        if (!enc.length) {
+          return {};
+        } else {
+          Dispatcher.decryptEntries('progress', 'Decrypting entries...');
 
-    if (!enc.length) {
-      return Q.resolve({});
-    }
-
-    Dispatcher.decryptEntries('progress', 'Decrypting entries...');
-
-    return Crypto.decrypt(this._auth.encryptionKey, enc)
+          return Crypto.decrypt(this._auth.encryptionKey, enc)          
+        }
+      })
       .catch((err) => {
         this.logger.error(err);
 
@@ -506,7 +518,7 @@ export default class Diary {
 
 
   _rebuildSearchIndex() {
-    let entries = this.entries;
+    let entries = this.filteredEntries;
 
     this.logger.debug('rebuild search index', _.keys(entries).length);
 
@@ -545,6 +557,8 @@ export default class Diary {
 
 
   _startSync () {
+    return;
+    
     if (this._sync) {
       return;
     }
