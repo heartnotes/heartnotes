@@ -7,22 +7,45 @@ import { connectRedux } from '../helpers/decorators';
 
 
 var Component = React.createClass({
-  render: function() {
-    let { app } = this.props.data;
+  getInitialState: function() {
+    return {
+      show: false,
+    };
+  },
 
-    let { backgroundTasks } = app;
+  componentWillReceiveProps: function(props) {
+    const tasks = _.get(props, 'data.app.backgroundTasks', []);
 
-    let inProgressTasks = _.filter(backgroundTasks, (task) => {
+    const inProgressTasks = _.filter(tasks, (task) => {
       return !!task.inProgress;
     });
 
-    let content = null;
-
-    if (inProgressTasks.length) {
-      content = (
-        <Loading />
-      );
+    // got some tasks
+    if (inProgressTasks.length && !this.state.show) {
+      if (!this._showTimer) {
+        // show indicator after a short delay
+        this._showTimer = setTimeout(() => {
+          this.setState({
+            show: true
+          });        
+        }, 10000);        
+      }
     }
+    // got no tasks
+    else if (!inProgressTasks.length) {
+      // else clear indicator timer and turn off indicator
+      clearTimeout(this._showTimer);
+
+      delete this._showTimer;
+
+      this.setState({
+        show: false,        
+      });
+    }
+  },
+
+  render: function() {
+    let content = this.state.show ? (<Loading />) : null;
 
     return (
       <div className="background-tasks">

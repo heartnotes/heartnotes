@@ -12,7 +12,7 @@ export default class Sync {
   constructor (diary, options = {}) {
     this.logger = diary.logger.create('sync');
     this.diary = diary;
-    this._delay = options.delayMs || 10000;
+    this._delay = options.delayMs || 5000;
     this._onTick = _.bind(this._onTick, this);
     this._started = false;
   }
