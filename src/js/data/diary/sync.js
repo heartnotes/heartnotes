@@ -70,12 +70,9 @@ export default class Sync {
       _.reduce(this.diary.confirmedEntries, (p, e, id) => {
         return p.then(() => {
           if (e.lastUpdated > lastSyncTime) {
-            if (!id) {
-              alert(e);
-            }
             return Crypto.encrypt(this.diary.auth.encryptionKey, e)
               .then((enc) => {
-                entriesToSend[e.id] = {
+                entriesToSend[id] = {
                   lastUpdated: e.lastUpdated,
                   data: enc,                
                 };
