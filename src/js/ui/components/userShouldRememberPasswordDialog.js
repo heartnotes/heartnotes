@@ -39,7 +39,7 @@ module.exports = React.createClass({
       <Overlay ref="overlay" showCancelButton={true} onCancel={this._onCancel}>
         <div className="confirm-password-dialog">
           <p className="intro">If you forget your password you will NOT be able to recover your diary entries.</p>
-          <p>Please re-confirm your password:</p>
+          <p>Please re-confirm your new password:</p>
           <form onSubmit={this._openDiary}>
             <div className="field row">
               <PasswordInput 
@@ -64,7 +64,9 @@ module.exports = React.createClass({
   },
 
 
-  _onSubmit: function() {
+  _onSubmit: function(e) {
+    e.preventDefault();
+    
     if (this.state.password !== this.props.password) {
       this.setState({
         error: 'You entered it incorrectly!',
