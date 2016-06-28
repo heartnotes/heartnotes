@@ -3,6 +3,8 @@ import { version } from '../../../package.json';
 
 exports.app = function() {
   return {
+    type: window.appType || 'unknown',
+    build: window.buildType,
     version: version,
     backgroundTasks: {},
     fetchingPricing: {},

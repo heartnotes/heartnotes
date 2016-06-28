@@ -27,6 +27,12 @@ var Logger = require('../utils/logger').create('ac');
 
 export function init() {
   return function(dispatch, getState) {
+    window.heap.track('appStart', {
+      client: getState().app.type, 
+      build: getState().app.build, 
+      version: getState().app.version,
+    });
+
     Dispatcher.setup(dispatch, getState);
 
     Dispatcher.initApp();
