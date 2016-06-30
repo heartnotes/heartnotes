@@ -11,6 +11,8 @@ var LocalStorage = Storage.local;
 
 
 exports.app = function(state = InitialState.app(), action) {
+  let task = null;
+
   switch (action.type) {
     case Actions.SCREEN_UPDATED:
       return _.extend({}, state, {
@@ -18,7 +20,7 @@ exports.app = function(state = InitialState.app(), action) {
       });
 
     case Actions.BACKGROUND_TASK_START:
-      let task = action.payload;
+      task = action.payload;
 
       state.backgroundTasks[task.id] = task;
       state.backgroundTasks[task.id].inProgress = true;
@@ -28,7 +30,7 @@ exports.app = function(state = InitialState.app(), action) {
       });
 
     case Actions.BACKGROUND_TASK_PROGRESS:
-      let task = action.payload;
+      task = action.payload;
 
       state.backgroundTasks[task.id].msg = task.msg;
 
@@ -37,7 +39,7 @@ exports.app = function(state = InitialState.app(), action) {
       });
 
     case Actions.BACKGROUND_TASK_ERROR:
-      let task = action.payload;
+      task = action.payload;
 
       state.backgroundTasks[task.id].msg = task.msg;
       state.backgroundTasks[task.id].inProgress = false;
@@ -48,7 +50,7 @@ exports.app = function(state = InitialState.app(), action) {
       });
 
     case Actions.BACKGROUND_TASK_STOP:
-      let task = action.payload;
+      task = action.payload;
 
       delete state.backgroundTasks[task.id];
       
