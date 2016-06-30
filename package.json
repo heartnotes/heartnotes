@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "Base64": "^0.3.0",
-    "alloyeditor": "liferay/alloy-editor#eb3ae414ff9c1c819892f2a3a0222dab8dedfcdd",
+    "alloyeditor": "^1.2.2",
     "babelify": "~6.1.2",
     "bluebird": "~2.9.27",
     "browserify": "~10.2.1",
@@ -47,6 +47,7 @@
     "merge-stream": "~0.1.8",
     "moment": "~2.10.3",
     "nib": "~1.1.0",
+    "node-uuid": "^1.4.7",
     "operative": "~0.4.4",
     "pickadate": "~3.5.6",
     "pikaday": "git://github.com/dbushell/Pikaday.git#8e22c27454c0345306d4a4a2c0aa8b1cde97e120",
@@ -87,9 +88,5 @@
     "ipc": "global:ipc",
     "fs": "global:fs",
     "shell": "global:shell"
-  },
-  "devDependencies": {
-    "alloyeditor": "^1.2.2",
-    "node-uuid": "^1.4.7"
   }
 }
