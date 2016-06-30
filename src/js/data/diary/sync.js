@@ -110,6 +110,12 @@ export default class Sync {
 
                       decEntry.id = id;
 
+                      // rename "up" to "lastUpdated" for legacy entries
+                      if (decEntry.up) {
+                        decEntry.lastUpdated = decEntry.up;
+                        delete decEntry.up;
+                      }
+
                       this.diary._setEntry(id, decEntry);
                     });
                 }                
@@ -122,6 +128,8 @@ export default class Sync {
         })
         .then((numEntriesUpdated) => {
           if (numEntriesUpdated) {
+            this.logger.info(`${numEntriesUpdated} entries updated.`);
+
             Dispatcher.sync('progress', 'Saving new data...');
 
             this.logger.debug('Saving locally...');

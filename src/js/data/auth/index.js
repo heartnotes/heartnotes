@@ -287,7 +287,7 @@ export default class Auth {
   }
 
   get subscriptionType() {
-    return _.get(this._accountData, 'subscription.type');
+    return _.get(this._accountData, 'subscription.title');
   }
 
   get subscriptionExpiry() {
