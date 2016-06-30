@@ -1,6 +1,6 @@
 # Heartnotes
 
-**Personal diary app** (web and desktop) which uses client-side 
+**Personal diary app** (in the browser) which uses client-side 
 encryption and zero-knowledge authentication.
 
 [Try it at https://web.heartnot.es](https://web.heartnot.es).
@@ -12,7 +12,6 @@ Features:
 * 256-bit AES encryption done client-side for maximum security
 * Auto-save-as-you-type, with cloud sync running the background
 * Full-text search using [lunr.js](http://lunrjs.com/)
-* Backup/restore and export to local file at any time.
 * Continue editing even if connection goes down.
 
 ## Technology
@@ -63,7 +62,7 @@ $ npm install -g electron-prebuilt@1.2.2
 $ npm install
 ```
 
-Run web version (http://localhost:3000) and Electron desktop app:
+Run web version (http://localhost:3000):
 
 ```bash
 $ gulp
@@ -75,17 +74,10 @@ _NOTE: Add `--minified` on the command-line to enable JS and CSS minification du
 ## Production build
 
 ```bash
-$ npm run release
-```
-
-You will find the `Heartnotes.app` OS X executable in `build-electron/release/...`. 
-Built web assets (minfied, production config) will be in `build/`. 
-
-To do a web-only release (i.e. only the stuff in `build/`) run:
-
-```bash
 $ npm run release_web
 ```
+
+You will find build assets in the `build/` folder.
 
 
 ## Release checklist
@@ -104,7 +96,7 @@ $ npm run release_web
 
 ## License
 
-Copyright (C) 2015 [Ramesh Nair](https://hiddentao.com)
+Copyright (C) 2015-2016 [Ramesh Nair](https://hiddentao.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
