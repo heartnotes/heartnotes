@@ -1,7 +1,7 @@
 {
   "name": "Heartnotes",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Personal, offline encrypted diary app.",
   "author": "Ramesh Nair <ram@hiddentao.com>",
   "license": "GPL3",
