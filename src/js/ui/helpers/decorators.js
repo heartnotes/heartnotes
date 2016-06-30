@@ -30,7 +30,9 @@ export function connectRedux(actionCreators = []) {
         return {
           actions: ret
         };
-      }
+      },
+      null,
+      { withRef: true }
     )(Component);
   }
 }

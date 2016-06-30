@@ -58,7 +58,6 @@ The next time the user enters the right password, we:
 Setup:
 
 ```bash
-$ npm install -g electron-prebuilt@1.2.2
 $ npm install
 ```
 

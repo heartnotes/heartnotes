@@ -36,7 +36,7 @@ var Component = React.createClass({
   },
 
   _showEnableScreen: function() {
-    this.refs.enable.refs.wrappedInstance.show();
+    this.refs.enable.getWrappedInstance().show();
   },
 
 });
