@@ -88,5 +88,8 @@
     "ipc": "global:ipc",
     "fs": "global:fs",
     "shell": "global:shell"
+  },
+  "devDependencies": {
+    "gulp-utf8-convert": "0.0.7"
   }
 }
