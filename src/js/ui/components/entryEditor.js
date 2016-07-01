@@ -134,11 +134,11 @@ var Component = React.createClass({
     });
 
     // https://github.com/heartnotes/heartnotes/issues/3
-    this._editor.get('nativeEditor').on('instanceReady', () => {
-      console.warn(this._editor.get('nativeEditor').document.$.inputEncoding);
-      console.warn(this._editor.get('nativeEditor').document.$.characterSet);
-      console.warn(this._editor.get('nativeEditor').document.$.charset);
-    });
+    // this._editor.get('nativeEditor').on('instanceReady', () => {
+    //   console.warn(this._editor.get('nativeEditor').document.$.inputEncoding);
+    //   console.warn(this._editor.get('nativeEditor').document.$.characterSet);
+    //   console.warn(this._editor.get('nativeEditor').document.$.charset);
+    // });
     
     // save content only every second
     this._editor.get('nativeEditor').on('change', _.debounce(() => {
