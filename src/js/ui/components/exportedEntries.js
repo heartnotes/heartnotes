@@ -41,7 +41,7 @@ module.exports = React.createClass({
         </head>
         <body>
           <h1>Diary entries</h1>
-          <p><em>Exported from <a href="http://heartnot.es">Heartnotes</a>.</em></p>
+          <p><em>Exported from <a href="http://heartnotes.me">Heartnotes</a>.</em></p>
           {entries}
         </body>
       </html>

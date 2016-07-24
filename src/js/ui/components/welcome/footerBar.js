@@ -35,7 +35,7 @@ class Component extends React.Component {
             v{this.props.data.app.version}
           </span>
           <span className="home">
-            <ExternalLink href="https://heartnot.es"><Icon name="home" /></ExternalLink>
+            <ExternalLink href="https://heartnotes.me"><Icon name="home" /></ExternalLink>
           </span>          
         </div>
       </Footer>

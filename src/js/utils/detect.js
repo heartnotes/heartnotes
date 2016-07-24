@@ -34,7 +34,7 @@ exports.serverHost = function() {
   if (exports.inDevMode()) {
     return 'http://' + location.host.split(':')[0] + ':3010';
   } else {
-    return 'https://heartnot.es';    
+    return 'https://heartnotes.me';    
   }
 };
 
