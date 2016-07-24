@@ -3,9 +3,9 @@
 **Personal diary app** (in the browser) which uses client-side 
 encryption and zero-knowledge authentication.
 
-[Try it at https://web.heartnot.es](https://web.heartnot.es).
+[Try it at https://web.heartnotes.me](https://web.heartnotes.me).
 
-Get it from [https://heartnot.es](https://heartnot.es).
+Get it from [https://heartnotes.me](https://heartnotes.me).
 
 Features:
 
